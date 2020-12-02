@@ -1,89 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="9b8f0224-e367-4497-8c05-42ae21c30990" name="Default Changelist" comment="Updated IntelliJ files">
-      <change afterPath="$PROJECT_DIR$/src/access/Archive.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/access/Clipboard.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/access/CmdLine.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/access/Filesystem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/access/FilesystemMacro.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/access/Internet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/access/OperatingSystem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/access/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/console/Console.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/console/ConsoleProgressBar.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/console/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/graphics/ColorUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/graphics/ImageUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/graphics/ScreenUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/graphics/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/io/Audio.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/io/Speech.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/io/SystemIn.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/io/WaveRecording.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/io/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/list/ListUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/list/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/BigMathUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/BoundUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/EquationUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/MathUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/NumberStringUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/NumberUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/RotationUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/SphericalCoordinateUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/matrix/Matrix2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/matrix/Matrix3.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/matrix/Matrix4.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/vector/BigVector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/vector/UniqueVectorSet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/vector/Vector.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/vector/Vector2.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/math/vector/Vector3.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/object/ObjectCastUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/object/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/security/CryptoUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/security/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/stream/FileTransferInterceptor.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/stream/ProgressBarInputStream.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/stream/ProgressBarOutputStream.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/stream/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/string/StringComparisonUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/string/StringUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/string/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/time/DateTimeUtility.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/time/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/access/FilesystemTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/access/OperatingSystemTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/access/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/graphics/ColorUtilityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/graphics/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/list/ListUtilityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/list/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/math/BigMathUtilityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/math/BoundUtilityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/math/EquationUtilityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/math/MathUtilityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/math/NumberStringUtilityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/math/NumberUtilityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/math/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/object/ObjectCastUtilityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/object/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/security/CryptoUtilityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/security/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/string/StringComparisonUtilityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/string/StringUtilityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/string/package-info.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/time/DateTimeUtilityTest.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/test/time/package-info.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-    </list>
+    <list default="true" id="9b8f0224-e367-4497-8c05-42ae21c30990" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ChangesViewManager">
+    <option name="groupingKeys">
+      <option value="directory" />
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -173,25 +100,44 @@
       <option name="project" value="LOCAL" />
       <updated>1606885449945</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Added Common Utilities and Resources">
+      <created>1606885608601</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1606885608601</updated>
+    </task>
+    <task id="LOCAL-00003" summary="Added Tests">
+      <created>1606885631389</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1606885631389</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="VcsManagerConfiguration">
+    <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
+    <option name="CHECK_NEW_TODO" value="false" />
     <MESSAGE value="Updated IntelliJ files" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated IntelliJ files" />
+    <MESSAGE value="Added Common Utilities and Resources" />
+    <MESSAGE value="Added Tests" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added Tests" />
+    <option name="OPTIMIZE_IMPORTS_BEFORE_PROJECT_COMMIT" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="612" y="82" key="CommitChangelistDialog2" timestamp="1606885607948">
+    <state x="612" y="82" key="CommitChangelistDialog2" timestamp="1606885630966">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state x="612" y="82" key="CommitChangelistDialog2/0.0.2048.1112/2560.0.2048.1152@0.0.2048.1112" timestamp="1606885607948" />
+    <state x="612" y="82" key="CommitChangelistDialog2/0.0.2048.1112/2560.0.2048.1152@0.0.2048.1112" timestamp="1606885630966" />
     <state x="377" y="27" key="SettingsEditor" timestamp="1606876927398">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
     <state x="377" y="27" key="SettingsEditor/0.0.2048.1112/2560.0.2048.1152@0.0.2048.1112" timestamp="1606876927398" />
-    <state x="517" y="224" key="Vcs.Push.Dialog.v2" timestamp="1606885610367">
+    <state x="517" y="224" key="Vcs.Push.Dialog.v2" timestamp="1606885632965">
       <screen x="0" y="0" width="2048" height="1112" />
     </state>
-    <state x="517" y="224" key="Vcs.Push.Dialog.v2/0.0.2048.1112/2560.0.2048.1152@0.0.2048.1112" timestamp="1606885610367" />
+    <state x="517" y="224" key="Vcs.Push.Dialog.v2/0.0.2048.1112/2560.0.2048.1152@0.0.2048.1112" timestamp="1606885632965" />
   </component>
 </project>
