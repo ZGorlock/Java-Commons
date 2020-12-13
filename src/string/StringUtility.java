@@ -7,6 +7,7 @@
 package string;
 
 import java.nio.charset.StandardCharsets;
+import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -345,6 +346,18 @@ public final class StringUtility {
      */
     public static String removeWhiteSpace(String string) {
         return string.replaceAll("[\\s\0]+", "");
+    }
+    
+    /**
+     * Removes the diacritical marks from a string.
+     *
+     * @param string The string to operate on.
+     * @return The string with all diacritical marks removed.
+     */
+    public static String removeDiacritics(String string) {
+        return Normalizer.normalize(string, Normalizer.Form.NFD)
+                .replaceAll("\\p{InCOMBINING_DIACRITICAL_MARKS}+", "")
+                .replaceAll("\\p{InCOMBINING_DIACRITICAL_MARKS_SUPPLEMENT}+", "");
     }
     
     /**

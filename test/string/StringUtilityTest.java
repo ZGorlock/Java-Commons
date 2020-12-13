@@ -751,6 +751,45 @@ public class StringUtilityTest {
     }
     
     /**
+     * JUnit test of removeDiacritics.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#removeDiacritics(String)
+     */
+    @Test
+    public void testRemoveDiacritics() throws Exception {
+        //diacritics
+        Assert.assertEquals("a string", StringUtility.removeDiacritics("â string"));
+        Assert.assertEquals("A string", StringUtility.removeDiacritics("Ā string"));
+        Assert.assertEquals("a, e, i, o, u, n",
+                StringUtility.removeDiacritics("á, é, í, ó, ú, ñ"));
+        Assert.assertEquals("a, e, i, u, c, g, k, l, n, s, z, a, e, i, u, u, e",
+                StringUtility.removeDiacritics("ā, ē, ī, ū, č, ģ, ķ, ļ, ņ, š, ž, ą, ę, į, ų, ū, ė"));
+        Assert.assertEquals("a, e, i, o, u, w, y, a, e, i, o, u, w, y, a, e, i, o, u, w, y, a, e, i, o, u, w, y",
+                StringUtility.removeDiacritics("â, ê, î, ô, û, ŵ, ŷ, ä, ë, ï, ö, ü, ẅ, ÿ, á, é, í, ó, ú, ẃ, ý, à, è, ì, ò, ù, ẁ, ỳ"));
+        Assert.assertEquals("у, и, е, ґ, и, і, к, г, и",
+                StringUtility.removeDiacritics("ў, й, ё, ґ, й, ї, ќ, ѓ, ѝ"));
+        Assert.assertEquals("o, a, o, u, a, s, z, o, u, a, a, a, d, e, i, l, n, o, o, o, o, o, r, s, t, u, z",
+                StringUtility.removeDiacritics("õ, ä, ö, ü, å, š, ž, ő, ű, ā, ä, ǟ, ḑ, ē, ī, ļ, ņ, ō, ȯ, ȱ, õ, ȭ, ŗ, š, ț, ū, ž"));
+        Assert.assertEquals("a, i, o, u, y, o, a",
+                StringUtility.removeDiacritics("á, í, ó, ú, ý, ö, å"));
+        Assert.assertEquals("c, c, s, z, c, d, e, n, r, s, t, z, u, a, c, e, n, o, s, z, z, a, e, i, o, u, y, l, r, c, d, l, n, s, t, z, a, o",
+                StringUtility.removeDiacritics("č, ć, š, ž, č, ď, ě, ň, ř, š, ť, ž, ů, ą, ć, ę, ń, ó, ś, ź, ż, á, é, í, ó, ú, ý, ĺ, ŕ, č, ď, ľ, ň, š, ť, ž, ä, ô"));
+        Assert.assertEquals("C, G, I, I, O, S, U, N, A, E, S, T, G, Y, Z",
+                StringUtility.removeDiacritics("Ç, Ğ, I, İ, Ö, Ş, Ü, Ñ, Ä, Ê, Ș, Ț, Ğ, Ý, Ž"));
+        Assert.assertEquals("C, E, u, c, g, h, j, s, C, E, I, S, U, c, h, g, s, z, a, a, c, i, n, o, s, u, e, C, G, Z",
+                StringUtility.removeDiacritics("Ç, Ë, ŭ, ĉ, ĝ, ĥ, ĵ, ŝ, Ç, Ê, Î, Ş, Û, č, ȟ, ǧ, š, ž, â, ā, ç, î, ñ, ô, š, û, ē, Ċ, Ġ, Ż"));
+        Assert.assertEquals("A, C, D, E, E, G, H, O, S, S, T, U, Z",
+                StringUtility.removeDiacritics("Ā, Č, Ḏ, Ē, Ë, Ġ, Ḥ, Ō, Š, Ṣ, Ṭ, Ū, Ž"));
+        
+        //no diacritics
+        Assert.assertEquals("string", StringUtility.removeDiacritics("string"));
+        Assert.assertEquals("ABC234546#!45", StringUtility.removeDiacritics("ABC234546#!45"));
+        Assert.assertEquals("123-456-7890", StringUtility.removeDiacritics("123-456-7890"));
+        Assert.assertEquals("", StringUtility.removeDiacritics(""));
+    }
+    
+    /**
      * JUnit test of replaceCharAt.
      *
      * @throws Exception When there is an exception.
