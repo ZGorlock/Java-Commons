@@ -15,6 +15,7 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1282,6 +1283,44 @@ public final class Filesystem {
     }
     
     /**
+     * Reads the file dates of a file.
+     *
+     * @param file The file.
+     * @return The file dates of the file.
+     */
+    public static Map<String, FileTime> readDates(File file) {
+        Map<String, FileTime> dates = new HashMap<>();
+        List<String> attributes = Arrays.asList("lastModifiedTime", "lastAccessTime", "creationTime");
+        for (String attribute : attributes) {
+            try {
+                dates.put(attribute, (FileTime) Files.getAttribute(file.toPath(), attribute));
+            } catch (Exception ignored) {
+            }
+        }
+        return dates;
+    }
+    
+    /**
+     * Writes the file dates of a file.
+     *
+     * @param file  The file.
+     * @param dates The file dates.
+     */
+    public static void writeDates(File file, Map<String, FileTime> dates) {
+        List<String> attributes = Arrays.asList("lastModifiedTime", "lastAccessTime", "creationTime");
+        for (String attribute : attributes) {
+            FileTime date = dates.get(attribute);
+            if (date == null) {
+                continue;
+            }
+            try {
+                Files.setAttribute(file.toPath(), attribute, date);
+            } catch (Exception ignored) {
+            }
+        }
+    }
+    
+    /**
      * Opens an input stream for the file provided
      *
      * @param file The file to open for input.
@@ -1796,6 +1835,17 @@ public final class Filesystem {
      */
     public static String generatePath(String... paths) {
         return generatePath(false, paths);
+    }
+    
+    /**
+     * Returns the file type of a file.
+     *
+     * @param file The file.
+     * @return The file type of the file.
+     */
+    public static String getFileType(File file) {
+        return (file.getName().contains(".")) ?
+               file.getName().substring(file.getName().lastIndexOf('.') + 1) : "";
     }
     
     /**

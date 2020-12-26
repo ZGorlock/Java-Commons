@@ -10,7 +10,9 @@ import java.io.File;
 import java.io.FileFilter;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11242,6 +11244,57 @@ public class FilesystemTest {
     }
     
     /**
+     * JUnit test of readDates.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#readDates(File)
+     */
+    @Test
+    public void testReadDates() throws Exception {
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        
+        Map<String, FileTime> dates = Filesystem.readDates(testFile);
+        Assert.assertEquals(3, dates.size());
+        Assert.assertTrue(dates.containsKey("lastModifiedTime"));
+        Assert.assertNotNull(dates.get("lastModifiedTime"));
+        Assert.assertTrue(dates.containsKey("lastAccessTime"));
+        Assert.assertNotNull(dates.get("lastAccessTime"));
+        Assert.assertTrue(dates.containsKey("creationTime"));
+        Assert.assertNotNull(dates.get("creationTime"));
+        
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
+    }
+    
+    /**
+     * JUnit test of writeDates.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#writeDates(File, Map)
+     */
+    @Test
+    public void testWriteDates() throws Exception {
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        
+        Map<String, FileTime> putDates = new HashMap<>();
+        FileTime lastModifiedTime = FileTime.fromMillis(new Date().getTime() - 150000);
+        FileTime lastAccessTime = FileTime.fromMillis(new Date().getTime());
+        FileTime creationTime = FileTime.fromMillis(new Date().getTime() - 25700100);
+        putDates.put("lastModifiedTime", lastModifiedTime);
+        putDates.put("lastAccessTime", lastAccessTime);
+        putDates.put("creationTime", creationTime);
+        Filesystem.writeDates(testFile, putDates);
+        
+        Map<String, FileTime> getDates = Filesystem.readDates(testFile);
+        Assert.assertEquals(lastModifiedTime, getDates.get("lastModifiedTime"));
+        Assert.assertEquals(lastAccessTime, getDates.get("lastAccessTime"));
+        Assert.assertEquals(creationTime, getDates.get("creationTime"));
+        
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
+    }
+    
+    /**
      * JUnit test of openInputStream.
      *
      * @throws Exception When there is an exception.
@@ -13101,6 +13154,25 @@ public class FilesystemTest {
         
         //empty
         Assert.assertEquals("", Filesystem.generatePath());
+    }
+    
+    /**
+     * JUnit test of getFileType.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#getFileType(File)
+     */
+    @Test
+    public void testGetFileType() throws Exception {
+        //standard
+        Assert.assertEquals("jpg", Filesystem.getFileType(new File("test.jpg")));
+        Assert.assertEquals("jpg", Filesystem.getFileType(new File("test file.jpg")));
+        Assert.assertEquals("jpg", Filesystem.getFileType(new File("test file.png.jpg")));
+        Assert.assertEquals("docx", Filesystem.getFileType(new File("test.docx")));
+        
+        //empty
+        Assert.assertEquals("", Filesystem.getFileType(new File("test jpg")));
+        Assert.assertEquals("", Filesystem.getFileType(new File("")));
     }
     
     /**
