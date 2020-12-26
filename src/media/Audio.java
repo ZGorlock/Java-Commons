@@ -1,10 +1,10 @@
 /*
  * File:    Audio.java
- * Package: io
+ * Package: media
  * Author:  Zachary Gill
  */
 
-package io;
+package media;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
