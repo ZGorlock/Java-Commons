@@ -12,10 +12,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -27,6 +29,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -170,9 +173,6 @@ public class FilesystemTest {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @BeforeClass
     public static void setupClass() throws Exception {
-        PowerMockito.spy(Filesystem.class);
-        PowerMockito.when(Filesystem.class, "logFilesystem").thenReturn(false);
-        
         if (!tmpDir.exists()) {
             tmpDir.mkdir();
         }
@@ -193,9 +193,10 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      */
-    @SuppressWarnings("EmptyMethod")
     @Before
     public void setup() throws Exception {
+        PowerMockito.spy(Filesystem.class);
+        PowerMockito.when(Filesystem.class, "logFilesystem").thenReturn(false);
     }
     
     /**
@@ -6894,7 +6895,7 @@ public class FilesystemTest {
         Assert.assertFalse(testFile.exists());
         Assert.assertFalse(test2File.exists());
         
-        //file, overwrite off
+        //file, overwrite on
         Assert.assertTrue(Filesystem.createFile(testFile));
         Assert.assertTrue(testFile.exists());
         Assert.assertTrue(testFile.isFile());
@@ -6944,6 +6945,497 @@ public class FilesystemTest {
         Assert.assertTrue(test2Dir.exists());
         Assert.assertTrue(test2Dir.isDirectory());
         Assert.assertTrue(Filesystem.move(testDir, test2Dir, true)); //should call moveDirectory
+        Assert.assertFalse(testDir.exists());
+        Assert.assertTrue(test2Dir.exists());
+        Assert.assertTrue(test2Dir.isDirectory());
+        Assert.assertTrue(test2Dir.delete());
+        Assert.assertFalse(test2Dir.exists());
+    }
+    
+    /**
+     * JUnit test of replaceFile.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#replaceFile(File, File)
+     */
+    @Test
+    public void testReplaceFile() throws Exception {
+        //standard
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.replaceFile(testFile, test2File));
+        Assert.assertFalse(testFile.exists());
+        Assert.assertTrue(test2File.exists());
+        Assert.assertTrue(test2File.isFile());
+        Assert.assertTrue(test2File.delete());
+        Assert.assertFalse(test2File.exists());
+        
+        //source doesn't exist
+        Assert.assertFalse(testFile.exists());
+        Assert.assertFalse(Filesystem.replaceFile(testFile, test2File));
+        Assert.assertFalse(testFile.exists());
+        Assert.assertFalse(test2File.exists());
+        
+        //already replaced
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.replaceFile(testFile, test2File));
+        Assert.assertTrue(test2File.exists());
+        Assert.assertTrue(test2File.isFile());
+        Assert.assertTrue(Filesystem.replaceFile(test2File, test2File));
+        Assert.assertTrue(test2File.exists());
+        Assert.assertTrue(test2File.delete());
+        Assert.assertFalse(test2File.exists());
+        
+        //destination already exists
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.createFile(test2File));
+        Assert.assertTrue(test2File.exists());
+        Assert.assertTrue(test2File.isFile());
+        Assert.assertTrue(Filesystem.replaceFile(testFile, test2File));
+        Assert.assertFalse(testFile.exists());
+        Assert.assertTrue(test2File.exists());
+        Assert.assertTrue(test2File.delete());
+        Assert.assertFalse(test2File.exists());
+        
+        //multiple levels
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.replaceFile(testFile, testFile3));
+        Assert.assertFalse(testFile.exists());
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testFile3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        Assert.assertTrue(testFile3.isFile());
+        Assert.assertTrue(testFile3.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(testFile3.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //destination is directory
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        internalFile = new File(testDir, testFile.getName());
+        Assert.assertTrue(Filesystem.replaceFile(testFile, testDir));
+        Assert.assertFalse(testFile.exists());
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //destination is directory, destination exists
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        internalFile = new File(testDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(Filesystem.replaceFile(testFile, testDir));
+        Assert.assertFalse(testFile.exists());
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //destination is a directory, multiple levels
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, testFile.getName());
+        Assert.assertTrue(Filesystem.replaceFile(testFile, testDir3));
+        Assert.assertFalse(testFile.exists());
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+    }
+    
+    /**
+     * JUnit test of replaceDirectory.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#replaceDirectory(File, File)
+     */
+    @Test
+    public void testReplaceDirectory() throws Exception {
+        //standard
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(Filesystem.replaceDirectory(testDir, test2Dir));
+        Assert.assertFalse(testDir.exists());
+        Assert.assertTrue(test2Dir.exists());
+        Assert.assertTrue(test2Dir.isDirectory());
+        Assert.assertTrue(test2Dir.delete());
+        Assert.assertFalse(test2Dir.exists());
+        
+        //source doesn't exist
+        Assert.assertFalse(testDir.exists());
+        Assert.assertFalse(Filesystem.replaceDirectory(testDir, test2Dir));
+        Assert.assertFalse(testDir.exists());
+        Assert.assertFalse(test2Dir.exists());
+        
+        //destination is file
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.replaceDirectory(testDir, testFile));
+        Assert.assertFalse(testDir.exists());
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isDirectory());
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
+        
+        //already replaced
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(Filesystem.replaceDirectory(testDir, test2Dir));
+        Assert.assertFalse(testDir.exists());
+        Assert.assertTrue(test2Dir.exists());
+        Assert.assertTrue(test2Dir.isDirectory());
+        Assert.assertTrue(Filesystem.replaceDirectory(test2Dir, test2Dir));
+        Assert.assertTrue(test2Dir.exists());
+        Assert.assertTrue(test2Dir.delete());
+        Assert.assertFalse(test2Dir.exists());
+        
+        //destination already exists
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(Filesystem.createDirectory(test2Dir));
+        Assert.assertTrue(test2Dir.exists());
+        Assert.assertTrue(test2Dir.isDirectory());
+        Assert.assertTrue(Filesystem.replaceDirectory(testDir, test2Dir));
+        Assert.assertFalse(testDir.exists());
+        Assert.assertTrue(test2Dir.exists());
+        Assert.assertTrue(test2Dir.isDirectory());
+        Assert.assertTrue(test2Dir.delete());
+        Assert.assertFalse(test2Dir.exists());
+        
+        //multiple levels
+        Assert.assertTrue(Filesystem.createDirectory(test2Dir));
+        Assert.assertTrue(test2Dir.exists());
+        Assert.assertTrue(test2Dir.isDirectory());
+        Assert.assertTrue(Filesystem.replaceDirectory(test2Dir, testDir3));
+        Assert.assertFalse(test2Dir.exists());
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(testDir.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir3.exists());
+        
+        //standard, nested files
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        internalFile = new File(testDir, testFile.getName());
+        internalDir = new File(testDir, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        nestedInternalFile = new File(test2Dir, testFile.getName());
+        nestedInternalDir = new File(test2Dir, test2Dir.getName());
+        nestedInternalFile2 = new File(nestedInternalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.replaceDirectory(testDir, test2Dir));
+        Assert.assertFalse(testDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertTrue(test2Dir.exists());
+        Assert.assertTrue(nestedInternalFile.exists());
+        Assert.assertTrue(nestedInternalDir.exists());
+        Assert.assertTrue(nestedInternalFile2.exists());
+        Assert.assertTrue(test2Dir.isDirectory());
+        Assert.assertTrue(nestedInternalFile.isFile());
+        Assert.assertTrue(nestedInternalDir.isDirectory());
+        Assert.assertTrue(nestedInternalFile2.isFile());
+        Assert.assertTrue(nestedInternalFile2.delete());
+        Assert.assertTrue(nestedInternalDir.delete());
+        Assert.assertTrue(nestedInternalFile.delete());
+        Assert.assertTrue(test2Dir.delete());
+        Assert.assertFalse(nestedInternalFile2.exists());
+        Assert.assertFalse(nestedInternalDir.exists());
+        Assert.assertFalse(nestedInternalFile.delete());
+        Assert.assertFalse(test2Dir.exists());
+        
+        //source doesn't exist, nested files
+        Assert.assertFalse(testDir.exists());
+        Assert.assertFalse(Filesystem.replaceDirectory(testDir, test2Dir));
+        Assert.assertFalse(testDir.exists());
+        Assert.assertFalse(test2Dir.exists());
+        
+        //destination is file, nested files
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        internalFile = new File(testDir, testFile.getName());
+        internalDir = new File(testDir, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        nestedInternalFile = new File(testFile, testFile.getName());
+        nestedInternalDir = new File(testFile, test2Dir.getName());
+        nestedInternalFile2 = new File(nestedInternalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.replaceDirectory(testDir, testFile));
+        Assert.assertFalse(testDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(nestedInternalFile.exists());
+        Assert.assertTrue(nestedInternalDir.exists());
+        Assert.assertTrue(nestedInternalFile2.exists());
+        Assert.assertTrue(testFile.isDirectory());
+        Assert.assertTrue(nestedInternalFile.isFile());
+        Assert.assertTrue(nestedInternalDir.isDirectory());
+        Assert.assertTrue(nestedInternalFile2.isFile());
+        Assert.assertTrue(nestedInternalFile2.delete());
+        Assert.assertTrue(nestedInternalDir.delete());
+        Assert.assertTrue(nestedInternalFile.delete());
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(nestedInternalFile2.exists());
+        Assert.assertFalse(nestedInternalDir.exists());
+        Assert.assertFalse(nestedInternalFile.exists());
+        Assert.assertFalse(testFile.exists());
+        
+        //already replaced, nested files
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        internalFile = new File(testDir, testFile.getName());
+        internalDir = new File(testDir, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        nestedInternalFile = new File(test2Dir, testFile.getName());
+        nestedInternalDir = new File(test2Dir, test2Dir.getName());
+        nestedInternalFile2 = new File(nestedInternalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.replaceDirectory(testDir, test2Dir));
+        Assert.assertFalse(testDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertTrue(test2Dir.exists());
+        Assert.assertTrue(nestedInternalFile.exists());
+        Assert.assertTrue(nestedInternalDir.exists());
+        Assert.assertTrue(nestedInternalFile2.exists());
+        Assert.assertTrue(test2Dir.isDirectory());
+        Assert.assertTrue(nestedInternalFile.isFile());
+        Assert.assertTrue(nestedInternalDir.isDirectory());
+        Assert.assertTrue(nestedInternalFile2.isFile());
+        Assert.assertTrue(Filesystem.replaceDirectory(test2Dir, test2Dir));
+        Assert.assertTrue(test2Dir.exists());
+        Assert.assertTrue(nestedInternalFile.exists());
+        Assert.assertTrue(nestedInternalDir.exists());
+        Assert.assertTrue(nestedInternalFile2.exists());
+        Assert.assertTrue(nestedInternalFile2.delete());
+        Assert.assertTrue(nestedInternalDir.delete());
+        Assert.assertTrue(nestedInternalFile.delete());
+        Assert.assertTrue(test2Dir.delete());
+        Assert.assertFalse(nestedInternalFile2.exists());
+        Assert.assertFalse(nestedInternalDir.exists());
+        Assert.assertFalse(nestedInternalFile.delete());
+        Assert.assertFalse(test2Dir.exists());
+        
+        //destination already exists, nested files
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        internalFile = new File(testDir, testFile.getName());
+        internalDir = new File(testDir, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        Assert.assertTrue(Filesystem.createDirectory(test2Dir));
+        Assert.assertTrue(test2Dir.exists());
+        Assert.assertTrue(test2Dir.isDirectory());
+        nestedInternalFile = new File(test2Dir, testFile.getName());
+        nestedInternalDir = new File(test2Dir, test2Dir.getName());
+        nestedInternalFile2 = new File(nestedInternalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.replaceDirectory(testDir, test2Dir));
+        Assert.assertFalse(testDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertTrue(test2Dir.exists());
+        Assert.assertTrue(nestedInternalFile.exists());
+        Assert.assertTrue(nestedInternalDir.exists());
+        Assert.assertTrue(nestedInternalFile2.exists());
+        Assert.assertTrue(test2Dir.isDirectory());
+        Assert.assertTrue(nestedInternalFile.isFile());
+        Assert.assertTrue(nestedInternalDir.isDirectory());
+        Assert.assertTrue(nestedInternalFile2.isFile());
+        Assert.assertTrue(nestedInternalFile2.delete());
+        Assert.assertTrue(nestedInternalDir.delete());
+        Assert.assertTrue(nestedInternalFile.delete());
+        Assert.assertTrue(test2Dir.delete());
+        Assert.assertFalse(nestedInternalFile2.exists());
+        Assert.assertFalse(nestedInternalDir.exists());
+        Assert.assertFalse(nestedInternalFile2.exists());
+        Assert.assertFalse(test2Dir.exists());
+        
+        //multiple levels, nested files
+        Assert.assertTrue(Filesystem.createDirectory(test2Dir));
+        Assert.assertTrue(test2Dir.exists());
+        Assert.assertTrue(test2Dir.isDirectory());
+        internalFile = new File(test2Dir, testFile.getName());
+        internalDir = new File(test2Dir, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        nestedInternalFile = new File(testDir3, testFile.getName());
+        nestedInternalDir = new File(testDir3, test2Dir.getName());
+        nestedInternalFile2 = new File(nestedInternalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.replaceDirectory(test2Dir, testDir3));
+        Assert.assertFalse(test2Dir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(nestedInternalFile.exists());
+        Assert.assertTrue(nestedInternalDir.exists());
+        Assert.assertTrue(nestedInternalFile2.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        Assert.assertTrue(nestedInternalFile.isFile());
+        Assert.assertTrue(nestedInternalDir.isDirectory());
+        Assert.assertTrue(nestedInternalFile2.isFile());
+        Assert.assertTrue(nestedInternalFile2.delete());
+        Assert.assertTrue(nestedInternalDir.delete());
+        Assert.assertTrue(nestedInternalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(testDir.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(nestedInternalFile2.exists());
+        Assert.assertFalse(nestedInternalDir.exists());
+        Assert.assertFalse(nestedInternalFile.delete());
+    }
+    
+    /**
+     * JUnit test of replace.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#replace(File, File)
+     */
+    @Test
+    public void testReplace() throws Exception {
+        //file
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.createFile(test2File));
+        Assert.assertTrue(test2File.exists());
+        Assert.assertTrue(test2File.isFile());
+        Assert.assertTrue(Filesystem.replace(testFile, test2File)); //should call replaceFile
+        Assert.assertFalse(testFile.exists());
+        Assert.assertTrue(test2File.exists());
+        Assert.assertTrue(test2File.isFile());
+        Assert.assertTrue(test2File.delete());
+        Assert.assertFalse(test2File.exists());
+        
+        //directory
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(Filesystem.createDirectory(test2Dir));
+        Assert.assertTrue(test2Dir.exists());
+        Assert.assertTrue(test2Dir.isDirectory());
+        Assert.assertTrue(Filesystem.replace(testDir, test2Dir)); //should call replaceDirectory
         Assert.assertFalse(testDir.exists());
         Assert.assertTrue(test2Dir.exists());
         Assert.assertTrue(test2Dir.isDirectory());
@@ -12597,6 +13089,304 @@ public class FilesystemTest {
     }
     
     /**
+     * JUnit test of safeReplace.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#safeReplace(File, File)
+     */
+    @Test
+    public void testSafeReplace() throws Exception {
+        String testContent = UUID.randomUUID().toString();
+        String testContent2 = UUID.randomUUID().toString();
+        Assert.assertNotEquals(testContent, testContent2);
+        
+        File originalFile = testFile;
+        File newFile = testFile2;
+        File backup = new File(originalFile.getParentFile(), originalFile.getName() + ".bak");
+        
+        Assert.assertTrue(Filesystem.deleteFile(originalFile));
+        Assert.assertTrue(Filesystem.deleteFile(newFile));
+        Assert.assertTrue(Filesystem.deleteFile(backup));
+        
+        //source must exist
+        Assert.assertFalse(Filesystem.safeReplace(newFile, originalFile));
+        Assert.assertTrue(Filesystem.createFile(originalFile));
+        Assert.assertFalse(Filesystem.safeReplace(newFile, originalFile));
+        Assert.assertTrue(originalFile.exists());
+        Assert.assertTrue(Filesystem.deleteFile(originalFile));
+        
+        //backup must not exist
+        Assert.assertTrue(Filesystem.createFile(originalFile));
+        Assert.assertTrue(Filesystem.createFile(newFile));
+        Assert.assertTrue(Filesystem.createFile(backup));
+        Assert.assertFalse(Filesystem.safeReplace(newFile, originalFile));
+        Assert.assertTrue(backup.exists());
+        Assert.assertTrue(Filesystem.deleteFile(originalFile));
+        Assert.assertTrue(Filesystem.deleteFile(newFile));
+        Assert.assertTrue(Filesystem.deleteFile(backup));
+        
+        //original file doesnt exist
+        Assert.assertTrue(Filesystem.createFile(newFile));
+        Assert.assertTrue(Filesystem.writeStringToFile(newFile, testContent2));
+        Assert.assertTrue(Filesystem.safeReplace(newFile, originalFile));
+        Assert.assertTrue(originalFile.exists());
+        Assert.assertEquals(testContent2, Filesystem.readFileToString(originalFile));
+        Assert.assertFalse(newFile.exists());
+        Assert.assertFalse(backup.exists());
+        Assert.assertTrue(Filesystem.deleteFile(originalFile));
+        
+        //success
+        Assert.assertTrue(Filesystem.createFile(originalFile));
+        Assert.assertTrue(Filesystem.createFile(newFile));
+        Assert.assertTrue(Filesystem.writeStringToFile(originalFile, testContent));
+        Assert.assertTrue(Filesystem.writeStringToFile(newFile, testContent2));
+        Assert.assertTrue(Filesystem.safeReplace(newFile, originalFile));
+        Assert.assertTrue(originalFile.exists());
+        Assert.assertEquals(testContent2, Filesystem.readFileToString(originalFile));
+        Assert.assertFalse(newFile.exists());
+        Assert.assertFalse(backup.exists());
+        Assert.assertTrue(Filesystem.deleteFile(originalFile));
+        
+        //create backup
+        PowerMockito.when(Filesystem.class, "deleteFile", originalFile).thenAnswer((Answer<Boolean>) invocation -> {
+            Assert.assertTrue(originalFile.exists());
+            Assert.assertTrue(backup.exists());
+            Assert.assertEquals(Filesystem.readFileToString(originalFile), Filesystem.readFileToString(backup));
+            return FileUtils.deleteQuietly(originalFile);
+        });
+        Assert.assertTrue(Filesystem.createFile(originalFile));
+        Assert.assertTrue(Filesystem.createFile(newFile));
+        Assert.assertTrue(Filesystem.writeStringToFile(originalFile, testContent));
+        Assert.assertTrue(Filesystem.writeStringToFile(newFile, testContent2));
+        Assert.assertTrue(Filesystem.safeReplace(newFile, originalFile));
+        Assert.assertTrue(originalFile.exists());
+        Assert.assertFalse(newFile.exists());
+        Assert.assertFalse(backup.exists());
+        PowerMockito.doCallRealMethod().when(Filesystem.class, "deleteFile", originalFile);
+        PowerMockito.spy(Filesystem.class);
+        PowerMockito.when(Filesystem.class, "logFilesystem").thenReturn(false);
+        Assert.assertTrue(Filesystem.deleteFile(originalFile));
+        
+        //fail backup and restore
+        PowerMockito.when(Filesystem.class, "deleteFile", originalFile).thenAnswer((Answer<Boolean>) invocation -> {
+            Assert.assertTrue(originalFile.exists());
+            Assert.assertTrue(backup.exists());
+            Assert.assertEquals(Filesystem.readFileToString(originalFile), Filesystem.readFileToString(backup));
+            FileUtils.deleteQuietly(originalFile);
+            return false;
+        });
+        Assert.assertTrue(Filesystem.createFile(originalFile));
+        Assert.assertTrue(Filesystem.createFile(newFile));
+        Assert.assertTrue(Filesystem.writeStringToFile(originalFile, testContent));
+        Assert.assertTrue(Filesystem.writeStringToFile(newFile, testContent2));
+        Assert.assertFalse(Filesystem.safeReplace(newFile, originalFile));
+        Assert.assertTrue(originalFile.exists());
+        Assert.assertTrue(newFile.exists());
+        Assert.assertFalse(backup.exists());
+        PowerMockito.doCallRealMethod().when(Filesystem.class, "deleteFile", originalFile);
+        PowerMockito.spy(Filesystem.class);
+        PowerMockito.when(Filesystem.class, "logFilesystem").thenReturn(false);
+        Assert.assertTrue(Filesystem.deleteFile(originalFile));
+        Assert.assertTrue(Filesystem.deleteFile(newFile));
+        
+        //destination is cleared and backed up
+        PowerMockito.when(Filesystem.class, "copyFile", newFile, originalFile, true).thenAnswer((Answer<Boolean>) invocation -> {
+            Assert.assertFalse(originalFile.exists());
+            Assert.assertTrue(newFile.exists());
+            Assert.assertTrue(backup.exists());
+            Assert.assertEquals(testContent, Filesystem.readFileToString(backup));
+            FileUtils.copyFile(newFile, originalFile);
+            return true;
+        });
+        Assert.assertTrue(Filesystem.createFile(originalFile));
+        Assert.assertTrue(Filesystem.createFile(newFile));
+        Assert.assertTrue(Filesystem.writeStringToFile(originalFile, testContent));
+        Assert.assertTrue(Filesystem.writeStringToFile(newFile, testContent2));
+        Assert.assertTrue(Filesystem.safeReplace(newFile, originalFile));
+        Assert.assertTrue(originalFile.exists());
+        Assert.assertEquals(testContent2, Filesystem.readFileToString(originalFile));
+        Assert.assertFalse(newFile.exists());
+        Assert.assertFalse(backup.exists());
+        PowerMockito.doCallRealMethod().when(Filesystem.class, "copyFile", newFile, originalFile, true);
+        PowerMockito.spy(Filesystem.class);
+        PowerMockito.when(Filesystem.class, "logFilesystem").thenReturn(false);
+        Assert.assertTrue(Filesystem.deleteFile(originalFile));
+        
+        //fail replace
+        PowerMockito.when(Filesystem.class, "copyFile", newFile, originalFile, true).thenAnswer((Answer<Boolean>) invocation -> {
+            Assert.assertFalse(originalFile.exists());
+            Assert.assertTrue(newFile.exists());
+            Assert.assertTrue(backup.exists());
+            Assert.assertEquals(testContent, Filesystem.readFileToString(backup));
+            return false;
+        });
+        Assert.assertTrue(Filesystem.createFile(originalFile));
+        Assert.assertTrue(Filesystem.createFile(newFile));
+        Assert.assertTrue(Filesystem.writeStringToFile(originalFile, testContent));
+        Assert.assertTrue(Filesystem.writeStringToFile(newFile, testContent2));
+        Assert.assertFalse(Filesystem.safeReplace(newFile, originalFile));
+        Assert.assertTrue(originalFile.exists());
+        Assert.assertEquals(testContent, Filesystem.readFileToString(originalFile));
+        Assert.assertTrue(newFile.exists());
+        Assert.assertFalse(backup.exists());
+        PowerMockito.doCallRealMethod().when(Filesystem.class, "copyFile", newFile, originalFile, true);
+        PowerMockito.spy(Filesystem.class);
+        PowerMockito.when(Filesystem.class, "logFilesystem").thenReturn(false);
+        Assert.assertTrue(Filesystem.deleteFile(originalFile));
+        Assert.assertTrue(Filesystem.deleteFile(newFile));
+        
+        //fail replace lose backup
+        PowerMockito.when(Filesystem.class, "copyFile", newFile, originalFile, true).thenAnswer((Answer<Boolean>) invocation -> {
+            Assert.assertFalse(originalFile.exists());
+            Assert.assertTrue(newFile.exists());
+            Assert.assertTrue(backup.exists());
+            Assert.assertEquals(testContent, Filesystem.readFileToString(backup));
+            FileUtils.deleteQuietly(backup);
+            return false;
+        });
+        Assert.assertTrue(Filesystem.createFile(originalFile));
+        Assert.assertTrue(Filesystem.createFile(newFile));
+        Assert.assertTrue(Filesystem.writeStringToFile(originalFile, testContent));
+        Assert.assertTrue(Filesystem.writeStringToFile(newFile, testContent2));
+        Assert.assertFalse(Filesystem.safeReplace(newFile, originalFile));
+        Assert.assertFalse(originalFile.exists());
+        Assert.assertTrue(newFile.exists());
+        Assert.assertFalse(backup.exists());
+        PowerMockito.doCallRealMethod().when(Filesystem.class, "copyFile", newFile, originalFile, true);
+        PowerMockito.spy(Filesystem.class);
+        PowerMockito.when(Filesystem.class, "logFilesystem").thenReturn(false);
+        Assert.assertTrue(Filesystem.deleteFile(newFile));
+    }
+    
+    /**
+     * JUnit test of safeRewrite.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#safeRewrite(File, List)
+     */
+    @Test
+    public void testSafeRewrite() throws Exception {
+        List<String> testContent = Arrays.asList(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        List<String> testContent2 = Arrays.asList(UUID.randomUUID().toString(), UUID.randomUUID().toString());
+        Assert.assertNotEquals(testContent, testContent2);
+        
+        File tmp = new File(testFile.getParentFile(), testFile.getName() + ".tmp");
+        
+        Assert.assertTrue(Filesystem.deleteFile(testFile));
+        Assert.assertTrue(Filesystem.deleteFile(tmp));
+        
+        //tmp must not exist, string
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(Filesystem.createFile(tmp));
+        Assert.assertFalse(Filesystem.safeRewrite(testFile, testContent2.get(0)));
+        Assert.assertTrue(tmp.exists());
+        Assert.assertTrue(Filesystem.deleteFile(testFile));
+        Assert.assertTrue(Filesystem.deleteFile(tmp));
+        
+        //success, string
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, testContent.get(0)));
+        Assert.assertTrue(Filesystem.safeRewrite(testFile, testContent2.get(0)));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertFalse(tmp.exists());
+        Assert.assertEquals(testContent2.get(0), Filesystem.readFileToString(testFile));
+        Assert.assertTrue(Filesystem.deleteFile(testFile));
+        
+        //write tmp, string
+        PowerMockito.when(Filesystem.class, "safeReplace", tmp, testFile).thenAnswer((Answer<Boolean>) invocation -> {
+            Assert.assertTrue(testFile.exists());
+            Assert.assertTrue(tmp.exists());
+            Assert.assertEquals(testContent.get(0), Filesystem.readFileToString(testFile));
+            Assert.assertEquals(testContent2.get(0), Filesystem.readFileToString(tmp));
+            return true;
+        });
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, testContent.get(0)));
+        Assert.assertTrue(Filesystem.safeRewrite(testFile, testContent2.get(0)));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertFalse(tmp.exists());
+        Assert.assertEquals(testContent.get(0), Filesystem.readFileToString(testFile));
+        PowerMockito.doCallRealMethod().when(Filesystem.class, "safeReplace", tmp, testFile);
+        PowerMockito.spy(Filesystem.class);
+        PowerMockito.when(Filesystem.class, "logFilesystem").thenReturn(false);
+        Assert.assertTrue(Filesystem.deleteFile(testFile));
+        
+        //fail write, string
+        PowerMockito.when(Filesystem.class, "writeStringToFile", tmp, testContent2.get(0)).thenAnswer((Answer<Boolean>) invocation -> {
+            Assert.assertTrue(testFile.exists());
+            Assert.assertFalse(tmp.exists());
+            Assert.assertEquals(testContent.get(0), Filesystem.readFileToString(testFile));
+            return false;
+        });
+        Assert.assertTrue(Filesystem.deleteFile(tmp));
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, testContent.get(0)));
+        Assert.assertFalse(Filesystem.safeRewrite(testFile, testContent2.get(0)));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertFalse(tmp.exists());
+        Assert.assertEquals(testContent.get(0), Filesystem.readFileToString(testFile));
+        PowerMockito.doCallRealMethod().when(Filesystem.class, "writeStringToFile", tmp, testContent2.get(0));
+        PowerMockito.spy(Filesystem.class);
+        PowerMockito.when(Filesystem.class, "logFilesystem").thenReturn(false);
+        Assert.assertTrue(Filesystem.deleteFile(testFile));
+        
+        //tmp must not exist, lines
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(Filesystem.createFile(tmp));
+        Assert.assertFalse(Filesystem.safeRewrite(testFile, testContent2));
+        Assert.assertTrue(tmp.exists());
+        Assert.assertTrue(Filesystem.deleteFile(testFile));
+        Assert.assertTrue(Filesystem.deleteFile(tmp));
+        
+        //success, lines
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(Filesystem.writeLines(testFile, testContent));
+        Assert.assertTrue(Filesystem.safeRewrite(testFile, testContent2));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertFalse(tmp.exists());
+        Assert.assertEquals(testContent2, Filesystem.readLines(testFile));
+        Assert.assertTrue(Filesystem.deleteFile(testFile));
+        
+        //write tmp, lines
+        PowerMockito.when(Filesystem.class, "safeReplace", tmp, testFile).thenAnswer((Answer<Boolean>) invocation -> {
+            Assert.assertTrue(testFile.exists());
+            Assert.assertTrue(tmp.exists());
+            Assert.assertEquals(testContent, Filesystem.readLines(testFile));
+            Assert.assertEquals(testContent2, Filesystem.readLines(tmp));
+            return true;
+        });
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(Filesystem.writeLines(testFile, testContent));
+        Assert.assertTrue(Filesystem.safeRewrite(testFile, testContent2));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertFalse(tmp.exists());
+        Assert.assertEquals(testContent, Filesystem.readLines(testFile));
+        PowerMockito.doCallRealMethod().when(Filesystem.class, "safeReplace", tmp, testFile);
+        PowerMockito.spy(Filesystem.class);
+        PowerMockito.when(Filesystem.class, "logFilesystem").thenReturn(false);
+        Assert.assertTrue(Filesystem.deleteFile(testFile));
+        
+        //fail write, lines
+        PowerMockito.when(Filesystem.class, "writeStringToFile", tmp, StringUtility.unsplitLines(testContent2)).thenAnswer((Answer<Boolean>) invocation -> {
+            Assert.assertTrue(testFile.exists());
+            Assert.assertFalse(tmp.exists());
+            Assert.assertEquals(testContent, Filesystem.readLines(testFile));
+            return false;
+        });
+        Assert.assertTrue(Filesystem.deleteFile(tmp));
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(Filesystem.writeLines(testFile, testContent));
+        Assert.assertFalse(Filesystem.safeRewrite(testFile, testContent2));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertFalse(tmp.exists());
+        Assert.assertEquals(testContent, Filesystem.readLines(testFile));
+        PowerMockito.doCallRealMethod().when(Filesystem.class, "writeStringToFile", tmp, StringUtility.unsplitLines(testContent2));
+        PowerMockito.spy(Filesystem.class);
+        PowerMockito.when(Filesystem.class, "logFilesystem").thenReturn(false);
+        Assert.assertTrue(Filesystem.deleteFile(testFile));
+    }
+    
+    /**
      * JUnit test of getTempDirectory.
      *
      * @throws Exception When there is an exception.
@@ -13189,6 +13979,7 @@ public class FilesystemTest {
         tmpFile = Filesystem.createTemporaryFile();
         Assert.assertTrue(tmpFile.exists());
         Assert.assertTrue(tmpFile.isFile());
+        Assert.assertFalse(tmpFile.getName().endsWith("."));
         Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(tmpDir.getAbsolutePath()));
         Assert.assertTrue(tmpFile.delete());
         Assert.assertFalse(tmpFile.exists());
@@ -13197,6 +13988,7 @@ public class FilesystemTest {
         tmpFile = Filesystem.createTemporaryFile("");
         Assert.assertTrue(tmpFile.exists());
         Assert.assertTrue(tmpFile.isFile());
+        Assert.assertFalse(tmpFile.getName().endsWith("."));
         Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(tmpDir.getAbsolutePath()));
         Assert.assertTrue(tmpFile.delete());
         Assert.assertFalse(tmpFile.exists());
@@ -13206,6 +13998,17 @@ public class FilesystemTest {
         Assert.assertTrue(tmpFile.exists());
         Assert.assertTrue(tmpFile.isFile());
         Assert.assertTrue(tmpFile.getName().endsWith(".file"));
+        Assert.assertFalse(tmpFile.getName().endsWith("..file"));
+        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(tmpDir.getAbsolutePath()));
+        Assert.assertTrue(tmpFile.delete());
+        Assert.assertFalse(tmpFile.exists());
+        
+        //extension, not empty, no dot
+        tmpFile = Filesystem.createTemporaryFile("file");
+        Assert.assertTrue(tmpFile.exists());
+        Assert.assertTrue(tmpFile.isFile());
+        Assert.assertTrue(tmpFile.getName().endsWith(".file"));
+        Assert.assertFalse(tmpFile.getName().endsWith("..file"));
         Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(tmpDir.getAbsolutePath()));
         Assert.assertTrue(tmpFile.delete());
         Assert.assertFalse(tmpFile.exists());
@@ -13244,6 +14047,9 @@ public class FilesystemTest {
         
         //extension, not empty
         Assert.assertEquals(45, Filesystem.getTemporaryFilePathLength(".file"));
+        
+        //extension, not empty, no dot
+        Assert.assertEquals(45, Filesystem.getTemporaryFilePathLength("file"));
     }
     
     /**

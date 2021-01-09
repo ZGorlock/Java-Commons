@@ -59,7 +59,7 @@ public final class Filesystem {
     /**
      * A regex pattern for a Windows file name that starts with a drive letter.
      */
-    public static final Pattern WINDOWS_DRIVE_FILE_NAME_PATTERN = Pattern.compile("[A-Z]:.*");
+    public static final Pattern WINDOWS_DRIVE_FILE_NAME_PATTERN = Pattern.compile("^[A-Z]:.*");
     
     
     //Functions
@@ -720,6 +720,43 @@ public final class Filesystem {
      */
     public static boolean move(File src, File dest) {
         return move(src, dest, false);
+    }
+    
+    /**
+     * Attempts to replace file fileDest with file fileSrc.
+     *
+     * @param fileSrc  The source file.
+     * @param fileDest The destination file to replace.
+     * @return Whether the operation was successful or not.
+     * @see #moveFile(File, File, boolean)
+     */
+    public static boolean replaceFile(File fileSrc, File fileDest) {
+        return moveFile(fileSrc, fileDest, true);
+    }
+    
+    /**
+     * Attempts to replace directory dirDest with directory dirSrc.
+     *
+     * @param dirSrc  The source directory.
+     * @param dirDest The destination directory to replace.
+     * @return Whether the operation was successful or not.
+     * @see #moveDirectory(File, File, boolean)
+     */
+    public static boolean replaceDirectory(File dirSrc, File dirDest) {
+        return moveDirectory(dirSrc, dirDest, true);
+    }
+    
+    /**
+     * Attempts to replace dest with src.
+     *
+     * @param src  The source file or directory.
+     * @param dest The destination file or directory to replace.
+     * @return Whether the operation was successful or not.
+     * @see #replaceFile(File, File)
+     * @see #replaceDirectory(File, File)
+     */
+    public static boolean replace(File src, File dest) {
+        return src.isFile() ? replaceFile(src, dest) : replaceDirectory(src, dest);
     }
     
     /**
@@ -1628,6 +1665,114 @@ public final class Filesystem {
     }
     
     /**
+     * Safely replaces a file with another file.<br/>
+     * To be used when data preservation is critical and speed is not.
+     *
+     * @param originalFile The original file.
+     * @param newFile      The new file.
+     * @return Whether the original file was successfully replaced with the new file or not.
+     */
+    public static boolean safeReplace(File newFile, File originalFile) {
+        if (!newFile.exists()) {
+            if (logFilesystem()) {
+                logger.trace("The file: {} does not exist", newFile.getAbsolutePath());
+            }
+            return false;
+        }
+        
+        File backup = new File(originalFile.getParentFile(), originalFile.getName() + ".bak");
+        if (backup.exists()) {
+            if (logFilesystem()) {
+                logger.trace("A backup file: {} already exists, this could be data preserved from a failure; Will not continue", backup.getAbsolutePath());
+            }
+            return false;
+        }
+        
+        if (originalFile.exists()) {
+            if (logFilesystem()) {
+                logger.trace("Creating a backup file: {}", backup.getAbsolutePath());
+            }
+            if (!copyFile(originalFile, backup) || (checksum(backup) != checksum(originalFile)) || !deleteFile(originalFile)) {
+                if (logFilesystem()) {
+                    logger.trace("Failed to create backup file: {}", backup.getAbsolutePath());
+                }
+                if (!originalFile.exists() && backup.exists()) {
+                    move(backup, originalFile);
+                }
+                deleteFile(backup);
+                return false;
+            }
+        }
+        
+        if (logFilesystem()) {
+            logger.trace("Replacing: {} with: {}", originalFile.getAbsolutePath(), newFile.getAbsolutePath());
+        }
+        if (!copy(newFile, originalFile, true) || (checksum(originalFile) != checksum(newFile)) || !deleteFile(newFile)) {
+            if (logFilesystem()) {
+                logger.trace("Failed to replace: {} with: {}", originalFile.getAbsolutePath(), newFile.getAbsolutePath());
+            }
+            if (backup.exists()) {
+                move(backup, originalFile);
+            }
+            return false;
+        }
+        
+        deleteFile(backup);
+        if (logFilesystem()) {
+            logger.trace("Successfully replaced: {} with: {}", originalFile.getAbsolutePath(), newFile.getAbsolutePath());
+        }
+        return true;
+    }
+    
+    /**
+     * Safely rewrites a file.<br/>
+     * To be used when data preservation is critical and speed is not.
+     *
+     * @param file The file.
+     * @param data The data to write.
+     * @return Whether the file was successfully rewritten or not.
+     */
+    public static boolean safeRewrite(File file, String data) {
+        File tmp = new File(file.getParentFile(), file.getName() + ".tmp");
+        if (tmp.exists()) {
+            if (logFilesystem()) {
+                logger.trace("A temporary file: {} already exists, this could be data preserved from a failure; Will not continue", tmp.getAbsolutePath());
+            }
+            return false;
+        }
+        
+        if (logFilesystem()) {
+            logger.trace("Rewriting: {}", file.getAbsolutePath());
+        }
+        if (!writeStringToFile(tmp, data) || !safeReplace(tmp, file)) {
+            if (logFilesystem()) {
+                logger.trace("Failed to rewrite: {}", file.getAbsolutePath());
+            }
+            deleteFile(tmp);
+            return false;
+        }
+        
+        deleteFile(tmp);
+        if (logFilesystem()) {
+            logger.trace("Successfully rewrote: {}", file.getAbsolutePath());
+        }
+        return true;
+    }
+    
+    /**
+     * Safely rewrites a file.<br/>
+     * To be used when data preservation is critical and speed is not.
+     *
+     * @param file The file.
+     * @param data The lines to write.
+     * @return Whether the file was successfully rewritten or not.
+     * @see #safeRewrite(File, String)
+     */
+    public static boolean safeRewrite(File file, List<String> data) {
+        return safeRewrite(file, StringUtility.unsplitLines(data));
+    }
+    
+    /**
      * Returns a temporary directory.
      *
      * @return A temporary directory.
@@ -1855,7 +2000,8 @@ public final class Filesystem {
      * @return The created temporary file.
      */
     public static File createTemporaryFile(String extension) {
-        File tmpFile = new File("tmp", UUID.randomUUID().toString() + extension);
+        File tmpFile = new File("tmp", UUID.randomUUID().toString() +
+                ((extension.isEmpty() || extension.startsWith(".")) ? "" : ".") + extension);
         Filesystem.createFile(tmpFile);
         return tmpFile;
     }
@@ -1888,7 +2034,8 @@ public final class Filesystem {
      * @return The path length of a temporary file.
      */
     public static int getTemporaryFilePathLength(String extension) {
-        String tmpDirPath = generatePath("tmp", UUID.randomUUID().toString() + extension);
+        String tmpDirPath = generatePath("tmp", UUID.randomUUID().toString() +
+                ((extension.isEmpty() || extension.startsWith(".")) ? "" : ".") + extension);
         return tmpDirPath.length();
     }
     
