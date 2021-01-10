@@ -11,8 +11,10 @@ import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 
+import media.ImageUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -72,6 +74,24 @@ public final class Clipboard {
         if (logClipboard()) {
             logger.trace("Clipboard: Published contents to the clipboard");
         }
+    }
+    
+    /**
+     * Returns the contents of the clipboard as an image.
+     *
+     * @return The contents of the clipboard, or null if there is no image on the clipboard.
+     */
+    public static BufferedImage getClipboardImage() {
+        return ImageUtility.copyImageFromClipboard();
+    }
+    
+    /**
+     * Publishes an image to the clipboard.
+     *
+     * @param content The new content of the clipboard.
+     */
+    public static void putClipboardImage(BufferedImage content) {
+        ImageUtility.copyImageToClipboard(content);
     }
     
     /**
