@@ -460,4 +460,28 @@ public class OperatingSystemTest {
         }
     }
     
+    /**
+     * JUnit test of is32Bit.
+     *
+     * @throws Exception When there is an exception.
+     * @see OperatingSystem#is32Bit()
+     */
+    @Test
+    public void testIs32Bit() throws Exception {
+        Assert.assertTrue(OperatingSystem.is32Bit() || OperatingSystem.is64Bit());
+        Assert.assertNotEquals(OperatingSystem.is32Bit(), OperatingSystem.is64Bit());
+    }
+    
+    /**
+     * JUnit test of is64Bit.
+     *
+     * @throws Exception When there is an exception.
+     * @see OperatingSystem#is64Bit()
+     */
+    @Test
+    public void testIs64Bit() throws Exception {
+        Assert.assertTrue(OperatingSystem.is32Bit() || OperatingSystem.is64Bit());
+        Assert.assertNotEquals(OperatingSystem.is32Bit(), OperatingSystem.is64Bit());
+    }
+    
 }

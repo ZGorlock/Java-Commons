@@ -142,4 +142,22 @@ public final class OperatingSystem {
         return getOS().equals(os);
     }
     
+    /**
+     * Determines if the current operating system is 32-bit or not.
+     *
+     * @return Whether the current operating system is 32-bit or not.
+     */
+    public static boolean is32Bit() {
+        return System.getProperty("os.arch").contains("86");
+    }
+    
+    /**
+     * Determines if the current operating system is 64-bit or not.
+     *
+     * @return Whether the current operating system is 64-bit or not.
+     */
+    public static boolean is64Bit() {
+        return System.getProperty("os.arch").contains("64");
+    }
+    
 }
