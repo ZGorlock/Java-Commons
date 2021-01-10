@@ -6,10 +6,21 @@
 
 package math.vector;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Defines a 2-dimensional Vector.
  */
 public class Vector2 extends Vector {
+    
+    //Logger
+    
+    /**
+     * The logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(Vector2.class);
+    
     
     //Constructors
     

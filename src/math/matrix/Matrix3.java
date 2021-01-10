@@ -7,11 +7,21 @@
 package math.matrix;
 
 import math.vector.Vector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Defines a 3D Matrix.
  */
 public class Matrix3 {
+    
+    //Logger
+    
+    /**
+     * The logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(Matrix3.class);
+    
     
     //Fields
     

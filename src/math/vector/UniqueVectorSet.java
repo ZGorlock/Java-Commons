@@ -10,10 +10,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Defines a set of unique vectors.
  */
 public class UniqueVectorSet {
+    
+    //Logger
+    
+    /**
+     * The logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(UniqueVectorSet.class);
+    
     
     //Fields
     

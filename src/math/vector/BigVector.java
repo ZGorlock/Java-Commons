@@ -12,10 +12,21 @@ import java.math.RoundingMode;
 import java.util.List;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Defines the base properties of a BigVector.
  */
 public class BigVector {
+    
+    //Logger
+    
+    /**
+     * The logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(BigVector.class);
+    
     
     //Constants
     

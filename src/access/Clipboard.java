@@ -26,7 +26,15 @@ public final class Clipboard {
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(Filesystem.class);
+    private static final Logger logger = LoggerFactory.getLogger(Clipboard.class);
+    
+    
+    //Constants
+    
+    /**
+     * The default value of the flag to enable clipboard logging or not.
+     */
+    public static final boolean DEFAULT_LOG_CLIPBOARD = false;
     
     
     //Functions
@@ -41,10 +49,14 @@ public final class Clipboard {
         try {
             clipboard = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
         } catch (HeadlessException | UnsupportedFlavorException | IOException ignored) {
-            logger.trace("Unable to retrieve contents from the clipboard.");
+            if (logClipboard()) {
+                logger.trace("Clipboard: Unable to retrieve contents from the clipboard");
+            }
             return "";
         }
-        logger.trace("Retrieved contents of the clipboard.");
+        if (logClipboard()) {
+            logger.trace("Clipboard: Retrieved contents of the clipboard");
+        }
         return clipboard;
     }
     
@@ -57,7 +69,18 @@ public final class Clipboard {
         StringSelection selection = new StringSelection(content);
         java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
         clipboard.setContents(selection, selection);
-        logger.trace("Published contents to the clipboard.");
+        if (logClipboard()) {
+            logger.trace("Clipboard: Published contents to the clipboard");
+        }
+    }
+    
+    /**
+     * Determines if clipboard logging is enabled or not.
+     *
+     * @return Whether clipboard logging is enabled or not.
+     */
+    public static boolean logClipboard() {
+        return DEFAULT_LOG_CLIPBOARD;
     }
     
 }

@@ -40,11 +40,21 @@ import javax.imageio.stream.ImageOutputStream;
 
 import access.Filesystem;
 import math.BoundUtility;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles image operations.
  */
 public class ImageUtility {
+    
+    //Logger
+    
+    /**
+     * The logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(ImageUtility.class);
+    
     
     //Functions
     
@@ -55,6 +65,10 @@ public class ImageUtility {
      * @return The BufferedImage loaded from the file, or null if there was an error.
      */
     public static BufferedImage loadImage(File file) {
+        if (Filesystem.logFilesystem()) {
+            logger.trace("Filesystem: Loading image file: {}", file.getAbsolutePath());
+        }
+        
         try {
             BufferedImage tmpImage = ImageIO.read(file);
             BufferedImage image = new BufferedImage(tmpImage.getWidth(), tmpImage.getHeight(), BufferedImage.TYPE_INT_RGB);
@@ -62,7 +76,11 @@ public class ImageUtility {
             imageGraphics.drawImage(tmpImage, 0, 0, tmpImage.getWidth(), tmpImage.getHeight(), null);
             imageGraphics.dispose();
             return image;
-        } catch (Exception ignored) {
+            
+        } catch (Exception e) {
+            if (Filesystem.logFilesystem()) {
+                logger.trace("Filesystem: Unable to load image file: {}", file.getAbsolutePath());
+            }
             return null;
         }
     }
@@ -75,11 +93,19 @@ public class ImageUtility {
      * @return Whether the image was successfully saved or not.
      */
     public static boolean saveImage(BufferedImage image, File file) {
+        if (Filesystem.logFilesystem()) {
+            logger.trace("Filesystem: Saving image file: {}", file.getAbsolutePath());
+        }
+        
         try {
             return file.mkdirs() && ImageIO.write(image, Filesystem.getFileType(file), file);
-        } catch (Exception ignored) {
+            
+        } catch (Exception e) {
+            if (Filesystem.logFilesystem()) {
+                logger.trace("Filesystem: Unable to save image file: {}", file.getAbsolutePath());
+            }
+            return false;
         }
-        return false;
     }
     
     /**
@@ -90,6 +116,10 @@ public class ImageUtility {
      * @return Whether the image file was successfully cleaned or not.
      */
     public static boolean cleanImageFile(File image, boolean preserveMetadata) {
+        if (Filesystem.logFilesystem()) {
+            logger.trace("Filesystem: Cleaning image file: {}", image.getAbsolutePath());
+        }
+        
         try {
             File tmp = Filesystem.createTemporaryFile(Filesystem.getFileType(image));
             
@@ -121,9 +151,15 @@ public class ImageUtility {
                 ImageIO.write(data, Filesystem.getFileType(image), tmp);
             }
             
-            return Filesystem.safeReplace(tmp, image);
+            if (!Filesystem.safeReplace(tmp, image)) {
+                throw new Exception("Failed to safely replace image file");
+            }
+            return true;
             
         } catch (Exception e) {
+            if (Filesystem.logFilesystem()) {
+                logger.trace("Filesystem: Unable to clean image file: {}", image.getAbsolutePath());
+            }
             return false;
         }
     }
@@ -220,6 +256,33 @@ public class ImageUtility {
     }
     
     /**
+     * Copies an image from the clipboard.
+     *
+     * @return The image, or null if there is no image on the clipboard.
+     */
+    public static BufferedImage copyImageFromClipboard() {
+        BufferedImage clipboard = null;
+        Transferable transferable = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+        if (transferable != null && transferable.isDataFlavorSupported(DataFlavor.imageFlavor)) {
+            
+            try {
+                clipboard = (BufferedImage) transferable.getTransferData(DataFlavor.imageFlavor);
+                
+            } catch (Exception e) {
+                if (access.Clipboard.logClipboard()) {
+                    logger.trace("Clipboard: Unable to retrieve image contents from the clipboard");
+                }
+                return null;
+            }
+        }
+        
+        if (access.Clipboard.logClipboard()) {
+            logger.trace("Clipboard: Retrieved image contents of the clipboard");
+        }
+        return clipboard;
+    }
+    
+    /**
      * Copies an image to the clipboard.
      *
      * @param image The image.
@@ -255,24 +318,15 @@ public class ImageUtility {
             Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(transferableImage, (clipboard1, contents) -> {
             });
-        } catch (Exception ignored) {
-        }
-    }
-    
-    /**
-     * Copies an image from the clipboard.
-     *
-     * @return The image, or null if there is no image on the clipboard.
-     */
-    public static BufferedImage copyImageFromClipboard() {
-        Transferable transferable = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
-        if (transferable != null && transferable.isDataFlavorSupported(DataFlavor.imageFlavor)) {
-            try {
-                return (BufferedImage) transferable.getTransferData(DataFlavor.imageFlavor);
-            } catch (Exception ignored) {
+            if (access.Clipboard.logClipboard()) {
+                logger.trace("Clipboard: Published image contents to the clipboard");
+            }
+            
+        } catch (Exception e) {
+            if (access.Clipboard.logClipboard()) {
+                logger.trace("Clipboard: Failed to publish image contents to the clipboard");
             }
         }
-        return null;
     }
     
     /**

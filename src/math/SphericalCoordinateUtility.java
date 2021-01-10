@@ -7,11 +7,21 @@
 package math;
 
 import math.vector.Vector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles spherical coordinate conversions.
  */
 public final class SphericalCoordinateUtility {
+    
+    //Logger
+    
+    /**
+     * The logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(SphericalCoordinateUtility.class);
+    
     
     //Functions
     

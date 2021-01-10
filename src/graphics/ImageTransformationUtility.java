@@ -22,11 +22,21 @@ import java.util.Stack;
 import math.BoundUtility;
 import math.matrix.Matrix3;
 import math.vector.Vector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles image transformation operations.
  */
 public class ImageTransformationUtility {
+    
+    //Logger
+    
+    /**
+     * The logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(ImageTransformationUtility.class);
+    
     
     //Functions
     

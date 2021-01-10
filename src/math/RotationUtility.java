@@ -9,11 +9,21 @@ package math;
 import math.matrix.Matrix3;
 import math.matrix.Matrix4;
 import math.vector.Vector;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Handles rotations operations.
  */
 public final class RotationUtility {
+    
+    //Logger
+    
+    /**
+     * The logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(RotationUtility.class);
+    
     
     //Functions
     

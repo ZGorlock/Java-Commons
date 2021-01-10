@@ -11,10 +11,21 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Defines the base properties of a Vector.
  */
 public class Vector {
+    
+    //Logger
+    
+    /**
+     * The logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(Vector.class);
+    
     
     //Fields
     

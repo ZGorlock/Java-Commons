@@ -6,10 +6,21 @@
 
 package math.matrix;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Defines a 2D Matrix.
  */
 public class Matrix2 {
+    
+    //Logger
+    
+    /**
+     * The logger.
+     */
+    private static final Logger logger = LoggerFactory.getLogger(Matrix2.class);
+    
     
     //Fields
     
