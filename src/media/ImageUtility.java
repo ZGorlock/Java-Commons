@@ -6,6 +6,7 @@
 
 package media;
 
+import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
@@ -35,6 +36,7 @@ import javax.imageio.ImageWriter;
 import javax.imageio.metadata.IIOMetadata;
 import javax.imageio.spi.IIORegistry;
 import javax.imageio.spi.ImageWriterSpi;
+import javax.imageio.stream.FileImageInputStream;
 import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 
@@ -106,6 +108,58 @@ public class ImageUtility {
             }
             return false;
         }
+    }
+    
+    /**
+     * Returns the pixel dimension of an image file.
+     *
+     * @param image The image file.
+     * @return The pixel dimensions of the image file, or null if there is an error.
+     */
+    public static Dimension getDimensions(File image) {
+        Dimension result = null;
+        Iterator<ImageReader> imageReaders = ImageIO.getImageReadersBySuffix(Filesystem.getFileType(image));
+        if (imageReaders.hasNext()) {
+            ImageReader reader = imageReaders.next();
+            try (ImageInputStream stream = new FileImageInputStream(image)) {
+                reader.setInput(stream);
+                int width = reader.getWidth(reader.getMinIndex());
+                int height = reader.getHeight(reader.getMinIndex());
+                result = new Dimension(width, height);
+            } catch (IOException ignored) {
+            } finally {
+                reader.dispose();
+            }
+        }
+        return result;
+    }
+    
+    /**
+     * Returns the pixel width of an image file.
+     *
+     * @param image The image file.
+     * @return The pixel width of the image file, or -1 if there is an error.
+     */
+    public static int getWidth(File image) {
+        Dimension dimensions = getDimensions(image);
+        if (dimensions == null) {
+            return -1;
+        }
+        return dimensions.width;
+    }
+    
+    /**
+     * Returns the pixel height of an image file.
+     *
+     * @param image The image file.
+     * @return The pixel height of the image file, or -1 if there is an error.
+     */
+    public static int getHeight(File image) {
+        Dimension dimensions = getDimensions(image);
+        if (dimensions == null) {
+            return -1;
+        }
+        return dimensions.height;
     }
     
     /**
