@@ -11759,6 +11759,54 @@ public class FilesystemTest {
     }
     
     /**
+     * JUnit test of getLastModifiedTime.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#getLastModifiedTime(File)
+     */
+    @Test
+    public void testGetLastModifiedTime() throws Exception {
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        
+        Assert.assertNotNull(Filesystem.getLastModifiedTime(testFile));
+        
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
+    }
+    
+    /**
+     * JUnit test of getLastAccessTime.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#getLastAccessTime(File)
+     */
+    @Test
+    public void testGetLastAccessTime() throws Exception {
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        
+        Assert.assertNotNull(Filesystem.getLastAccessTime(testFile));
+        
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
+    }
+    
+    /**
+     * JUnit test of getCreationTime.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#getCreationTime(File)
+     */
+    @Test
+    public void testGetCreationTime() throws Exception {
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        
+        Assert.assertNotNull(Filesystem.getCreationTime(testFile));
+        
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
+    }
+    
+    /**
      * JUnit test of writeDates.
      *
      * @throws Exception When there is an exception.
@@ -11781,6 +11829,69 @@ public class FilesystemTest {
         Assert.assertEquals(lastModifiedTime, getDates.get("lastModifiedTime"));
         Assert.assertEquals(lastAccessTime, getDates.get("lastAccessTime"));
         Assert.assertEquals(creationTime, getDates.get("creationTime"));
+        
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
+    }
+    
+    /**
+     * JUnit test of setLastModifiedTime.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#setLastModifiedTime(File, Date)
+     */
+    @Test
+    public void testSetLastModifiedTime() throws Exception {
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        
+        Date time = new Date(1600346617138L);
+        Assert.assertTrue(Filesystem.setLastModifiedTime(testFile, time));
+        
+        Date setTime = Filesystem.getLastModifiedTime(testFile);
+        Assert.assertNotNull(setTime);
+        Assert.assertEquals(time.getTime(), setTime.getTime());
+        
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
+    }
+    
+    /**
+     * JUnit test of setLastAccessTime.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#setLastAccessTime(File, Date)
+     */
+    @Test
+    public void testSetLastAccessTime() throws Exception {
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        
+        Date time = new Date(1601346617138L);
+        Assert.assertTrue(Filesystem.setLastAccessTime(testFile, time));
+        
+        Date setTime = Filesystem.getLastAccessTime(testFile);
+        Assert.assertNotNull(setTime);
+        Assert.assertEquals(time.getTime(), setTime.getTime());
+        
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
+    }
+    
+    /**
+     * JUnit test of setCreationTime.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#setCreationTime(File, Date)
+     */
+    @Test
+    public void testSetCreationTime() throws Exception {
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        
+        Date time = new Date(1602346617138L);
+        Assert.assertTrue(Filesystem.setCreationTime(testFile, time));
+        
+        Date setTime = Filesystem.getCreationTime(testFile);
+        Assert.assertNotNull(setTime);
+        Assert.assertEquals(time.getTime(), setTime.getTime());
         
         Assert.assertTrue(testFile.delete());
         Assert.assertFalse(testFile.exists());

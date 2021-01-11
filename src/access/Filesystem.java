@@ -19,6 +19,7 @@ import java.nio.file.attribute.FileTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1338,6 +1339,48 @@ public final class Filesystem {
     }
     
     /**
+     * Returns the last modified time of a file.
+     *
+     * @param file The file.
+     * @return The last modified time of the file, or null if there was an error.
+     */
+    public static Date getLastModifiedTime(File file) {
+        try {
+            return new Date(((FileTime) Files.getAttribute(file.toPath(), "lastModifiedTime")).toMillis());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    /**
+     * Returns the last access time of a file.
+     *
+     * @param file The file.
+     * @return The last access time of the file, or null if there was an error.
+     */
+    public static Date getLastAccessTime(File file) {
+        try {
+            return new Date(((FileTime) Files.getAttribute(file.toPath(), "lastAccessTime")).toMillis());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    /**
+     * Returns the creation time of a file.
+     *
+     * @param file The file.
+     * @return The creation time of the file, or null if there was an error.
+     */
+    public static Date getCreationTime(File file) {
+        try {
+            return new Date(((FileTime) Files.getAttribute(file.toPath(), "creationTime")).toMillis());
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    /**
      * Writes the file dates of a file.
      *
      * @param file  The file.
@@ -1354,6 +1397,54 @@ public final class Filesystem {
                 Files.setAttribute(file.toPath(), attribute, date);
             } catch (Exception ignored) {
             }
+        }
+    }
+    
+    /**
+     * Sets the last modified time of a file.
+     *
+     * @param file The file.
+     * @param time The last modified time to set.
+     * @return Whether the last modified time of the file was successfully set or not.
+     */
+    public static boolean setLastModifiedTime(File file, Date time) {
+        try {
+            Files.setAttribute(file.toPath(), "lastModifiedTime", FileTime.fromMillis(time.getTime()));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Sets the last access time of a file.
+     *
+     * @param file The file.
+     * @param time The last access time to set.
+     * @return Whether the last access time of the file was successfully set or not.
+     */
+    public static boolean setLastAccessTime(File file, Date time) {
+        try {
+            Files.setAttribute(file.toPath(), "lastAccessTime", FileTime.fromMillis(time.getTime()));
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+    
+    /**
+     * Sets the creation time of a file.
+     *
+     * @param file The file.
+     * @param time The creation time to set.
+     * @return Whether the creation time of the file was successfully set or not.
+     */
+    public static boolean setCreationTime(File file, Date time) {
+        try {
+            Files.setAttribute(file.toPath(), "creationTime", FileTime.fromMillis(time.getTime()));
+            return true;
+        } catch (Exception e) {
+            return false;
         }
     }
     
