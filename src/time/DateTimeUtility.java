@@ -6,6 +6,8 @@
 
 package time;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -54,7 +56,7 @@ public final class DateTimeUtility {
     /**
      * An enumeration of the days of the week.
      */
-    public enum DayOfWeek {
+    public enum Weekday {
         
         //Values
         
@@ -273,7 +275,7 @@ public final class DateTimeUtility {
      * @param year  The year.
      * @return The day of the week on that date.
      */
-    public static DayOfWeek dayOfWeek(int month, int day, int year) {
+    public static Weekday dayOfWeek(int month, int day, int year) {
         if (validDate(month, day, year)) {
             int[] t = new int[] {0, 3, 2, 5, 0, 3, 5, 1, 4, 6, 2, 4};
             int y = year - ((month < 3) ? 1 : 0);
@@ -282,19 +284,19 @@ public final class DateTimeUtility {
             
             switch (w) {
                 case 0:
-                    return DayOfWeek.SUNDAY;
+                    return Weekday.SUNDAY;
                 case 1:
-                    return DayOfWeek.MONDAY;
+                    return Weekday.MONDAY;
                 case 2:
-                    return DayOfWeek.TUESDAY;
+                    return Weekday.TUESDAY;
                 case 3:
-                    return DayOfWeek.WEDNESDAY;
+                    return Weekday.WEDNESDAY;
                 case 4:
-                    return DayOfWeek.THURSDAY;
+                    return Weekday.THURSDAY;
                 case 5:
-                    return DayOfWeek.FRIDAY;
+                    return Weekday.FRIDAY;
                 case 6:
-                    return DayOfWeek.SATURDAY;
+                    return Weekday.SATURDAY;
                 default:
                     return null;
             }
@@ -310,7 +312,7 @@ public final class DateTimeUtility {
      * @return The day of the week on that date.
      * @see #dayOfWeek(int, int, int)
      */
-    public static DayOfWeek dayOfWeek(String date) {
+    public static Weekday dayOfWeek(String date) {
         Matcher dateMatcher = DATE_PATTERN.matcher(date);
         
         if (dateMatcher.matches()) {
@@ -335,6 +337,161 @@ public final class DateTimeUtility {
     public static boolean isLeapYear(int year) {
         return validYear(year) &&
                 ((((year % 4) == 0) && ((year % 100) != 0)) || ((year % 400) == 0));
+    }
+    
+    /**
+     * Converts a length in milliseconds to a duration string.
+     *
+     * @param duration         The duration in milliseconds.
+     * @param abbreviate       Whether or not to skip time units with zero value.
+     * @param showMilliseconds Whether or not to include milliseconds in the duration string.
+     * @param abbreviateUnits  Whether or not to abbreviate time units.
+     * @return The duration string.
+     */
+    public static String durationToDurationString(long duration, boolean abbreviate, boolean showMilliseconds, boolean abbreviateUnits) {
+        boolean isNegative = duration < 0;
+        duration = Math.abs(duration);
+        int milliseconds = (int) (duration % 1000);
+        duration = duration / 1000;
+        int seconds = (int) (duration % 60);
+        duration = duration / 60;
+        int minutes = (int) (duration % 60);
+        duration = duration / 60;
+        int hours = (int) (duration % 24);
+        duration = duration / 24;
+        int days = (int) (duration);
+        
+        StringBuilder durationString = new StringBuilder();
+        durationString.append(((!abbreviate && (durationString.length() > 0)) || (days > 0)) ? (days + (abbreviateUnits ? "d " : (" Day" + ((days == 1) ? "" : "s") + " "))) : "");
+        durationString.append(((!abbreviate && (durationString.length() > 0)) || (hours > 0)) ? (hours + (abbreviateUnits ? "h " : (" Hour" + ((hours == 1) ? "" : "s") + " "))) : "");
+        durationString.append(((!abbreviate && (durationString.length() > 0)) || (minutes > 0)) ? (minutes + (abbreviateUnits ? "m " : (" Minute" + ((minutes == 1) ? "" : "s") + " "))) : "");
+        durationString.append(((!abbreviate && (durationString.length() > 0)) || (seconds > 0)) ? (seconds + (abbreviateUnits ? "s " : (" Second" + ((seconds == 1) ? "" : "s") + " "))) : "");
+        durationString.append(showMilliseconds ? (((!abbreviate && (durationString.length() > 0)) || (milliseconds > 0)) ? (milliseconds + (abbreviateUnits ? "ms " : (" Millisecond" + ((milliseconds == 1) ? "" : "s") + " "))) : "") : "");
+        durationString.insert(0, ((isNegative && (durationString.length() > 0)) ? (abbreviateUnits ? "- " : "Negative ") : ""));
+        return StringUtility.trim(durationString.toString());
+    }
+    
+    /**
+     * Converts a length in milliseconds to a duration string.
+     *
+     * @param duration         The duration in milliseconds.
+     * @param abbreviate       Whether or not to skip time units with zero value.
+     * @param showMilliseconds Whether or not to include milliseconds in the duration string.
+     * @return The duration string.
+     * @see #durationToDurationString(long, boolean, boolean, boolean)
+     */
+    public static String durationToDurationString(long duration, boolean abbreviate, boolean showMilliseconds) {
+        return durationToDurationString(duration, abbreviate, showMilliseconds, false);
+    }
+    
+    /**
+     * Converts a length in milliseconds to a duration string.
+     *
+     * @param duration   The duration in milliseconds.
+     * @param abbreviate Whether or not to skip time units with zero value.
+     * @return The duration string.
+     * @see #durationToDurationString(long, boolean, boolean)
+     */
+    public static String durationToDurationString(long duration, boolean abbreviate) {
+        return durationToDurationString(duration, abbreviate, true);
+    }
+    
+    /**
+     * Converts a length in milliseconds to a duration string.
+     *
+     * @param duration The duration in milliseconds.
+     * @return The duration string.
+     * @see #durationToDurationString(long, boolean)
+     */
+    public static String durationToDurationString(long duration) {
+        return durationToDurationString(duration, true);
+    }
+    
+    /**
+     * Converts a length in milliseconds to a duration stamp.
+     *
+     * @param duration         The duration in milliseconds.
+     * @param abbreviate       Whether or not to omit leading and trailing zeros.
+     * @param showMilliseconds Whether or not to include milliseconds in the duration stamp.
+     * @return The duration stamp.
+     */
+    public static String durationToDurationStamp(long duration, boolean abbreviate, boolean showMilliseconds) {
+        boolean isNegative = duration < 0;
+        duration = Math.abs(duration);
+        int milliseconds = (int) (duration % 1000);
+        duration = duration / 1000;
+        int seconds = (int) (duration % 60);
+        duration = duration / 60;
+        int minutes = (int) (duration % 60);
+        duration = duration / 60;
+        int hours = (int) (duration);
+        
+        StringBuilder durationStamp = new StringBuilder();
+        durationStamp.append((!abbreviate || (hours > 0)) ? (((!abbreviate || (durationStamp.length() > 0)) ? StringUtility.padZero(hours, 2) : hours) + ":") : "");
+        durationStamp.append((!abbreviate || (minutes > 0) || (durationStamp.length() > 0)) ? (((!abbreviate || (durationStamp.length() > 0)) ? StringUtility.padZero(minutes, 2) : minutes) + ":") : "");
+        durationStamp.append((!abbreviate || (seconds > 0) || (durationStamp.length() > 0)) ? (((!abbreviate || (durationStamp.length() > 0)) ? StringUtility.padZero(seconds, 2) : seconds) + "") : "0");
+        durationStamp.append(showMilliseconds ? (((!abbreviate || (milliseconds > 0)) ? "." : "") + (!abbreviate ? StringUtility.padZero(milliseconds, 3) : StringUtility.padZero(milliseconds, 3).replaceAll("0+$", ""))) : "");
+        durationStamp.insert(0, (isNegative ? "-" : ""));
+        return durationStamp.toString();
+    }
+    
+    /**
+     * Converts a length in milliseconds to a duration stamp.
+     *
+     * @param duration   The duration in milliseconds.
+     * @param abbreviate Whether or not to omit leading and trailing zeros.
+     * @return The duration stamp.
+     * @see #durationToDurationStamp(long, boolean, boolean)
+     */
+    public static String durationToDurationStamp(long duration, boolean abbreviate) {
+        return durationToDurationStamp(duration, abbreviate, true);
+    }
+    
+    /**
+     * Converts a length in milliseconds to a duration stamp.
+     *
+     * @param duration The duration in milliseconds.
+     * @return The duration stamp.
+     * @see #durationToDurationStamp(long, boolean)
+     */
+    public static String durationToDurationStamp(long duration) {
+        return durationToDurationStamp(duration, false);
+    }
+    
+    /**
+     * Converts a duration stamp to a length in milliseconds.
+     *
+     * @param durationStamp The duration stamp.
+     * @return The length of the duration stamp in milliseconds.
+     */
+    public static long durationStampToDuration(String durationStamp) {
+        boolean isNegative = durationStamp.startsWith("-");
+        durationStamp = durationStamp.replaceAll("^-", "");
+        int[] unitValues = new int[4];
+        
+        List<String> units = StringUtility.tokenize(durationStamp, ":", true);
+        Collections.reverse(units);
+        if (units.size() > 0) {
+            if (units.get(0).contains(".")) {
+                unitValues[0] = Integer.parseInt(StringUtility.padRight(units.get(0).substring(units.get(0).indexOf('.') + 1), 3, '0'));
+                unitValues[1] = Integer.parseInt(units.get(0).substring(0, units.get(0).indexOf('.')));
+            } else {
+                unitValues[1] = Integer.parseInt(units.get(0));
+            }
+        }
+        if (units.size() > 1) {
+            unitValues[2] = Integer.parseInt(units.get(1));
+        }
+        if (units.size() > 2) {
+            unitValues[3] = Integer.parseInt(units.get(2));
+        }
+        
+        long duration = unitValues[0] +
+                (unitValues[1] * 1000) +
+                (unitValues[2] * 60 * 1000) +
+                (unitValues[3] * 60 * 60 * 1000);
+        duration *= (isNegative ? -1 : 1);
+        return duration;
     }
     
     /**
