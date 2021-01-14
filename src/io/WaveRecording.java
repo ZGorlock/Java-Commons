@@ -1,10 +1,10 @@
 /*
  * File:    WaveRecording.java
- * Package: media
+ * Package: io
  * Author:  Zachary Gill
  */
 
-package media;
+package io;
 
 import java.io.File;
 import java.io.IOException;
