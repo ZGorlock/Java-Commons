@@ -231,7 +231,7 @@ public class ConsoleProgressBar {
         
         if (firstUpdate == 0) {
             if (!title.isEmpty()) {
-                System.out.println(Console.cyan(title + ": "));
+                System.out.println(Console.ConsoleEffect.CYAN.apply(title + ": "));
                 System.out.flush();
                 System.err.flush();
             }
@@ -429,7 +429,7 @@ public class ConsoleProgressBar {
         int percentage = getPercentage();
         String percentageString = StringUtility.padLeft(String.valueOf(percentage), 3);
         
-        return ((percentage == 100) ? Console.cyan(percentageString) : Console.green(percentageString)) + '%';
+        return ((percentage == 100) ? Console.ConsoleEffect.CYAN.apply(percentageString) : Console.ConsoleEffect.GREEN.apply(percentageString)) + '%';
     }
     
     /**
@@ -451,7 +451,7 @@ public class ConsoleProgressBar {
             progress.append('>');
             remaining--;
         }
-        bar.append((completed == width) ? Console.cyan(progress.toString()) : Console.green(progress.toString()));
+        bar.append((completed == width) ? Console.ConsoleEffect.CYAN.apply(progress.toString()) : Console.ConsoleEffect.GREEN.apply(progress.toString()));
         bar.append(" ".repeat(Math.max(0, remaining)));
         bar.append(']');
         
@@ -466,9 +466,9 @@ public class ConsoleProgressBar {
     public String getRatioString() {
         String formattedCurrent = StringUtility.padLeft(String.valueOf(current), String.valueOf(total).length());
         
-        return ((current == total) ? Console.cyan(formattedCurrent) : Console.green(formattedCurrent)) +
+        return ((current == total) ? Console.ConsoleEffect.CYAN.apply(formattedCurrent) : Console.ConsoleEffect.GREEN.apply(formattedCurrent)) +
                 units + '/' +
-                Console.cyan(String.valueOf(total)) +
+                Console.ConsoleEffect.CYAN.apply(String.valueOf(total)) +
                 units;
     }
     
@@ -482,7 +482,7 @@ public class ConsoleProgressBar {
         long time = getTimeRemaining();
         
         if (current == total) {
-            return Console.cyan("Complete");
+            return Console.ConsoleEffect.CYAN.apply("Complete");
         }
         if (time == Long.MAX_VALUE) {
             return "ETA: --:--:--";

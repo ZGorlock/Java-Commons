@@ -1448,27 +1448,27 @@ public class StringUtilityTest {
     public void testRemoveConsoleEscapeCharacters() throws Exception {
         //effects
         Assert.assertEquals("a string", StringUtility.removeConsoleEscapeCharacters(
-                Console.bold("a") + " string"));
+                Console.ConsoleEffect.BOLD.apply("a") + " string"));
         Assert.assertEquals("a string", StringUtility.removeConsoleEscapeCharacters(
-                Console.italic("a") + " string"));
+                Console.ConsoleEffect.ITALIC.apply("a") + " string"));
         
         //colors
         Assert.assertEquals("a string", StringUtility.removeConsoleEscapeCharacters(
-                "a " + Console.yellow("string")));
+                "a " + Console.ConsoleEffect.YELLOW.apply("string")));
         Assert.assertEquals("a string", StringUtility.removeConsoleEscapeCharacters(
-                "a " + Console.purple("string")));
+                "a " + Console.ConsoleEffect.PURPLE.apply("string")));
         
         //backgrounds
         Assert.assertEquals("a string", StringUtility.removeConsoleEscapeCharacters(
-                "a " + Console.redBackground("string")));
+                "a " + Console.ConsoleEffect.RED_BG.apply("string")));
         Assert.assertEquals("a string", StringUtility.removeConsoleEscapeCharacters(
-                "a " + Console.blueBackground("string")));
+                "a " + Console.ConsoleEffect.BLUE_BG.apply("string")));
         
         //color and background
         Assert.assertEquals("a string", StringUtility.removeConsoleEscapeCharacters(
                 "a " + Console.colorAndBackground("string", Console.ConsoleEffect.BLUE, Console.ConsoleEffect.GREEN)));
         Assert.assertEquals("a string", StringUtility.removeConsoleEscapeCharacters(
-                "a " + Console.colorAndBackground("string", Console.ConsoleEffect.DARK_GREEN, Console.ConsoleEffect.LIGHT_BLUE_BG)));
+                "a " + Console.colorAndBackground("string", Console.ConsoleEffect.DARK_GREEN, Console.ConsoleEffect.CYAN_BG)));
         
         //8-bit colors
         Assert.assertEquals("a string", StringUtility.removeConsoleEscapeCharacters(
@@ -1484,13 +1484,13 @@ public class StringUtilityTest {
         
         //multiple effects
         Assert.assertEquals("a string", StringUtility.removeConsoleEscapeCharacters(
-                Console.stringEffects("a", Console.ConsoleEffect.BOLD, Console.ConsoleEffect.INVERT) + ' ' + Console.stringEffects("string", Console.ConsoleEffect.ITALIC, Console.ConsoleEffect.FAINT, Console.ConsoleEffect.ORANGE)));
+                Console.stringEffects("a", Console.ConsoleEffect.BOLD, Console.ConsoleEffect.REVERSE) + ' ' + Console.stringEffects("string", Console.ConsoleEffect.ITALIC, Console.ConsoleEffect.FAINT, Console.ConsoleEffect.ORANGE)));
         Assert.assertEquals("a string", StringUtility.removeConsoleEscapeCharacters(
-                Console.stringEffectsWithColorAndBackground("a", Console.ConsoleEffect.BLACK, Console.ConsoleEffect.RED_BG, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.INVERT) + ' ' + Console.stringEffects("string", Console.ConsoleEffect.ORANGE, Console.ConsoleEffect.DARK_GREEN_BG, Console.ConsoleEffect.ITALIC, Console.ConsoleEffect.FAINT)));
+                Console.stringEffectsWithColorAndBackground("a", Console.ConsoleEffect.BLACK, Console.ConsoleEffect.RED_BG, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.REVERSE) + ' ' + Console.stringEffects("string", Console.ConsoleEffect.ORANGE, Console.ConsoleEffect.DARK_GREEN_BG, Console.ConsoleEffect.ITALIC, Console.ConsoleEffect.FAINT)));
         Assert.assertEquals("a string", StringUtility.removeConsoleEscapeCharacters(
-                Console.stringEffectsWithColorAndBackground8Bit("a", 46, 154, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.INVERT) + ' ' + Console.stringEffectsWithColorAndBackground8Bit("string", 99, 210, Console.ConsoleEffect.ITALIC, Console.ConsoleEffect.FAINT)));
+                Console.stringEffectsWithColorAndBackground8Bit("a", 46, 154, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.REVERSE) + ' ' + Console.stringEffectsWithColorAndBackground8Bit("string", 99, 210, Console.ConsoleEffect.ITALIC, Console.ConsoleEffect.FAINT)));
         Assert.assertEquals("a string", StringUtility.removeConsoleEscapeCharacters(
-                Console.stringEffectsWithColorAndBackground24Bit("a", 74, 39, 199, 167, 0, 255, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.INVERT) + ' ' + Console.stringEffectsWithColorAndBackground24Bit("string", 109, 49, 193, 88, 164, 164, Console.ConsoleEffect.ITALIC, Console.ConsoleEffect.FAINT)));
+                Console.stringEffectsWithColorAndBackground24Bit("a", 74, 39, 199, 167, 0, 255, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.REVERSE) + ' ' + Console.stringEffectsWithColorAndBackground24Bit("string", 109, 49, 193, 88, 164, 164, Console.ConsoleEffect.ITALIC, Console.ConsoleEffect.FAINT)));
     }
     
     /**
