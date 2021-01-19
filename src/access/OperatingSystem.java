@@ -46,10 +46,10 @@ public final class OperatingSystem {
      * Determines the current operating system.
      *
      * @return The current operating system.
-     * @see #getOSName()
+     * @see #getOperatingSystemName()
      */
-    public static OS getOS() {
-        String osName = getOSName().toUpperCase();
+    public static OS getOperatingSystem() {
+        String osName = getOperatingSystemName().toUpperCase();
         
         if (osName.contains("WINDOWS")) {
             return OS.WINDOWS;
@@ -77,7 +77,7 @@ public final class OperatingSystem {
      * @return The name of the current operating system.
      * @see System#getProperty(String)
      */
-    public static String getOSName() {
+    public static String getOperatingSystemName() {
         return System.getProperty("os.name");
     }
     
@@ -85,50 +85,50 @@ public final class OperatingSystem {
      * Determines if the current operating system is Windows.
      *
      * @return Whether the current operating system is Windows or not.
-     * @see #getOS()
+     * @see #getOperatingSystem()
      */
     public static boolean isWindows() {
-        return getOS().equals(OperatingSystem.OS.WINDOWS);
+        return getOperatingSystem().equals(OperatingSystem.OS.WINDOWS);
     }
     
     /**
      * Determines if the current operating system is Unix.
      *
      * @return Whether the current operating system is Unix or not.
-     * @see #getOS()
+     * @see #getOperatingSystem()
      */
     public static boolean isUnix() {
-        return getOS().equals(OperatingSystem.OS.UNIX);
+        return getOperatingSystem().equals(OperatingSystem.OS.UNIX);
     }
     
     /**
      * Determines if the current operating system is macOS.
      *
      * @return Whether the current operating system is macOS or not.
-     * @see #getOS()
+     * @see #getOperatingSystem()
      */
     public static boolean isMacOS() {
-        return getOS().equals(OperatingSystem.OS.MACOS);
+        return getOperatingSystem().equals(OperatingSystem.OS.MACOS);
     }
     
     /**
      * Determines if the current operating system is POSIX.
      *
      * @return Whether the current operating system is POSIX or not.
-     * @see #getOS()
+     * @see #getOperatingSystem()
      */
     public static boolean isPosix() {
-        return getOS().equals(OperatingSystem.OS.POSIX);
+        return getOperatingSystem().equals(OperatingSystem.OS.POSIX);
     }
     
     /**
      * Determines if the current operating system is Other.
      *
      * @return Whether the current operating system is Other or not.
-     * @see #getOS()
+     * @see #getOperatingSystem()
      */
     public static boolean isOther() {
-        return getOS().equals(OperatingSystem.OS.OTHER);
+        return getOperatingSystem().equals(OperatingSystem.OS.OTHER);
     }
     
     /**
@@ -136,10 +136,10 @@ public final class OperatingSystem {
      *
      * @param os The operating system to test for.
      * @return Whether the current operating system is the particular operating system or not.
-     * @see #getOS()
+     * @see #getOperatingSystem()
      */
     public static boolean is(OperatingSystem.OS os) {
-        return getOS().equals(os);
+        return getOperatingSystem().equals(os);
     }
     
     /**

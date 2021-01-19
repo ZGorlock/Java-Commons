@@ -108,7 +108,7 @@ public class OperatingSystemTest {
     @Before
     public void setup() throws Exception {
         PowerMockito.spy(OperatingSystem.class);
-        PowerMockito.when(OperatingSystem.getOSName()).thenAnswer((Answer<String>) invocationOnMock -> osName);
+        PowerMockito.when(OperatingSystem.getOperatingSystemName()).thenAnswer((Answer<String>) invocationOnMock -> osName);
     }
     
     /**
@@ -125,84 +125,109 @@ public class OperatingSystemTest {
     //Tests
     
     /**
-     * JUnit test of getOS.
+     * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
-     * @see OperatingSystem.OS#getOS()
      */
     @Test
-    public void testGetOS() throws Exception {
+    public void testConstants() throws Exception {
+    }
+    
+    /**
+     * JUnit test of OS.
+     *
+     * @throws Exception When there is an exception.
+     * @see OperatingSystem.OS
+     */
+    @Test
+    public void testOS() throws Exception {
+        Assert.assertEquals(5, OperatingSystem.OS.values().length);
+        Assert.assertEquals(OperatingSystem.OS.WINDOWS, OperatingSystem.OS.values()[0]);
+        Assert.assertEquals(OperatingSystem.OS.UNIX, OperatingSystem.OS.values()[1]);
+        Assert.assertEquals(OperatingSystem.OS.MACOS, OperatingSystem.OS.values()[2]);
+        Assert.assertEquals(OperatingSystem.OS.POSIX, OperatingSystem.OS.values()[3]);
+        Assert.assertEquals(OperatingSystem.OS.OTHER, OperatingSystem.OS.values()[4]);
+    }
+    
+    /**
+     * JUnit test of getOperatingSystem.
+     *
+     * @throws Exception When there is an exception.
+     * @see OperatingSystem#getOperatingSystem()
+     */
+    @Test
+    public void testGetOperatingSystem() throws Exception {
         //Windows
         for (String windowsOs : WINDOWS_OS_EXAMPLES) {
             osName = windowsOs;
-            Assert.assertEquals(OperatingSystem.OS.WINDOWS, OperatingSystem.getOS());
+            Assert.assertEquals(OperatingSystem.OS.WINDOWS, OperatingSystem.getOperatingSystem());
         }
         
         //Unix
         for (String unixOs : UNIX_OS_EXAMPLES) {
             osName = unixOs;
-            Assert.assertEquals(OperatingSystem.OS.UNIX, OperatingSystem.getOS());
+            Assert.assertEquals(OperatingSystem.OS.UNIX, OperatingSystem.getOperatingSystem());
         }
         
         //MacOS
         for (String macOs : MAC_OS_EXAMPLES) {
             osName = macOs;
-            Assert.assertEquals(OperatingSystem.OS.MACOS, OperatingSystem.getOS());
+            Assert.assertEquals(OperatingSystem.OS.MACOS, OperatingSystem.getOperatingSystem());
         }
         
         //POSIX
         for (String posixOs : POSIX_OS_EXAMPLES) {
             osName = posixOs;
-            Assert.assertEquals(OperatingSystem.OS.POSIX, OperatingSystem.getOS());
+            Assert.assertEquals(OperatingSystem.OS.POSIX, OperatingSystem.getOperatingSystem());
         }
         
         //Other
         for (String otherOs : OTHER_OS_EXAMPLES) {
             osName = otherOs;
-            Assert.assertEquals(OperatingSystem.OS.OTHER, OperatingSystem.getOS());
+            Assert.assertEquals(OperatingSystem.OS.OTHER, OperatingSystem.getOperatingSystem());
         }
     }
     
     /**
-     * JUnit test of getOSName.
+     * JUnit test of getOperatingSystemName.
      *
      * @throws Exception When there is an exception.
-     * @see OperatingSystem.OS#getOSName()
+     * @see OperatingSystem#getOperatingSystemName()
      */
     @Test
-    public void testGetOSName() throws Exception {
+    public void testGetOperatingSystemName() throws Exception {
         PowerMockito.mockStatic(System.class);
         PowerMockito.when(System.getProperty("os.name")).thenAnswer((Answer<String>) invocationOnMock -> osName);
-        PowerMockito.when(OperatingSystem.getOSName()).thenCallRealMethod();
+        PowerMockito.when(OperatingSystem.getOperatingSystemName()).thenCallRealMethod();
         
         //Windows
         for (String windowsOs : WINDOWS_OS_EXAMPLES) {
             osName = windowsOs;
-            Assert.assertEquals(osName, OperatingSystem.getOSName());
+            Assert.assertEquals(osName, OperatingSystem.getOperatingSystemName());
         }
         
         //Unix
         for (String unixOs : UNIX_OS_EXAMPLES) {
             osName = unixOs;
-            Assert.assertEquals(osName, OperatingSystem.getOSName());
+            Assert.assertEquals(osName, OperatingSystem.getOperatingSystemName());
         }
         
         //MacOS
         for (String macOs : MAC_OS_EXAMPLES) {
             osName = macOs;
-            Assert.assertEquals(osName, OperatingSystem.getOSName());
+            Assert.assertEquals(osName, OperatingSystem.getOperatingSystemName());
         }
         
         //POSIX
         for (String posixOs : POSIX_OS_EXAMPLES) {
             osName = posixOs;
-            Assert.assertEquals(osName, OperatingSystem.getOSName());
+            Assert.assertEquals(osName, OperatingSystem.getOperatingSystemName());
         }
         
         //Other
         for (String otherOs : OTHER_OS_EXAMPLES) {
             osName = otherOs;
-            Assert.assertEquals(osName, OperatingSystem.getOSName());
+            Assert.assertEquals(osName, OperatingSystem.getOperatingSystemName());
         }
     }
     
@@ -210,7 +235,7 @@ public class OperatingSystemTest {
      * JUnit test of isWindows.
      *
      * @throws Exception When there is an exception.
-     * @see OperatingSystem.OS#isWindows()
+     * @see OperatingSystem#isWindows()
      */
     @Test
     public void testIsWindows() throws Exception {
@@ -249,7 +274,7 @@ public class OperatingSystemTest {
      * JUnit test of isUnix.
      *
      * @throws Exception When there is an exception.
-     * @see OperatingSystem.OS#isUnix()
+     * @see OperatingSystem#isUnix()
      */
     @Test
     public void testIsUnix() throws Exception {
@@ -288,7 +313,7 @@ public class OperatingSystemTest {
      * JUnit test of isMacOS.
      *
      * @throws Exception When there is an exception.
-     * @see OperatingSystem.OS#isMacOS()
+     * @see OperatingSystem#isMacOS()
      */
     @Test
     public void testIsMacOS() throws Exception {
@@ -327,7 +352,7 @@ public class OperatingSystemTest {
      * JUnit test of isPosix.
      *
      * @throws Exception When there is an exception.
-     * @see OperatingSystem.OS#isPosix()
+     * @see OperatingSystem#isPosix()
      */
     @Test
     public void testIsPosix() throws Exception {
@@ -366,7 +391,7 @@ public class OperatingSystemTest {
      * JUnit test of isOther.
      *
      * @throws Exception When there is an exception.
-     * @see OperatingSystem.OS#isOther()
+     * @see OperatingSystem#isOther()
      */
     @Test
     public void testIsOther() throws Exception {
@@ -405,7 +430,7 @@ public class OperatingSystemTest {
      * JUnit test of is.
      *
      * @throws Exception When there is an exception.
-     * @see OperatingSystem.OS#is(OperatingSystem.OS)
+     * @see OperatingSystem#is(OperatingSystem.OS)
      */
     @Test
     public void testIs() throws Exception {

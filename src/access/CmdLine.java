@@ -108,10 +108,10 @@ public final class CmdLine {
      * @throws Exception When there is an unknown operating system.
      */
     @SuppressWarnings("DuplicateBranchesInSwitch")
-    private static ProcessBuilder buildProcess(String cmd, boolean useScriptCommand) throws Exception {
+    public static ProcessBuilder buildProcess(String cmd, boolean useScriptCommand) throws Exception {
         ProcessBuilder builder;
         if (useScriptCommand) {
-            switch (OperatingSystem.getOS()) {
+            switch (OperatingSystem.getOperatingSystem()) {
                 case WINDOWS:
                     builder = new ProcessBuilder("cmd.exe", "/c", cmd);
                     break;
