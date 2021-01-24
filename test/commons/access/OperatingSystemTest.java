@@ -1,6 +1,6 @@
 /*
  * File:    OperatingSystemTest.java
- * Package: dla.resource.access
+ * Package: commons.access
  * Author:  Zachary Gill
  */
 
@@ -29,8 +29,9 @@ import org.slf4j.LoggerFactory;
  *
  * @see OperatingSystem
  */
+@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*"})
+@PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
 @PrepareForTest({OperatingSystem.class, System.class})
 public class OperatingSystemTest {
     

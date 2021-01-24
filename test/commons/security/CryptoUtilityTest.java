@@ -19,6 +19,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,7 +31,10 @@ import org.slf4j.LoggerFactory;
  *
  * @see CryptoUtility
  */
-@SuppressWarnings("SpellCheckingInspection")
+@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
+@PrepareForTest({CryptoUtility.class})
 public class CryptoUtilityTest {
     
     //Logger
@@ -90,6 +97,63 @@ public class CryptoUtilityTest {
     
     
     //Tests
+    
+    /**
+     * JUnit test of constants.
+     *
+     * @throws Exception When there is an exception.
+     * @see CryptoUtility#DSA_ALGORITHM
+     * @see CryptoUtility#RSA_ALGORITHM
+     * @see CryptoUtility#AES_ALGORITHM
+     * @see CryptoUtility#SHA256_ALGORITHM
+     * @see CryptoUtility#SHA512_ALGORITHM
+     * @see CryptoUtility#MD5_ALGORITHM
+     * @see CryptoUtility#CBC_MODE
+     * @see CryptoUtility#ECB_MODE
+     * @see CryptoUtility#NO_PADDING
+     * @see CryptoUtility#PKCS1_PADDING
+     * @see CryptoUtility#PKCS5_PADDING
+     * @see CryptoUtility#SHA1PRNG_ALGORITHM
+     * @see CryptoUtility#SHADSA_ALGORITHM
+     * @see CryptoUtility#SHA256RSA_ALGORITHM
+     * @see CryptoUtility#UTF8_ENCODING
+     * @see CryptoUtility#UTF16_ENCODING
+     * @see CryptoUtility#ISO_8859_1_ENCODING
+     * @see CryptoUtility#HASH_ITERATIONS
+     * @see CryptoUtility#AES_PASSWORD_LENGTH
+     * @see CryptoUtility#KEY_SIZE_2048
+     * @see CryptoUtility#KEY_SIZE_1024
+     * @see CryptoUtility#KEY_SIZE_512
+     * @see CryptoUtility#AES_KEY_INIT
+     * @see CryptoUtility#RSA_MAX_DATA_LENGTH
+     */
+    @Test
+    public void testConstants() throws Exception {
+        Assert.assertEquals("DSA", CryptoUtility.DSA_ALGORITHM);
+        Assert.assertEquals("RSA", CryptoUtility.RSA_ALGORITHM);
+        Assert.assertEquals("AES", CryptoUtility.AES_ALGORITHM);
+        Assert.assertEquals("SHA-256", CryptoUtility.SHA256_ALGORITHM);
+        Assert.assertEquals("SHA-512", CryptoUtility.SHA512_ALGORITHM);
+        Assert.assertEquals("MD5", CryptoUtility.MD5_ALGORITHM);
+        Assert.assertEquals("CBC", CryptoUtility.CBC_MODE);
+        Assert.assertEquals("ECB", CryptoUtility.ECB_MODE);
+        Assert.assertEquals("NoPadding", CryptoUtility.NO_PADDING);
+        Assert.assertEquals("PKCS1Padding", CryptoUtility.PKCS1_PADDING);
+        Assert.assertEquals("PKCS5Padding", CryptoUtility.PKCS5_PADDING);
+        Assert.assertEquals("SHA1PRNG", CryptoUtility.SHA1PRNG_ALGORITHM);
+        Assert.assertEquals("SHA/DSA", CryptoUtility.SHADSA_ALGORITHM);
+        Assert.assertEquals("SHA256withRSA", CryptoUtility.SHA256RSA_ALGORITHM);
+        Assert.assertEquals("UTF-8", CryptoUtility.UTF8_ENCODING);
+        Assert.assertEquals("UTF-16", CryptoUtility.UTF16_ENCODING);
+        Assert.assertEquals("ISO-8859-1", CryptoUtility.ISO_8859_1_ENCODING);
+        Assert.assertEquals(1024, CryptoUtility.HASH_ITERATIONS);
+        Assert.assertEquals(16, CryptoUtility.AES_PASSWORD_LENGTH);
+        Assert.assertEquals(2048, CryptoUtility.KEY_SIZE_2048);
+        Assert.assertEquals(1024, CryptoUtility.KEY_SIZE_1024);
+        Assert.assertEquals(512, CryptoUtility.KEY_SIZE_512);
+        Assert.assertEquals(128, CryptoUtility.AES_KEY_INIT);
+        Assert.assertEquals(128, CryptoUtility.RSA_MAX_DATA_LENGTH);
+    }
     
     /**
      * JUnit test of DSA Cryptography.

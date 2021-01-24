@@ -12,6 +12,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +24,10 @@ import org.slf4j.LoggerFactory;
  *
  * @see NumberUtility
  */
+@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
+@PrepareForTest({NumberUtility.class})
 public class NumberUtilityTest {
     
     //Logger
@@ -74,6 +82,18 @@ public class NumberUtilityTest {
     
     
     //Tests
+    
+    /**
+     * JUnit test of constants.
+     *
+     * @throws Exception When there is an exception.
+     * @see NumberUtility#HEX_NUMBER_PATTERN
+     */
+    @Test
+    public void testConstants() throws Exception {
+        //patterns
+        Assert.assertEquals("-?[0-9A-Fa-f]+(?:\\.[0-9A-Fa-f]+)?", NumberUtility.HEX_NUMBER_PATTERN.pattern());
+    }
     
     /**
      * JUnit test of isEven.

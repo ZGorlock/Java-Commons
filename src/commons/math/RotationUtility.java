@@ -63,12 +63,10 @@ public final class RotationUtility {
      * @return The rotated Vector.
      */
     public static Vector performRotation(Vector vector, Matrix3 rotationMatrix, Vector center) {
-        Vector justifiedCenter = center.justify();
-        
         Matrix4 translationMatrix = new Matrix4(new double[] {
-                1, 0, 0, -justifiedCenter.getX(),
-                0, 1, 0, -justifiedCenter.getY(),
-                0, 0, 1, -justifiedCenter.getZ(),
+                1, 0, 0, -center.getX(),
+                0, 1, 0, -center.getY(),
+                0, 0, 1, -center.getZ(),
                 0, 0, 0, 1
         });
         Vector v4 = new Vector(vector, 1.0);
@@ -77,9 +75,9 @@ public final class RotationUtility {
         Vector v = rotationMatrix.transform(new Vector(v4.getX(), v4.getY(), v4.getZ()));
         
         Matrix4 untranslationMatrix = new Matrix4(new double[] {
-                1, 0, 0, justifiedCenter.getX(),
-                0, 1, 0, justifiedCenter.getY(),
-                0, 0, 1, justifiedCenter.getZ(),
+                1, 0, 0, center.getX(),
+                0, 1, 0, center.getY(),
+                0, 0, 1, center.getZ(),
                 0, 0, 0, 1
         });
         v4 = new Vector(v, 1);

@@ -1,6 +1,6 @@
 /*
  * File:    FilesystemTest.java
- * Package: access
+ * Package: commons.access
  * Author:  Zachary Gill
  */
 
@@ -43,9 +43,9 @@ import org.slf4j.LoggerFactory;
  *
  * @see Filesystem
  */
-@SuppressWarnings("SpellCheckingInspection")
+@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.xml.*", "org.xml.*", "org.w3c.*"})
+@PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
 @PrepareForTest({Filesystem.class, FileUtils.class})
 public class FilesystemTest {
     
@@ -267,6 +267,22 @@ public class FilesystemTest {
     
     
     //Tests
+    
+    /**
+     * JUnit test of constants.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#DEFAULT_LOG_FILESYSTEM
+     * @see Filesystem#WINDOWS_DRIVE_FILE_NAME_PATTERN
+     */
+    @Test
+    public void testConstants() throws Exception {
+        //constants
+        Assert.assertFalse(Filesystem.DEFAULT_LOG_FILESYSTEM);
+        
+        //patterns
+        Assert.assertEquals("^[A-Z]:.*", Filesystem.WINDOWS_DRIVE_FILE_NAME_PATTERN.pattern());
+    }
     
     /**
      * JUnit test of createFile.
@@ -766,6 +782,7 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#copyFile(File, File, boolean)
+     * @see Filesystem#copyFile(File, File)
      * @see #testCopyFileStandard()
      * @see #testCopyFileOverwriteOff()
      * @see #testCopyFileOverwriteOn()
@@ -1278,6 +1295,8 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#copyDirectory(File, File, boolean, boolean)
+     * @see Filesystem#copyDirectory(File, File, boolean)
+     * @see Filesystem#copyDirectory(File, File)
      * @see #testCopyDirectoryStandard()
      * @see #testCopyDirectoryOverwriteOff()
      * @see #testCopyDirectoryOverwriteOn()
@@ -3994,6 +4013,7 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#copy(File, File, boolean)
+     * @see Filesystem#copy(File, File)
      */
     @Test
     public void testCopy() throws Exception {
@@ -4099,6 +4119,7 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#moveFile(File, File, boolean)
+     * @see Filesystem#moveFile(File, File)
      * @see #testMoveFileStandard()
      * @see #testMoveFileOverwriteOff()
      * @see #testMoveFileOverwriteOn()
@@ -4558,6 +4579,8 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#moveDirectory(File, File, boolean, boolean)
+     * @see Filesystem#moveDirectory(File, File, boolean)
+     * @see Filesystem#moveDirectory(File, File)
      * @see #testMoveDirectoryStandard()
      * @see #testMoveDirectoryOverwriteOff()
      * @see #testMoveDirectoryOverwriteOn()
@@ -6864,6 +6887,7 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#move(File, File, boolean)
+     * @see Filesystem#move(File, File)
      */
     @Test
     public void testMove() throws Exception {
@@ -8037,6 +8061,8 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#getFilesRecursively(File, String, String)
+     * @see Filesystem#getFilesRecursively(File, String)
+     * @see Filesystem#getFilesRecursively(File)
      * @see #testGetFilesRecursivelyStandard()
      * @see #testGetFilesRecursivelyFileFilter()
      * @see #testGetFilesRecursivelyDirectoryFilter()
@@ -8830,6 +8856,7 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#getDirsRecursively(File, String)
+     * @see Filesystem#getDirsRecursively(File)
      * @see #testGetDirsRecursivelyStandard()
      * @see #testGetDirsRecursivelyDirectoryFilter()
      */
@@ -9228,6 +9255,8 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#getFilesAndDirsRecursively(File, String, String)
+     * @see Filesystem#getFilesAndDirsRecursively(File, String)
+     * @see Filesystem#getFilesAndDirsRecursively(File)
      * @see #testGetFilesAndDirsRecursivelyStandard()
      * @see #testGetFilesAndDirsRecursivelyFileFilter()
      * @see #testGetFilesAndDirsRecursivelyDirectoryFilter()
@@ -10050,6 +10079,7 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#getFiles(File, String)
+     * @see Filesystem#getFiles(File)
      */
     @Test
     public void testGetFiles() throws Exception {
@@ -10301,6 +10331,7 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#getDirs(File, String)
+     * @see Filesystem#getDirs(File)
      */
     @Test
     public void testGetDirs() throws Exception {
@@ -10552,6 +10583,8 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#getFilesAndDirs(File, String, String)
+     * @see Filesystem#getFilesAndDirs(File, String)
+     * @see Filesystem#getFilesAndDirs(File)
      */
     @Test
     public void testGetFilesAndDirs() throws Exception {
@@ -11998,6 +12031,7 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#openOutputStream(File, boolean)
+     * @see Filesystem#openOutputStream(File)
      */
     @Test
     public void testOpenOutputStream() throws Exception {
@@ -12460,6 +12494,7 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#writeStringToFile(File, String, boolean)
+     * @see Filesystem#writeStringToFile(File, String)
      */
     @Test
     public void testWriteStringToFile() throws Exception {
@@ -12697,6 +12732,7 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#writeByteArrayToFile(File, byte[], boolean)
+     * @see Filesystem#writeByteArrayToFile(File, byte[])
      */
     @Test
     public void testWriteByteArrayToFile() throws Exception {
@@ -12934,6 +12970,7 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#writeByteArrayToFile(File, byte[], boolean)
+     * @see Filesystem#writeByteArrayToFile(File, byte[])
      */
     @Test
     public void testWriteLines() throws Exception {
@@ -13373,6 +13410,7 @@ public class FilesystemTest {
      * JUnit test of safeRewrite.
      *
      * @throws Exception When there is an exception.
+     * @see Filesystem#safeRewrite(File, String)
      * @see Filesystem#safeRewrite(File, List)
      */
     @Test
@@ -14019,6 +14057,7 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      * @see Filesystem#generatePath(boolean, String...)
+     * @see Filesystem#generatePath(String...)
      */
     @Test
     public void testGeneratePath() throws Exception {
@@ -14173,6 +14212,19 @@ public class FilesystemTest {
     public void testGetTemporaryDirectoryPathLength() throws Exception {
         //standard
         Assert.assertEquals(40, Filesystem.getTemporaryDirectoryPathLength());
+    }
+    
+    /**
+     * JUnit test of logFilesystem.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#logFilesystem()
+     */
+    @Test
+    public void testLogFilesystem() throws Exception {
+        Boolean log = Filesystem.logFilesystem();
+        Assert.assertNotNull(log);
+        Assert.assertEquals(log, Filesystem.logFilesystem());
     }
     
 }

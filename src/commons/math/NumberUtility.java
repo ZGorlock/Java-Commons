@@ -34,7 +34,7 @@ public class NumberUtility {
     /**
      * A regex pattern for a hexadecimal number.
      */
-    private static final Pattern HEX_NUMBER_PATTERN = Pattern.compile("[0-9A-Fa-f.\\-]+");
+    public static final Pattern HEX_NUMBER_PATTERN = Pattern.compile("-?[0-9A-Fa-f]+(?:\\.[0-9A-Fa-f]+)?");
     
     
     //Functions

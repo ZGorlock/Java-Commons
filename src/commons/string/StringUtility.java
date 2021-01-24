@@ -31,6 +31,39 @@ public final class StringUtility {
     private static final Logger logger = LoggerFactory.getLogger(StringUtility.class);
     
     
+    //Constants
+    
+    /**
+     * A regex pattern for an alphanumeric string.
+     */
+    public static final Pattern ALPHANUMERIC_PATTERN = Pattern.compile("[a-zA-Z0-9]*");
+    
+    /**
+     * A regex pattern for an alphabetic string.
+     */
+    public static final Pattern ALPHABETIC_PATTERN = Pattern.compile("[a-zA-Z]*");
+    
+    /**
+     * A regex pattern for a numeric string.
+     */
+    public static final Pattern NUMERIC_PATTERN = Pattern.compile("-?(?:[0-9]*\\.)?[0-9]+");
+    
+    /**
+     * A regex pattern for a symbol string.
+     */
+    public static final Pattern SYMBOL_PATTERN = Pattern.compile("[^a-zA-Z0-9]*");
+    
+    /**
+     * A regex pattern for a whitespace string.
+     */
+    public static final Pattern WHITESPACE_PATTERN = Pattern.compile("[\\s\0]*");
+    
+    /**
+     * A pattern for extracting the starting indent of a string.
+     */
+    public static final Pattern INDENT_SPACE_PATTERN = Pattern.compile("^(?<indent>\\s*(?:(?:\\d+\\.\\s*)|(?:\\*\\s*))?).*");
+    
+    
     //Enums
     
     /**
@@ -45,39 +78,6 @@ public final class StringUtility {
         DOUBLE_BOX
         
     }
-    
-    
-    //Constants
-    
-    /**
-     * A regex pattern for an alphanumeric string.
-     */
-    private static final Pattern ALPHANUMERIC_PATTERN = Pattern.compile("[a-zA-Z0-9]*");
-    
-    /**
-     * A regex pattern for an alphabetic string.
-     */
-    private static final Pattern ALPHABETIC_PATTERN = Pattern.compile("[a-zA-Z]*");
-    
-    /**
-     * A regex pattern for a numeric string.
-     */
-    private static final Pattern NUMERIC_PATTERN = Pattern.compile("-?(?:[0-9]*\\.)?[0-9]+");
-    
-    /**
-     * A regex pattern for a symbol string.
-     */
-    private static final Pattern SYMBOL_PATTERN = Pattern.compile("[^a-zA-Z0-9]*");
-    
-    /**
-     * A regex pattern for a whitespace string.
-     */
-    private static final Pattern WHITESPACE_PATTERN = Pattern.compile("[\\s\0]*");
-    
-    /**
-     * A pattern for extracting the starting indent of a string.
-     */
-    public static final Pattern INDENT_SPACE_PATTERN = Pattern.compile("^(?<indent>\\s*(?:(?:\\d+\\.\\s*)|(?:\\*\\s*))?).*");
     
     
     //Functions

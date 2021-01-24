@@ -601,6 +601,81 @@ public final class Archive {
     }
     
     /**
+     * Determines if a archive file was compiled using the Compress Method or not.
+     *
+     * @param archive The archive file.
+     * @return Whether the archive file was compiled using the Compress Method or not, or null if there was an error.
+     * @see #getCompressionMethod(File)
+     */
+    public static Boolean isCompressed(File archive) {
+        CompressionMethod method = getCompressionMethod(archive);
+        if (method == null) {
+            return null;
+        }
+        return method == CompressionMethod.COMPRESS;
+    }
+    
+    /**
+     * Determines if an archive file was compiled using the Store Method or not.
+     *
+     * @param archive The archive file.
+     * @return Whether the archive file was compiled using the Store Method or not, or null if there was an error.
+     * @see #getCompressionMethod(File)
+     */
+    public static Boolean isDecompressed(File archive) {
+        CompressionMethod method = getCompressionMethod(archive);
+        if (method == null) {
+            return null;
+        }
+        return method == CompressionMethod.STORE;
+    }
+    
+    /**
+     * Determines the Compression Method used to compile an archive file.
+     *
+     * @param archive The archive file.
+     * @return The Compression Method used to compile the archive file, or null if there was an error.
+     * @see ZipArchive#getCompressionMethod(File)
+     * @see JarArchive#getCompressionMethod(File)
+     */
+    public static CompressionMethod getCompressionMethod(File archive) {
+        ArchiveType type = getArchiveType(archive);
+        if (type == null) {
+            return null;
+        }
+        
+        try {
+            switch (type) {
+                case ZIP:
+                    return ZipArchive.getCompressionMethod(archive);
+                case JAR:
+                    return JarArchive.getCompressionMethod(archive);
+                default:
+                    return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    /**
+     * Returns the Archive Type of an archive.
+     *
+     * @param archive The archive.
+     * @return The Archive type of the archive, or null if it is not supported.
+     */
+    public static ArchiveType getArchiveType(File archive) {
+        switch (StringUtility.rSnip(archive.getName().toLowerCase(), 4)) {
+            case ".zip":
+                return ArchiveType.ZIP;
+            case ".jar":
+                return ArchiveType.JAR;
+            default:
+                return null;
+        }
+    }
+    
+    /**
      * Creates a diff archive between two existing archive files.<br>
      * Files that exist in the target archive but not in the source archive are included in the diff archive.<br>
      * Files that exist in the target archive and the source archive but are modified in the target archive are included in the diff archive.<br>
@@ -757,81 +832,6 @@ public final class Archive {
      */
     public static boolean createDiffArchive(File source, File target, File diff) {
         return createDiffArchive(source, target, diff, CompressionMethod.STORE);
-    }
-    
-    /**
-     * Determines if an archive file was compiled using the Store Method or not.
-     *
-     * @param archive The archive file.
-     * @return Whether the archive file was compiled using the Store Method or not, or null if there was an error.
-     * @see #getCompressionMethod(File)
-     */
-    public static Boolean isDecompressed(File archive) {
-        CompressionMethod method = getCompressionMethod(archive);
-        if (method == null) {
-            return null;
-        }
-        return method == CompressionMethod.STORE;
-    }
-    
-    /**
-     * Determines if a archive file was compiled using the Compress Method or not.
-     *
-     * @param archive The archive file.
-     * @return Whether the archive file was compiled using the Compress Method or not, or null if there was an error.
-     * @see #getCompressionMethod(File)
-     */
-    public static Boolean isCompressed(File archive) {
-        CompressionMethod method = getCompressionMethod(archive);
-        if (method == null) {
-            return null;
-        }
-        return method == CompressionMethod.COMPRESS;
-    }
-    
-    /**
-     * Determines the Compression Method used to compile an archive file.
-     *
-     * @param archive The archive file.
-     * @return The Compression Method used to compile the archive file, or null if there was an error.
-     * @see ZipArchive#getCompressionMethod(File)
-     * @see JarArchive#getCompressionMethod(File)
-     */
-    public static CompressionMethod getCompressionMethod(File archive) {
-        ArchiveType type = getArchiveType(archive);
-        if (type == null) {
-            return null;
-        }
-        
-        try {
-            switch (type) {
-                case ZIP:
-                    return ZipArchive.getCompressionMethod(archive);
-                case JAR:
-                    return JarArchive.getCompressionMethod(archive);
-                default:
-                    return null;
-            }
-        } catch (Exception e) {
-            return null;
-        }
-    }
-    
-    /**
-     * Returns the Archive Type of an archive.
-     *
-     * @param archive The archive.
-     * @return The Archive type of the archive, or null if it is not supported.
-     */
-    private static ArchiveType getArchiveType(File archive) {
-        switch (StringUtility.rSnip(archive.getName().toLowerCase(), 4)) {
-            case ".zip":
-                return ArchiveType.ZIP;
-            case ".jar":
-                return ArchiveType.JAR;
-            default:
-                return null;
-        }
     }
     
     

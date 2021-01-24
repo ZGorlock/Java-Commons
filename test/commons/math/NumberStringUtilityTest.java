@@ -1,13 +1,15 @@
 /*
  * File:    NumberStringUtilityTest.java
- * Package: math
+ * Package: commons.math
  * Author:  Zachary Gill
  */
 
 package commons.math;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 
+import commons.list.ListUtility;
 import commons.string.StringUtility;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -15,6 +17,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +29,10 @@ import org.slf4j.LoggerFactory;
  *
  * @see NumberStringUtility
  */
-@SuppressWarnings("SpellCheckingInspection")
+@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
+@PrepareForTest({NumberStringUtility.class})
 public class NumberStringUtilityTest {
     
     //Logger
@@ -78,6 +87,48 @@ public class NumberStringUtilityTest {
     
     
     //Tests
+    
+    /**
+     * JUnit test of constants.
+     *
+     * @throws Exception When there is an exception.
+     * @see NumberStringUtility#MAX_POWER
+     * @see NumberStringUtility#MAGNITUDE_MAP
+     * @see NumberStringUtility#MAGNITUDE_NAME_MAP
+     * @see NumberStringUtility#EXPONENTIAL_NOTATION_PATTERN
+     * @see NumberStringUtility#ZERO_STRING_PATTERN
+     */
+    @Test
+    public void testConstants() throws Exception {
+        //constants
+        
+        Assert.assertEquals(3003, NumberStringUtility.MAX_POWER);
+        
+        Assert.assertEquals(1001, NumberStringUtility.MAGNITUDE_MAP.size());
+        Assert.assertEquals(
+                ListUtility.removeDuplicates(new ArrayList<>(NumberStringUtility.MAGNITUDE_MAP.keySet())),
+                new ArrayList<>(NumberStringUtility.MAGNITUDE_MAP.keySet())
+        );
+        Assert.assertEquals(
+                ListUtility.removeDuplicates(new ArrayList<>(NumberStringUtility.MAGNITUDE_MAP.values())),
+                new ArrayList<>(NumberStringUtility.MAGNITUDE_MAP.values())
+        );
+        
+        Assert.assertEquals(1001, NumberStringUtility.MAGNITUDE_NAME_MAP.size());
+        Assert.assertEquals(
+                ListUtility.removeDuplicates(new ArrayList<>(NumberStringUtility.MAGNITUDE_NAME_MAP.keySet())),
+                new ArrayList<>(NumberStringUtility.MAGNITUDE_NAME_MAP.keySet())
+        );
+        Assert.assertEquals(
+                ListUtility.removeDuplicates(new ArrayList<>(NumberStringUtility.MAGNITUDE_NAME_MAP.values())),
+                new ArrayList<>(NumberStringUtility.MAGNITUDE_NAME_MAP.values())
+        );
+        
+        //patterns
+        
+        Assert.assertEquals("-?(?<first>\\d)\\.(?<decimal>\\d+)E(?<mantissa>-?\\d+)", NumberStringUtility.EXPONENTIAL_NOTATION_PATTERN.pattern());
+        Assert.assertEquals("^0+$", NumberStringUtility.ZERO_STRING_PATTERN.pattern());
+    }
     
     /**
      * JUnit test of stringValueOf.
@@ -1214,7 +1265,6 @@ public class NumberStringUtilityTest {
      * @throws Exception When there is an exception.
      * @see NumberStringUtility#powerOfTenName(int)
      */
-    @SuppressWarnings("SpellCheckingInspection")
     @Test
     public void testPowerOfTenName() throws Exception {
         //edge cases

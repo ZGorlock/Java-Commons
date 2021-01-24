@@ -1,6 +1,6 @@
 /*
  * File:    BigMathUtilityTest.java
- * Package: math
+ * Package: commons.math
  * Author:  Zachary Gill
  */
 
@@ -12,6 +12,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +24,10 @@ import org.slf4j.LoggerFactory;
  *
  * @see BigMathUtility
  */
+@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
+@PrepareForTest({BigMathUtility.class})
 public class BigMathUtilityTest {
     
     //Logger
@@ -76,10 +84,48 @@ public class BigMathUtilityTest {
     //Tests
     
     /**
+     * JUnit test of constants.
+     *
+     * @throws Exception When there is an exception.
+     */
+    @Test
+    public void testConstants() throws Exception {
+    }
+    
+    /**
+     * JUnit test of PrecisionMode.
+     *
+     * @throws Exception When there is an exception.
+     * @see BigMathUtility.PrecisionMode
+     */
+    @Test
+    public void testPrecisionMode() throws Exception {
+        Assert.assertEquals(7, BigMathUtility.PrecisionMode.values().length);
+        Assert.assertEquals(BigMathUtility.PrecisionMode.DEFAULT_PRECISION, BigMathUtility.PrecisionMode.values()[0]);
+        Assert.assertEquals(BigMathUtility.PrecisionMode.NO_PRECISION, BigMathUtility.PrecisionMode.values()[1]);
+        Assert.assertEquals(BigMathUtility.PrecisionMode.LOW_PRECISION, BigMathUtility.PrecisionMode.values()[2]);
+        Assert.assertEquals(BigMathUtility.PrecisionMode.MID_PRECISION, BigMathUtility.PrecisionMode.values()[3]);
+        Assert.assertEquals(BigMathUtility.PrecisionMode.HIGH_PRECISION, BigMathUtility.PrecisionMode.values()[4]);
+        Assert.assertEquals(BigMathUtility.PrecisionMode.MAX_PRECISION, BigMathUtility.PrecisionMode.values()[5]);
+        Assert.assertEquals(BigMathUtility.PrecisionMode.MATH_PRECISION, BigMathUtility.PrecisionMode.values()[6]);
+        
+        //getPrecision
+        Assert.assertEquals(-1, BigMathUtility.PrecisionMode.DEFAULT_PRECISION.getPrecision());
+        Assert.assertEquals(0, BigMathUtility.PrecisionMode.NO_PRECISION.getPrecision());
+        Assert.assertEquals(8, BigMathUtility.PrecisionMode.LOW_PRECISION.getPrecision());
+        Assert.assertEquals(16, BigMathUtility.PrecisionMode.MID_PRECISION.getPrecision());
+        Assert.assertEquals(64, BigMathUtility.PrecisionMode.HIGH_PRECISION.getPrecision());
+        Assert.assertEquals(512, BigMathUtility.PrecisionMode.MAX_PRECISION.getPrecision());
+        Assert.assertEquals(1024, BigMathUtility.PrecisionMode.MATH_PRECISION.getPrecision());
+    }
+    
+    /**
      * JUnit test of add.
      *
      * @throws Exception When there is an exception.
      * @see BigMathUtility#add(String, String, int)
+     * @see BigMathUtility#add(String, String, BigMathUtility.PrecisionMode)
+     * @see BigMathUtility#add(String, String)
      */
     @Test
     public void testAdd() throws Exception {
@@ -434,6 +480,8 @@ public class BigMathUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see BigMathUtility#subtract(String, String, int)
+     * @see BigMathUtility#subtract(String, String, BigMathUtility.PrecisionMode)
+     * @see BigMathUtility#subtract(String, String)
      */
     @Test
     public void testSubtract() throws Exception {
@@ -788,6 +836,8 @@ public class BigMathUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see BigMathUtility#multiply(String, String, int)
+     * @see BigMathUtility#multiply(String, String, BigMathUtility.PrecisionMode)
+     * @see BigMathUtility#multiply(String, String)
      */
     @Test
     public void testMultiply() throws Exception {
@@ -1166,6 +1216,8 @@ public class BigMathUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see BigMathUtility#divide(String, String, int)
+     * @see BigMathUtility#divide(String, String, BigMathUtility.PrecisionMode)
+     * @see BigMathUtility#divide(String, String)
      */
     @Test
     public void testDivide() throws Exception {
@@ -1547,6 +1599,8 @@ public class BigMathUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see BigMathUtility#mod(String, String, int)
+     * @see BigMathUtility#mod(String, String, BigMathUtility.PrecisionMode)
+     * @see BigMathUtility#mod(String, String)
      */
     @Test
     public void testMod() throws Exception {
@@ -1928,6 +1982,8 @@ public class BigMathUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see BigMathUtility#power(String, String, int)
+     * @see BigMathUtility#power(String, String, BigMathUtility.PrecisionMode)
+     * @see BigMathUtility#power(String, String)
      */
     @Test
     public void testPower() throws Exception {
@@ -2049,6 +2105,8 @@ public class BigMathUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see BigMathUtility#root(String, String, int)
+     * @see BigMathUtility#root(String, String, BigMathUtility.PrecisionMode)
+     * @see BigMathUtility#root(String, String)
      */
     @Test
     public void testRoot() throws Exception {
@@ -2180,6 +2238,8 @@ public class BigMathUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see BigMathUtility#log(String, int, int)
+     * @see BigMathUtility#log(String, int, BigMathUtility.PrecisionMode)
+     * @see BigMathUtility#log(String, int)
      */
     @Test
     public void testLog() throws Exception {
@@ -2266,6 +2326,8 @@ public class BigMathUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see BigMathUtility#ln(String, int)
+     * @see BigMathUtility#ln(String, BigMathUtility.PrecisionMode)
+     * @see BigMathUtility#ln(String)
      */
     @Test
     public void testLn() throws Exception {

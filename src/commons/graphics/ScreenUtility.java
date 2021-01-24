@@ -84,6 +84,7 @@ public final class ScreenUtility {
      */
     public static int DISPLAY_HEIGHT;
     
+    //Populates static fields
     static {
         GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice graphicsDevice = graphicsEnvironment.getScreenDevices()[0];

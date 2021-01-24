@@ -1,6 +1,6 @@
 /*
  * File:    DateTimeUtilityTest.java
- * Package: time
+ * Package: commons.time
  * Author:  Zachary Gill
  */
 
@@ -12,6 +12,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +24,10 @@ import org.slf4j.LoggerFactory;
  *
  * @see DateTimeUtility
  */
+@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
+@PrepareForTest({DateTimeUtility.class})
 public class DateTimeUtilityTest {
     
     //Logger
@@ -91,9 +99,12 @@ public class DateTimeUtilityTest {
      * @see DateTimeUtility#MAXIMUM_MINUTE
      * @see DateTimeUtility#MINIMUM_SECOND
      * @see DateTimeUtility#MAXIMUM_SECOND
+     * @see DateTimeUtility#DATE_PATTERN
+     * @see DateTimeUtility#TIME_PATTERN
      */
     @Test
     public void testConstants() throws Exception {
+        //constants
         Assert.assertEquals(1, DateTimeUtility.MINIMUM_YEAR);
         Assert.assertEquals(Integer.MAX_VALUE - 1, DateTimeUtility.MAXIMUM_YEAR);
         Assert.assertEquals(1, DateTimeUtility.MINIMUM_MONTH);
@@ -106,17 +117,8 @@ public class DateTimeUtilityTest {
         Assert.assertEquals(59, DateTimeUtility.MAXIMUM_MINUTE);
         Assert.assertEquals(0, DateTimeUtility.MINIMUM_SECOND);
         Assert.assertEquals(59, DateTimeUtility.MAXIMUM_SECOND);
-    }
-    
-    /**
-     * JUnit test of patterns.
-     *
-     * @throws Exception When there is an exception.
-     * @see DateTimeUtility#DATE_PATTERN
-     * @see DateTimeUtility#TIME_PATTERN
-     */
-    @Test
-    public void testPatterns() throws Exception {
+        
+        //patterns
         Assert.assertEquals("(?<year>\\d+)-(?<month>\\d{2})-(?<day>\\d{2})", DateTimeUtility.DATE_PATTERN.pattern());
         Assert.assertEquals("(?<hour>\\d{2}):(?<minute>\\d{2})(:(?<second>\\d{2}))?", DateTimeUtility.TIME_PATTERN.pattern());
     }
@@ -282,6 +284,7 @@ public class DateTimeUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see DateTimeUtility#timeToTimeString(String, boolean)
+     * @see DateTimeUtility#timeToTimeString(String)
      */
     @Test
     public void testTimeToTimeString() throws Exception {
@@ -533,6 +536,9 @@ public class DateTimeUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see DateTimeUtility#durationToDurationString(long, boolean, boolean, boolean)
+     * @see DateTimeUtility#durationToDurationString(long, boolean, boolean)
+     * @see DateTimeUtility#durationToDurationString(long, boolean)
+     * @see DateTimeUtility#durationToDurationString(long)
      */
     @Test
     public void testDurationToDurationString() throws Exception {
@@ -1116,6 +1122,8 @@ public class DateTimeUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see DateTimeUtility#durationToDurationStamp(long, boolean, boolean)
+     * @see DateTimeUtility#durationToDurationStamp(long, boolean)
+     * @see DateTimeUtility#durationToDurationStamp(long)
      */
     @Test
     public void testDurationToDurationStamp() throws Exception {
@@ -1500,6 +1508,7 @@ public class DateTimeUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see DateTimeUtility#validDate(int, int, int)
+     * @see DateTimeUtility#validDate(String)
      */
     @Test
     public void testValidDate() throws Exception {
@@ -1563,6 +1572,7 @@ public class DateTimeUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see DateTimeUtility#validTime(int, int, int)
+     * @see DateTimeUtility#validTime(String)
      */
     @Test
     public void testValidTime() throws Exception {

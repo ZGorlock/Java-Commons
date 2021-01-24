@@ -1,6 +1,6 @@
 /*
  * File:    EquationUtilityTest.java
- * Package: math
+ * Package: commons.math
  * Author:  Zachary Gill
  */
 
@@ -17,6 +17,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +29,10 @@ import org.slf4j.LoggerFactory;
  *
  * @see EquationUtility
  */
-@SuppressWarnings("SpellCheckingInspection")
+@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
+@PrepareForTest({EquationUtility.class})
 public class EquationUtilityTest {
     
     //Logger
@@ -82,14 +89,36 @@ public class EquationUtilityTest {
     //Tests
     
     /**
+     * JUnit test of constants.
+     *
+     * @throws Exception When there is an exception.
+     */
+    @Test
+    public void testConstants() throws Exception {
+        //patterns
+        Assert.assertEquals("(?:\\d+\\.?\\d*)", EquationUtility.NUMBER_PATTERN.pattern());
+        Assert.assertEquals("(?:[a-zA-Z]+)", EquationUtility.VARIABLE_PATTERN.pattern());
+        Assert.assertEquals("(?:\\d+\\.?\\d*)|(?:[a-zA-Z]+)", EquationUtility.ELEMENT_PATTERN.pattern());
+    }
+    
+    /**
      * JUnit test of Operation.
      *
      * @throws Exception When there is an exception.
-     * @see commons.math.EquationUtility.Operation
+     * @see EquationUtility.Operation
      */
     @Test
     public void testOperation() throws Exception {
-        //test getSymbol
+        Assert.assertEquals(7, EquationUtility.Operation.values().length);
+        Assert.assertEquals(EquationUtility.Operation.POWER, EquationUtility.Operation.values()[0]);
+        Assert.assertEquals(EquationUtility.Operation.ROOT, EquationUtility.Operation.values()[1]);
+        Assert.assertEquals(EquationUtility.Operation.MULTIPLY, EquationUtility.Operation.values()[2]);
+        Assert.assertEquals(EquationUtility.Operation.DIVIDE, EquationUtility.Operation.values()[3]);
+        Assert.assertEquals(EquationUtility.Operation.MODULUS, EquationUtility.Operation.values()[4]);
+        Assert.assertEquals(EquationUtility.Operation.ADD, EquationUtility.Operation.values()[5]);
+        Assert.assertEquals(EquationUtility.Operation.SUBTRACT, EquationUtility.Operation.values()[6]);
+        
+        //getSymbol
         Assert.assertEquals('^', EquationUtility.Operation.POWER.getSymbol());
         Assert.assertEquals('~', EquationUtility.Operation.ROOT.getSymbol());
         Assert.assertEquals('*', EquationUtility.Operation.MULTIPLY.getSymbol());
@@ -98,7 +127,7 @@ public class EquationUtilityTest {
         Assert.assertEquals('+', EquationUtility.Operation.ADD.getSymbol());
         Assert.assertEquals('-', EquationUtility.Operation.SUBTRACT.getSymbol());
         
-        //test getOperation
+        //getOperation
         Assert.assertEquals(EquationUtility.Operation.POWER, EquationUtility.Operation.getOperation('^'));
         Assert.assertEquals(EquationUtility.Operation.ROOT, EquationUtility.Operation.getOperation('~'));
         Assert.assertEquals(EquationUtility.Operation.MULTIPLY, EquationUtility.Operation.getOperation('*'));
@@ -113,11 +142,16 @@ public class EquationUtilityTest {
      * JUnit test of OrderOfOperations.
      *
      * @throws Exception When there is an exception.
-     * @see commons.math.EquationUtility.OrderOfOperations
+     * @see EquationUtility.OrderOfOperations
      */
     @Test
     public void testOrderOfOperations() throws Exception {
-        //test getSymbols
+        Assert.assertEquals(3, EquationUtility.OrderOfOperations.values().length);
+        Assert.assertEquals(EquationUtility.OrderOfOperations.FIRST, EquationUtility.OrderOfOperations.values()[0]);
+        Assert.assertEquals(EquationUtility.OrderOfOperations.SECOND, EquationUtility.OrderOfOperations.values()[1]);
+        Assert.assertEquals(EquationUtility.OrderOfOperations.THIRD, EquationUtility.OrderOfOperations.values()[2]);
+        
+        //getSymbols
         Assert.assertEquals("^~", EquationUtility.OrderOfOperations.FIRST.getSymbols());
         Assert.assertEquals("*/%", EquationUtility.OrderOfOperations.SECOND.getSymbols());
         Assert.assertEquals("+-", EquationUtility.OrderOfOperations.THIRD.getSymbols());
@@ -812,10 +846,28 @@ public class EquationUtilityTest {
     }
     
     /**
+     * JUnit test of symbols.
+     *
+     * @throws Exception When there is an exception.
+     * @see EquationUtility#symbols
+     */
+    @Test
+    public void testSymbols() throws Exception {
+        Assert.assertEquals(7, EquationUtility.symbols.size());
+        Assert.assertEquals('^', EquationUtility.symbols.get(0).charValue());
+        Assert.assertEquals('~', EquationUtility.symbols.get(1).charValue());
+        Assert.assertEquals('*', EquationUtility.symbols.get(2).charValue());
+        Assert.assertEquals('/', EquationUtility.symbols.get(3).charValue());
+        Assert.assertEquals('%', EquationUtility.symbols.get(4).charValue());
+        Assert.assertEquals('+', EquationUtility.symbols.get(5).charValue());
+        Assert.assertEquals('-', EquationUtility.symbols.get(6).charValue());
+    }
+    
+    /**
      * JUnit test of MathOperand.
      *
      * @throws Exception When there is an exception.
-     * @see commons.math.EquationUtility.MathOperand
+     * @see EquationUtility.MathOperand
      */
     @Test
     public void testMathOperand() throws Exception {
@@ -858,7 +910,7 @@ public class EquationUtilityTest {
      * JUnit test of MathOperation.
      *
      * @throws Exception When there is an exception.
-     * @see commons.math.EquationUtility.MathOperation
+     * @see EquationUtility.MathOperation
      */
     @Test
     public void testMathOperation() throws Exception {

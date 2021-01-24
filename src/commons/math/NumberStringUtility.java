@@ -35,16 +35,6 @@ public final class NumberStringUtility {
     //Constants
     
     /**
-     * A regex pattern for numbers in exponential notation.
-     */
-    public static final Pattern EXPONENTIAL_NOTATION_PATTERN = Pattern.compile("-?(?<first>\\d)\\.(?<decimal>\\d+)E(?<mantissa>-?\\d+)");
-    
-    /**
-     * A regex pattern for a string that is only zeros.
-     */
-    public static final Pattern ZERO_STRING_PATTERN = Pattern.compile("^0+$");
-    
-    /**
      * The names of digit values for power of ten naming.<br>
      * Array index 0 for ones, 1 for tens, 2 for hundreds.
      */
@@ -108,6 +98,16 @@ public final class NumberStringUtility {
             MAGNITUDE_NAME_MAP.put(name, i);
         }
     }
+    
+    /**
+     * A regex pattern for numbers in exponential notation.
+     */
+    public static final Pattern EXPONENTIAL_NOTATION_PATTERN = Pattern.compile("-?(?<first>\\d)\\.(?<decimal>\\d+)E(?<mantissa>-?\\d+)");
+    
+    /**
+     * A regex pattern for a string that is only zeros.
+     */
+    public static final Pattern ZERO_STRING_PATTERN = Pattern.compile("^0+$");
     
     
     //Functions

@@ -1,6 +1,6 @@
 /*
  * File:    BoundUtilityTest.java
- * Package: math
+ * Package: commons.math
  * Author:  Zachary Gill
  */
 
@@ -12,6 +12,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +24,10 @@ import org.slf4j.LoggerFactory;
  *
  * @see BoundUtility
  */
+@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
+@PrepareForTest({BoundUtility.class})
 public class BoundUtilityTest {
     
     //Logger
@@ -76,10 +84,20 @@ public class BoundUtilityTest {
     //Tests
     
     /**
+     * JUnit test of constants.
+     *
+     * @throws Exception When there is an exception.
+     */
+    @Test
+    public void testConstants() throws Exception {
+    }
+    
+    /**
      * JUnit test of inBounds.
      *
      * @throws Exception When there is an exception.
      * @see BoundUtility#inBounds(Number, Number, Number, boolean, boolean)
+     * @see BoundUtility#inBounds(Number, Number, Number)
      */
     @Test
     public void testInBounds() throws Exception {

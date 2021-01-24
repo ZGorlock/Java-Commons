@@ -433,7 +433,7 @@ public final class Speech {
      *
      * @return The map of user-friendly voice names.
      */
-    private static Map<String, String> getVoiceNames() {
+    public static Map<String, String> getVoiceNames() {
         Map<String, String> voiceNameMap = new LinkedHashMap<>();
         voiceNameMap.put("Tom", "dfki-spike-hsmm");
         voiceNameMap.put("Robert", "dfki-obadiah-hsmm");
@@ -451,7 +451,7 @@ public final class Speech {
      * @return The map of letter pronunciations.
      */
     @SuppressWarnings("SpellCheckingInspection")
-    private static Map<String, String> getLetterPronunciations() {
+    public static Map<String, String> getLetterPronunciations() {
         Map<String, String> letterPronunciations = new LinkedHashMap<>();
         letterPronunciations.put("a", "ay");
         letterPronunciations.put("b", "bee");

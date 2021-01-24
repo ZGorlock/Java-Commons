@@ -17,6 +17,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +29,10 @@ import org.slf4j.LoggerFactory;
  *
  * @see StringComparisonUtility
  */
-@SuppressWarnings("SpellCheckingInspection")
+@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
+@PrepareForTest({StringComparisonUtility.class})
 public class StringComparisonUtilityTest {
     
     //Logger
@@ -85,7 +92,25 @@ public class StringComparisonUtilityTest {
      * JUnit test of stringCompare.
      *
      * @throws Exception When there is an exception.
+     * @see StringComparisonUtility#VARCHAR
+     */
+    @Test
+    public void testConstants() throws Exception {
+        Assert.assertEquals('¿', StringComparisonUtility.VARCHAR);
+        Assert.assertEquals("¿", StringComparisonUtility.VARCHAR_STRING);
+    }
+    
+    /**
+     * JUnit test of stringCompare.
+     *
+     * @throws Exception When there is an exception.
      * @see StringComparisonUtility#stringCompare(String, String, List, List, boolean, boolean)
+     * @see StringComparisonUtility#stringCompare(String, String, List, List, boolean)
+     * @see StringComparisonUtility#stringCompare(String, String, List, List)
+     * @see StringComparisonUtility#stringCompare(String, String, List)
+     * @see StringComparisonUtility#stringCompare(String, String, boolean, boolean)
+     * @see StringComparisonUtility#stringCompare(String, String, boolean)
+     * @see StringComparisonUtility#stringCompare(String, String)
      */
     @SuppressWarnings("PointlessArithmeticExpression")
     @Test
@@ -261,12 +286,27 @@ public class StringComparisonUtilityTest {
     }
     
     /**
+     * JUnit test of stringComparePhonetic.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringComparisonUtility#stringComparePhonetic(String, String)
+     */
+    @Test
+    public void testStringComparePhonetic() throws Exception {
+        //TODO
+    }
+    
+    /**
      * JUnit test of stringEditDistance.
      *
      * @throws Exception When there is an exception.
      * @see StringComparisonUtility#stringEditDistance(String, String, List, List, boolean, boolean)
+     * @see StringComparisonUtility#stringEditDistance(String, String, List, List, boolean)
+     * @see StringComparisonUtility#stringEditDistance(String, String, List, List)
+     * @see StringComparisonUtility#stringEditDistance(String, String, boolean, boolean)
+     * @see StringComparisonUtility#stringEditDistance(String, String, boolean)
+     * @see StringComparisonUtility#stringEditDistance(String, String)
      */
-    @SuppressWarnings("SpellCheckingInspection")
     @Test
     public void testStringEditDistance() throws Exception {
         //general
@@ -444,6 +484,7 @@ public class StringComparisonUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see StringComparisonUtility#extractVariables(String, String, int[][], int, int, UUID, List, List, boolean, boolean)
+     * @see StringComparisonUtility#extractVariables(String, String, int[][], List, List, boolean)
      */
     @SuppressWarnings("RedundantOperationOnEmptyContainer")
     @Test

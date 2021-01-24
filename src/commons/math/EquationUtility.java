@@ -39,17 +39,17 @@ public final class EquationUtility {
     /**
      * The regex pattern to match a number.
      */
-    private static final Pattern NUMBER_PATTERN = Pattern.compile("(?:\\d+\\.?\\d*)");
+    public static final Pattern NUMBER_PATTERN = Pattern.compile("(?:\\d+\\.?\\d*)");
     
     /**
      * The regex pattern to match a number.
      */
-    private static final Pattern VARIABLE_PATTERN = Pattern.compile("(?:[a-zA-Z]+)");
+    public static final Pattern VARIABLE_PATTERN = Pattern.compile("(?:[a-zA-Z]+)");
     
     /**
      * The regex pattern to match a number or variable.
      */
-    private static final Pattern ELEMENT_PATTERN = Pattern.compile(NUMBER_PATTERN.pattern() + '|' + VARIABLE_PATTERN.pattern());
+    public static final Pattern ELEMENT_PATTERN = Pattern.compile(NUMBER_PATTERN.pattern() + '|' + VARIABLE_PATTERN.pattern());
     
     
     //Enums

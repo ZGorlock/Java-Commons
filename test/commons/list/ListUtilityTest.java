@@ -1,6 +1,6 @@
 /*
  * File:    ListUtilityTest.java
- * Package: list
+ * Package: commons.list
  * Author:  Zachary Gill
  */
 
@@ -18,6 +18,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,6 +30,10 @@ import org.slf4j.LoggerFactory;
  *
  * @see ListUtility
  */
+@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
+@PrepareForTest({ListUtility.class})
 public class ListUtilityTest {
     
     //Logger
@@ -80,6 +88,15 @@ public class ListUtilityTest {
     
     
     //Tests
+    
+    /**
+     * JUnit test of constants.
+     *
+     * @throws Exception When there is an exception.
+     */
+    @Test
+    public void testConstants() throws Exception {
+    }
     
     /**
      * JUnit test of arrayToList.
@@ -143,6 +160,7 @@ public class ListUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see ListUtility#anyNull(List)
+     * @see ListUtility#anyNull(Object...)
      */
     @SuppressWarnings("ConstantConditions")
     @Test
@@ -403,10 +421,33 @@ public class ListUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see ListUtility#duplicateListInOrder(List, int)
+     * @see ListUtility#duplicateListInOrder(List)
      */
     @Test
     public void testDuplicateListInOrder() throws Exception {
         int x;
+        
+        //standard
+        Object[] standardArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        List<Object> standardList = ListUtility.arrayToList(standardArray);
+        List<Object> duplicatedStandardList = ListUtility.duplicateListInOrder(standardList);
+        Assert.assertEquals(standardList.size() * 2, duplicatedStandardList.size());
+        x = 0;
+        for (int y = 0; y < 2; y++) {
+            for (Object o : standardList) {
+                Assert.assertEquals(o, duplicatedStandardList.get(x));
+                x++;
+            }
+        }
+        duplicatedStandardList = ListUtility.duplicateListInOrder(standardList);
+        Assert.assertEquals(standardList.size() * 2, duplicatedStandardList.size());
+        x = 0;
+        for (int y = 0; y < 2; y++) {
+            for (Object o : standardList) {
+                Assert.assertEquals(o, duplicatedStandardList.get(x));
+                x++;
+            }
+        }
         
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
@@ -561,6 +602,7 @@ public class ListUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see ListUtility#sortListByNumberOfOccurrences(List, boolean)
+     * @see ListUtility#sortListByNumberOfOccurrences(List)
      */
     @Test
     public void testSortListByNumberOfOccurrences() throws Exception {

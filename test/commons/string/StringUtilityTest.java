@@ -17,6 +17,10 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.core.classloader.annotations.PowerMockIgnore;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,7 +29,10 @@ import org.slf4j.LoggerFactory;
  *
  * @see StringUtility
  */
-@SuppressWarnings("SpellCheckingInspection")
+@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@RunWith(PowerMockRunner.class)
+@PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
+@PrepareForTest({StringUtility.class})
 public class StringUtilityTest {
     
     //Logger
@@ -108,6 +115,42 @@ public class StringUtilityTest {
     
     
     //Tests
+    
+    /**
+     * JUnit test of constants.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#ALPHANUMERIC_PATTERN
+     * @see StringUtility#ALPHABETIC_PATTERN
+     * @see StringUtility#NUMERIC_PATTERN
+     * @see StringUtility#SYMBOL_PATTERN
+     * @see StringUtility#WHITESPACE_PATTERN
+     * @see StringUtility#INDENT_SPACE_PATTERN
+     */
+    @Test
+    public void testConstants() throws Exception {
+        //patterns
+        Assert.assertEquals("[a-zA-Z0-9]*", StringUtility.ALPHANUMERIC_PATTERN.pattern());
+        Assert.assertEquals("[a-zA-Z]*", StringUtility.ALPHABETIC_PATTERN.pattern());
+        Assert.assertEquals("-?(?:[0-9]*\\.)?[0-9]+", StringUtility.NUMERIC_PATTERN.pattern());
+        Assert.assertEquals("[^a-zA-Z0-9]*", StringUtility.SYMBOL_PATTERN.pattern());
+        Assert.assertEquals("[\\s\0]*", StringUtility.WHITESPACE_PATTERN.pattern());
+        Assert.assertEquals("^(?<indent>\\s*(?:(?:\\d+\\.\\s*)|(?:\\*\\s*))?).*", StringUtility.INDENT_SPACE_PATTERN.pattern());
+    }
+    
+    /**
+     * JUnit test of BoxType.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility.BoxType
+     */
+    @Test
+    public void testBoxType() throws Exception {
+        Assert.assertEquals(3, StringUtility.BoxType.values().length);
+        Assert.assertEquals(StringUtility.BoxType.NO_BOX, StringUtility.BoxType.values()[0]);
+        Assert.assertEquals(StringUtility.BoxType.BOX, StringUtility.BoxType.values()[1]);
+        Assert.assertEquals(StringUtility.BoxType.DOUBLE_BOX, StringUtility.BoxType.values()[2]);
+    }
     
     /**
      * JUnit test of tokenize.
@@ -387,7 +430,6 @@ public class StringUtilityTest {
      * @see StringUtility#isAlphanumeric(char)
      * @see StringUtility#isAlphanumeric(String)
      */
-    @SuppressWarnings("SpellCheckingInspection")
     @Test
     public void testIsAlphanumeric() throws Exception {
         //vowels
@@ -439,7 +481,6 @@ public class StringUtilityTest {
      * @see StringUtility#isAlphabetic(char)
      * @see StringUtility#isAlphabetic(String)
      */
-    @SuppressWarnings("SpellCheckingInspection")
     @Test
     public void testIsAlphabetic() throws Exception {
         //vowels
@@ -561,7 +602,6 @@ public class StringUtilityTest {
      * @see StringUtility#isNumeric(char)
      * @see StringUtility#isNumeric(String)
      */
-    @SuppressWarnings("SpellCheckingInspection")
     @Test
     public void testIsNumeric() throws Exception {
         //vowels
@@ -1557,6 +1597,7 @@ public class StringUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see StringUtility#padLeft(String, int, char)
+     * @see StringUtility#padLeft(String, int)
      */
     @Test
     public void testPadLeft() throws Exception {
@@ -1580,6 +1621,7 @@ public class StringUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see StringUtility#padRight(String, int, char)
+     * @see StringUtility#padRight(String, int)
      */
     @Test
     public void testPadRight() throws Exception {
@@ -1603,6 +1645,7 @@ public class StringUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see StringUtility#padZero(String, int)
+     * @see StringUtility#padZero(int, int)
      */
     @Test
     public void testPadZero() throws Exception {
@@ -1720,6 +1763,8 @@ public class StringUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see StringUtility#wrapText(String, int, boolean, int)
+     * @see StringUtility#wrapText(String, int, boolean)
+     * @see StringUtility#wrapText(String, int)
      */
     @Test
     public void testWrapText() throws Exception {
@@ -2042,6 +2087,10 @@ public class StringUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see StringUtility#boxText(List, int, boolean, int, int, StringUtility.BoxType)
+     * @see StringUtility#boxText(List, int, boolean, int, int)
+     * @see StringUtility#boxText(List, int, boolean, int)
+     * @see StringUtility#boxText(List, int, boolean)
+     * @see StringUtility#boxText(List, int)
      */
     @Test
     public void testBoxText() throws Exception {
