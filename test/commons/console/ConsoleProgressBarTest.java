@@ -112,7 +112,47 @@ public class ConsoleProgressBarTest {
      */
     @Test
     public void testConstructor() throws Exception {
-        //TODO
+        ConsoleProgressBar sut;
+    
+        //standard
+        sut = new ConsoleProgressBar("Test", 1000, 50, "B", false);
+        Assert.assertEquals("Test", sut.getTitle());
+        Assert.assertEquals(1000, sut.getTotal());
+        Assert.assertEquals(50, sut.getWidth());
+        Assert.assertEquals("B", sut.getUnits());
+        Assert.assertFalse(sut.getAutoPrint());
+    
+        //default auto print
+        sut = new ConsoleProgressBar("Test2", 5000, 55, "kb");
+        Assert.assertEquals("Test2", sut.getTitle());
+        Assert.assertEquals(5000, sut.getTotal());
+        Assert.assertEquals(55, sut.getWidth());
+        Assert.assertEquals("kb", sut.getUnits());
+        Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, sut.getAutoPrint());
+    
+        //default width
+        sut = new ConsoleProgressBar("Test3", 51000, "MB");
+        Assert.assertEquals("Test3", sut.getTitle());
+        Assert.assertEquals(51000, sut.getTotal());
+        Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_WIDTH, sut.getWidth());
+        Assert.assertEquals("MB", sut.getUnits());
+        Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, sut.getAutoPrint());
+    
+        //no units
+        sut = new ConsoleProgressBar("Test4", 581000, 61);
+        Assert.assertEquals("Test4", sut.getTitle());
+        Assert.assertEquals(581000, sut.getTotal());
+        Assert.assertEquals(61, sut.getWidth());
+        Assert.assertEquals("", sut.getUnits());
+        Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, sut.getAutoPrint());
+    
+        //default width, no units
+        sut = new ConsoleProgressBar("Test5", 1581000);
+        Assert.assertEquals("Test5", sut.getTitle());
+        Assert.assertEquals(1581000, sut.getTotal());
+        Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_WIDTH, sut.getWidth());
+        Assert.assertEquals("", sut.getUnits());
+        Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, sut.getAutoPrint());
     }
     
     /**

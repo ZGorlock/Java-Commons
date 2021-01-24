@@ -293,7 +293,16 @@ public class StringComparisonUtilityTest {
      */
     @Test
     public void testStringComparePhonetic() throws Exception {
-        //TODO
+        //general
+        Assert.assertEquals(1.0, StringComparisonUtility.stringComparePhonetic("Something", "Something"), 0.0000001);
+        Assert.assertEquals(0.5, StringComparisonUtility.stringComparePhonetic("Something", "Some"), 0.0000001);
+        Assert.assertEquals(1.0, StringComparisonUtility.stringComparePhonetic("Some", "Sum"), 0.0000001);
+        Assert.assertEquals(0.75, StringComparisonUtility.stringComparePhonetic("Something", "Sumfink"), 0.0000001);
+        
+        //invalid
+        Assert.assertEquals(0, StringComparisonUtility.stringComparePhonetic("Something", ""), 0.0000001);
+        Assert.assertEquals(0, StringComparisonUtility.stringComparePhonetic("", "Something"), 0.0000001);
+        Assert.assertEquals(0, StringComparisonUtility.stringComparePhonetic("", ""), 0.0000001);
     }
     
     /**
@@ -485,10 +494,22 @@ public class StringComparisonUtilityTest {
      * @throws Exception When there is an exception.
      * @see StringComparisonUtility#extractVariables(String, String, int[][], int, int, UUID, List, List, boolean, boolean)
      * @see StringComparisonUtility#extractVariables(String, String, int[][], List, List, boolean)
+     * @see #testExtractVariablesStandard()
+     * @see #testExtractVariablesSpecial()
      */
-    @SuppressWarnings("RedundantOperationOnEmptyContainer")
     @Test
     public void testExtractVariables() throws Exception {
+        testExtractVariablesStandard();
+        testExtractVariablesSpecial();
+    }
+    
+    /**
+     * Helper method for JUnit test of extractVariables for standard cases.
+     *
+     * @throws Exception When there is an exception.
+     */
+    @SuppressWarnings("RedundantOperationOnEmptyContainer")
+    private void testExtractVariablesStandard() throws Exception {
         List<List<String>> vars = new ArrayList<>();
         List<List<String>> tokens = new ArrayList<>();
         List<String> expectedVars = new ArrayList<>();
@@ -1389,6 +1410,19 @@ public class StringComparisonUtilityTest {
         expectedVars.clear();
         expectedTokens.clear();
         Assert.assertTrue(containsExtraction(vars, tokens, expectedVars, expectedTokens));
+    }
+    
+    /**
+     * Helper method for JUnit test of extractVariables for special cases.
+     *
+     * @throws Exception When there is an exception.
+     */
+    @SuppressWarnings("RedundantOperationOnEmptyContainer")
+    private void testExtractVariablesSpecial() throws Exception {
+        List<List<String>> vars = new ArrayList<>();
+        List<List<String>> tokens = new ArrayList<>();
+        List<String> expectedVars = new ArrayList<>();
+        List<String> expectedTokens = new ArrayList<>();
         
         
         //ignore case

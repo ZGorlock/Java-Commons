@@ -6,6 +6,8 @@
 
 package commons.access;
 
+import java.awt.image.BufferedImage;
+
 import commons.media.ImageUtility;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -14,6 +16,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -103,7 +107,12 @@ public class ClipboardTest {
      */
     @Test
     public void testGetClipboard() throws Exception {
-        //TODO
+        Clipboard.putClipboard("test");
+        Assert.assertEquals("test", Clipboard.getClipboard());
+        Assert.assertEquals("test", Clipboard.getClipboard());
+        Assert.assertEquals("test", Clipboard.getClipboard());
+        Clipboard.putClipboard(null);
+        Assert.assertNull(Clipboard.getClipboard());
     }
     
     /**
@@ -114,7 +123,12 @@ public class ClipboardTest {
      */
     @Test
     public void testPutClipboard() throws Exception {
-        //TODO
+        Clipboard.putClipboard("test");
+        Assert.assertEquals("test", Clipboard.getClipboard());
+        Assert.assertEquals("test", Clipboard.getClipboard());
+        Assert.assertEquals("test", Clipboard.getClipboard());
+        Clipboard.putClipboard(null);
+        Assert.assertNull(Clipboard.getClipboard());
     }
     
     /**
@@ -125,7 +139,10 @@ public class ClipboardTest {
      */
     @Test
     public void testGetClipboardImage() throws Exception {
-        //TODO
+        PowerMockito.mockStatic(ImageUtility.class);
+        Clipboard.getClipboardImage();
+        PowerMockito.verifyStatic(ImageUtility.class);
+        ImageUtility.copyImageFromClipboard();
     }
     
     /**
@@ -136,7 +153,11 @@ public class ClipboardTest {
      */
     @Test
     public void testPutClipboardImage() throws Exception {
-        //TODO
+        PowerMockito.mockStatic(ImageUtility.class);
+        BufferedImage image = new BufferedImage(1, 1, BufferedImage.TYPE_INT_RGB);
+        Clipboard.putClipboardImage(image);
+        PowerMockito.verifyStatic(ImageUtility.class);
+        ImageUtility.copyImageToClipboard(ArgumentMatchers.eq(image));
     }
     
     /**
@@ -147,7 +168,9 @@ public class ClipboardTest {
      */
     @Test
     public void testLogClipboard() throws Exception {
-        //TODO
+        Boolean log = Clipboard.logClipboard();
+        Assert.assertNotNull(log);
+        Assert.assertEquals(log, Clipboard.logClipboard());
     }
     
 }

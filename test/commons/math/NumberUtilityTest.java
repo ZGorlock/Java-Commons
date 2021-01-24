@@ -92,7 +92,7 @@ public class NumberUtilityTest {
     @Test
     public void testConstants() throws Exception {
         //patterns
-        Assert.assertEquals("-?[0-9A-Fa-f]+(?:\\.[0-9A-Fa-f]+)?", NumberUtility.HEX_NUMBER_PATTERN.pattern());
+        Assert.assertEquals("-?[0-9A-Fa-f]*(?:\\.[0-9A-Fa-f]+)?", NumberUtility.HEX_NUMBER_PATTERN.pattern());
     }
     
     /**

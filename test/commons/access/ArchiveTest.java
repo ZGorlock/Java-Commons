@@ -7,6 +7,7 @@
 package commons.access;
 
 import java.io.File;
+import java.util.zip.ZipEntry;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -108,10 +109,6 @@ public class ArchiveTest {
         Assert.assertEquals(Archive.ArchiveType.ZIP, Archive.ArchiveType.values()[0]);
         Assert.assertEquals(Archive.ArchiveType.JAR, Archive.ArchiveType.values()[1]);
         
-        //name
-        Assert.assertEquals("zip", Archive.ArchiveType.ZIP.name());
-        Assert.assertEquals("jar", Archive.ArchiveType.JAR.name());
-        
         //toString
         Assert.assertEquals("zip", Archive.ArchiveType.ZIP.toString());
         Assert.assertEquals("jar", Archive.ArchiveType.JAR.toString());
@@ -125,7 +122,13 @@ public class ArchiveTest {
      */
     @Test
     public void testCompressionMethod() throws Exception {
-        //TODO
+        Assert.assertEquals(2, Archive.CompressionMethod.values().length);
+        Assert.assertEquals(Archive.CompressionMethod.STORE, Archive.CompressionMethod.values()[0]);
+        Assert.assertEquals(Archive.CompressionMethod.COMPRESS, Archive.CompressionMethod.values()[1]);
+    
+        //getLevel
+        Assert.assertEquals(ZipEntry.STORED, Archive.CompressionMethod.STORE.getLevel());
+        Assert.assertEquals(ZipEntry.DEFLATED, Archive.CompressionMethod.COMPRESS.getLevel());
     }
     
     /**

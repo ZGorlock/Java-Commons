@@ -154,6 +154,64 @@ public final class Console {
     //Functions
     
     /**
+     * Returns the code for an effect.
+     *
+     * @param effect The effect.
+     * @return The code for the effect.
+     */
+    private static String effectCode(ConsoleEffect effect) {
+        return String.valueOf(effect.getCode());
+    }
+    
+    /**
+     * Returns the code for a set of effects.
+     *
+     * @param effects The effects to add.
+     * @return The code for the set of effects.
+     */
+    private static String effectSetCode(ConsoleEffect... effects) {
+        StringBuilder effectSetCode = new StringBuilder();
+        for (ConsoleEffect effect : effects) {
+            if (effect == ConsoleEffect.RESET) {
+                continue;
+            }
+            if (effectSetCode.length() > 0) {
+                effectSetCode.append(';');
+            }
+            effectSetCode.append(effect.getCode());
+        }
+        return effectSetCode.toString();
+    }
+    
+    /**
+     * Returns the key for a code or set of codes.
+     *
+     * @param code The code or set of codes.
+     * @return The key for the code or set of codes.
+     */
+    private static String codeKey(String... code) {
+        StringBuilder codeBuilder = new StringBuilder();
+        for (String codeEntry : code) {
+            if (!codeEntry.isEmpty() && (codeBuilder.length() > 0)) {
+                codeBuilder.append(';');
+            }
+            codeBuilder.append(codeEntry);
+        }
+        return (codeBuilder.length() > 0) ? ("\u001B[" + codeBuilder.toString() + 'm') : "";
+    }
+    
+    /**
+     * Returns a string with an effect.
+     *
+     * @param key    The key of the effect.
+     * @param string The string.
+     * @return The string with the effect.
+     */
+    private static String effect(String key, String string) {
+        return key + string + ConsoleEffect.RESET.getKey();
+    }
+    
+    /**
      * Adds an effect to the string for output to the console.
      *
      * @param string The string to add an effect to.
@@ -232,6 +290,26 @@ public final class Console {
     }
     
     /**
+     * Returns the code for an 8bit color.
+     *
+     * @param color The color.
+     * @return The code for the 8bit color.
+     */
+    private static String color8BitCode(int color) {
+        return "38;5;" + color;
+    }
+    
+    /**
+     * Returns the code for an 8bit background.
+     *
+     * @param color The color.
+     * @return The code for the 8bit background.
+     */
+    private static String background8BitCode(int color) {
+        return "48;5;" + color;
+    }
+    
+    /**
      * Adds 24-bit color to the string for output to the console.
      *
      * @param string The string to add color to.
@@ -267,6 +345,30 @@ public final class Console {
         }
         
         return effect(codeKey(color24BitCode(red, green, blue), background24BitCode(redBg, greenBg, blueBg)), string);
+    }
+    
+    /**
+     * Returns the code for an 24bit color.
+     *
+     * @param red   The red element of the color.
+     * @param green The green element of the color.
+     * @param blue  The blue element of the color.
+     * @return The code for the 24bit color.
+     */
+    private static String color24BitCode(int red, int green, int blue) {
+        return "38;2;" + red + ';' + green + ';' + blue;
+    }
+    
+    /**
+     * Returns the code for an 24bit background.
+     *
+     * @param red   The red element of the background.
+     * @param green The green element of the background.
+     * @param blue  The blue element of the background.
+     * @return The code for the 24bit background.
+     */
+    private static String background24BitCode(int red, int green, int blue) {
+        return "48;2;" + red + ';' + green + ';' + blue;
     }
     
     /**
@@ -374,108 +476,6 @@ public final class Console {
         }
         
         return effect(codeKey(effectSetCode(effects), color24BitCode(red, green, blue), background24BitCode(redBg, greenBg, blueBg)), string);
-    }
-    
-    /**
-     * Returns the code for an effect.
-     *
-     * @param effect The effect.
-     * @return The code for the effect.
-     */
-    private static String effectCode(ConsoleEffect effect) {
-        return String.valueOf(effect.getCode());
-    }
-    
-    /**
-     * Returns the code for a set of effects.
-     *
-     * @param effects The effects to add.
-     * @return The code for the set of effects.
-     */
-    private static String effectSetCode(ConsoleEffect... effects) {
-        StringBuilder effectSetCode = new StringBuilder();
-        for (ConsoleEffect effect : effects) {
-            if (effect == ConsoleEffect.RESET) {
-                continue;
-            }
-            if (effectSetCode.length() > 0) {
-                effectSetCode.append(';');
-            }
-            effectSetCode.append(effect.getCode());
-        }
-        return effectSetCode.toString();
-    }
-    
-    /**
-     * Returns the code for an 8bit color.
-     *
-     * @param color The color.
-     * @return The code for the 8bit color.
-     */
-    private static String color8BitCode(int color) {
-        return "38;5;" + color;
-    }
-    
-    /**
-     * Returns the code for an 8bit background.
-     *
-     * @param color The color.
-     * @return The code for the 8bit background.
-     */
-    private static String background8BitCode(int color) {
-        return "48;5;" + color;
-    }
-    
-    /**
-     * Returns the code for an 24bit color.
-     *
-     * @param red   The red element of the color.
-     * @param green The green element of the color.
-     * @param blue  The blue element of the color.
-     * @return The code for the 24bit color.
-     */
-    private static String color24BitCode(int red, int green, int blue) {
-        return "38;2;" + red + ';' + green + ';' + blue;
-    }
-    
-    /**
-     * Returns the code for an 24bit background.
-     *
-     * @param red   The red element of the background.
-     * @param green The green element of the background.
-     * @param blue  The blue element of the background.
-     * @return The code for the 24bit background.
-     */
-    private static String background24BitCode(int red, int green, int blue) {
-        return "48;2;" + red + ';' + green + ';' + blue;
-    }
-    
-    /**
-     * Returns the key for a code or set of codes.
-     *
-     * @param code The code or set of codes.
-     * @return The key for the code or set of codes.
-     */
-    private static String codeKey(String... code) {
-        StringBuilder codeBuilder = new StringBuilder();
-        for (String codeEntry : code) {
-            if (!codeEntry.isEmpty() && (codeBuilder.length() > 0)) {
-                codeBuilder.append(';');
-            }
-            codeBuilder.append(codeEntry);
-        }
-        return (codeBuilder.length() > 0) ? ("\u001B[" + codeBuilder.toString() + 'm') : "";
-    }
-    
-    /**
-     * Returns a string with an effect.
-     *
-     * @param key    The key of the effect.
-     * @param string The string.
-     * @return The string with the effect.
-     */
-    private static String effect(String key, String string) {
-        return key + string + ConsoleEffect.RESET.getKey();
     }
     
 }

@@ -68,7 +68,7 @@ public class ConsoleProgressBar {
     private long current = 0;
     
     /**
-     * The completed size of the progress at the time of the last update.
+     * The completed progress of the progress bar at the time of the last update.
      */
     private long previous = 0;
     
@@ -497,6 +497,126 @@ public class ConsoleProgressBar {
         int seconds = (int) time;
         
         return "ETA: " + StringUtility.padZero(hours, 2) + ':' + StringUtility.padZero(minutes, 2) + ':' + StringUtility.padZero(seconds, 2);
+    }
+    
+    
+    //Getters
+    
+    /**
+     * Returns the title of the progress bar.
+     *
+     * @return The title of the progress bar.
+     */
+    public String getTitle() {
+        return title;
+    }
+    
+    /**
+     * Returns the total progress of the progress bar.
+     *
+     * @return The total progress of the progress bar.
+     */
+    public long getTotal() {
+        return total;
+    }
+    
+    /**
+     * Returns the progress of the progress bar.
+     *
+     * @return The progress of the progress bar.
+     */
+    public long getProgress() {
+        return progress;
+    }
+    
+    /**
+     * Returns the currently completed progress of the progress bar.
+     *
+     * @return The currently completed progress of the progress bar.
+     */
+    public long getCurrent() {
+        return current;
+    }
+    
+    /**
+     * Returns the completed progress of the progress bar at the time of the last update.
+     *
+     * @return The completed progress of the progress bar at the time of the last update.
+     */
+    public long getPrevious() {
+        return previous;
+    }
+    
+    /**
+     * Returns the initial progress of the progress bar.
+     *
+     * @return The initial progress of the progress bar.
+     */
+    public long getInitialProgress() {
+        return initialProgress;
+    }
+    
+    /**
+     * Returns the initial duration of the progress bar in seconds.
+     *
+     * @return The initial duration of the progress bar in seconds.
+     */
+    public long getInitialDuration() {
+        return initialDuration;
+    }
+    
+    /**
+     * Returns the time of the current update of the progress bar.
+     *
+     * @return The time of the current update of the progress bar.
+     */
+    public long getCurrentUpdate() {
+        return currentUpdate;
+    }
+    
+    /**
+     * Returns the time of the previous update of the progress bar.
+     *
+     * @return The time of the previous update of the progress bar.
+     */
+    public long getPreviousUpdate() {
+        return previousUpdate;
+    }
+    
+    /**
+     * Returns the time the progress bar was updated for the firstUpdate time.
+     *
+     * @return The time the progress bar was updated for the firstUpdate time.
+     */
+    public long getFirstUpdate() {
+        return firstUpdate;
+    }
+    
+    /**
+     * Returns the width of the bar in the progress bar.
+     *
+     * @return The width of the bar in the progress bar.
+     */
+    public int getWidth() {
+        return width;
+    }
+    
+    /**
+     * Returns the units of the progress bar.
+     *
+     * @return The units of the progress bar.
+     */
+    public String getUnits() {
+        return units;
+    }
+    
+    /**
+     * Returns the flag indicating whether or not to automatically print the progress bar after an update.
+     *
+     * @return The flag indicating whether or not to automatically print the progress bar after an update.
+     */
+    public boolean getAutoPrint() {
+        return autoPrint;
     }
     
     
