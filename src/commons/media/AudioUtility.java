@@ -1,5 +1,5 @@
 /*
- * File:    Audio.java
+ * File:    AudioUtility.java
  * Package: commons.media
  * Author:  Zachary Gill
  */
@@ -16,19 +16,21 @@ import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent;
 
 /**
- * Handles the audio output of the system.
+ * Handles audio operations.
  */
-public final class Audio {
+public final class AudioUtility {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(Audio.class);
+    private static final Logger logger = LoggerFactory.getLogger(AudioUtility.class);
     
     
     //Functions
+    
+    //TODO
     
     /**
      * Plays an mp3 file and waits until it is done playing.

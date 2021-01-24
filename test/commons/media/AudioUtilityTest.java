@@ -1,5 +1,5 @@
 /*
- * File:    AudioTest.java
+ * File:    AudioUtilityTest.java
  * Package: commons.media
  * Author:  Zachary Gill
  */
@@ -21,22 +21,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of Audio.
+ * JUnit test of AudioUtility.
  *
- * @see Audio
+ * @see AudioUtility
  */
 @SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
-@PrepareForTest({Audio.class})
-public class AudioTest {
+@PrepareForTest({AudioUtility.class})
+public class AudioUtilityTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(AudioTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(AudioUtilityTest.class);
     
     
     //Initialization
@@ -93,11 +93,13 @@ public class AudioTest {
     public void testConstants() throws Exception {
     }
     
+    //TODO
+    
     /**
      * JUnit test of playMp3.
      *
      * @throws Exception When there is an exception.
-     * @see Audio#playMp3(File)
+     * @see AudioUtility#playMp3(File)
      */
     @Test
     public void testPlayMp3() throws Exception {
