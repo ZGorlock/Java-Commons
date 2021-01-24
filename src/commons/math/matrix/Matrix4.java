@@ -11,9 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Defines a 4D Matrix.
+ * Defines a 4-Dimensional Matrix.
  */
-public class Matrix4 {
+public class Matrix4 extends Matrix {
     
     //Logger
     
@@ -23,12 +23,12 @@ public class Matrix4 {
     private static final Logger logger = LoggerFactory.getLogger(Matrix4.class);
     
     
-    //Fields
+    //Constants
     
     /**
-     * The elements of the matrix.
+     * The dimensionality of a 4D Matrix.
      */
-    public double[] values;
+    public static final int DIMENSIONALITY = 4;
     
     
     //Constructors
@@ -37,9 +37,10 @@ public class Matrix4 {
      * The constructor for a 4D Matrix.
      *
      * @param values The elements of the matrix.
+     * @see Matrix#Matrix(double[])
      */
     public Matrix4(double[] values) {
-        this.values = values;
+        super(values);
     }
     
     
@@ -71,7 +72,7 @@ public class Matrix4 {
      * @throws ArithmeticException When the vector is not of the proper size.
      */
     public Vector multiply(Vector other) throws ArithmeticException {
-        if (other.getDimension() != 4) {
+        if (other.getDimensionality() != getDimensionality()) {
             throw new ArithmeticException("The vector: " + other + " is of improper size for multiplication with a 4D matrix.");
         }
         
@@ -82,6 +83,20 @@ public class Matrix4 {
             }
         }
         return new Vector(result[0], result[1], result[2], result[3]);
+    }
+    
+    
+    //Getters
+    
+    /**
+     * Returns the dimensionality of the 4D Matrix.
+     *
+     * @return The dimensionality of the 4D Matrix.
+     * @see Matrix#getDimensionality()
+     */
+    @Override
+    public int getDimensionality() {
+        return DIMENSIONALITY;
     }
     
 }

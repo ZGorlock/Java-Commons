@@ -10,9 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Defines a 2D Matrix.
+ * Defines a 2-Dimensional Matrix.
  */
-public class Matrix2 {
+public class Matrix2 extends Matrix {
     
     //Logger
     
@@ -22,12 +22,12 @@ public class Matrix2 {
     private static final Logger logger = LoggerFactory.getLogger(Matrix2.class);
     
     
-    //Fields
+    //Constants
     
     /**
-     * The elements of the matrix.
+     * The dimensionality of a 2D Matrix.
      */
-    public double[] values;
+    public static final int DIMENSIONALITY = 2;
     
     
     //Constructors
@@ -36,9 +36,10 @@ public class Matrix2 {
      * The constructor for a 2D Matrix.
      *
      * @param values The elements of the matrix.
+     * @see Matrix#Matrix(double[])
      */
     public Matrix2(double[] values) {
-        this.values = values;
+        super(values);
     }
     
     
@@ -51,6 +52,21 @@ public class Matrix2 {
      */
     public double determinant() {
         return (values[0] * values[3]) - (values[1] * values[2]);
+    }
+    
+    
+    //Getters
+    
+    /**
+     * Returns the dimensionality of the 2D Matrix.
+     *
+     * @return The dimensionality of the 2D Matrix.
+     * @see Matrix#getDimensionality()
+     * @see Matrix2#DIMENSIONALITY
+     */
+    @Override
+    public int getDimensionality() {
+        return DIMENSIONALITY;
     }
     
 }

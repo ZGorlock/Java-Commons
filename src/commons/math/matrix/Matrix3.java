@@ -11,9 +11,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Defines a 3D Matrix.
+ * Defines a 3-Dimensional Matrix.
  */
-public class Matrix3 {
+public class Matrix3 extends Matrix {
     
     //Logger
     
@@ -23,12 +23,12 @@ public class Matrix3 {
     private static final Logger logger = LoggerFactory.getLogger(Matrix3.class);
     
     
-    //Fields
+    //Constants
     
     /**
-     * The elements of the matrix.
+     * The dimensionality of a 3D Matrix.
      */
-    public double[] values;
+    public static final int DIMENSIONALITY = 3;
     
     
     //Constructors
@@ -37,9 +37,10 @@ public class Matrix3 {
      * The constructor for a 3D Matrix.
      *
      * @param values The elements of the matrix.
+     * @see Matrix#Matrix(double[])
      */
     public Matrix3(double[] values) {
-        this.values = values;
+        super(values);
     }
     
     
@@ -71,7 +72,7 @@ public class Matrix3 {
      * @throws ArithmeticException When the vector is not of the proper size.
      */
     public Vector multiply(Vector other) throws ArithmeticException {
-        if (other.getDimension() != 3) {
+        if (other.getDimensionality() != getDimensionality()) {
             throw new ArithmeticException("The vector: " + other + " is of improper size for multiplication with a 3D matrix.");
         }
         
@@ -203,7 +204,7 @@ public class Matrix3 {
      * @throws ArithmeticException When the vector is not of the proper size.
      */
     public Vector transform(Vector in) throws ArithmeticException {
-        if (in.getDimension() != 3) {
+        if (in.getDimensionality() != getDimensionality()) {
             throw new ArithmeticException("The vector: " + in + " is of improper size for transformation with a 3D matrix.");
         }
         
@@ -228,6 +229,21 @@ public class Matrix3 {
                 values[a11], values[a12],
                 values[a21], values[a22]
         });
+    }
+    
+    
+    //Getters
+    
+    /**
+     * Returns the dimensionality of the 3D Matrix.
+     *
+     * @return The dimensionality of the 3D Matrix.
+     * @see Matrix#getDimensionality()
+     * @see Matrix3#DIMENSIONALITY
+     */
+    @Override
+    public int getDimensionality() {
+        return DIMENSIONALITY;
     }
     
 }
