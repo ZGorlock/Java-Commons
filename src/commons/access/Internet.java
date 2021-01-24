@@ -18,6 +18,7 @@ import java.net.URLEncoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import commons.log.CommonsLogging;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringEscapeUtils;
 import org.jsoup.Jsoup;
@@ -215,7 +216,7 @@ public final class Internet {
      * @return Whether internet logging is enabled or not.
      */
     public static boolean logInternet() {
-        return DEFAULT_LOG_INTERNET;
+        return CommonsLogging.logInternet();
     }
     
 }

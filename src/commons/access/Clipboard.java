@@ -14,6 +14,7 @@ import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 
+import commons.log.CommonsLogging;
 import commons.media.ImageUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -100,7 +101,7 @@ public final class Clipboard {
      * @return Whether clipboard logging is enabled or not.
      */
     public static boolean logClipboard() {
-        return DEFAULT_LOG_CLIPBOARD;
+        return CommonsLogging.logClipboard();
     }
     
 }

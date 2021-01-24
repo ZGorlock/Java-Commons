@@ -21,6 +21,7 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import commons.log.CommonsLogging;
 import commons.string.StringUtility;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -46,7 +47,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
-@PrepareForTest({Filesystem.class, FileUtils.class})
+@PrepareForTest({Filesystem.class, FileUtils.class, CommonsLogging.class})
 public class FilesystemTest {
     
     //Logger
@@ -14222,9 +14223,12 @@ public class FilesystemTest {
      */
     @Test
     public void testLogFilesystem() throws Exception {
-        Boolean log = Filesystem.logFilesystem();
-        Assert.assertNotNull(log);
-        Assert.assertEquals(log, Filesystem.logFilesystem());
+        PowerMockito.when(Filesystem.class, "logFilesystem").thenCallRealMethod();
+        PowerMockito.mockStatic(CommonsLogging.class);
+        Filesystem.logFilesystem();
+        PowerMockito.verifyStatic(CommonsLogging.class);
+        CommonsLogging.logFilesystem();
+        PowerMockito.when(Filesystem.class, "logFilesystem").thenReturn(false);
     }
     
 }

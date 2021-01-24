@@ -8,6 +8,7 @@ package commons.access;
 
 import java.io.File;
 
+import commons.log.CommonsLogging;
 import org.jsoup.nodes.Document;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -16,6 +17,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -30,7 +32,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
-@PrepareForTest({Internet.class})
+@PrepareForTest({Internet.class, CommonsLogging.class})
 public class InternetTest {
     
     //Logger
@@ -174,9 +176,10 @@ public class InternetTest {
      */
     @Test
     public void testLogInternet() throws Exception {
-        Boolean log = Internet.logInternet();
-        Assert.assertNotNull(log);
-        Assert.assertEquals(log, Internet.logInternet());
+        PowerMockito.mockStatic(CommonsLogging.class);
+        Internet.logInternet();
+        PowerMockito.verifyStatic(CommonsLogging.class);
+        CommonsLogging.logInternet();
     }
     
 }

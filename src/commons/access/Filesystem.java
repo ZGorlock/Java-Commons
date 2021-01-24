@@ -28,6 +28,7 @@ import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.regex.Pattern;
 
+import commons.log.CommonsLogging;
 import commons.string.StringUtility;
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
@@ -2156,7 +2157,7 @@ public final class Filesystem {
      * @return Whether filesystem logging is enabled or not.
      */
     public static boolean logFilesystem() {
-        return DEFAULT_LOG_FILESYSTEM;
+        return CommonsLogging.logFilesystem();
     }
     
 }

@@ -8,6 +8,7 @@ package commons.access;
 
 import java.awt.image.BufferedImage;
 
+import commons.log.CommonsLogging;
 import commons.media.ImageUtility;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -32,7 +33,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
-@PrepareForTest({Clipboard.class, ImageUtility.class})
+@PrepareForTest({Clipboard.class, ImageUtility.class, CommonsLogging.class})
 public class ClipboardTest {
     
     //Logger
@@ -168,9 +169,10 @@ public class ClipboardTest {
      */
     @Test
     public void testLogClipboard() throws Exception {
-        Boolean log = Clipboard.logClipboard();
-        Assert.assertNotNull(log);
-        Assert.assertEquals(log, Clipboard.logClipboard());
+        PowerMockito.mockStatic(CommonsLogging.class);
+        Clipboard.logClipboard();
+        PowerMockito.verifyStatic(CommonsLogging.class);
+        CommonsLogging.logClipboard();
     }
     
 }
