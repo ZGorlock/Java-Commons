@@ -1,5 +1,5 @@
 /*
- * File:    ScreenUtilityTest.java
+ * File:    ScreenSizeTest.java
  * Package: commons.graphics
  * Author:  Zachary Gill
  */
@@ -20,22 +20,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of ScreenUtility.
+ * JUnit test of ScreenSize.
  *
- * @see ScreenUtility
+ * @see ScreenSize
  */
 @SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
-@PrepareForTest({ScreenUtility.class})
-public class ScreenUtilityTest {
+@PrepareForTest({ScreenSize.class})
+public class ScreenSizeTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(ScreenUtilityTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ScreenSizeTest.class);
     
     
     //Initialization
@@ -87,35 +87,35 @@ public class ScreenUtilityTest {
      * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
-     * @see ScreenUtility#MONITOR_WIDTH
-     * @see ScreenUtility#MONITOR_HEIGHT
-     * @see ScreenUtility#TASKBAR_WIDTH
-     * @see ScreenUtility#TASKBAR_HEIGHT
-     * @see ScreenUtility#SCREEN_WIDTH
-     * @see ScreenUtility#SCREEN_HEIGHT
-     * @see ScreenUtility#BORDER_WIDTH
-     * @see ScreenUtility#BORDER_HEIGHT
-     * @see ScreenUtility#DISPLAY_WIDTH
-     * @see ScreenUtility#DISPLAY_HEIGHT
+     * @see ScreenSize#MONITOR_WIDTH
+     * @see ScreenSize#MONITOR_HEIGHT
+     * @see ScreenSize#TASKBAR_WIDTH
+     * @see ScreenSize#TASKBAR_HEIGHT
+     * @see ScreenSize#SCREEN_WIDTH
+     * @see ScreenSize#SCREEN_HEIGHT
+     * @see ScreenSize#BORDER_WIDTH
+     * @see ScreenSize#BORDER_HEIGHT
+     * @see ScreenSize#DISPLAY_WIDTH
+     * @see ScreenSize#DISPLAY_HEIGHT
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertTrue(ScreenUtility.MONITOR_WIDTH > 0);
-        Assert.assertTrue(ScreenUtility.MONITOR_HEIGHT > 0);
-        Assert.assertTrue(ScreenUtility.TASKBAR_WIDTH >= 0);
-        Assert.assertTrue(ScreenUtility.TASKBAR_HEIGHT >= 0);
-        Assert.assertTrue(ScreenUtility.SCREEN_WIDTH > 0);
-        Assert.assertTrue(ScreenUtility.SCREEN_HEIGHT > 0);
-        Assert.assertTrue(ScreenUtility.BORDER_WIDTH >= 0);
-        Assert.assertTrue(ScreenUtility.BORDER_HEIGHT >= 0);
-        Assert.assertTrue(ScreenUtility.DISPLAY_WIDTH > 0);
-        Assert.assertTrue(ScreenUtility.DISPLAY_HEIGHT > 0);
+        Assert.assertTrue(ScreenSize.MONITOR_WIDTH > 0);
+        Assert.assertTrue(ScreenSize.MONITOR_HEIGHT > 0);
+        Assert.assertTrue(ScreenSize.TASKBAR_WIDTH >= 0);
+        Assert.assertTrue(ScreenSize.TASKBAR_HEIGHT >= 0);
+        Assert.assertTrue(ScreenSize.SCREEN_WIDTH > 0);
+        Assert.assertTrue(ScreenSize.SCREEN_HEIGHT > 0);
+        Assert.assertTrue(ScreenSize.BORDER_WIDTH >= 0);
+        Assert.assertTrue(ScreenSize.BORDER_HEIGHT >= 0);
+        Assert.assertTrue(ScreenSize.DISPLAY_WIDTH > 0);
+        Assert.assertTrue(ScreenSize.DISPLAY_HEIGHT > 0);
         
-        Assert.assertTrue(ScreenUtility.SCREEN_WIDTH <= ScreenUtility.MONITOR_WIDTH);
-        Assert.assertTrue(ScreenUtility.DISPLAY_WIDTH <= ScreenUtility.SCREEN_WIDTH);
+        Assert.assertTrue(ScreenSize.SCREEN_WIDTH <= ScreenSize.MONITOR_WIDTH);
+        Assert.assertTrue(ScreenSize.DISPLAY_WIDTH <= ScreenSize.SCREEN_WIDTH);
         
-        Assert.assertTrue(ScreenUtility.SCREEN_HEIGHT <= ScreenUtility.MONITOR_HEIGHT);
-        Assert.assertTrue(ScreenUtility.DISPLAY_HEIGHT <= ScreenUtility.SCREEN_HEIGHT);
+        Assert.assertTrue(ScreenSize.SCREEN_HEIGHT <= ScreenSize.MONITOR_HEIGHT);
+        Assert.assertTrue(ScreenSize.DISPLAY_HEIGHT <= ScreenSize.SCREEN_HEIGHT);
     }
     
 }

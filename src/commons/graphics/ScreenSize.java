@@ -1,5 +1,5 @@
 /*
- * File:    ScreenUtility.java
+ * File:    ScreenSize.java
  * Package: commons.graphics
  * Author:  Zachary Gill
  */
@@ -22,14 +22,14 @@ import org.slf4j.LoggerFactory;
 /**
  * Handles the screen size.
  */
-public final class ScreenUtility {
+public final class ScreenSize {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(ScreenUtility.class);
+    private static final Logger logger = LoggerFactory.getLogger(ScreenSize.class);
     
     
     //Static Fields
