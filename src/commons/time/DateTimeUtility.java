@@ -6,7 +6,9 @@
 
 package commons.time;
 
+import java.text.SimpleDateFormat;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -149,7 +151,7 @@ public final class DateTimeUtility {
     /**
      * Converts a date to a formatted date string.
      *
-     * @param date A date in the format 'YYYY-MM-DD'.
+     * @param date A date string in the format 'yyyy-MM-dd'.
      * @return A formatted date string.
      * @see #monthToMonthString(int)
      * @see #dayToDayOfMonthString(int)
@@ -170,6 +172,17 @@ public final class DateTimeUtility {
         } else {
             return date;
         }
+    }
+    
+    /**
+     * Converts a date to a formatted date string.
+     *
+     * @param date A date.
+     * @return A formatted date string.
+     * @see #dateToDateString(String)
+     */
+    public static String dateToDateString(Date date) {
+        return dateToDateString(new SimpleDateFormat("yyyy-MM-dd").format(date));
     }
     
     /**
@@ -207,7 +220,7 @@ public final class DateTimeUtility {
     /**
      * Converts a time to a formatted time string.
      *
-     * @param time           A time in the format 'HH:mm' or 'HH:mm:ss'.
+     * @param time           A time string in the format 'HH:mm' or 'HH:mm:ss'.
      * @param includeSeconds A flag indicating whether to include seconds or not.
      * @return A formatted time string.
      */
@@ -224,7 +237,7 @@ public final class DateTimeUtility {
             }
             return (((hour % 12) == 0) ? 12 : (hour % 12)) + ":" +
                     StringUtility.padZero(minute, 2) +
-                    ((includeSeconds && (second > MINIMUM_SECOND)) ? (':' + StringUtility.padZero(second, 2)) : "") +
+                    (includeSeconds ? (':' + StringUtility.padZero(second, 2)) : "") +
                     (((hour % 12) == hour) ? " AM" : " PM");
             
         } else {
@@ -235,7 +248,19 @@ public final class DateTimeUtility {
     /**
      * Converts a time to a formatted time string.
      *
-     * @param time A time in the format 'HH-mm-ss'.
+     * @param time           A time.
+     * @param includeSeconds A flag indicating whether to include seconds or not.
+     * @return A formatted time string.
+     * @see #timeToTimeString(String, boolean)
+     */
+    public static String timeToTimeString(Date time, boolean includeSeconds) {
+        return timeToTimeString(new SimpleDateFormat("HH:mm:ss").format(time), includeSeconds);
+    }
+    
+    /**
+     * Converts a time to a formatted time string.
+     *
+     * @param time A time string in the format 'HH-mm-ss'.
      * @return A formatted time string.
      * @see #timeToTimeString(String, boolean)
      */
@@ -244,12 +269,84 @@ public final class DateTimeUtility {
     }
     
     /**
+     * Converts a time to a formatted time string.
+     *
+     * @param time A time.
+     * @return A formatted time string.
+     * @see #timeToTimeString(String)
+     */
+    public static String timeToTimeString(Date time) {
+        return timeToTimeString(new SimpleDateFormat("HH:mm:ss").format(time));
+    }
+    
+    /**
      * Converts a time to a formatted military time string.
      *
-     * @param time A time in the format 'HH:mm' or 'HH:mm:ss'.
+     * @param time           A time string in the format 'HH:mm' or 'HH:mm:ss'.
+     * @param includeSeconds A flag indicating whether to include seconds or not.
      * @return A formatted military time string.
      */
+    public static String timeToMilitaryTimeString(String time, boolean includeSeconds) {
+        Matcher timeMatcher = TIME_PATTERN.matcher(time);
+        
+        if (timeMatcher.matches()) {
+            int hour = Integer.parseInt(timeMatcher.group("hour"));
+            int minute = Integer.parseInt(timeMatcher.group("minute"));
+            int second = (StringUtility.numberOfOccurrences(":", time) > 1) ? Integer.parseInt(timeMatcher.group("second")) : 0;
+            
+            if (!validTime(hour, minute, second)) {
+                return time;
+            }
+            return StringUtility.padZero(hour, 2) + ":" +
+                    StringUtility.padZero(minute, 2) +
+                    (includeSeconds ? (':' + StringUtility.padZero(second, 2)) : "");
+            
+        } else {
+            return time;
+        }
+    }
+    
+    /**
+     * Converts a time to a formatted military time string.
+     *
+     * @param time           A time.
+     * @param includeSeconds A flag indicating whether to include seconds or not.
+     * @return A formatted military time string.
+     * @see #timeToMilitaryTimeString(String, boolean)
+     */
+    public static String timeToMilitaryTimeString(Date time, boolean includeSeconds) {
+        return timeToMilitaryTimeString(new SimpleDateFormat("HH:mm:ss").format(time), includeSeconds);
+    }
+    
+    /**
+     * Converts a time to a formatted military time string.
+     *
+     * @param time A time string in the format 'HH-mm-ss'.
+     * @return A formatted military time string.
+     * @see #timeToMilitaryTimeString(String, boolean)
+     */
     public static String timeToMilitaryTimeString(String time) {
+        return timeToMilitaryTimeString(time, false);
+    }
+    
+    /**
+     * Converts a time to a formatted military time string.
+     *
+     * @param time A time.
+     * @return A formatted military time string.
+     * @see #timeToMilitaryTimeString(String)
+     */
+    public static String timeToMilitaryTimeString(Date time) {
+        return timeToMilitaryTimeString(new SimpleDateFormat("HH:mm:ss").format(time));
+    }
+    
+    /**
+     * Converts a time to a formatted military hours string.
+     *
+     * @param time A time string in the format 'HH:mm' or 'HH:mm:ss'.
+     * @return A formatted military hours string.
+     */
+    public static String timeToMilitaryHoursString(String time) {
         Matcher timeMatcher = TIME_PATTERN.matcher(time);
         
         if (timeMatcher.matches()) {
@@ -265,6 +362,17 @@ public final class DateTimeUtility {
         } else {
             return time;
         }
+    }
+    
+    /**
+     * Converts a time to a formatted military hours string.
+     *
+     * @param time A time.
+     * @return A formatted military hours string.
+     * @see #timeToMilitaryHoursString(String)
+     */
+    public static String timeToMilitaryHoursString(Date time) {
+        return timeToMilitaryHoursString(new SimpleDateFormat("HH:mm").format(time));
     }
     
     /**
@@ -308,7 +416,7 @@ public final class DateTimeUtility {
     /**
      * Determines the day of the week for a date.
      *
-     * @param date A date in the format 'YYYY-MM-DD'.
+     * @param date A date string in the format 'yyyy-MM-dd'.
      * @return The day of the week on that date.
      * @see #dayOfWeek(int, int, int)
      */
@@ -325,6 +433,17 @@ public final class DateTimeUtility {
         } else {
             return null;
         }
+    }
+    
+    /**
+     * Determines the day of the week for a date.
+     *
+     * @param date A date.
+     * @return The day of the week on that date.
+     * @see #dayOfWeek(String)
+     */
+    public static Weekday dayOfWeek(Date date) {
+        return dayOfWeek(new SimpleDateFormat("yyyy-MM-dd").format(date));
     }
     
     /**
@@ -534,7 +653,7 @@ public final class DateTimeUtility {
     /**
      * Determines if the date specified is a valid date.
      *
-     * @param date A date in the format 'YYYY-MM-DD'.
+     * @param date A date string in the format 'yyyy-MM-dd'.
      * @return Whether the date specified is a valid date or not.
      * @see #validDate(int, int, int)
      */
@@ -571,7 +690,7 @@ public final class DateTimeUtility {
     /**
      * Determines if the time specified is a valid time.
      *
-     * @param time A date in the format 'YYYY-MM-DD'.
+     * @param time A date string in the format 'yyyy-MM-dd'.
      * @return Whether the time specified is a valid time or not.
      * @see #validTime(int, int, int)
      */

@@ -6,6 +6,9 @@
 
 package commons.time;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -169,6 +172,7 @@ public class DateTimeUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see DateTimeUtility#dateToDateString(String)
+     * @see DateTimeUtility#dateToDateString(Date)
      */
     @Test
     public void testDateToDateString() throws Exception {
@@ -196,6 +200,12 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("2000-01-00", DateTimeUtility.dateToDateString("2000-01-00"));
         Assert.assertEquals("2000-01--11", DateTimeUtility.dateToDateString("2000-01--11"));
         Assert.assertEquals("2000-01-57", DateTimeUtility.dateToDateString("2000-01-57"));
+        
+        //date
+        Assert.assertEquals("March 16th, 2017", DateTimeUtility.dateToDateString(new SimpleDateFormat("yyyy-MM-dd").parse("2017-03-16")));
+        Assert.assertEquals("January 1st, 2025", DateTimeUtility.dateToDateString(new SimpleDateFormat("yyyy-MM-dd").parse("2025-01-01")));
+        Assert.assertEquals("December 23rd, 1967", DateTimeUtility.dateToDateString(new SimpleDateFormat("yyyy-MM-dd").parse("1967-12-23")));
+        Assert.assertEquals("February 12th, 1732", DateTimeUtility.dateToDateString(new SimpleDateFormat("yyyy-MM-dd").parse("1732-02-12")));
         
         //invalid date string
         Assert.assertEquals("March 16, 2017", DateTimeUtility.dateToDateString("March 16, 2017"));
@@ -284,7 +294,9 @@ public class DateTimeUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see DateTimeUtility#timeToTimeString(String, boolean)
+     * @see DateTimeUtility#timeToTimeString(Date, boolean)
      * @see DateTimeUtility#timeToTimeString(String)
+     * @see DateTimeUtility#timeToTimeString(Date)
      */
     @Test
     public void testTimeToTimeString() throws Exception {
@@ -309,20 +321,20 @@ public class DateTimeUtilityTest {
         //include seconds
         Assert.assertEquals("11:15:45 AM", DateTimeUtility.timeToTimeString("11:15:45", true));
         Assert.assertEquals("11:15:01 PM", DateTimeUtility.timeToTimeString("23:15:01", true));
-        Assert.assertEquals("12:59 AM", DateTimeUtility.timeToTimeString("00:59:00", true));
-        Assert.assertEquals("12:00 AM", DateTimeUtility.timeToTimeString("00:00:00", true));
-        Assert.assertEquals("11:59 PM", DateTimeUtility.timeToTimeString("23:59:00", true));
+        Assert.assertEquals("12:59:00 AM", DateTimeUtility.timeToTimeString("00:59:00", true));
+        Assert.assertEquals("12:00:00 AM", DateTimeUtility.timeToTimeString("00:00:00", true));
+        Assert.assertEquals("11:59:00 PM", DateTimeUtility.timeToTimeString("23:59:00", true));
         Assert.assertEquals("3:08:59 PM", DateTimeUtility.timeToTimeString("15:08:59", true));
         Assert.assertEquals("1:01:58 PM", DateTimeUtility.timeToTimeString("13:01:58", true));
         
         //include seconds, no seconds
-        Assert.assertEquals("11:15 AM", DateTimeUtility.timeToTimeString("11:15", true));
-        Assert.assertEquals("11:15 PM", DateTimeUtility.timeToTimeString("23:15", true));
-        Assert.assertEquals("12:59 AM", DateTimeUtility.timeToTimeString("00:59", true));
-        Assert.assertEquals("12:00 AM", DateTimeUtility.timeToTimeString("00:00", true));
-        Assert.assertEquals("11:59 PM", DateTimeUtility.timeToTimeString("23:59", true));
-        Assert.assertEquals("3:08 PM", DateTimeUtility.timeToTimeString("15:08", true));
-        Assert.assertEquals("1:01 PM", DateTimeUtility.timeToTimeString("13:01", true));
+        Assert.assertEquals("11:15:00 AM", DateTimeUtility.timeToTimeString("11:15", true));
+        Assert.assertEquals("11:15:00 PM", DateTimeUtility.timeToTimeString("23:15", true));
+        Assert.assertEquals("12:59:00 AM", DateTimeUtility.timeToTimeString("00:59", true));
+        Assert.assertEquals("12:00:00 AM", DateTimeUtility.timeToTimeString("00:00", true));
+        Assert.assertEquals("11:59:00 PM", DateTimeUtility.timeToTimeString("23:59", true));
+        Assert.assertEquals("3:08:00 PM", DateTimeUtility.timeToTimeString("15:08", true));
+        Assert.assertEquals("1:01:00 PM", DateTimeUtility.timeToTimeString("13:01", true));
         
         //invalid ranges
         Assert.assertEquals("-1:15", DateTimeUtility.timeToTimeString("-1:15"));
@@ -361,6 +373,24 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("23:15:5", DateTimeUtility.timeToTimeString("23:15:5", true));
         Assert.assertEquals("23:15:99", DateTimeUtility.timeToTimeString("23:15:99", true));
         
+        //date
+        Assert.assertEquals("11:15 AM", DateTimeUtility.timeToTimeString(new SimpleDateFormat("HH:mm").parse("11:15")));
+        Assert.assertEquals("11:15 PM", DateTimeUtility.timeToTimeString(new SimpleDateFormat("HH:mm").parse("23:15")));
+        Assert.assertEquals("12:59 AM", DateTimeUtility.timeToTimeString(new SimpleDateFormat("HH:mm").parse("00:59")));
+        Assert.assertEquals("12:00 AM", DateTimeUtility.timeToTimeString(new SimpleDateFormat("HH:mm").parse("00:00")));
+        Assert.assertEquals("11:59 PM", DateTimeUtility.timeToTimeString(new SimpleDateFormat("HH:mm").parse("23:59")));
+        Assert.assertEquals("3:08 PM", DateTimeUtility.timeToTimeString(new SimpleDateFormat("HH:mm").parse("15:08")));
+        Assert.assertEquals("1:01 PM", DateTimeUtility.timeToTimeString(new SimpleDateFormat("HH:mm").parse("13:01")));
+        
+        //date, include seconds
+        Assert.assertEquals("11:15:45 AM", DateTimeUtility.timeToTimeString(new SimpleDateFormat("HH:mm:ss").parse("11:15:45"), true));
+        Assert.assertEquals("11:15:01 PM", DateTimeUtility.timeToTimeString(new SimpleDateFormat("HH:mm:ss").parse("23:15:01"), true));
+        Assert.assertEquals("12:59:00 AM", DateTimeUtility.timeToTimeString(new SimpleDateFormat("HH:mm:ss").parse("00:59:00"), true));
+        Assert.assertEquals("12:00:00 AM", DateTimeUtility.timeToTimeString(new SimpleDateFormat("HH:mm:ss").parse("00:00:00"), true));
+        Assert.assertEquals("11:59:00 PM", DateTimeUtility.timeToTimeString(new SimpleDateFormat("HH:mm:ss").parse("23:59:00"), true));
+        Assert.assertEquals("3:08:59 PM", DateTimeUtility.timeToTimeString(new SimpleDateFormat("HH:mm:ss").parse("15:08:59"), true));
+        Assert.assertEquals("1:01:58 PM", DateTimeUtility.timeToTimeString(new SimpleDateFormat("HH:mm:ss").parse("13:01:58"), true));
+        
         //invalid time string
         Assert.assertEquals("11:15 AM", DateTimeUtility.timeToTimeString("11:15 AM"));
         Assert.assertEquals("a time", DateTimeUtility.timeToTimeString("a time"));
@@ -370,27 +400,48 @@ public class DateTimeUtilityTest {
      * JUnit test of timeToMilitaryTimeString.
      *
      * @throws Exception When there is an exception.
+     * @see DateTimeUtility#timeToMilitaryTimeString(String, boolean)
+     * @see DateTimeUtility#timeToMilitaryTimeString(Date, boolean)
      * @see DateTimeUtility#timeToMilitaryTimeString(String)
+     * @see DateTimeUtility#timeToMilitaryTimeString(Date)
      */
     @Test
     public void testTimeToMilitaryTimeString() throws Exception {
         //valid
-        Assert.assertEquals("1115 hours", DateTimeUtility.timeToMilitaryTimeString("11:15"));
-        Assert.assertEquals("2315 hours", DateTimeUtility.timeToMilitaryTimeString("23:15"));
-        Assert.assertEquals("0059 hours", DateTimeUtility.timeToMilitaryTimeString("00:59"));
-        Assert.assertEquals("0000 hours", DateTimeUtility.timeToMilitaryTimeString("00:00"));
-        Assert.assertEquals("2359 hours", DateTimeUtility.timeToMilitaryTimeString("23:59"));
-        Assert.assertEquals("1508 hours", DateTimeUtility.timeToMilitaryTimeString("15:08"));
-        Assert.assertEquals("1301 hours", DateTimeUtility.timeToMilitaryTimeString("13:01"));
+        Assert.assertEquals("11:15", DateTimeUtility.timeToMilitaryTimeString("11:15"));
+        Assert.assertEquals("23:15", DateTimeUtility.timeToMilitaryTimeString("23:15"));
+        Assert.assertEquals("00:59", DateTimeUtility.timeToMilitaryTimeString("00:59"));
+        Assert.assertEquals("00:00", DateTimeUtility.timeToMilitaryTimeString("00:00"));
+        Assert.assertEquals("23:59", DateTimeUtility.timeToMilitaryTimeString("23:59"));
+        Assert.assertEquals("15:08", DateTimeUtility.timeToMilitaryTimeString("15:08"));
+        Assert.assertEquals("13:01", DateTimeUtility.timeToMilitaryTimeString("13:01"));
         
         //seconds
-        Assert.assertEquals("1115 hours", DateTimeUtility.timeToMilitaryTimeString("11:15:45"));
-        Assert.assertEquals("2315 hours", DateTimeUtility.timeToMilitaryTimeString("23:15:01"));
-        Assert.assertEquals("0059 hours", DateTimeUtility.timeToMilitaryTimeString("00:59:00"));
-        Assert.assertEquals("0000 hours", DateTimeUtility.timeToMilitaryTimeString("00:00:00"));
-        Assert.assertEquals("2359 hours", DateTimeUtility.timeToMilitaryTimeString("23:59:00"));
-        Assert.assertEquals("1508 hours", DateTimeUtility.timeToMilitaryTimeString("15:08:59"));
-        Assert.assertEquals("1301 hours", DateTimeUtility.timeToMilitaryTimeString("13:01:58"));
+        Assert.assertEquals("11:15", DateTimeUtility.timeToMilitaryTimeString("11:15:45"));
+        Assert.assertEquals("23:15", DateTimeUtility.timeToMilitaryTimeString("23:15:01"));
+        Assert.assertEquals("00:59", DateTimeUtility.timeToMilitaryTimeString("00:59:00"));
+        Assert.assertEquals("00:00", DateTimeUtility.timeToMilitaryTimeString("00:00:00"));
+        Assert.assertEquals("23:59", DateTimeUtility.timeToMilitaryTimeString("23:59:00"));
+        Assert.assertEquals("15:08", DateTimeUtility.timeToMilitaryTimeString("15:08:59"));
+        Assert.assertEquals("13:01", DateTimeUtility.timeToMilitaryTimeString("13:01:58"));
+        
+        //include seconds
+        Assert.assertEquals("11:15:45", DateTimeUtility.timeToMilitaryTimeString("11:15:45", true));
+        Assert.assertEquals("23:15:01", DateTimeUtility.timeToMilitaryTimeString("23:15:01", true));
+        Assert.assertEquals("00:59:00", DateTimeUtility.timeToMilitaryTimeString("00:59:00", true));
+        Assert.assertEquals("00:00:00", DateTimeUtility.timeToMilitaryTimeString("00:00:00", true));
+        Assert.assertEquals("23:59:00", DateTimeUtility.timeToMilitaryTimeString("23:59:00", true));
+        Assert.assertEquals("15:08:59", DateTimeUtility.timeToMilitaryTimeString("15:08:59", true));
+        Assert.assertEquals("13:01:58", DateTimeUtility.timeToMilitaryTimeString("13:01:58", true));
+        
+        //include seconds, no seconds
+        Assert.assertEquals("11:15:00", DateTimeUtility.timeToMilitaryTimeString("11:15", true));
+        Assert.assertEquals("23:15:00", DateTimeUtility.timeToMilitaryTimeString("23:15", true));
+        Assert.assertEquals("00:59:00", DateTimeUtility.timeToMilitaryTimeString("00:59", true));
+        Assert.assertEquals("00:00:00", DateTimeUtility.timeToMilitaryTimeString("00:00", true));
+        Assert.assertEquals("23:59:00", DateTimeUtility.timeToMilitaryTimeString("23:59", true));
+        Assert.assertEquals("15:08:00", DateTimeUtility.timeToMilitaryTimeString("15:08", true));
+        Assert.assertEquals("13:01:00", DateTimeUtility.timeToMilitaryTimeString("13:01", true));
         
         //invalid ranges
         Assert.assertEquals("-1:15", DateTimeUtility.timeToMilitaryTimeString("-1:15"));
@@ -408,10 +459,44 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("00:9:00", DateTimeUtility.timeToMilitaryTimeString("00:9:00"));
         Assert.assertEquals("23:78:44", DateTimeUtility.timeToMilitaryTimeString("23:78:44"));
         Assert.assertEquals("11:15:-1", DateTimeUtility.timeToMilitaryTimeString("11:15:-1"));
-        Assert.assertEquals("11:15:5", DateTimeUtility.timeToMilitaryTimeString("11:15:5"));
+        Assert.assertEquals("23:15:99", DateTimeUtility.timeToMilitaryTimeString("23:15:99"));
         
-        //invalid second range
-        Assert.assertEquals("2315 hours", DateTimeUtility.timeToMilitaryTimeString("23:15:99"));
+        //invalid ranges, include seconds
+        Assert.assertEquals("-1:15", DateTimeUtility.timeToMilitaryTimeString("-1:15", true));
+        Assert.assertEquals("1:15", DateTimeUtility.timeToMilitaryTimeString("1:15", true));
+        Assert.assertEquals("24:15", DateTimeUtility.timeToMilitaryTimeString("24:15", true));
+        Assert.assertEquals("124:59", DateTimeUtility.timeToMilitaryTimeString("124:59", true));
+        Assert.assertEquals("00:-1", DateTimeUtility.timeToMilitaryTimeString("00:-1", true));
+        Assert.assertEquals("00:9", DateTimeUtility.timeToMilitaryTimeString("00:9", true));
+        Assert.assertEquals("23:78", DateTimeUtility.timeToMilitaryTimeString("23:78", true));
+        Assert.assertEquals("-1:15:01", DateTimeUtility.timeToMilitaryTimeString("-1:15:01", true));
+        Assert.assertEquals("1:15:45", DateTimeUtility.timeToMilitaryTimeString("1:15:45", true));
+        Assert.assertEquals("24:15:45", DateTimeUtility.timeToMilitaryTimeString("24:15:45", true));
+        Assert.assertEquals("124:59:31", DateTimeUtility.timeToMilitaryTimeString("124:59:31", true));
+        Assert.assertEquals("00:-1:00", DateTimeUtility.timeToMilitaryTimeString("00:-1:00", true));
+        Assert.assertEquals("00:9:00", DateTimeUtility.timeToMilitaryTimeString("00:9:00", true));
+        Assert.assertEquals("23:78:44", DateTimeUtility.timeToMilitaryTimeString("23:78:44", true));
+        Assert.assertEquals("11:15:-1", DateTimeUtility.timeToMilitaryTimeString("11:15:-1", true));
+        Assert.assertEquals("23:15:5", DateTimeUtility.timeToMilitaryTimeString("23:15:5", true));
+        Assert.assertEquals("23:15:99", DateTimeUtility.timeToMilitaryTimeString("23:15:99", true));
+        
+        //date
+        Assert.assertEquals("11:15", DateTimeUtility.timeToMilitaryTimeString(new SimpleDateFormat("HH:mm").parse("11:15")));
+        Assert.assertEquals("23:15", DateTimeUtility.timeToMilitaryTimeString(new SimpleDateFormat("HH:mm").parse("23:15")));
+        Assert.assertEquals("00:59", DateTimeUtility.timeToMilitaryTimeString(new SimpleDateFormat("HH:mm").parse("00:59")));
+        Assert.assertEquals("00:00", DateTimeUtility.timeToMilitaryTimeString(new SimpleDateFormat("HH:mm").parse("00:00")));
+        Assert.assertEquals("23:59", DateTimeUtility.timeToMilitaryTimeString(new SimpleDateFormat("HH:mm").parse("23:59")));
+        Assert.assertEquals("15:08", DateTimeUtility.timeToMilitaryTimeString(new SimpleDateFormat("HH:mm").parse("15:08")));
+        Assert.assertEquals("13:01", DateTimeUtility.timeToMilitaryTimeString(new SimpleDateFormat("HH:mm").parse("13:01")));
+        
+        //date, include seconds
+        Assert.assertEquals("11:15:45", DateTimeUtility.timeToMilitaryTimeString(new SimpleDateFormat("HH:mm:ss").parse("11:15:45"), true));
+        Assert.assertEquals("23:15:01", DateTimeUtility.timeToMilitaryTimeString(new SimpleDateFormat("HH:mm:ss").parse("23:15:01"), true));
+        Assert.assertEquals("00:59:00", DateTimeUtility.timeToMilitaryTimeString(new SimpleDateFormat("HH:mm:ss").parse("00:59:00"), true));
+        Assert.assertEquals("00:00:00", DateTimeUtility.timeToMilitaryTimeString(new SimpleDateFormat("HH:mm:ss").parse("00:00:00"), true));
+        Assert.assertEquals("23:59:00", DateTimeUtility.timeToMilitaryTimeString(new SimpleDateFormat("HH:mm:ss").parse("23:59:00"), true));
+        Assert.assertEquals("15:08:59", DateTimeUtility.timeToMilitaryTimeString(new SimpleDateFormat("HH:mm:ss").parse("15:08:59"), true));
+        Assert.assertEquals("13:01:58", DateTimeUtility.timeToMilitaryTimeString(new SimpleDateFormat("HH:mm:ss").parse("13:01:58"), true));
         
         //invalid time string
         Assert.assertEquals("11:15 AM", DateTimeUtility.timeToMilitaryTimeString("11:15 AM"));
@@ -419,10 +504,74 @@ public class DateTimeUtilityTest {
     }
     
     /**
+     * JUnit test of timeToMilitaryHoursString.
+     *
+     * @throws Exception When there is an exception.
+     * @see DateTimeUtility#timeToMilitaryHoursString(String)
+     * @see DateTimeUtility#timeToMilitaryHoursString(Date)
+     */
+    @Test
+    public void testTimeToMilitaryHoursString() throws Exception {
+        //valid
+        Assert.assertEquals("1115 hours", DateTimeUtility.timeToMilitaryHoursString("11:15"));
+        Assert.assertEquals("2315 hours", DateTimeUtility.timeToMilitaryHoursString("23:15"));
+        Assert.assertEquals("0059 hours", DateTimeUtility.timeToMilitaryHoursString("00:59"));
+        Assert.assertEquals("0000 hours", DateTimeUtility.timeToMilitaryHoursString("00:00"));
+        Assert.assertEquals("2359 hours", DateTimeUtility.timeToMilitaryHoursString("23:59"));
+        Assert.assertEquals("1508 hours", DateTimeUtility.timeToMilitaryHoursString("15:08"));
+        Assert.assertEquals("1301 hours", DateTimeUtility.timeToMilitaryHoursString("13:01"));
+        
+        //seconds
+        Assert.assertEquals("1115 hours", DateTimeUtility.timeToMilitaryHoursString("11:15:45"));
+        Assert.assertEquals("2315 hours", DateTimeUtility.timeToMilitaryHoursString("23:15:01"));
+        Assert.assertEquals("0059 hours", DateTimeUtility.timeToMilitaryHoursString("00:59:00"));
+        Assert.assertEquals("0000 hours", DateTimeUtility.timeToMilitaryHoursString("00:00:00"));
+        Assert.assertEquals("2359 hours", DateTimeUtility.timeToMilitaryHoursString("23:59:00"));
+        Assert.assertEquals("1508 hours", DateTimeUtility.timeToMilitaryHoursString("15:08:59"));
+        Assert.assertEquals("1301 hours", DateTimeUtility.timeToMilitaryHoursString("13:01:58"));
+        
+        //invalid ranges
+        Assert.assertEquals("-1:15", DateTimeUtility.timeToMilitaryHoursString("-1:15"));
+        Assert.assertEquals("1:15", DateTimeUtility.timeToMilitaryHoursString("1:15"));
+        Assert.assertEquals("24:15", DateTimeUtility.timeToMilitaryHoursString("24:15"));
+        Assert.assertEquals("124:59", DateTimeUtility.timeToMilitaryHoursString("124:59"));
+        Assert.assertEquals("00:-1", DateTimeUtility.timeToMilitaryHoursString("00:-1"));
+        Assert.assertEquals("00:9", DateTimeUtility.timeToMilitaryHoursString("00:9"));
+        Assert.assertEquals("23:78", DateTimeUtility.timeToMilitaryHoursString("23:78"));
+        Assert.assertEquals("-1:15:01", DateTimeUtility.timeToMilitaryHoursString("-1:15:01"));
+        Assert.assertEquals("1:15:45", DateTimeUtility.timeToMilitaryHoursString("1:15:45"));
+        Assert.assertEquals("24:15:45", DateTimeUtility.timeToMilitaryHoursString("24:15:45"));
+        Assert.assertEquals("124:59:31", DateTimeUtility.timeToMilitaryHoursString("124:59:31"));
+        Assert.assertEquals("00:-1:00", DateTimeUtility.timeToMilitaryHoursString("00:-1:00"));
+        Assert.assertEquals("00:9:00", DateTimeUtility.timeToMilitaryHoursString("00:9:00"));
+        Assert.assertEquals("23:78:44", DateTimeUtility.timeToMilitaryHoursString("23:78:44"));
+        Assert.assertEquals("11:15:-1", DateTimeUtility.timeToMilitaryHoursString("11:15:-1"));
+        Assert.assertEquals("11:15:5", DateTimeUtility.timeToMilitaryHoursString("11:15:5"));
+        
+        //invalid second range
+        Assert.assertEquals("2315 hours", DateTimeUtility.timeToMilitaryHoursString("23:15:99"));
+        
+        //date
+        Assert.assertEquals("1115 hours", DateTimeUtility.timeToMilitaryHoursString(new SimpleDateFormat("HH:mm").parse("11:15")));
+        Assert.assertEquals("2315 hours", DateTimeUtility.timeToMilitaryHoursString(new SimpleDateFormat("HH:mm").parse("23:15")));
+        Assert.assertEquals("0059 hours", DateTimeUtility.timeToMilitaryHoursString(new SimpleDateFormat("HH:mm").parse("00:59")));
+        Assert.assertEquals("0000 hours", DateTimeUtility.timeToMilitaryHoursString(new SimpleDateFormat("HH:mm").parse("00:00")));
+        Assert.assertEquals("2359 hours", DateTimeUtility.timeToMilitaryHoursString(new SimpleDateFormat("HH:mm").parse("23:59")));
+        Assert.assertEquals("1508 hours", DateTimeUtility.timeToMilitaryHoursString(new SimpleDateFormat("HH:mm").parse("15:08")));
+        Assert.assertEquals("1301 hours", DateTimeUtility.timeToMilitaryHoursString(new SimpleDateFormat("HH:mm").parse("13:01")));
+        
+        //invalid time string
+        Assert.assertEquals("11:15 AM", DateTimeUtility.timeToMilitaryHoursString("11:15 AM"));
+        Assert.assertEquals("a time", DateTimeUtility.timeToMilitaryHoursString("a time"));
+    }
+    
+    /**
      * JUnit test of dayOfWeek.
      *
      * @throws Exception When there is an exception.
      * @see DateTimeUtility#dayOfWeek(int, int, int)
+     * @see DateTimeUtility#dayOfWeek(String)
+     * @see DateTimeUtility#dayOfWeek(Date)
      */
     @Test
     public void testDayOfWeek() throws Exception {
@@ -458,6 +607,14 @@ public class DateTimeUtilityTest {
         Assert.assertNull(DateTimeUtility.dayOfWeek("2000-01-00"));
         Assert.assertNull(DateTimeUtility.dayOfWeek("2000-01--11"));
         Assert.assertNull(DateTimeUtility.dayOfWeek("2000-01-57"));
+        
+        //date
+        Assert.assertEquals(DateTimeUtility.Weekday.MONDAY, DateTimeUtility.dayOfWeek(new SimpleDateFormat("yyyy-MM-dd").parse("1645-05-01")));
+        Assert.assertEquals(DateTimeUtility.Weekday.TUESDAY, DateTimeUtility.dayOfWeek(new SimpleDateFormat("yyyy-MM-dd").parse("1734-02-16")));
+        Assert.assertEquals(DateTimeUtility.Weekday.WEDNESDAY, DateTimeUtility.dayOfWeek(new SimpleDateFormat("yyyy-MM-dd").parse("2025-01-01")));
+        Assert.assertEquals(DateTimeUtility.Weekday.THURSDAY, DateTimeUtility.dayOfWeek(new SimpleDateFormat("yyyy-MM-dd").parse("2017-03-16")));
+        Assert.assertEquals(DateTimeUtility.Weekday.SATURDAY, DateTimeUtility.dayOfWeek(new SimpleDateFormat("yyyy-MM-dd").parse("1967-12-23")));
+        Assert.assertEquals(DateTimeUtility.Weekday.SUNDAY, DateTimeUtility.dayOfWeek(new SimpleDateFormat("yyyy-MM-dd").parse("1759-07-08")));
         
         //invalid date string
         Assert.assertNull(DateTimeUtility.dayOfWeek("March 16, 2017"));
