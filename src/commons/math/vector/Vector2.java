@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Defines a 2-dimensional Vector.
+ * Defines a 2-Dimensional Vector.
  */
 public class Vector2 extends Vector {
     
@@ -22,10 +22,18 @@ public class Vector2 extends Vector {
     private static final Logger logger = LoggerFactory.getLogger(Vector2.class);
     
     
+    //Constants
+    
+    /**
+     * The dimensionality of a 2D Vector.
+     */
+    public static final int DIMENSIONALITY = 2;
+    
+    
     //Constructors
     
     /**
-     * The constructor for a Vector2.
+     * The constructor for a 2D Vector.
      *
      * @param x The x component of the Vector.
      * @param y The y component of the Vector.
@@ -34,55 +42,79 @@ public class Vector2 extends Vector {
         super(x, y);
     }
     
+    /**
+     * Constructs a 2D Vector from a Vector.
+     *
+     * @param vector The Vector.
+     */
+    public Vector2(Vector vector) {
+        this(vector.getX(), vector.getY());
+    }
+    
     
     //Functions
     
     /**
      * Calculates the dot flop of two 2D Vectors.
      *
-     * @param v1 The first Vector.
-     * @param v2 The second Vector.
+     * @param vector1 The first Vector.
+     * @param vector2 The second Vector.
      * @return The dot flop of the Vectors.
      */
-    public static Vector dotFlop(Vector v1, Vector v2) throws ArithmeticException {
+    public static Vector2 dotFlop(Vector2 vector1, Vector2 vector2) throws ArithmeticException {
         return new Vector2(
-                (v1.getX() * v2.getX()) - (v1.getY() * v2.getY()),
-                (v1.getX() * v2.getY()) + (v1.getY() * v2.getX())
+                (vector1.getX() * vector2.getX()) - (vector1.getY() * vector2.getY()),
+                (vector1.getX() * vector2.getY()) + (vector1.getY() * vector2.getX())
         );
     }
     
     /**
      * Calculates the negative dot flop of two 2D Vectors.
      *
-     * @param v1 The first Vector.
-     * @param v2 The second Vector.
+     * @param vector1 The first Vector.
+     * @param vector2 The second Vector.
      * @return The negative dot flop of the Vectors.
      */
-    public static Vector dotFlopNegative(Vector v1, Vector v2) throws ArithmeticException {
+    public static Vector2 dotFlopNegative(Vector2 vector1, Vector2 vector2) throws ArithmeticException {
         return new Vector2(
-                (v1.getX() * v2.getX()) + (v1.getY() * v2.getY()),
-                (v1.getX() * v2.getY()) - (v1.getY() * v2.getX())
+                (vector1.getX() * vector2.getX()) + (vector1.getY() * vector2.getY()),
+                (vector1.getX() * vector2.getY()) - (vector1.getY() * vector2.getX())
         );
     }
     
     /**
-     * Calculates the square sum of a Vector.
+     * Calculates the square sum of a 2D Vector.
      *
-     * @param v The Vector.
+     * @param vector The Vector.
      * @return The square sum of the Vector.
      */
-    public static double squareSum(Vector v) throws ArithmeticException {
-        return Math.pow(v.getX(), 2) + Math.pow(v.getY(), 2);
+    public static double squareSum(Vector2 vector) throws ArithmeticException {
+        return vector.squareSum();
     }
     
     /**
      * Calculates the square difference of a Vector.
      *
-     * @param v The Vector.
+     * @param vector The Vector.
      * @return The square difference of the Vector.
      */
-    public static double squareDifference(Vector v) throws ArithmeticException {
-        return Math.pow(v.getX(), 2) - Math.pow(v.getY(), 2);
+    public static double squareDifference(Vector2 vector) throws ArithmeticException {
+        return Math.pow(vector.getX(), 2) - Math.pow(vector.getY(), 2);
+    }
+    
+    
+    //Getters
+    
+    /**
+     * Returns the dimensionality of the 2D Vector.
+     *
+     * @return The dimensionality of the 2D Vector.
+     * @see Vector#getDimensionality()
+     * @see Vector2#DIMENSIONALITY
+     */
+    @Override
+    public int getDimensionality() {
+        return DIMENSIONALITY;
     }
     
 }

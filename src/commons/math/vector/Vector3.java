@@ -10,7 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Defines a 3-dimensional Vector.
+ * Defines a 3-Dimensional Vector.
  */
 public class Vector3 extends Vector {
     
@@ -22,10 +22,18 @@ public class Vector3 extends Vector {
     private static final Logger logger = LoggerFactory.getLogger(Vector3.class);
     
     
+    //Constants
+    
+    /**
+     * The dimensionality of a 3D Vector.
+     */
+    public static final int DIMENSIONALITY = 3;
+    
+    
     //Constructors
     
     /**
-     * The constructor for a Vector3.
+     * The constructor for a 3D Vector.
      *
      * @param x The x component of the Vector.
      * @param y The y component of the Vector.
@@ -36,23 +44,22 @@ public class Vector3 extends Vector {
     }
     
     /**
-     * Constructs a Vector3 from a Vector.
+     * Constructs a 3D Vector from a Vector.
      *
-     * @param v The Vector.
-     * @throws ArithmeticException When the Vector is not in three dimensions.
+     * @param vector The Vector.
      */
-    public Vector3(Vector v) {
-        super(v.getX(), v.getY(), v.getZ());
+    public Vector3(Vector vector) {
+        super(vector.getX(), vector.getY(), vector.getZ());
     }
     
     /**
-     * Constructs a Vector3 by extending a Vector2.
+     * Constructs a 3D Vector by extending a 2D Vector.
      *
-     * @param v2 The Vector2 to extend.
-     * @param z  The z component of the Vector.
+     * @param vector The 2D Vector to extend.
+     * @param z      The z component of the Vector.
      */
-    public Vector3(Vector2 v2, double z) {
-        super(v2.getX(), v2.getY(), z);
+    public Vector3(Vector2 vector, double z) {
+        super(vector.getX(), vector.getY(), z);
     }
     
     
@@ -61,20 +68,34 @@ public class Vector3 extends Vector {
     /**
      * Calculates the cross product of this Vector with another Vector.
      *
-     * @param v The other Vector.
+     * @param vector The other Vector.
      * @return The cross product.
-     * @throws ArithmeticException When the two Vectors are not of the same dimension.
      */
-    public Vector cross(Vector v) throws ArithmeticException {
-        if (!dimensionsEqual(v)) {
-            throw new ArithmeticException("The vectors: " + toString() + " and " + v.toString() + " are of different dimensions.");
+    public Vector3 cross(Vector3 vector) throws ArithmeticException {
+        if (!dimensionalityEqual(vector)) {
+            throw new ArithmeticException("The vectors: " + toString() + " and " + vector.toString() + " are of different dimensions.");
         }
         
-        return new Vector(
-                getY() * v.getZ() - getZ() * v.getY(),
-                getZ() * v.getX() - getX() * v.getZ(),
-                getX() * v.getY() - getY() * v.getX()
+        return new Vector3(
+                getY() * vector.getZ() - getZ() * vector.getY(),
+                getZ() * vector.getX() - getX() * vector.getZ(),
+                getX() * vector.getY() - getY() * vector.getX()
         );
+    }
+    
+    
+    //Getters
+    
+    /**
+     * Returns the dimensionality of the 3D Vector.
+     *
+     * @return The dimensionality of the 3D Vector.
+     * @see Vector#getDimensionality()
+     * @see Vector3#DIMENSIONALITY
+     */
+    @Override
+    public int getDimensionality() {
+        return DIMENSIONALITY;
     }
     
 }
