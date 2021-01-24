@@ -1,5 +1,5 @@
 /*
- * File:    SphericalCoordinateUtilityTest.java
+ * File:    CoordinateUtilityTest.java
  * Package: commons.math
  * Author:  Zachary Gill
  */
@@ -20,22 +20,22 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of SphericalCoordinateUtility.
+ * JUnit test of CoordinateUtility.
  *
- * @see SphericalCoordinateUtility
+ * @see CoordinateUtility
  */
 @SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
-@PrepareForTest({SphericalCoordinateUtility.class})
-public class SphericalCoordinateUtilityTest {
+@PrepareForTest({CoordinateUtility.class})
+public class CoordinateUtilityTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(SphericalCoordinateUtilityTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CoordinateUtilityTest.class);
     
     
     //Initialization
@@ -96,8 +96,8 @@ public class SphericalCoordinateUtilityTest {
      * JUnit test of sphericalToCartesian.
      *
      * @throws Exception When there is an exception.
-     * @see SphericalCoordinateUtility#sphericalToCartesian(Vector)
-     * @see SphericalCoordinateUtility#sphericalToCartesian(double, double, double)
+     * @see CoordinateUtility#sphericalToCartesian(Vector)
+     * @see CoordinateUtility#sphericalToCartesian(double, double, double)
      */
     @Test
     public void testSphericalToCartesian() throws Exception {
@@ -108,8 +108,8 @@ public class SphericalCoordinateUtilityTest {
      * JUnit test of cartesianToSpherical.
      *
      * @throws Exception When there is an exception.
-     * @see SphericalCoordinateUtility#cartesianToSpherical(Vector)
-     * @see SphericalCoordinateUtility#cartesianToSpherical(double, double, double)
+     * @see CoordinateUtility#cartesianToSpherical(Vector)
+     * @see CoordinateUtility#cartesianToSpherical(double, double, double)
      */
     @Test
     public void testCartesianToSpherical() throws Exception {

@@ -1,5 +1,5 @@
 /*
- * File:    SphericalCoordinateUtility.java
+ * File:    CoordinateUtility.java
  * Package: commons.math
  * Author:  Zachary Gill
  */
@@ -13,14 +13,14 @@ import org.slf4j.LoggerFactory;
 /**
  * Handles spherical coordinate conversions.
  */
-public final class SphericalCoordinateUtility {
+public final class CoordinateUtility {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(SphericalCoordinateUtility.class);
+    private static final Logger logger = LoggerFactory.getLogger(CoordinateUtility.class);
     
     
     //Functions
