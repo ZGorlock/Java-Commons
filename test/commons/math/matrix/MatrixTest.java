@@ -103,6 +103,39 @@ public class MatrixTest {
     }
     
     /**
+     * JUnit test of toString.
+     *
+     * @throws Exception When there is an exception.
+     * @see Matrix#toString()
+     */
+    @Test
+    public void testToString() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of equals.
+     *
+     * @throws Exception When there is an exception.
+     * @see Matrix#equals(Object)
+     */
+    @Test
+    public void testEquals() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of dimensionalityEqual.
+     *
+     * @throws Exception When there is an exception.
+     * @see Matrix#dimensionalityEqual(Matrix)
+     */
+    @Test
+    public void testDimensionalityEqual() throws Exception {
+        //TODO
+    }
+    
+    /**
      * JUnit test of getDimensionality.
      *
      * @throws Exception When there is an exception.
@@ -121,6 +154,50 @@ public class MatrixTest {
      */
     @Test
     public void testGetValues() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of get.
+     *
+     * @throws Exception When there is an exception.
+     * @see Matrix#get(int)
+     */
+    @Test
+    public void testGet() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of set.
+     *
+     * @throws Exception When there is an exception.
+     * @see Matrix#set(int, double)
+     */
+    @Test
+    public void testSet() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of dimensionalityNotEqualErrorMessage.
+     *
+     * @throws Exception When there is an exception.
+     * @see Matrix#dimensionalityNotEqualErrorMessage(Matrix, Matrix)
+     */
+    @Test
+    public void testDimensionalityNotEqualErrorMessage() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of valueIndexOutOfRangeError.
+     *
+     * @throws Exception When there is an exception.
+     * @see Matrix#valueIndexOutOfRangeError(Matrix, int)
+     */
+    @Test
+    public void testValueIndexOutOfRangeError() throws Exception {
         //TODO
     }
     

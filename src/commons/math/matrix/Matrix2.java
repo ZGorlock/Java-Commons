@@ -51,7 +51,7 @@ public class Matrix2 extends Matrix {
      * @return The determinant of the matrix.
      */
     public double determinant() {
-        return (values[0] * values[3]) - (values[1] * values[2]);
+        return (get(0) * get(3)) - (get(1) * get(2));
     }
     
     
