@@ -119,6 +119,17 @@ public class VectorTest {
     }
     
     /**
+     * JUnit test of equals.
+     *
+     * @throws Exception When there is an exception.
+     * @see Vector#equals(Object)
+     */
+    @Test
+    public void testEquals() throws Exception {
+        //TODO
+    }
+    
+    /**
      * JUnit test of dimensionalityEqual.
      *
      * @throws Exception When there is an exception.
@@ -126,17 +137,6 @@ public class VectorTest {
      */
     @Test
     public void testDimensionalityEqual() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of equals.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#equals(Vector)
-     */
-    @Test
-    public void testEquals() throws Exception {
         //TODO
     }
     
@@ -492,6 +492,28 @@ public class VectorTest {
      */
     @Test
     public void testCalculateMinMax() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of dimensionalityNotEqualErrorMessage.
+     *
+     * @throws Exception When there is an exception.
+     * @see Vector#dimensionalityNotEqualErrorMessage(Vector, Vector)
+     */
+    @Test
+    public void testDimensionalityNotEqualErrorMessage() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of componentIndexOutOfRangeError.
+     *
+     * @throws Exception When there is an exception.
+     * @see Vector#componentIndexOutOfRangeError(Vector, int)
+     */
+    @Test
+    public void testComponentIndexOutOfRangeError() throws Exception {
         //TODO
     }
     

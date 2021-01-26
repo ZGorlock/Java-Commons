@@ -12,6 +12,8 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+import commons.math.BoundUtility;
+import org.apache.commons.lang.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,7 +57,8 @@ public class Vector {
      */
     public Vector(List<Double> components) {
         this.components = new double[components.size()];
-        System.arraycopy(components.toArray(new Double[] {}), 0, this.components, 0, components.size());
+        System.arraycopy(ArrayUtils.toPrimitive(components.toArray(new Double[] {})),
+                0, this.components, 0, components.size());
     }
     
     /**
@@ -95,22 +98,18 @@ public class Vector {
     }
     
     /**
-     * Determines if another Vector's dimensionality is equal to this Vector's dimensionality.
-     *
-     * @param vector The other Vector.
-     * @return Whether the two Vectors' dimensionality is equal or not.
-     */
-    public boolean dimensionalityEqual(Vector vector) {
-        return (getDimensionality() == vector.getDimensionality());
-    }
-    
-    /**
      * Determines if another Vector is equal to this Vector.
      *
-     * @param vector The other Vector.
+     * @param o The other Vector.
      * @return Whether the two Vectors are equal or not.
      */
-    public boolean equals(Vector vector) {
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Vector)) {
+            return false;
+        }
+        Vector vector = (Vector) o;
+        
         if (!dimensionalityEqual(vector)) {
             return false;
         }
@@ -121,6 +120,16 @@ public class Vector {
             }
         }
         return true;
+    }
+    
+    /**
+     * Determines if another Vector's dimensionality is equal to this Vector's dimensionality.
+     *
+     * @param vector The other Vector.
+     * @return Whether the two Vectors' dimensionality is equal or not.
+     */
+    public boolean dimensionalityEqual(Vector vector) {
+        return (getDimensionality() == vector.getDimensionality());
     }
     
     /**
@@ -457,7 +466,7 @@ public class Vector {
      * @throws IndexOutOfBoundsException When the Vector does not contain a component at the specified index.
      */
     public double get(int index) throws IndexOutOfBoundsException {
-        if ((index < 0) || (index >= getDimensionality())) {
+        if (!BoundUtility.inBounds(index, 0, components.length, true, false)) {
             throw new IndexOutOfBoundsException(componentIndexOutOfRangeError(this, index));
         }
         
@@ -519,7 +528,7 @@ public class Vector {
      * @throws IndexOutOfBoundsException When the Vector does not contain a component at the specified index.
      */
     public void set(int index, double value) throws IndexOutOfBoundsException {
-        if ((index < 0) || (index >= getDimensionality())) {
+        if (!BoundUtility.inBounds(index, 0, components.length, true, false)) {
             throw new IndexOutOfBoundsException(componentIndexOutOfRangeError(this, index));
         }
         
@@ -639,10 +648,10 @@ public class Vector {
      * Returns the error message to display when two Vectors do not have the same dimensionality.
      *
      * @param vector1 The first Vector.
-     * @param vector2 The seconds Vector.
+     * @param vector2 The second Vector.
      * @return The error message.
      */
-    private static String dimensionalityNotEqualErrorMessage(Vector vector1, Vector vector2) {
+    protected static String dimensionalityNotEqualErrorMessage(Vector vector1, Vector vector2) {
         return "The vectors: " + vector1 + " and " + vector2 + " do not have the same dimensionality.";
     }
     
@@ -653,7 +662,7 @@ public class Vector {
      * @param index  The index of the component.
      * @return The error message.
      */
-    private static String componentIndexOutOfRangeError(Vector vector, int index) {
+    protected static String componentIndexOutOfRangeError(Vector vector, int index) {
         return "The vector: " + vector + " does not have a component at index: " + index;
     }
     
