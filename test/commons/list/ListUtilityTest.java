@@ -110,49 +110,110 @@ public class ListUtilityTest {
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
         List<Boolean> booleanList = ListUtility.arrayToList(booleanArray);
         Assert.assertEquals(booleanArray.length, booleanList.size());
-        for (Boolean b : booleanArray) {
-            Assert.assertTrue(booleanList.contains(b));
-        }
+        Assert.assertArrayEquals(booleanArray, booleanList.toArray());
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         List<Integer> integerList = ListUtility.arrayToList(integerArray);
         Assert.assertEquals(integerArray.length, integerList.size());
-        for (Integer i : integerArray) {
-            Assert.assertTrue(integerList.contains(i));
-        }
+        Assert.assertArrayEquals(integerArray, integerList.toArray());
         
         //float
-        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f};
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         List<Float> floatList = ListUtility.arrayToList(floatArray);
         Assert.assertEquals(floatArray.length, floatList.size());
-        for (Float i : floatArray) {
-            Assert.assertTrue(floatList.contains(i));
-        }
+        Assert.assertArrayEquals(floatArray, floatList.toArray());
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         List<Double> doubleList = ListUtility.arrayToList(doubleArray);
         Assert.assertEquals(doubleArray.length, doubleList.size());
-        for (Double i : doubleArray) {
-            Assert.assertTrue(doubleList.contains(i));
-        }
+        Assert.assertArrayEquals(doubleArray, doubleList.toArray());
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         List<Long> longList = ListUtility.arrayToList(longArray);
         Assert.assertEquals(longArray.length, longList.size());
-        for (Long i : longArray) {
-            Assert.assertTrue(longList.contains(i));
-        }
+        Assert.assertArrayEquals(longArray, longList.toArray());
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         List<Object> objectList = ListUtility.arrayToList(objectArray);
         Assert.assertEquals(objectArray.length, objectList.size());
-        for (Object i : objectArray) {
-            Assert.assertTrue(objectList.contains(i));
-        }
+        Assert.assertArrayEquals(objectArray, objectList.toArray());
+    }
+    
+    /**
+     * JUnit test of split.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#split(List, int)
+     */
+    @Test
+    public void testSplit() throws Exception {
+        //standard
+        
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        List<List<Boolean>> booleanList = ListUtility.split(Arrays.asList(booleanArray), 3);
+        Assert.assertEquals(2, booleanList.size());
+        Assert.assertArrayEquals(new Boolean[] {true, false, false}, booleanList.get(0).toArray());
+        Assert.assertArrayEquals(new Boolean[] {true, false}, booleanList.get(1).toArray());
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        List<List<Integer>> integerList = ListUtility.split(Arrays.asList(integerArray), 2);
+        Assert.assertEquals(4, integerList.size());
+        Assert.assertArrayEquals(new Integer[] {15, 312}, integerList.get(0).toArray());
+        Assert.assertArrayEquals(new Integer[] {48, 5}, integerList.get(1).toArray());
+        Assert.assertArrayEquals(new Integer[] {-4, -9}, integerList.get(2).toArray());
+        Assert.assertArrayEquals(new Integer[] {6}, integerList.get(3).toArray());
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        List<List<Float>> floatList = ListUtility.split(Arrays.asList(floatArray), 4);
+        Assert.assertEquals(2, floatList.size());
+        Assert.assertArrayEquals(new Float[] {15.1f, 312.91f, 48.0f, 5.45f}, floatList.get(0).toArray());
+        Assert.assertArrayEquals(new Float[] {-4.006f, -9.7f, 6.99f, 19776.4f}, floatList.get(1).toArray());
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        List<List<Double>> doubleList = ListUtility.split(Arrays.asList(doubleArray), 7);
+        Assert.assertEquals(1, doubleList.size());
+        Assert.assertArrayEquals(new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d}, doubleList.get(0).toArray());
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        List<List<Long>> longList = ListUtility.split(Arrays.asList(longArray), 1);
+        Assert.assertEquals(7, longList.size());
+        Assert.assertArrayEquals(new Long[] {15104564L}, longList.get(0).toArray());
+        Assert.assertArrayEquals(new Long[] {3129113874L}, longList.get(1).toArray());
+        Assert.assertArrayEquals(new Long[] {4800000015L}, longList.get(2).toArray());
+        Assert.assertArrayEquals(new Long[] {5457894511L}, longList.get(3).toArray());
+        Assert.assertArrayEquals(new Long[] {-4006005001L}, longList.get(4).toArray());
+        Assert.assertArrayEquals(new Long[] {-970487745L}, longList.get(5).toArray());
+        Assert.assertArrayEquals(new Long[] {699546101L}, longList.get(6).toArray());
+        
+        //object
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        List<List<Object>> objectList = ListUtility.split(Arrays.asList(objectArray), 3);
+        Assert.assertEquals(2, objectList.size());
+        Assert.assertArrayEquals(new Object[] {"", 54, objectArray[2]}, objectList.get(0).toArray());
+        Assert.assertArrayEquals(new Object[] {objectArray[3], objectArray[4]}, objectList.get(1).toArray());
+        
+        //invalid
+        
+        objectList = ListUtility.split(Arrays.asList(objectArray), 0);
+        Assert.assertEquals(objectArray.length, objectList.size());
+        
+        objectList = ListUtility.split(Arrays.asList(objectArray), -1);
+        Assert.assertEquals(objectArray.length, objectList.size());
+        
+        objectList = ListUtility.split(Arrays.asList(objectArray), 15613);
+        Assert.assertEquals(1, objectList.size());
+        
+        objectList = ListUtility.split(Collections.emptyList(), 3);
+        Assert.assertEquals(0, objectList.size());
     }
     
     /**
@@ -307,7 +368,7 @@ public class ListUtilityTest {
         }
         
         //float
-        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f};
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         List<Float> floatList = ListUtility.arrayToList(floatArray);
         for (int i = 0; i < 100; i++) {
             Float floatSelected = ListUtility.selectRandom(floatList);
@@ -373,7 +434,7 @@ public class ListUtilityTest {
         }
         
         //float
-        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f};
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         List<Float> floatList = ListUtility.arrayToList(floatArray);
         List<Float> floatSelected = ListUtility.selectNFromList(floatList, 7);
         Assert.assertEquals(7, floatSelected.size());
@@ -494,7 +555,7 @@ public class ListUtilityTest {
         }
         
         //float
-        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f};
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         List<Float> floatList = ListUtility.arrayToList(floatArray);
         List<Float> duplicatedFloatList = ListUtility.duplicateListInOrder(floatList);
         Assert.assertEquals(floatList.size() * 2, duplicatedFloatList.size());

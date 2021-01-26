@@ -14,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import commons.math.BoundUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,6 +42,28 @@ public final class ListUtility {
      */
     public static <T> List<T> arrayToList(T[] array) {
         return new ArrayList<>(Arrays.asList(array));
+    }
+    
+    /**
+     * Splits a list into a list of lists of a certain length.
+     *
+     * @param list   The list.
+     * @param length The length of the resulting lists.
+     * @param <T>    The type of the list.
+     * @return The list of lists of the specified length.
+     */
+    public static <T> List<List<T>> split(List<T> list, int length) {
+        length = BoundUtility.truncateNum(length, 1, list.size()).intValue();
+        
+        List<List<T>> result = new ArrayList<>();
+        for (int i = 0; i < (int) Math.ceil(list.size() / (double) length); i++) {
+            result.add(new ArrayList<>());
+        }
+        
+        for (int i = 0; i < list.size(); i++) {
+            result.get(i / length).add(list.get(i));
+        }
+        return result;
     }
     
     /**
