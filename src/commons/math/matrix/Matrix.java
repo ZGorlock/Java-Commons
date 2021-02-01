@@ -6,7 +6,6 @@
 
 package commons.math.matrix;
 
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import commons.list.ListUtility;
@@ -81,7 +80,7 @@ public class Matrix {
         }
         
         for (int v = 0; v < getValues().length; v++) {
-            if (!Objects.equals(get(v), matrix.get(v))) {
+            if (Math.abs(get(v) - matrix.get(v)) > 0.000000000001) {
                 return false;
             }
         }

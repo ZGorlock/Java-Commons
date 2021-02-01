@@ -9,7 +9,6 @@ package commons.math.vector;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import commons.math.BoundUtility;
@@ -115,7 +114,7 @@ public class Vector {
         }
         
         for (int c = 0; c < getDimensionality(); c++) {
-            if (!Objects.equals(get(c), vector.get(c))) {
+            if (Math.abs(get(c) - vector.get(c)) > 0.000000000001) {
                 return false;
             }
         }
