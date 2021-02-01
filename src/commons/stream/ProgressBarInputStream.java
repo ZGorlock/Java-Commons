@@ -77,7 +77,7 @@ public class ProgressBarInputStream extends CountingInputStream {
      * @param off The offset in the buffer to start writing.
      * @param len The maximum number of bytes to read.
      * @return The number of bytes that were read.
-     * @throws IOException If the output stream is closed.
+     * @throws IOException If an I/O error occurs.
      * @see ConsoleProgressBar#update(long)
      */
     public int read(byte[] b, int off, int len) throws IOException {
@@ -92,7 +92,7 @@ public class ProgressBarInputStream extends CountingInputStream {
     /**
      * Wraps the close method of the input stream to complete the progress bar.
      *
-     * @throws IOException If there is an I/O error.
+     * @throws IOException If an I/O error occurs.
      * @see ConsoleProgressBar#complete()
      */
     @Override

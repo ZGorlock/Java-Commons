@@ -76,7 +76,7 @@ public class ProgressBarOutputStream extends CountingOutputStream {
      * @param b   The data to write.
      * @param off The offset of the data.
      * @param len The number of bytes to write.
-     * @throws IOException If the output stream is closed.
+     * @throws IOException If an I/O error occurs.
      * @see ConsoleProgressBar#update(long)
      */
     @Override
@@ -90,7 +90,7 @@ public class ProgressBarOutputStream extends CountingOutputStream {
     /**
      * Wraps the close method of the output stream to complete the progress bar.
      *
-     * @throws IOException If there is an I/O error.
+     * @throws IOException If an I/O error occurs.
      * @see ConsoleProgressBar#complete()
      */
     @Override
