@@ -16,7 +16,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -29,7 +28,6 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
 @PrepareForTest({Archive.class})
 public class ArchiveTest {
     
@@ -125,7 +123,7 @@ public class ArchiveTest {
         Assert.assertEquals(2, Archive.CompressionMethod.values().length);
         Assert.assertEquals(Archive.CompressionMethod.STORE, Archive.CompressionMethod.values()[0]);
         Assert.assertEquals(Archive.CompressionMethod.COMPRESS, Archive.CompressionMethod.values()[1]);
-    
+        
         //getLevel
         Assert.assertEquals(ZipEntry.STORED, Archive.CompressionMethod.STORE.getLevel());
         Assert.assertEquals(ZipEntry.DEFLATED, Archive.CompressionMethod.COMPRESS.getLevel());

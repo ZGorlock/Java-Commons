@@ -15,7 +15,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -28,7 +27,6 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
 @PrepareForTest({ConsoleProgressBar.class})
 public class ConsoleProgressBarTest {
     
@@ -113,7 +111,7 @@ public class ConsoleProgressBarTest {
     @Test
     public void testConstructor() throws Exception {
         ConsoleProgressBar sut;
-    
+        
         //standard
         sut = new ConsoleProgressBar("Test", 1000, 50, "B", false);
         Assert.assertEquals("Test", sut.getTitle());
@@ -121,7 +119,7 @@ public class ConsoleProgressBarTest {
         Assert.assertEquals(50, sut.getWidth());
         Assert.assertEquals("B", sut.getUnits());
         Assert.assertFalse(sut.getAutoPrint());
-    
+        
         //default auto print
         sut = new ConsoleProgressBar("Test2", 5000, 55, "kb");
         Assert.assertEquals("Test2", sut.getTitle());
@@ -129,7 +127,7 @@ public class ConsoleProgressBarTest {
         Assert.assertEquals(55, sut.getWidth());
         Assert.assertEquals("kb", sut.getUnits());
         Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, sut.getAutoPrint());
-    
+        
         //default width
         sut = new ConsoleProgressBar("Test3", 51000, "MB");
         Assert.assertEquals("Test3", sut.getTitle());
@@ -137,7 +135,7 @@ public class ConsoleProgressBarTest {
         Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_WIDTH, sut.getWidth());
         Assert.assertEquals("MB", sut.getUnits());
         Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, sut.getAutoPrint());
-    
+        
         //no units
         sut = new ConsoleProgressBar("Test4", 581000, 61);
         Assert.assertEquals("Test4", sut.getTitle());
@@ -145,7 +143,7 @@ public class ConsoleProgressBarTest {
         Assert.assertEquals(61, sut.getWidth());
         Assert.assertEquals("", sut.getUnits());
         Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, sut.getAutoPrint());
-    
+        
         //default width, no units
         sut = new ConsoleProgressBar("Test5", 1581000);
         Assert.assertEquals("Test5", sut.getTitle());

@@ -15,7 +15,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PowerMockIgnore;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -28,7 +27,6 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PowerMockIgnore({"com.sun.org.apache.*", "javax.*", "org.xml.*", "org.w3c.*"})
 @PrepareForTest({Console.class})
 public class ConsoleTest {
     
@@ -272,7 +270,7 @@ public class ConsoleTest {
                     Console.stringEffect(test, consoleEffect)
             );
         }
-    
+        
         //empty
         Assert.assertEquals(
                 Console.ConsoleEffect.RED.getKey() + Console.ConsoleEffect.RESET.getKey(),
@@ -301,13 +299,13 @@ public class ConsoleTest {
                 "\u001B[" + Console.ConsoleEffect.PURPLE.getCode() + ";" + Console.ConsoleEffect.BOLD.getCode() + ";" + Console.ConsoleEffect.UNDERLINE.getCode() + "mtest" + Console.ConsoleEffect.RESET.getKey(),
                 Console.stringEffects("test", Console.ConsoleEffect.PURPLE, Console.ConsoleEffect.RESET, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.UNDERLINE)
         );
-    
+        
         //single
         Assert.assertEquals(
                 "\u001B[" + Console.ConsoleEffect.PURPLE.getCode() + "mtest" + Console.ConsoleEffect.RESET.getKey(),
                 Console.stringEffects("test", Console.ConsoleEffect.PURPLE)
         );
-    
+        
         //empty
         Assert.assertEquals(
                 "test" + Console.ConsoleEffect.RESET.getKey(),
@@ -356,7 +354,7 @@ public class ConsoleTest {
     @Test
     public void testColor8Bit() throws Exception {
         String test = "test";
-    
+        
         //standard
         Assert.assertEquals(
                 "\u001B[38;5;88m" + test + Console.ConsoleEffect.RESET.getKey(),
@@ -370,7 +368,7 @@ public class ConsoleTest {
                 "\u001B[38;5;255m" + test + Console.ConsoleEffect.RESET.getKey(),
                 Console.color8Bit(test, 255)
         );
-    
+        
         //invalid
         Assert.assertEquals(test, Console.color8Bit(test, -1));
         Assert.assertEquals(test, Console.color8Bit(test, 256));
@@ -385,7 +383,7 @@ public class ConsoleTest {
     @Test
     public void testColorAndBackground8Bit() throws Exception {
         String test = "test";
-    
+        
         //standard
         Assert.assertEquals(
                 "\u001B[38;5;88;48;5;122m" + test + Console.ConsoleEffect.RESET.getKey(),
@@ -399,7 +397,7 @@ public class ConsoleTest {
                 "\u001B[38;5;255;48;5;255m" + test + Console.ConsoleEffect.RESET.getKey(),
                 Console.colorAndBackground8Bit(test, 255, 255)
         );
-    
+        
         //invalid
         Assert.assertEquals(test, Console.colorAndBackground8Bit(test, -1, 128));
         Assert.assertEquals(test, Console.colorAndBackground8Bit(test, 256, 128));
@@ -416,7 +414,7 @@ public class ConsoleTest {
     @Test
     public void testColor24Bit() throws Exception {
         String test = "test";
-    
+        
         //standard
         Assert.assertEquals(
                 "\u001B[38;2;88;122;34m" + test + Console.ConsoleEffect.RESET.getKey(),
@@ -430,7 +428,7 @@ public class ConsoleTest {
                 "\u001B[38;2;255;255;255m" + test + Console.ConsoleEffect.RESET.getKey(),
                 Console.color24Bit(test, 255, 255, 255)
         );
-    
+        
         //invalid
         Assert.assertEquals(test, Console.color24Bit(test, -1, 128, 128));
         Assert.assertEquals(test, Console.color24Bit(test, 256, 128, 128));
@@ -449,7 +447,7 @@ public class ConsoleTest {
     @Test
     public void testColorAndBackground24Bit() throws Exception {
         String test = "test";
-    
+        
         //standard
         Assert.assertEquals(
                 "\u001B[38;2;88;122;34;48;2;8;203;110m" + test + Console.ConsoleEffect.RESET.getKey(),
@@ -463,7 +461,7 @@ public class ConsoleTest {
                 "\u001B[38;2;255;255;255;48;2;255;255;255m" + test + Console.ConsoleEffect.RESET.getKey(),
                 Console.colorAndBackground24Bit(test, 255, 255, 255, 255, 255, 255)
         );
-    
+        
         //invalid
         Assert.assertEquals(test, Console.colorAndBackground24Bit(test, -1, 128, 128, 128, 128, 128));
         Assert.assertEquals(test, Console.colorAndBackground24Bit(test, 256, 128, 128, 128, 128, 128));
@@ -520,7 +518,7 @@ public class ConsoleTest {
     @Test
     public void testStringEffectWithColor8Bit() throws Exception {
         String test = "test";
-    
+        
         //standard
         Assert.assertEquals(
                 "\u001B[" + Console.ConsoleEffect.BOLD.getCode() + ";" + Console.ConsoleEffect.UNDERLINE.getCode() + ";38;5;88m" + test + Console.ConsoleEffect.RESET.getKey(),
@@ -534,7 +532,7 @@ public class ConsoleTest {
                 "\u001B[" + Console.ConsoleEffect.BOLD.getCode() + ";" + Console.ConsoleEffect.UNDERLINE.getCode() + ";38;5;255m" + test + Console.ConsoleEffect.RESET.getKey(),
                 Console.stringEffectsWithColor8Bit(test, 255, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.UNDERLINE)
         );
-    
+        
         //invalid
         Assert.assertEquals(test, Console.stringEffectsWithColor8Bit(test, -1, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.UNDERLINE));
         Assert.assertEquals(test, Console.stringEffectsWithColor8Bit(test, 256, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.UNDERLINE));
@@ -549,7 +547,7 @@ public class ConsoleTest {
     @Test
     public void testStringEffectWithColorAndBackground8Bit() throws Exception {
         String test = "test";
-    
+        
         //standard
         Assert.assertEquals(
                 "\u001B[" + Console.ConsoleEffect.BOLD.getCode() + ";" + Console.ConsoleEffect.UNDERLINE.getCode() + ";38;5;88;48;5;122m" + test + Console.ConsoleEffect.RESET.getKey(),
@@ -563,7 +561,7 @@ public class ConsoleTest {
                 "\u001B[" + Console.ConsoleEffect.BOLD.getCode() + ";" + Console.ConsoleEffect.UNDERLINE.getCode() + ";38;5;255;48;5;255m" + test + Console.ConsoleEffect.RESET.getKey(),
                 Console.stringEffectsWithColorAndBackground8Bit(test, 255, 255, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.UNDERLINE)
         );
-    
+        
         //invalid
         Assert.assertEquals(test, Console.stringEffectsWithColorAndBackground8Bit(test, -1, 128, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.UNDERLINE));
         Assert.assertEquals(test, Console.stringEffectsWithColorAndBackground8Bit(test, 256, 128, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.UNDERLINE));
@@ -580,7 +578,7 @@ public class ConsoleTest {
     @Test
     public void testStringEffectsWithColor24Bit() throws Exception {
         String test = "test";
-    
+        
         //standard
         Assert.assertEquals(
                 "\u001B[" + Console.ConsoleEffect.BOLD.getCode() + ";" + Console.ConsoleEffect.UNDERLINE.getCode() + ";38;2;88;122;34m" + test + Console.ConsoleEffect.RESET.getKey(),
@@ -594,7 +592,7 @@ public class ConsoleTest {
                 "\u001B[" + Console.ConsoleEffect.BOLD.getCode() + ";" + Console.ConsoleEffect.UNDERLINE.getCode() + ";38;2;255;255;255m" + test + Console.ConsoleEffect.RESET.getKey(),
                 Console.stringEffectsWithColor24Bit(test, 255, 255, 255, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.UNDERLINE)
         );
-    
+        
         //invalid
         Assert.assertEquals(test, Console.stringEffectsWithColor24Bit(test, -1, 128, 128, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.UNDERLINE));
         Assert.assertEquals(test, Console.stringEffectsWithColor24Bit(test, 256, 128, 128, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.UNDERLINE));
@@ -613,7 +611,7 @@ public class ConsoleTest {
     @Test
     public void testStringEffectsWithColorAndBackground24Bit() throws Exception {
         String test = "test";
-    
+        
         //standard
         Assert.assertEquals(
                 "\u001B[" + Console.ConsoleEffect.BOLD.getCode() + ";" + Console.ConsoleEffect.UNDERLINE.getCode() + ";38;2;88;122;34;48;2;8;203;110m" + test + Console.ConsoleEffect.RESET.getKey(),
@@ -627,7 +625,7 @@ public class ConsoleTest {
                 "\u001B[" + Console.ConsoleEffect.BOLD.getCode() + ";" + Console.ConsoleEffect.UNDERLINE.getCode() + ";38;2;255;255;255;48;2;255;255;255m" + test + Console.ConsoleEffect.RESET.getKey(),
                 Console.stringEffectsWithColorAndBackground24Bit(test, 255, 255, 255, 255, 255, 255, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.UNDERLINE)
         );
-    
+        
         //invalid
         Assert.assertEquals(test, Console.stringEffectsWithColorAndBackground24Bit(test, -1, 128, 128, 128, 128, 128, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.UNDERLINE));
         Assert.assertEquals(test, Console.stringEffectsWithColorAndBackground24Bit(test, 256, 128, 128, 128, 128, 128, Console.ConsoleEffect.BOLD, Console.ConsoleEffect.UNDERLINE));
