@@ -6,11 +6,11 @@
 
 package commons.console;
 
-import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import commons.math.BoundUtility;
 import commons.string.StringUtility;
+import commons.time.DateTimeUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,9 +40,9 @@ public class ConsoleProgressBar {
     public static final boolean DEFAULT_PROGRESS_BAR_AUTO_PRINT = true;
     
     /**
-     * The minimum number of nanoseconds that must pass before an update can occur.
+     * The minimum number of milliseconds that must pass before an update can occur.
      */
-    public static final long PROGRESS_BAR_MINIMUM_UPDATE_DELAY = TimeUnit.MILLISECONDS.toNanos(200);
+    public static final long PROGRESS_BAR_MINIMUM_UPDATE_DELAY = 200;
     
     
     //Fields
@@ -190,6 +190,12 @@ public class ConsoleProgressBar {
         this(title, total, DEFAULT_PROGRESS_BAR_WIDTH, "");
     }
     
+    /**
+     * Private constructor for a new ConsoleProgressBar object.
+     */
+    private ConsoleProgressBar() {
+    }
+    
     
     //Methods
     
@@ -206,7 +212,7 @@ public class ConsoleProgressBar {
     @SuppressWarnings("HardcodedLineSeparator")
     public String get() {
         if (update) {
-            progressBar = '\r' + StringUtility.spaces(width + ((String.valueOf(total).length() + units.length()) * 2) + 30) + '\r' +
+            progressBar = '\r' + StringUtility.spaces(width + ((total + units).length() * 2) + 30) + '\r' +
                     getPercentageString() + ' ' +
                     getBarString() + ' ' +
                     getRatioString() + " - " +
@@ -231,7 +237,7 @@ public class ConsoleProgressBar {
         
         if (firstUpdate == 0) {
             if (!title.isEmpty()) {
-                System.out.println(Console.ConsoleEffect.CYAN.apply(title + ": "));
+                System.out.println(getTitleString());
                 System.out.flush();
                 System.err.flush();
             }
@@ -240,7 +246,8 @@ public class ConsoleProgressBar {
         
         progress = BoundUtility.truncateNum(newProgress, 0, total).longValue();
         
-        if (((System.nanoTime() - currentUpdate) >= PROGRESS_BAR_MINIMUM_UPDATE_DELAY) || (progress == total)) {
+        boolean needsUpdate = (Math.abs(System.nanoTime() - currentUpdate) >= TimeUnit.MILLISECONDS.toNanos(PROGRESS_BAR_MINIMUM_UPDATE_DELAY));
+        if (needsUpdate || (progress == total)) {
             previous = current;
             current = progress;
             
@@ -297,7 +304,9 @@ public class ConsoleProgressBar {
      * @return The ratio of the progress bar.
      */
     public double getRatio() {
-        return (double) current / total;
+        return ((total <= 0) || (current > total)) ? 1 :
+               (current < 0) ? 0 :
+               (double) current / total;
     }
     
     /**
@@ -316,13 +325,11 @@ public class ConsoleProgressBar {
      * @return The last recorded speed of the progress bar in units per second.
      */
     public double getLastSpeed() {
-        double recentTime = (double) (currentUpdate - previousUpdate) / TimeUnit.SECONDS.toNanos(1);
-        if ((recentTime == 0) || (previousUpdate == 0)) {
-            return 0;
-        }
-        long recentProgress = current - previous;
+        double recentTime = (double) Math.max((currentUpdate - previousUpdate), 0) / TimeUnit.SECONDS.toNanos(1);
+        long recentProgress = Math.max((current - previous), 0);
         
-        return recentProgress / recentTime;
+        return ((recentTime == 0) || (recentProgress == 0) || (current < 0) || (previous < 0) || (previousUpdate <= 0) || (currentUpdate <= 0)) ? 0 :
+               (recentProgress / recentTime);
     }
     
     /**
@@ -331,12 +338,23 @@ public class ConsoleProgressBar {
      * @return The average speed of the progress bar in units per second.
      */
     public double getAverageSpeed() {
-        double totalTime = (double) (currentUpdate - firstUpdate) / TimeUnit.SECONDS.toNanos(1);
-        if ((totalTime == 0) || (firstUpdate == 0)) {
-            return 0;
-        }
+        double totalTime = (double) Math.max((currentUpdate - firstUpdate), 0) / TimeUnit.SECONDS.toNanos(1);
         
-        return current / totalTime;
+        return ((totalTime == 0) || (current <= 0) || (firstUpdate < 0) || (currentUpdate <= 0)) ? 0 :
+               (current / totalTime);
+    }
+    
+    /**
+     * Calculates the total duration of the progress bar.
+     *
+     * @return The total duration of the progress bar in nanoseconds.
+     */
+    public long getTotalDuration() {
+        long totalDuration = Math.max((currentUpdate - firstUpdate), 0) +
+                (Math.max(initialDuration, 0) * TimeUnit.SECONDS.toNanos(1));
+        
+        return ((currentUpdate <= 0) || (firstUpdate < 0)) ? 0 :
+               totalDuration;
     }
     
     /**
@@ -345,16 +363,12 @@ public class ConsoleProgressBar {
      * @return The estimated time remaining in seconds.
      */
     public long getTimeRemaining() {
-        long remaining = total - current;
-        if (remaining == 0) {
-            return 0;
-        }
-        if (current == 0) {
-            return Long.MAX_VALUE;
-        }
+        long remainingProgress = Math.max((total - current), 0);
+        long totalProgress = Math.max((current - Math.max(initialProgress, 0)), 0);
+        long totalTime = Math.max((currentUpdate - firstUpdate), 0);
         
-        long timeRemaining = (long) (((double) remaining / (current - initialProgress)) * (currentUpdate - firstUpdate));
-        return TimeUnit.NANOSECONDS.toSeconds(timeRemaining);
+        return ((totalProgress == 0) || (totalTime == 0) || (current <= 0) || (currentUpdate <= 0) || (firstUpdate < 0)) ? Long.MAX_VALUE :
+               TimeUnit.NANOSECONDS.toSeconds((long) (((double) remainingProgress / totalProgress) * totalTime));
     }
     
     /**
@@ -363,7 +377,7 @@ public class ConsoleProgressBar {
      * @return Whether the progress bar is complete or not.
      */
     public boolean isComplete() {
-        return (current == total);
+        return (current >= total);
     }
     
     /**
@@ -376,24 +390,16 @@ public class ConsoleProgressBar {
     public void complete(boolean printTime, String additionalInfo) {
         update(total, false);
         String completeProgressBar = get();
+        
         if (printTime) {
-            long totalSeconds = initialDuration + ((currentUpdate - firstUpdate) / 1000000000);
-            long totalMinutes = totalSeconds / 60;
-            long totalHours = totalMinutes / 60;
-            long totalDays = totalHours / 24;
-            totalHours %= 24;
-            totalMinutes %= 60;
-            totalSeconds %= 60;
-            String totalDuration = ((totalDays > 0) ? totalDays + "d " : "") +
-                    ((totalDays > 0 || totalHours > 0) ? totalHours + "h " : "") +
-                    ((totalDays > 0 || totalHours > 0 || totalMinutes > 0) ? totalMinutes + "m " : "") +
-                    totalSeconds + 's';
-            totalDuration = StringUtility.trim(totalDuration);
-            completeProgressBar += " (" + totalDuration + ')';
+            long duration = TimeUnit.NANOSECONDS.toMillis(getTotalDuration());
+            String durationString = DateTimeUtility.durationToDurationString(duration, false, false, true);
+            completeProgressBar += " (" + durationString + ')';
         }
         if (!additionalInfo.isEmpty()) {
-            completeProgressBar += ' ' + additionalInfo;
+            completeProgressBar += " - " + additionalInfo;
         }
+        
         System.out.println(completeProgressBar);
         System.out.flush();
         System.err.flush();
@@ -420,6 +426,16 @@ public class ConsoleProgressBar {
     }
     
     /**
+     * Builds the title string for the progress bar.
+     *
+     * @return The title string.
+     * @see #getTitle()
+     */
+    public String getTitleString() {
+        return Console.ConsoleEffect.CYAN.apply(getTitle() + ": ");
+    }
+    
+    /**
      * Builds the percentage string for the progress bar.
      *
      * @return The percentage string.
@@ -428,8 +444,9 @@ public class ConsoleProgressBar {
     public String getPercentageString() {
         int percentage = getPercentage();
         String percentageString = StringUtility.padLeft(String.valueOf(percentage), 3);
+        Console.ConsoleEffect color = ((percentage == 100) ? Console.ConsoleEffect.CYAN : Console.ConsoleEffect.GREEN);
         
-        return ((percentage == 100) ? Console.ConsoleEffect.CYAN.apply(percentageString) : Console.ConsoleEffect.GREEN.apply(percentageString)) + '%';
+        return color.apply(percentageString) + '%';
     }
     
     /**
@@ -440,22 +457,12 @@ public class ConsoleProgressBar {
      */
     public String getBarString() {
         double ratio = getRatio();
-        int completed = (int) ((double) width * ratio);
-        int remaining = width - completed;
+        int completed = Math.max((int) ((double) width * ratio), 0);
+        int remaining = Math.max((width - completed - 1), 0);
+        Console.ConsoleEffect color = ((completed == width) ? Console.ConsoleEffect.CYAN : Console.ConsoleEffect.GREEN);
         
-        StringBuilder bar = new StringBuilder();
-        bar.append('[');
-        StringBuilder progress = new StringBuilder();
-        progress.append("=".repeat(Math.max(0, completed)));
-        if (completed != width) {
-            progress.append('>');
-            remaining--;
-        }
-        bar.append((completed == width) ? Console.ConsoleEffect.CYAN.apply(progress.toString()) : Console.ConsoleEffect.GREEN.apply(progress.toString()));
-        bar.append(" ".repeat(Math.max(0, remaining)));
-        bar.append(']');
-        
-        return bar.toString();
+        String bar = "=".repeat(completed) + ((completed != width) ? '>' : "") + " ".repeat(remaining);
+        return '[' + color.apply(bar) + ']';
     }
     
     /**
@@ -464,12 +471,11 @@ public class ConsoleProgressBar {
      * @return The ratio string.
      */
     public String getRatioString() {
-        String formattedCurrent = StringUtility.padLeft(String.valueOf(current), String.valueOf(total).length());
+        String formattedCurrent = StringUtility.padLeft(String.valueOf(Math.max(Math.min(current, total), 0)), String.valueOf(total).length());
+        Console.ConsoleEffect color = ((current >= total) ? Console.ConsoleEffect.CYAN : Console.ConsoleEffect.GREEN);
         
-        return ((current == total) ? Console.ConsoleEffect.CYAN.apply(formattedCurrent) : Console.ConsoleEffect.GREEN.apply(formattedCurrent)) +
-                units + '/' +
-                Console.ConsoleEffect.CYAN.apply(String.valueOf(total)) +
-                units;
+        return color.apply(formattedCurrent) + units + '/' +
+                Console.ConsoleEffect.CYAN.apply(String.valueOf(total)) + units;
     }
     
     /**
@@ -480,23 +486,11 @@ public class ConsoleProgressBar {
      */
     public String getTimeRemainingString() {
         long time = getTimeRemaining();
+        String durationStamp = DateTimeUtility.durationToDurationStamp(TimeUnit.SECONDS.toMillis(time), false, false);
         
-        if (current == total) {
-            return Console.ConsoleEffect.CYAN.apply("Complete");
-        }
-        if (time == Long.MAX_VALUE) {
-            return "ETA: --:--:--";
-        }
-        
-        int hours = (int) ((double) time / Duration.ofHours(1).getSeconds());
-        time -= hours * TimeUnit.HOURS.toSeconds(1);
-        
-        int minutes = (int) ((double) time / Duration.ofMinutes(1).getSeconds());
-        time -= minutes * TimeUnit.MINUTES.toSeconds(1);
-        
-        int seconds = (int) time;
-        
-        return "ETA: " + StringUtility.padZero(hours, 2) + ':' + StringUtility.padZero(minutes, 2) + ':' + StringUtility.padZero(seconds, 2);
+        return (current >= total) ? Console.ConsoleEffect.CYAN.apply("Complete") :
+               (time == Long.MAX_VALUE) ? "ETA: --:--:--" :
+               "ETA: " + durationStamp;
     }
     
     
@@ -623,15 +617,6 @@ public class ConsoleProgressBar {
     //Setters
     
     /**
-     * Sets the total progress of the progress bar.
-     *
-     * @param total The total progress of the progress bar.
-     */
-    public void setTotal(long total) {
-        this.total = total;
-    }
-    
-    /**
      * Sets the initial progress of the progress bar.
      *
      * @param initialProgress The initial progress of the progress bar.
@@ -641,21 +626,21 @@ public class ConsoleProgressBar {
     }
     
     /**
-     * Sets the flag indicating whether or not to automatically print the progress bar after an update.
-     *
-     * @param autoPrint The flag indicating whether or not to automatically print the progress bar after an update.
-     */
-    public void setAutoPrint(boolean autoPrint) {
-        this.autoPrint = autoPrint;
-    }
-    
-    /**
      * Sets the initial duration of the progress bar in seconds.
      *
      * @param initialDuration The initial duration of the progress bar in seconds.
      */
     public void setInitialDuration(long initialDuration) {
         this.initialDuration = initialDuration;
+    }
+    
+    /**
+     * Sets the flag indicating whether or not to automatically print the progress bar after an update.
+     *
+     * @param autoPrint The flag indicating whether or not to automatically print the progress bar after an update.
+     */
+    public void setAutoPrint(boolean autoPrint) {
+        this.autoPrint = autoPrint;
     }
     
 }
