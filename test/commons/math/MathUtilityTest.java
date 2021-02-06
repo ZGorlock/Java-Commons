@@ -6,6 +6,8 @@
 
 package commons.math;
 
+import java.util.Arrays;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -134,6 +136,48 @@ public class MathUtilityTest {
             Assert.assertTrue(value >= 3);
             Assert.assertTrue(value <= 21);
         }
+    }
+    
+    /**
+     * JUnit test of dice.
+     *
+     * @throws Exception When there is an exception.
+     * @see MathUtility#dice(int, int)
+     * @see MathUtility#dice(int)
+     */
+    @Test
+    public void testDice() throws Exception {
+        //standard
+        for (int sides : Arrays.asList(2, 4, 6, 8, 10, 12, 20, 100)) {
+            for (int i = 0; i < 1000; i++) {
+                int roll = MathUtility.dice(sides);
+                Assert.assertTrue(roll >= 1);
+                Assert.assertTrue(roll <= sides);
+            }
+        }
+        
+        //multiple rolls
+        for (int sides : Arrays.asList(2, 4, 6, 8, 10, 12, 20, 100)) {
+            for (int i = 0; i < 1000; i++) {
+                int rolls = MathUtility.random(1, 50);
+                int roll = MathUtility.dice(sides, rolls);
+                Assert.assertTrue(roll >= rolls);
+                Assert.assertTrue(roll <= (sides * rolls));
+            }
+        }
+        
+        //invalid
+        Assert.assertEquals(0, MathUtility.dice(0));
+        Assert.assertEquals(0, MathUtility.dice(-1));
+        Assert.assertEquals(0, MathUtility.dice(-999));
+        Assert.assertEquals(0, MathUtility.dice(6, 0));
+        Assert.assertEquals(0, MathUtility.dice(6, -1));
+        Assert.assertEquals(0, MathUtility.dice(6, -999));
+        Assert.assertEquals(0, MathUtility.dice(0, 0));
+        Assert.assertEquals(0, MathUtility.dice(-1, 0));
+        Assert.assertEquals(0, MathUtility.dice(0, -1));
+        Assert.assertEquals(0, MathUtility.dice(-999, 0));
+        Assert.assertEquals(0, MathUtility.dice(0, -999));
     }
     
     /**

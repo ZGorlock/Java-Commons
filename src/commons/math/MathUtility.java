@@ -47,6 +47,37 @@ public class MathUtility {
     }
     
     /**
+     * Returns the result of a dice roll.
+     *
+     * @param sides The number of sides on the dice.
+     * @param rolls The number of rolls to perform.
+     * @return The result of the dice roll.
+     * @see #random(int, int)
+     */
+    public static int dice(int sides, int rolls) {
+        if ((sides <= 0) || (rolls <= 0)) {
+            return 0;
+        }
+        
+        int roll = 0;
+        for (int i = 0; i < rolls; i++) {
+            roll += random(1, sides);
+        }
+        return roll;
+    }
+    
+    /**
+     * Returns the result of a dice roll.
+     *
+     * @param sides The number of sides on the dice.
+     * @return The result of the dice roll.
+     * @see #dice(int, int)
+     */
+    public static int dice(int sides) {
+        return dice(sides, 1);
+    }
+    
+    /**
      * Maps a value from one range to another.
      *
      * @param value       The value.
