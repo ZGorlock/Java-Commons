@@ -170,6 +170,17 @@ public class BigVectorTest {
     }
     
     /**
+     * JUnit test of justify.
+     *
+     * @throws Exception When there is an exception.
+     * @see BigVector#justify()
+     */
+    @Test
+    public void testJustify() throws Exception {
+        //TODO
+    }
+    
+    /**
      * JUnit test of distance.
      *
      * @throws Exception When there is an exception.
@@ -458,6 +469,17 @@ public class BigVectorTest {
     }
     
     /**
+     * JUnit test of getJustificationVector.
+     *
+     * @throws Exception When there is an exception.
+     * @see BigVector#getJustificationVector()
+     */
+    @Test
+    public void testGetJustificationVector() throws Exception {
+        //TODO
+    }
+    
+    /**
      * JUnit test of setX.
      *
      * @throws Exception When there is an exception.
@@ -524,6 +546,17 @@ public class BigVectorTest {
     }
     
     /**
+     * JUnit test of setJustificationVector.
+     *
+     * @throws Exception When there is an exception.
+     * @see BigVector#setJustificationVector(BigVector)
+     */
+    @Test
+    public void testSetJustificationVector() throws Exception {
+        //TODO
+    }
+    
+    /**
      * JUnit test of copyVector.
      *
      * @throws Exception When there is an exception.
@@ -555,6 +588,39 @@ public class BigVectorTest {
      */
     @Test
     public void testCalculateMinMax() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of dimensionalityNotEqualErrorMessage.
+     *
+     * @throws Exception When there is an exception.
+     * @see BigVector#dimensionalityNotEqualErrorMessage(BigVector, BigVector)
+     */
+    @Test
+    public void testDimensionalityNotEqualErrorMessage() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of dimensionalityMinimumNotMetErrorMessage.
+     *
+     * @throws Exception When there is an exception.
+     * @see BigVector#dimensionalityMinimumNotMetErrorMessage(BigVector, int)
+     */
+    @Test
+    public void testDimensionalityMinimumNotMetErrorMessage() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of componentIndexOutOfRangeError.
+     *
+     * @throws Exception When there is an exception.
+     * @see BigVector#componentIndexOutOfRangeError(BigVector, int)
+     */
+    @Test
+    public void testComponentIndexOutOfRangeError() throws Exception {
         //TODO
     }
     

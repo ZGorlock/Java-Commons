@@ -161,6 +161,17 @@ public class VectorTest {
     }
     
     /**
+     * JUnit test of justify.
+     *
+     * @throws Exception When there is an exception.
+     * @see Vector#justify()
+     */
+    @Test
+    public void testJustify() throws Exception {
+        //TODO
+    }
+    
+    /**
      * JUnit test of distance.
      *
      * @throws Exception When there is an exception.
@@ -404,6 +415,17 @@ public class VectorTest {
     }
     
     /**
+     * JUnit test of getJustificationVector.
+     *
+     * @throws Exception When there is an exception.
+     * @see Vector#getJustificationVector()
+     */
+    @Test
+    public void testGetJustificationVector() throws Exception {
+        //TODO
+    }
+    
+    /**
      * JUnit test of setX.
      *
      * @throws Exception When there is an exception.
@@ -459,6 +481,17 @@ public class VectorTest {
     }
     
     /**
+     * JUnit test of setJustificationVector.
+     *
+     * @throws Exception When there is an exception.
+     * @see Vector#setJustificationVector(Vector)
+     */
+    @Test
+    public void testSetJustificationVector() throws Exception {
+        //TODO
+    }
+    
+    /**
      * JUnit test of copyVector.
      *
      * @throws Exception When there is an exception.
@@ -501,6 +534,17 @@ public class VectorTest {
      */
     @Test
     public void testDimensionalityNotEqualErrorMessage() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of dimensionalityMinimumNotMetErrorMessage.
+     *
+     * @throws Exception When there is an exception.
+     * @see Vector#dimensionalityMinimumNotMetErrorMessage(Vector, int)
+     */
+    @Test
+    public void testDimensionalityMinimumNotMetErrorMessage() throws Exception {
         //TODO
     }
     

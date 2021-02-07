@@ -71,9 +71,12 @@ public class Vector3 extends Vector {
      * @param vector The other Vector.
      * @return The cross product.
      */
-    public Vector3 cross(Vector3 vector) throws ArithmeticException {
+    public Vector3 cross(Vector vector) throws ArithmeticException {
         if (!dimensionalityEqual(vector)) {
-            throw new ArithmeticException("The vectors: " + toString() + " and " + vector.toString() + " are of different dimensions.");
+            throw new ArithmeticException(dimensionalityNotEqualErrorMessage(this, vector));
+        }
+        if (vector.getDimensionality() < 3) {
+            throw new ArithmeticException(dimensionalityMinimumNotMetErrorMessage(vector, 3));
         }
         
         return new Vector3(

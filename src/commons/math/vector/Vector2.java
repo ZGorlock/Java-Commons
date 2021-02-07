@@ -55,13 +55,21 @@ public class Vector2 extends Vector {
     //Functions
     
     /**
-     * Calculates the dot flop of two 2D Vectors.
+     * Calculates the dot flop of two Vectors.
      *
      * @param vector1 The first Vector.
      * @param vector2 The second Vector.
      * @return The dot flop of the Vectors.
+     * @throws ArithmeticException When either of the Vectors do not have a dimensionality of at least 2.
      */
-    public static Vector2 dotFlop(Vector2 vector1, Vector2 vector2) throws ArithmeticException {
+    public static Vector2 dotFlop(Vector vector1, Vector vector2) throws ArithmeticException {
+        if (vector1.getDimensionality() < 2) {
+            throw new ArithmeticException(dimensionalityMinimumNotMetErrorMessage(vector1, 2));
+        }
+        if (vector2.getDimensionality() < 2) {
+            throw new ArithmeticException(dimensionalityMinimumNotMetErrorMessage(vector2, 2));
+        }
+        
         return new Vector2(
                 (vector1.getX() * vector2.getX()) - (vector1.getY() * vector2.getY()),
                 (vector1.getX() * vector2.getY()) + (vector1.getY() * vector2.getX())
@@ -69,13 +77,21 @@ public class Vector2 extends Vector {
     }
     
     /**
-     * Calculates the negative dot flop of two 2D Vectors.
+     * Calculates the negative dot flop of two Vectors.
      *
      * @param vector1 The first Vector.
      * @param vector2 The second Vector.
      * @return The negative dot flop of the Vectors.
+     * @throws ArithmeticException When either of the Vectors do not have a dimensionality of at least 2.
      */
     public static Vector2 dotFlopNegative(Vector2 vector1, Vector2 vector2) throws ArithmeticException {
+        if (vector1.getDimensionality() < 2) {
+            throw new ArithmeticException(dimensionalityMinimumNotMetErrorMessage(vector1, 2));
+        }
+        if (vector2.getDimensionality() < 2) {
+            throw new ArithmeticException(dimensionalityMinimumNotMetErrorMessage(vector2, 2));
+        }
+        
         return new Vector2(
                 (vector1.getX() * vector2.getX()) + (vector1.getY() * vector2.getY()),
                 (vector1.getX() * vector2.getY()) - (vector1.getY() * vector2.getX())
@@ -83,12 +99,12 @@ public class Vector2 extends Vector {
     }
     
     /**
-     * Calculates the square sum of a 2D Vector.
+     * Calculates the square sum of a Vector.
      *
      * @param vector The Vector.
      * @return The square sum of the Vector.
      */
-    public static double squareSum(Vector2 vector) throws ArithmeticException {
+    public static double squareSum(Vector2 vector) {
         return vector.squareSum();
     }
     
@@ -97,8 +113,13 @@ public class Vector2 extends Vector {
      *
      * @param vector The Vector.
      * @return The square difference of the Vector.
+     * @throws ArithmeticException When the Vector does not have a dimensionality of at least 2.
      */
     public static double squareDifference(Vector2 vector) throws ArithmeticException {
+        if (vector.getDimensionality() < 2) {
+            throw new ArithmeticException(dimensionalityMinimumNotMetErrorMessage(vector, 2));
+        }
+        
         return Math.pow(vector.getX(), 2) - Math.pow(vector.getY(), 2);
     }
     

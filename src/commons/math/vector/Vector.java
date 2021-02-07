@@ -29,6 +29,14 @@ public class Vector {
     private static final Logger logger = LoggerFactory.getLogger(Vector.class);
     
     
+    //Static Fields
+    
+    /**
+     * The Vector used for justification.
+     */
+    public static final Vector justificationVector = new Vector(1, 1, 1);
+    
+    
     //Fields
     
     /**
@@ -153,6 +161,15 @@ public class Vector {
             reversedComponents[getDimensionality() - 1 - i] = components[i];
         }
         return new Vector(reversedComponents);
+    }
+    
+    /**
+     * Justifies a Vector.
+     *
+     * @return The justified Vector.
+     */
+    public Vector justify() {
+        return this.times(justificationVector);
     }
     
     /**
@@ -472,6 +489,15 @@ public class Vector {
         return components[index];
     }
     
+    /**
+     * Returns the Vector used for justification.
+     *
+     * @return The Vector used for justification.
+     */
+    public static Vector getJustificationVector() {
+        return justificationVector;
+    }
+    
     
     //Setters
     
@@ -532,6 +558,15 @@ public class Vector {
         }
         
         components[index] = value;
+    }
+    
+    /**
+     * Sets the Vector used for justification.
+     *
+     * @param justificationVector The Vector to be used for justification.
+     */
+    public static void setJustificationVector(Vector justificationVector) {
+        copyVector(justificationVector, Vector.justificationVector);
     }
     
     
@@ -652,6 +687,17 @@ public class Vector {
      */
     protected static String dimensionalityNotEqualErrorMessage(Vector vector1, Vector vector2) {
         return "The vectors: " + vector1 + " and " + vector2 + " do not have the same dimensionality.";
+    }
+    
+    /**
+     * Returns the error message to display when a Vectors do not have the minimum dimensionality.
+     *
+     * @param vector  The Vector.
+     * @param minimum The minimum dimensionality.
+     * @return The error message.
+     */
+    protected static String dimensionalityMinimumNotMetErrorMessage(Vector vector, int minimum) {
+        return "The vector: " + vector + " do not have the minimum dimensionality of: " + minimum + ".";
     }
     
     /**

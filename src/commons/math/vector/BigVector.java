@@ -35,25 +35,33 @@ public class BigVector {
     //Constants
     
     /**
-     * The default value of the precision of a BigVector math context.
+     * The default value of the precision of a Big Vector math context.
      */
     public static final int DEFAULT_PRECISION = 32;
     
     /**
-     * The default rounding mode of a BigVector math context.
+     * The default rounding mode of a Big Vector math context.
      */
     public static final RoundingMode DEFAULT_ROUNDING_MODE = RoundingMode.HALF_UP;
+    
+    
+    //Static Fields
+    
+    /**
+     * The Big Vector used for justification.
+     */
+    public static final BigVector justificationVector = new BigVector(BigDecimal.ONE, BigDecimal.ONE, BigDecimal.ONE);
     
     
     //Fields
     
     /**
-     * The array of components that define the Vector.
+     * The array of components that define the Big Vector.
      */
     public BigDecimal[] components;
     
     /**
-     * The MathContext to use when doing BigDecimal math.
+     * The MathContext to use when doing Big Vector math.
      */
     public MathContext mathContext = new MathContext(DEFAULT_PRECISION, DEFAULT_ROUNDING_MODE);
     
@@ -185,6 +193,15 @@ public class BigVector {
         BigVector bigVector = new BigVector(reversedComponents);
         bigVector.setMathContext(mathContext);
         return bigVector;
+    }
+    
+    /**
+     * Justifies a Big Vector.
+     *
+     * @return The justified Big Vector.
+     */
+    public BigVector justify() {
+        return this.times(justificationVector);
     }
     
     /**
@@ -585,6 +602,15 @@ public class BigVector {
         return mathContext;
     }
     
+    /**
+     * Returns the Big Vector used for justification.
+     *
+     * @return The Big Vector used for justification.
+     */
+    public static BigVector getJustificationVector() {
+        return justificationVector;
+    }
+    
     
     //Setters
     
@@ -654,6 +680,15 @@ public class BigVector {
      */
     public void setMathContext(MathContext mathContext) {
         this.mathContext = mathContext;
+    }
+    
+    /**
+     * Sets the Big Vector used for justification.
+     *
+     * @param justificationVector The Big Vector to be used for justification.
+     */
+    public static void setJustificationVector(BigVector justificationVector) {
+        copyVector(justificationVector, BigVector.justificationVector);
     }
     
     
@@ -776,8 +811,19 @@ public class BigVector {
      * @param vector2 The seconds Big Vector.
      * @return The error message.
      */
-    private static String dimensionalityNotEqualErrorMessage(BigVector vector1, BigVector vector2) {
+    protected static String dimensionalityNotEqualErrorMessage(BigVector vector1, BigVector vector2) {
         return "The vectors: " + vector1 + " and " + vector2 + " do not have the same dimensionality.";
+    }
+    
+    /**
+     * Returns the error message to display when a Big Vectors do not have the minimum dimensionality.
+     *
+     * @param vector  The Big Vector.
+     * @param minimum The minimum dimensionality.
+     * @return The error message.
+     */
+    protected static String dimensionalityMinimumNotMetErrorMessage(BigVector vector, int minimum) {
+        return "The vector: " + vector + " do not have the minimum dimensionality of: " + minimum + ".";
     }
     
     /**
@@ -787,7 +833,7 @@ public class BigVector {
      * @param index  The index of the component.
      * @return The error message.
      */
-    private static String componentIndexOutOfRangeError(BigVector vector, int index) {
+    protected static String componentIndexOutOfRangeError(BigVector vector, int index) {
         return "The vector: " + vector + " does not have a component at index: " + index;
     }
     
