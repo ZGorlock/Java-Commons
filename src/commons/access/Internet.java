@@ -46,11 +46,6 @@ public final class Internet {
      */
     public static final String URL_ENCODING = "UTF-8";
     
-    /**
-     * The default value of the flag to enable internet logging or not.
-     */
-    public static final boolean DEFAULT_LOG_INTERNET = false;
-    
     
     //Functions
     

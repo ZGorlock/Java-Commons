@@ -54,11 +54,6 @@ public final class Filesystem {
     //Constants
     
     /**
-     * The default value of the flag to enable filesystem logging or not.
-     */
-    public static final boolean DEFAULT_LOG_FILESYSTEM = false;
-    
-    /**
      * A regex pattern for a Windows file name that starts with a drive letter.
      */
     public static final Pattern WINDOWS_DRIVE_FILE_NAME_PATTERN = Pattern.compile("^[A-Z]:.*");

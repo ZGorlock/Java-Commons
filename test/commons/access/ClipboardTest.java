@@ -91,11 +91,9 @@ public class ClipboardTest {
      * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
-     * @see Clipboard#DEFAULT_LOG_CLIPBOARD
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertFalse(Clipboard.DEFAULT_LOG_CLIPBOARD);
     }
     
     /**

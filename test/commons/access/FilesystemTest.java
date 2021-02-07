@@ -271,14 +271,10 @@ public class FilesystemTest {
      * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
-     * @see Filesystem#DEFAULT_LOG_FILESYSTEM
      * @see Filesystem#WINDOWS_DRIVE_FILE_NAME_PATTERN
      */
     @Test
     public void testConstants() throws Exception {
-        //constants
-        Assert.assertFalse(Filesystem.DEFAULT_LOG_FILESYSTEM);
-        
         //patterns
         Assert.assertEquals("^[A-Z]:.*", Filesystem.WINDOWS_DRIVE_FILE_NAME_PATTERN.pattern());
     }

@@ -6,9 +6,6 @@
 
 package commons.log;
 
-import commons.access.Clipboard;
-import commons.access.Filesystem;
-import commons.access.Internet;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -114,9 +111,15 @@ public class CommonsLoggingTest {
      * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
+     * @see CommonsLogging#DEFAULT_LOG_FILESYSTEM
+     * @see CommonsLogging#DEFAULT_LOG_CLIPBOARD
+     * @see CommonsLogging#DEFAULT_LOG_INTERNET
      */
     @Test
     public void testConstants() throws Exception {
+        Assert.assertFalse(CommonsLogging.DEFAULT_LOG_FILESYSTEM);
+        Assert.assertFalse(CommonsLogging.DEFAULT_LOG_CLIPBOARD);
+        Assert.assertFalse(CommonsLogging.DEFAULT_LOG_INTERNET);
     }
     
     /**
@@ -128,7 +131,7 @@ public class CommonsLoggingTest {
     @Test
     public void testLogFilesystem() throws Exception {
         CommonsLogging.setCommonsLogger(null);
-        Assert.assertFalse(Filesystem.DEFAULT_LOG_FILESYSTEM);
+        Assert.assertFalse(CommonsLogging.DEFAULT_LOG_FILESYSTEM);
         Assert.assertFalse(CommonsLogging.logFilesystem());
         CommonsLogging.setCommonsLogger(commonsLogger);
         Assert.assertTrue(CommonsLogging.logFilesystem());
@@ -143,7 +146,7 @@ public class CommonsLoggingTest {
     @Test
     public void testLogClipboard() throws Exception {
         CommonsLogging.setCommonsLogger(null);
-        Assert.assertFalse(Clipboard.DEFAULT_LOG_CLIPBOARD);
+        Assert.assertFalse(CommonsLogging.DEFAULT_LOG_CLIPBOARD);
         Assert.assertFalse(CommonsLogging.logClipboard());
         CommonsLogging.setCommonsLogger(commonsLogger);
         Assert.assertTrue(CommonsLogging.logClipboard());
@@ -158,7 +161,7 @@ public class CommonsLoggingTest {
     @Test
     public void testLogInternet() throws Exception {
         CommonsLogging.setCommonsLogger(null);
-        Assert.assertFalse(Internet.DEFAULT_LOG_INTERNET);
+        Assert.assertFalse(CommonsLogging.DEFAULT_LOG_INTERNET);
         Assert.assertFalse(CommonsLogging.logInternet());
         CommonsLogging.setCommonsLogger(commonsLogger);
         Assert.assertTrue(CommonsLogging.logInternet());

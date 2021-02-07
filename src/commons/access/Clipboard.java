@@ -32,14 +32,6 @@ public final class Clipboard {
     private static final Logger logger = LoggerFactory.getLogger(Clipboard.class);
     
     
-    //Constants
-    
-    /**
-     * The default value of the flag to enable clipboard logging or not.
-     */
-    public static final boolean DEFAULT_LOG_CLIPBOARD = false;
-    
-    
     //Functions
     
     /**

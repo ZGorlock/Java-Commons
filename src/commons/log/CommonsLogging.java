@@ -6,9 +6,6 @@
 
 package commons.log;
 
-import commons.access.Clipboard;
-import commons.access.Filesystem;
-import commons.access.Internet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,6 +20,24 @@ public final class CommonsLogging {
      * The logger.
      */
     private static final Logger logger = LoggerFactory.getLogger(CommonsLogging.class);
+    
+    
+    //Constants
+    
+    /**
+     * The default value of the flag to enable filesystem logging or not.
+     */
+    public static final boolean DEFAULT_LOG_FILESYSTEM = false;
+    
+    /**
+     * The default value of the flag to enable clipboard logging or not.
+     */
+    public static final boolean DEFAULT_LOG_CLIPBOARD = false;
+    
+    /**
+     * The default value of the flag to enable internet logging or not.
+     */
+    public static final boolean DEFAULT_LOG_INTERNET = false;
     
     
     //Fields
@@ -44,7 +59,7 @@ public final class CommonsLogging {
         if (commonsLogger != null) {
             return commonsLogger.logFilesystem();
         }
-        return Filesystem.DEFAULT_LOG_FILESYSTEM;
+        return DEFAULT_LOG_FILESYSTEM;
     }
     
     /**
@@ -56,7 +71,7 @@ public final class CommonsLogging {
         if (commonsLogger != null) {
             return commonsLogger.logClipboard();
         }
-        return Clipboard.DEFAULT_LOG_CLIPBOARD;
+        return DEFAULT_LOG_CLIPBOARD;
     }
     
     /**
@@ -68,7 +83,7 @@ public final class CommonsLogging {
         if (commonsLogger != null) {
             return commonsLogger.logInternet();
         }
-        return Internet.DEFAULT_LOG_INTERNET;
+        return DEFAULT_LOG_INTERNET;
     }
     
     

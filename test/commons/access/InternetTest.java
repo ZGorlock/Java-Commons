@@ -91,12 +91,10 @@ public class InternetTest {
      *
      * @throws Exception When there is an exception.
      * @see Internet#URL_ENCODING
-     * @see Internet#DEFAULT_LOG_INTERNET
      */
     @Test
     public void testConstants() throws Exception {
         Assert.assertEquals("UTF-8", Internet.URL_ENCODING);
-        Assert.assertFalse(Internet.DEFAULT_LOG_INTERNET);
     }
     
     /**
