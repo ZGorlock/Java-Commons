@@ -3,7 +3,7 @@
  * Package: commons.graphics
  * Author:  Zachary Gill
  *
- * Contains common console resource classes.
+ * Contains common graphics resource classes.
  */
 
 package commons.graphics;
