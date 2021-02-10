@@ -8,6 +8,7 @@ package commons.math;
 
 import java.util.Arrays;
 
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -189,20 +190,20 @@ public class MathUtilityTest {
     @Test
     public void testMapValue() throws Exception {
         //same ranges
-        Assert.assertEquals(3, MathUtility.mapValue(3, 2, 8, 2, 8), 0.000000001);
-        Assert.assertEquals(3, MathUtility.mapValue(3, 3, 8, 3, 8), 0.000000001);
-        Assert.assertEquals(3, MathUtility.mapValue(3, 1, 3, 1, 3), 0.000000001);
+        Assert.assertEquals(3, MathUtility.mapValue(3, 2, 8, 2, 8), TestUtils.DELTA);
+        Assert.assertEquals(3, MathUtility.mapValue(3, 3, 8, 3, 8), TestUtils.DELTA);
+        Assert.assertEquals(3, MathUtility.mapValue(3, 1, 3, 1, 3), TestUtils.DELTA);
         
         //standard
-        Assert.assertEquals(10, MathUtility.mapValue(1, 0, 10, 0, 100), 0.000000001);
-        Assert.assertEquals(18, MathUtility.mapValue(1.8, 0, 10, 0, 100), 0.000000001);
-        Assert.assertEquals(18, MathUtility.mapValue(1.8, 0, 10, 18, 18), 0.000000001);
-        Assert.assertEquals(4.3, MathUtility.mapValue(6, 2, 12, 3.5, 5.5), 0.000000001);
-        Assert.assertEquals(0.15000249644736335, MathUtility.mapValue(72, 59, 52133, 0.15, 0.16), 0.000000001);
+        Assert.assertEquals(10, MathUtility.mapValue(1, 0, 10, 0, 100), TestUtils.DELTA);
+        Assert.assertEquals(18, MathUtility.mapValue(1.8, 0, 10, 0, 100), TestUtils.DELTA);
+        Assert.assertEquals(18, MathUtility.mapValue(1.8, 0, 10, 18, 18), TestUtils.DELTA);
+        Assert.assertEquals(4.3, MathUtility.mapValue(6, 2, 12, 3.5, 5.5), TestUtils.DELTA);
+        Assert.assertEquals(0.15000249644736335, MathUtility.mapValue(72, 59, 52133, 0.15, 0.16), TestUtils.DELTA);
         
         //edge cases
-        Assert.assertEquals(6, MathUtility.mapValue(15, 20, 25, 6, 39), 0.000000001);
-        Assert.assertEquals(5, MathUtility.mapValue(15, 0, 10, 4, 5), 0.000000001);
+        Assert.assertEquals(6, MathUtility.mapValue(15, 20, 25, 6, 39), TestUtils.DELTA);
+        Assert.assertEquals(5, MathUtility.mapValue(15, 0, 10, 4, 5), TestUtils.DELTA);
     }
     
 }

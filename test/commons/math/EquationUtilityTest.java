@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import commons.string.StringUtility;
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -239,7 +240,7 @@ public class EquationUtilityTest {
         Assert.assertEquals(EquationUtility.Operation.DIVIDE, operation.operand2.op.operation);
         Assert.assertEquals("3", operation.operand2.op.operand1.n);
         Assert.assertEquals("4", operation.operand2.op.operand2.n);
-        Assert.assertEquals(-2186.25, operation.evaluate().doubleValue(), 0.000000001);
+        Assert.assertEquals(-2186.25, operation.evaluate().doubleValue(), TestUtils.DELTA);
         
         operation = EquationUtility.parseMath("-9 ( 3 ^ 5 ) + 3 / 4");
         
@@ -275,7 +276,7 @@ public class EquationUtilityTest {
         Assert.assertEquals(EquationUtility.Operation.DIVIDE, operation.operand2.op.operation);
         Assert.assertEquals("3", operation.operand2.op.operand1.n);
         Assert.assertEquals("4", operation.operand2.op.operand2.n);
-        Assert.assertEquals(-2186.25, operation.evaluate().doubleValue(), 0.000000001);
+        Assert.assertEquals(-2186.25, operation.evaluate().doubleValue(), TestUtils.DELTA);
         
         operation = EquationUtility.parseMath("((-9 ( 3 ^ 5 )) + (3 / 4))");
         
@@ -317,7 +318,7 @@ public class EquationUtilityTest {
         Assert.assertEquals(EquationUtility.Operation.DIVIDE, operation.operand2.op.operation);
         Assert.assertEquals("3", operation.operand2.op.operand1.n);
         Assert.assertEquals("4", operation.operand2.op.operand2.n);
-        Assert.assertEquals(-2186.25, operation.evaluate().doubleValue(), 0.000000001);
+        Assert.assertEquals(-2186.25, operation.evaluate().doubleValue(), TestUtils.DELTA);
         
         operation = EquationUtility.parseMath("negative nine times three to the fifth power plus three divided by four");
         
@@ -353,7 +354,7 @@ public class EquationUtilityTest {
         Assert.assertEquals(EquationUtility.Operation.DIVIDE, operation.operand2.op.operation);
         Assert.assertEquals("3", operation.operand2.op.operand1.n);
         Assert.assertEquals("4", operation.operand2.op.operand2.n);
-        Assert.assertEquals(-2186.25, operation.evaluate().doubleValue(), 0.000000001);
+        Assert.assertEquals(-2186.25, operation.evaluate().doubleValue(), TestUtils.DELTA);
         
         operation = EquationUtility.parseMath("negative nine open parenthesis three to the fifth power close parenthesis plus three divided by four");
         
@@ -389,7 +390,7 @@ public class EquationUtilityTest {
         Assert.assertEquals(EquationUtility.Operation.DIVIDE, operation.operand2.op.operation);
         Assert.assertEquals("3", operation.operand2.op.operand1.n);
         Assert.assertEquals("4", operation.operand2.op.operand2.n);
-        Assert.assertEquals(-2186.25, operation.evaluate().doubleValue(), 0.000000001);
+        Assert.assertEquals(-2186.25, operation.evaluate().doubleValue(), TestUtils.DELTA);
         
         //variables
         
@@ -931,7 +932,7 @@ public class EquationUtilityTest {
         operation.operand2.n = "4";
         
         Assert.assertEquals("(5+3)-4", operation.toString());
-        Assert.assertEquals(4.0, operation.evaluate().doubleValue(), 0.000000001);
+        Assert.assertEquals(4.0, operation.evaluate().doubleValue(), TestUtils.DELTA);
         
         //order of operations
         
@@ -969,7 +970,7 @@ public class EquationUtilityTest {
         operation.operand2.op = subOperationB;
         
         Assert.assertEquals("(9*(3^5))+(3/4)", operation.toString());
-        Assert.assertEquals(2187.75, operation.evaluate().doubleValue(), 0.000000001);
+        Assert.assertEquals(2187.75, operation.evaluate().doubleValue(), TestUtils.DELTA);
         
         //variables
         
