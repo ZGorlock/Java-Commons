@@ -267,11 +267,11 @@ public class NumberStringUtilityTest {
         
         //exponential notation
         Assert.assertEquals(1.1564e12,
-                NumberStringUtility.numberValueOf("1156400000000").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("1156400000000").doubleValue(), 0.000000001);
         Assert.assertEquals(8.45612897541e56,
-                NumberStringUtility.numberValueOf("845612897541000000000000000000000000000000000000000000000").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("845612897541000000000000000000000000000000000000000000000").doubleValue(), 0.000000001);
         Assert.assertEquals(4.6e105,
-                NumberStringUtility.numberValueOf("4600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("4600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000").doubleValue(), 0.000000001);
         
         //negative numbers
         Assert.assertEquals(-0, NumberStringUtility.numberValueOf("0").intValue());
@@ -282,73 +282,73 @@ public class NumberStringUtilityTest {
         
         //negative numbers, exponential notation
         Assert.assertEquals(-1.1564e12,
-                NumberStringUtility.numberValueOf("-1156400000000").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("-1156400000000").doubleValue(), 0.000000001);
         Assert.assertEquals(-8.45612897541e56,
-                NumberStringUtility.numberValueOf("-845612897541000000000000000000000000000000000000000000000").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("-845612897541000000000000000000000000000000000000000000000").doubleValue(), 0.000000001);
         Assert.assertEquals(-4.6e105,
-                NumberStringUtility.numberValueOf("-4600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("-4600000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000").doubleValue(), 0.000000001);
         
         //decimals
-        Assert.assertEquals(.1, NumberStringUtility.numberValueOf("0.1").doubleValue(), 0.0000001);
-        Assert.assertEquals(.056481, NumberStringUtility.numberValueOf("0.056481").doubleValue(), 0.0000001);
-        Assert.assertEquals(.0875210023469445, NumberStringUtility.numberValueOf("0.0875210023469445").doubleValue(), 0.0000001);
-        Assert.assertEquals(.0000000000000000000001, NumberStringUtility.numberValueOf("0.0000000000000000000001").doubleValue(), 0.0000001);
+        Assert.assertEquals(.1, NumberStringUtility.numberValueOf("0.1").doubleValue(), 0.000000001);
+        Assert.assertEquals(.056481, NumberStringUtility.numberValueOf("0.056481").doubleValue(), 0.000000001);
+        Assert.assertEquals(.0875210023469445, NumberStringUtility.numberValueOf("0.0875210023469445").doubleValue(), 0.000000001);
+        Assert.assertEquals(.0000000000000000000001, NumberStringUtility.numberValueOf("0.0000000000000000000001").doubleValue(), 0.000000001);
         
         //decimals, exponential notation
         Assert.assertEquals(4.56541e-5,
-                NumberStringUtility.numberValueOf("0.0000456541").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("0.0000456541").doubleValue(), 0.000000001);
         Assert.assertEquals(8.156420069e-16,
-                NumberStringUtility.numberValueOf("0.0000000000000008156420069").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("0.0000000000000008156420069").doubleValue(), 0.000000001);
         Assert.assertEquals(1.0e-22,
-                NumberStringUtility.numberValueOf("0.0000000000000000000001").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("0.0000000000000000000001").doubleValue(), 0.000000001);
         Assert.assertEquals(1.84565770156e-151,
-                NumberStringUtility.numberValueOf("0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000184565770156").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000184565770156").doubleValue(), 0.000000001);
         
         //negative numbers, decimals
-        Assert.assertEquals(-.1, NumberStringUtility.numberValueOf("-0.1").doubleValue(), 0.0000001);
-        Assert.assertEquals(-.056481, NumberStringUtility.numberValueOf("-0.056481").doubleValue(), 0.0000001);
-        Assert.assertEquals(-.0875210023469445, NumberStringUtility.numberValueOf("-0.0875210023469445").doubleValue(), 0.0000001);
-        Assert.assertEquals(-.0000000000000000000001, NumberStringUtility.numberValueOf("-0.0000000000000000000001").doubleValue(), 0.0000001);
+        Assert.assertEquals(-.1, NumberStringUtility.numberValueOf("-0.1").doubleValue(), 0.000000001);
+        Assert.assertEquals(-.056481, NumberStringUtility.numberValueOf("-0.056481").doubleValue(), 0.000000001);
+        Assert.assertEquals(-.0875210023469445, NumberStringUtility.numberValueOf("-0.0875210023469445").doubleValue(), 0.000000001);
+        Assert.assertEquals(-.0000000000000000000001, NumberStringUtility.numberValueOf("-0.0000000000000000000001").doubleValue(), 0.000000001);
         
         //negative numbers, decimals, exponential notation
         Assert.assertEquals(-4.56541e-5,
-                NumberStringUtility.numberValueOf("-0.0000456541").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("-0.0000456541").doubleValue(), 0.000000001);
         Assert.assertEquals(-8.156420069e-16,
-                NumberStringUtility.numberValueOf("-0.0000000000000008156420069").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("-0.0000000000000008156420069").doubleValue(), 0.000000001);
         Assert.assertEquals(-1.0e-22,
-                NumberStringUtility.numberValueOf("-0.0000000000000000000001").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("-0.0000000000000000000001").doubleValue(), 0.000000001);
         Assert.assertEquals(-1.84565770156e-151,
-                NumberStringUtility.numberValueOf("-0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000184565770156").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("-0.000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000184565770156").doubleValue(), 0.000000001);
         
         //mixed numbers
-        Assert.assertEquals(0.16542, NumberStringUtility.numberValueOf("0.16542").doubleValue(), 0.0000001);
-        Assert.assertEquals(1.18744, NumberStringUtility.numberValueOf("1.18744").doubleValue(), 0.0000001);
-        Assert.assertEquals(984.8975, NumberStringUtility.numberValueOf("984.8975").doubleValue(), 0.0000001);
-        Assert.assertEquals(456781.4987, NumberStringUtility.numberValueOf("456781.4987").doubleValue(), 0.0000001);
-        Assert.assertEquals(56428481.6874977, NumberStringUtility.numberValueOf("56428481.6874977").doubleValue(), 0.0000001);
+        Assert.assertEquals(0.16542, NumberStringUtility.numberValueOf("0.16542").doubleValue(), 0.000000001);
+        Assert.assertEquals(1.18744, NumberStringUtility.numberValueOf("1.18744").doubleValue(), 0.000000001);
+        Assert.assertEquals(984.8975, NumberStringUtility.numberValueOf("984.8975").doubleValue(), 0.000000001);
+        Assert.assertEquals(456781.4987, NumberStringUtility.numberValueOf("456781.4987").doubleValue(), 0.000000001);
+        Assert.assertEquals(56428481.6874977, NumberStringUtility.numberValueOf("56428481.6874977").doubleValue(), 0.000000001);
         
         //mixed numbers, exponential notation
         Assert.assertEquals(1.1564654798e4,
-                NumberStringUtility.numberValueOf("11564.654798").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("11564.654798").doubleValue(), 0.000000001);
         Assert.assertEquals(8.45612897e2,
-                NumberStringUtility.numberValueOf("845.612897").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("845.612897").doubleValue(), 0.000000001);
         Assert.assertEquals(4.665874210054e6,
-                NumberStringUtility.numberValueOf("4665874.210054").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("4665874.210054").doubleValue(), 0.000000001);
         
         //mixed numbers, negative numbers
-        Assert.assertEquals(-0.16542, NumberStringUtility.numberValueOf("-0.16542").doubleValue(), 0.0000001);
-        Assert.assertEquals(-1.18744, NumberStringUtility.numberValueOf("-1.18744").doubleValue(), 0.0000001);
-        Assert.assertEquals(-984.8975, NumberStringUtility.numberValueOf("-984.8975").doubleValue(), 0.0000001);
-        Assert.assertEquals(-456781.4987, NumberStringUtility.numberValueOf("-456781.4987").doubleValue(), 0.0000001);
-        Assert.assertEquals(-56428481.6874977, NumberStringUtility.numberValueOf("-56428481.6874977").doubleValue(), 0.0000001);
+        Assert.assertEquals(-0.16542, NumberStringUtility.numberValueOf("-0.16542").doubleValue(), 0.000000001);
+        Assert.assertEquals(-1.18744, NumberStringUtility.numberValueOf("-1.18744").doubleValue(), 0.000000001);
+        Assert.assertEquals(-984.8975, NumberStringUtility.numberValueOf("-984.8975").doubleValue(), 0.000000001);
+        Assert.assertEquals(-456781.4987, NumberStringUtility.numberValueOf("-456781.4987").doubleValue(), 0.000000001);
+        Assert.assertEquals(-56428481.6874977, NumberStringUtility.numberValueOf("-56428481.6874977").doubleValue(), 0.000000001);
         
         //mixed numbers, negative numbers, exponential notation
         Assert.assertEquals(-1.1564654798e4,
-                NumberStringUtility.numberValueOf("-11564.654798").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("-11564.654798").doubleValue(), 0.000000001);
         Assert.assertEquals(-8.45612897e2,
-                NumberStringUtility.numberValueOf("-845.612897").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("-845.612897").doubleValue(), 0.000000001);
         Assert.assertEquals(-4.665874210054e6,
-                NumberStringUtility.numberValueOf("-4665874.210054").doubleValue(), 0.0000001);
+                NumberStringUtility.numberValueOf("-4665874.210054").doubleValue(), 0.000000001);
         
         //big decimal cases
         Assert.assertEquals(new BigDecimal("5967945689794436877198887828689582168366902795322725858829"),
@@ -793,23 +793,23 @@ public class NumberStringUtilityTest {
         
         //extremely large cases
         Assert.assertEquals(3.465874122e54,
-                NumberStringUtility.numberPhraseToNumber("three septendecillion four hundred and sixty five sedecillion eight hundred and seventy four quinquadecillion one hundred and twenty two quattuordecillion").doubleValue(), 0.0000001);
+                NumberStringUtility.numberPhraseToNumber("three septendecillion four hundred and sixty five sedecillion eight hundred and seventy four quinquadecillion one hundred and twenty two quattuordecillion").doubleValue(), 0.000000001);
         Assert.assertEquals(9.566115646e55,
-                NumberStringUtility.numberPhraseToNumber("ninety five septendecillion six hundred and sixty one sedecillion one hundred and fifty six quinquadecillion four hundred and sixty quattuordecillion").doubleValue(), 0.0000001);
+                NumberStringUtility.numberPhraseToNumber("ninety five septendecillion six hundred and sixty one sedecillion one hundred and fifty six quinquadecillion four hundred and sixty quattuordecillion").doubleValue(), 0.000000001);
         Assert.assertEquals(1.874420905e56,
-                NumberStringUtility.numberPhraseToNumber("one hundred and eighty seven septendecillion four hundred and forty two sedecillion ninety quinquadecillion five hundred quattuordecillion").doubleValue(), 0.0000001);
+                NumberStringUtility.numberPhraseToNumber("one hundred and eighty seven septendecillion four hundred and forty two sedecillion ninety quinquadecillion five hundred quattuordecillion").doubleValue(), 0.000000001);
         Assert.assertEquals(2.097751274e57,
-                NumberStringUtility.numberPhraseToNumber("two octodecillion ninety seven septendecillion seven hundred and fifty one sedecillion two hundred and seventy four quinquadecillion").doubleValue(), 0.0000001);
+                NumberStringUtility.numberPhraseToNumber("two octodecillion ninety seven septendecillion seven hundred and fifty one sedecillion two hundred and seventy four quinquadecillion").doubleValue(), 0.000000001);
         Assert.assertEquals(7.461123877e108,
-                NumberStringUtility.numberPhraseToNumber("seven quinquatrigintillion four hundred and sixty one quattuortrigintillion one hundred and twenty three trestrigintillion eight hundred and seventy seven duotrigintillion").doubleValue(), 0.0000001);
+                NumberStringUtility.numberPhraseToNumber("seven quinquatrigintillion four hundred and sixty one quattuortrigintillion one hundred and twenty three trestrigintillion eight hundred and seventy seven duotrigintillion").doubleValue(), 0.000000001);
         Assert.assertEquals(4.000042339e189,
-                NumberStringUtility.numberPhraseToNumber("four duosexagintillion forty two sexagintillion three hundred and thirty nine novenquinquagintillion").doubleValue(), 0.0000001);
+                NumberStringUtility.numberPhraseToNumber("four duosexagintillion forty two sexagintillion three hundred and thirty nine novenquinquagintillion").doubleValue(), 0.000000001);
         Assert.assertEquals(8.451997463e307,
-                NumberStringUtility.numberPhraseToNumber("eighty four uncentillion five hundred and nineteen centillion nine hundred and seventy four novenonagintillion six hundred and thirty octononagintillion").doubleValue(), 0.0000001);
+                NumberStringUtility.numberPhraseToNumber("eighty four uncentillion five hundred and nineteen centillion nine hundred and seventy four novenonagintillion six hundred and thirty octononagintillion").doubleValue(), 0.000000001);
         Assert.assertEquals(8.451997463e307,
-                NumberStringUtility.numberPhraseToNumber("84 uncentillion 519 centillion 974 novenonagintillion 630 octononagintillion").doubleValue(), 0.0000001);
+                NumberStringUtility.numberPhraseToNumber("84 uncentillion 519 centillion 974 novenonagintillion 630 octononagintillion").doubleValue(), 0.000000001);
         Assert.assertEquals(8.4519974635648943123e124,
-                NumberStringUtility.numberPhraseToNumber("84519974635648943123 quattuortrigintillion").doubleValue(), 0.0000001);
+                NumberStringUtility.numberPhraseToNumber("84519974635648943123 quattuortrigintillion").doubleValue(), 0.000000001);
         
         //negative cases
         Assert.assertEquals(-0, NumberStringUtility.numberPhraseToNumber("zero").intValue());
@@ -841,26 +841,26 @@ public class NumberStringUtilityTest {
         Assert.assertEquals(-199486000000821L,
                 NumberStringUtility.numberPhraseToNumber("negative one hundred and ninety nine trillion four hundred and eighty six billion eight hundred and twenty one").longValue());
         Assert.assertEquals(-3.465874122e54,
-                NumberStringUtility.numberPhraseToNumber("negative three septendecillion four hundred and sixty five sedecillion eight hundred and seventy four quinquadecillion one hundred and twenty two quattuordecillion").doubleValue(), 0.0000001);
+                NumberStringUtility.numberPhraseToNumber("negative three septendecillion four hundred and sixty five sedecillion eight hundred and seventy four quinquadecillion one hundred and twenty two quattuordecillion").doubleValue(), 0.000000001);
         Assert.assertEquals(-7.461123877e108,
-                NumberStringUtility.numberPhraseToNumber("negative seven quinquatrigintillion four hundred and sixty one quattuortrigintillion one hundred and twenty three trestrigintillion eight hundred and seventy seven duotrigintillion").doubleValue(), 0.0000001);
+                NumberStringUtility.numberPhraseToNumber("negative seven quinquatrigintillion four hundred and sixty one quattuortrigintillion one hundred and twenty three trestrigintillion eight hundred and seventy seven duotrigintillion").doubleValue(), 0.000000001);
         Assert.assertEquals(-8.451997463e307,
-                NumberStringUtility.numberPhraseToNumber("negative eighty four uncentillion five hundred and nineteen centillion nine hundred and seventy four novenonagintillion six hundred and thirty octononagintillion").doubleValue(), 0.0000001);
+                NumberStringUtility.numberPhraseToNumber("negative eighty four uncentillion five hundred and nineteen centillion nine hundred and seventy four novenonagintillion six hundred and thirty octononagintillion").doubleValue(), 0.000000001);
         Assert.assertEquals(-8.451997463e307,
-                NumberStringUtility.numberPhraseToNumber("negative 84 uncentillion 519 centillion 974 novenonagintillion 630 octononagintillion").doubleValue(), 0.0000001);
+                NumberStringUtility.numberPhraseToNumber("negative 84 uncentillion 519 centillion 974 novenonagintillion 630 octononagintillion").doubleValue(), 0.000000001);
         
         //decimal cases
-        Assert.assertEquals(0.1, NumberStringUtility.numberPhraseToNumber("zero point one").doubleValue(), 0.0000001);
-        Assert.assertEquals(2.1542, NumberStringUtility.numberPhraseToNumber("two point one five four two").doubleValue(), 0.0000001);
-        Assert.assertEquals(19.008, NumberStringUtility.numberPhraseToNumber("nineteen point zero zero eight").doubleValue(), 0.0000001);
-        Assert.assertEquals(40.74, NumberStringUtility.numberPhraseToNumber("forty point seven four").doubleValue(), 0.0000001);
-        Assert.assertEquals(300.9141, NumberStringUtility.numberPhraseToNumber("three hundred point nine one four one").doubleValue(), 0.0000001);
-        Assert.assertEquals(594.000, NumberStringUtility.numberPhraseToNumber("five hundred and ninety four").doubleValue(), 0.0000001);
-        Assert.assertEquals(776.410, NumberStringUtility.numberPhraseToNumber("seven hundred and seventy six point four one").doubleValue(), 0.0000001);
+        Assert.assertEquals(0.1, NumberStringUtility.numberPhraseToNumber("zero point one").doubleValue(), 0.000000001);
+        Assert.assertEquals(2.1542, NumberStringUtility.numberPhraseToNumber("two point one five four two").doubleValue(), 0.000000001);
+        Assert.assertEquals(19.008, NumberStringUtility.numberPhraseToNumber("nineteen point zero zero eight").doubleValue(), 0.000000001);
+        Assert.assertEquals(40.74, NumberStringUtility.numberPhraseToNumber("forty point seven four").doubleValue(), 0.000000001);
+        Assert.assertEquals(300.9141, NumberStringUtility.numberPhraseToNumber("three hundred point nine one four one").doubleValue(), 0.000000001);
+        Assert.assertEquals(594.000, NumberStringUtility.numberPhraseToNumber("five hundred and ninety four").doubleValue(), 0.000000001);
+        Assert.assertEquals(776.410, NumberStringUtility.numberPhraseToNumber("seven hundred and seventy six point four one").doubleValue(), 0.000000001);
         Assert.assertEquals(643822.9641,
-                NumberStringUtility.numberPhraseToNumber("six hundred and forty three thousand eight hundred and twenty two point nine six four one").doubleValue(), 0.0000001);
+                NumberStringUtility.numberPhraseToNumber("six hundred and forty three thousand eight hundred and twenty two point nine six four one").doubleValue(), 0.000000001);
         Assert.assertEquals(643822.9641,
-                NumberStringUtility.numberPhraseToNumber("643 thousand 822 point 9641").doubleValue(), 0.0000001);
+                NumberStringUtility.numberPhraseToNumber("643 thousand 822 point 9641").doubleValue(), 0.000000001);
         
         //big decimal cases
         Assert.assertEquals(new BigDecimal("5967945689794436877198887828689582168366902795322725858829"),
