@@ -7,7 +7,6 @@
 package commons.list;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -97,48 +96,230 @@ public class ListUtilityTest {
     }
     
     /**
-     * JUnit test of arrayToList.
+     * JUnit test of toList.
      *
      * @throws Exception When there is an exception.
-     * @see ListUtility#arrayToList(Object[])
+     * @see ListUtility#toList(Object[])
      */
     @Test
-    public void testArrayToList() throws Exception {
+    public void testToList() throws Exception {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
-        List<Boolean> booleanList = ListUtility.arrayToList(booleanArray);
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
         Assert.assertEquals(booleanArray.length, booleanList.size());
         Assert.assertArrayEquals(booleanArray, booleanList.toArray());
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
-        List<Integer> integerList = ListUtility.arrayToList(integerArray);
+        List<Integer> integerList = ListUtility.toList(integerArray);
         Assert.assertEquals(integerArray.length, integerList.size());
         Assert.assertArrayEquals(integerArray, integerList.toArray());
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
-        List<Float> floatList = ListUtility.arrayToList(floatArray);
+        List<Float> floatList = ListUtility.toList(floatArray);
         Assert.assertEquals(floatArray.length, floatList.size());
         Assert.assertArrayEquals(floatArray, floatList.toArray());
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
-        List<Double> doubleList = ListUtility.arrayToList(doubleArray);
+        List<Double> doubleList = ListUtility.toList(doubleArray);
         Assert.assertEquals(doubleArray.length, doubleList.size());
         Assert.assertArrayEquals(doubleArray, doubleList.toArray());
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
-        List<Long> longList = ListUtility.arrayToList(longArray);
+        List<Long> longList = ListUtility.toList(longArray);
         Assert.assertEquals(longArray.length, longList.size());
         Assert.assertArrayEquals(longArray, longList.toArray());
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
-        List<Object> objectList = ListUtility.arrayToList(objectArray);
+        List<Object> objectList = ListUtility.toList(objectArray);
         Assert.assertEquals(objectArray.length, objectList.size());
         Assert.assertArrayEquals(objectArray, objectList.toArray());
+        
+        //invalid
+        try {
+            List<Object> invalidList = ListUtility.toList(null);
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+        }
+    }
+    
+    /**
+     * JUnit test of clone.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#clone(List)
+     */
+    @Test
+    public void testClone() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<Boolean> booleanClone = ListUtility.clone(booleanList);
+        Assert.assertEquals(booleanList.size(), booleanClone.size());
+        Assert.assertArrayEquals(booleanList.toArray(), booleanClone.toArray());
+        Assert.assertEquals(booleanList, booleanClone);
+        Assert.assertNotEquals(System.identityHashCode(booleanList), System.identityHashCode(booleanClone));
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        List<Integer> integerClone = ListUtility.clone(integerList);
+        Assert.assertEquals(integerList.size(), integerClone.size());
+        Assert.assertArrayEquals(integerList.toArray(), integerClone.toArray());
+        Assert.assertEquals(integerList, integerClone);
+        Assert.assertNotEquals(System.identityHashCode(integerList), System.identityHashCode(integerClone));
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        List<Float> floatList = ListUtility.toList(floatArray);
+        List<Float> floatClone = ListUtility.clone(floatList);
+        Assert.assertEquals(floatList.size(), floatClone.size());
+        Assert.assertArrayEquals(floatList.toArray(), floatClone.toArray());
+        Assert.assertEquals(floatList, floatClone);
+        Assert.assertNotEquals(System.identityHashCode(floatList), System.identityHashCode(floatClone));
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<Double> doubleClone = ListUtility.clone(doubleList);
+        Assert.assertEquals(doubleList.size(), doubleClone.size());
+        Assert.assertArrayEquals(doubleList.toArray(), doubleClone.toArray());
+        Assert.assertEquals(doubleList, doubleClone);
+        Assert.assertNotEquals(System.identityHashCode(doubleList), System.identityHashCode(doubleClone));
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        List<Long> longList = ListUtility.toList(longArray);
+        List<Long> longClone = ListUtility.clone(longList);
+        Assert.assertEquals(longList.size(), longClone.size());
+        Assert.assertArrayEquals(longList.toArray(), longClone.toArray());
+        Assert.assertEquals(longList, longClone);
+        Assert.assertNotEquals(System.identityHashCode(longList), System.identityHashCode(longClone));
+        
+        //object
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> objectClone = ListUtility.clone(objectList);
+        Assert.assertEquals(objectList.size(), objectClone.size());
+        Assert.assertArrayEquals(objectList.toArray(), objectClone.toArray());
+        Assert.assertEquals(objectList, objectClone);
+        Assert.assertNotEquals(System.identityHashCode(objectList), System.identityHashCode(objectClone));
+        
+        //invalid
+        try {
+            List<Object> invalidList = ListUtility.clone(null);
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+        }
+    }
+    
+    /**
+     * JUnit test of subList.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#subList(List, int, int)
+     * @see ListUtility#subList(List, int)
+     */
+    @Test
+    public void testSubList() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<Boolean> booleanSubList = ListUtility.subList(booleanList, 2, 4);
+        Assert.assertEquals(2, booleanSubList.size());
+        Assert.assertArrayEquals(new Boolean[] {false, true}, booleanSubList.toArray());
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        List<Integer> integerSubList = ListUtility.subList(integerList, 2);
+        Assert.assertEquals(5, integerSubList.size());
+        Assert.assertArrayEquals(new Integer[] {48, 5, -4, -9, 6}, integerSubList.toArray());
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        List<Float> floatList = ListUtility.toList(floatArray);
+        List<Float> floatSubList = ListUtility.subList(floatList, 0, 4);
+        Assert.assertEquals(4, floatSubList.size());
+        Assert.assertArrayEquals(new Float[] {15.1f, 312.91f, 48.0f, 5.45f}, floatSubList.toArray());
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<Double> doubleSubList = ListUtility.subList(doubleList, 0);
+        Assert.assertEquals(7, doubleSubList.size());
+        Assert.assertArrayEquals(new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d}, doubleSubList.toArray());
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        List<Long> longList = ListUtility.toList(longArray);
+        List<Long> longSubList = ListUtility.subList(longList, 6, 7);
+        Assert.assertEquals(1, longSubList.size());
+        Assert.assertArrayEquals(new Long[] {699546101L}, longSubList.toArray());
+        
+        //object
+        Object b = new ArithmeticException();
+        Object[] objectArray = new Object[] {"", 54, b, new HashMap<>(), new Object()};
+        List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> objectSubList = ListUtility.subList(objectList, 1, 3);
+        Assert.assertEquals(2, objectSubList.size());
+        Assert.assertArrayEquals(new Object[] {54, b}, objectSubList.toArray());
+        
+        //empty
+        List<Object> subList = ListUtility.subList(objectList, 0, 0);
+        Assert.assertEquals(0, subList.size());
+        
+        //invalid
+        
+        Assert.assertEquals(5, objectList.size());
+        
+        try {
+            List<Object> invalidList = ListUtility.subList(objectList, 0, 6);
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof IndexOutOfBoundsException);
+        }
+        
+        try {
+            List<Object> invalidList = ListUtility.subList(objectList, -1, 5);
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof IndexOutOfBoundsException);
+        }
+        
+        try {
+            List<Object> invalidList = ListUtility.subList(objectList, 4, 2);
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof IndexOutOfBoundsException);
+        }
+        
+        try {
+            List<Object> invalidList = ListUtility.subList(objectList, 6);
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof IndexOutOfBoundsException);
+        }
+        
+        try {
+            List<Object> invalidList = ListUtility.subList(objectList, -1);
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof IndexOutOfBoundsException);
+        }
+        
+        try {
+            List<Object> invalidList = ListUtility.subList(null, 2, 4);
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+        }
     }
     
     /**
@@ -147,71 +328,83 @@ public class ListUtilityTest {
      * @throws Exception When there is an exception.
      * @see ListUtility#split(List, int)
      */
+    @SuppressWarnings("ConstantConditions")
     @Test
     public void testSplit() throws Exception {
-        //standard
-        
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
-        List<List<Boolean>> booleanList = ListUtility.split(Arrays.asList(booleanArray), 3);
-        Assert.assertEquals(2, booleanList.size());
-        Assert.assertArrayEquals(new Boolean[] {true, false, false}, booleanList.get(0).toArray());
-        Assert.assertArrayEquals(new Boolean[] {true, false}, booleanList.get(1).toArray());
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<List<Boolean>> booleanSplitList = ListUtility.split(booleanList, 3);
+        Assert.assertEquals(2, booleanSplitList.size());
+        Assert.assertArrayEquals(new Boolean[] {true, false, false}, booleanSplitList.get(0).toArray());
+        Assert.assertArrayEquals(new Boolean[] {true, false, null}, booleanSplitList.get(1).toArray());
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
-        List<List<Integer>> integerList = ListUtility.split(Arrays.asList(integerArray), 2);
-        Assert.assertEquals(4, integerList.size());
-        Assert.assertArrayEquals(new Integer[] {15, 312}, integerList.get(0).toArray());
-        Assert.assertArrayEquals(new Integer[] {48, 5}, integerList.get(1).toArray());
-        Assert.assertArrayEquals(new Integer[] {-4, -9}, integerList.get(2).toArray());
-        Assert.assertArrayEquals(new Integer[] {6}, integerList.get(3).toArray());
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        List<List<Integer>> integerSplitList = ListUtility.split(integerList, 2);
+        Assert.assertEquals(4, integerSplitList.size());
+        Assert.assertArrayEquals(new Integer[] {15, 312}, integerSplitList.get(0).toArray());
+        Assert.assertArrayEquals(new Integer[] {48, 5}, integerSplitList.get(1).toArray());
+        Assert.assertArrayEquals(new Integer[] {-4, -9}, integerSplitList.get(2).toArray());
+        Assert.assertArrayEquals(new Integer[] {6, null}, integerSplitList.get(3).toArray());
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
-        List<List<Float>> floatList = ListUtility.split(Arrays.asList(floatArray), 4);
-        Assert.assertEquals(2, floatList.size());
-        Assert.assertArrayEquals(new Float[] {15.1f, 312.91f, 48.0f, 5.45f}, floatList.get(0).toArray());
-        Assert.assertArrayEquals(new Float[] {-4.006f, -9.7f, 6.99f, 19776.4f}, floatList.get(1).toArray());
+        List<Float> floatList = ListUtility.toList(floatArray);
+        List<List<Float>> floatSplitList = ListUtility.split(floatList, 4);
+        Assert.assertEquals(2, floatSplitList.size());
+        Assert.assertArrayEquals(new Float[] {15.1f, 312.91f, 48.0f, 5.45f}, floatSplitList.get(0).toArray());
+        Assert.assertArrayEquals(new Float[] {-4.006f, -9.7f, 6.99f, 19776.4f}, floatSplitList.get(1).toArray());
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
-        List<List<Double>> doubleList = ListUtility.split(Arrays.asList(doubleArray), 7);
-        Assert.assertEquals(1, doubleList.size());
-        Assert.assertArrayEquals(new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d}, doubleList.get(0).toArray());
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<List<Double>> doubleSplitList = ListUtility.split(doubleList, 7);
+        Assert.assertEquals(1, doubleSplitList.size());
+        Assert.assertArrayEquals(new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d}, doubleSplitList.get(0).toArray());
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
-        List<List<Long>> longList = ListUtility.split(Arrays.asList(longArray), 1);
-        Assert.assertEquals(7, longList.size());
-        Assert.assertArrayEquals(new Long[] {15104564L}, longList.get(0).toArray());
-        Assert.assertArrayEquals(new Long[] {3129113874L}, longList.get(1).toArray());
-        Assert.assertArrayEquals(new Long[] {4800000015L}, longList.get(2).toArray());
-        Assert.assertArrayEquals(new Long[] {5457894511L}, longList.get(3).toArray());
-        Assert.assertArrayEquals(new Long[] {-4006005001L}, longList.get(4).toArray());
-        Assert.assertArrayEquals(new Long[] {-970487745L}, longList.get(5).toArray());
-        Assert.assertArrayEquals(new Long[] {699546101L}, longList.get(6).toArray());
+        List<Long> longList = ListUtility.toList(longArray);
+        List<List<Long>> longSplitList = ListUtility.split(longList, 1);
+        Assert.assertEquals(7, longSplitList.size());
+        Assert.assertArrayEquals(new Long[] {15104564L}, longSplitList.get(0).toArray());
+        Assert.assertArrayEquals(new Long[] {3129113874L}, longSplitList.get(1).toArray());
+        Assert.assertArrayEquals(new Long[] {4800000015L}, longSplitList.get(2).toArray());
+        Assert.assertArrayEquals(new Long[] {5457894511L}, longSplitList.get(3).toArray());
+        Assert.assertArrayEquals(new Long[] {-4006005001L}, longSplitList.get(4).toArray());
+        Assert.assertArrayEquals(new Long[] {-970487745L}, longSplitList.get(5).toArray());
+        Assert.assertArrayEquals(new Long[] {699546101L}, longSplitList.get(6).toArray());
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
-        List<List<Object>> objectList = ListUtility.split(Arrays.asList(objectArray), 3);
-        Assert.assertEquals(2, objectList.size());
-        Assert.assertArrayEquals(new Object[] {"", 54, objectArray[2]}, objectList.get(0).toArray());
-        Assert.assertArrayEquals(new Object[] {objectArray[3], objectArray[4]}, objectList.get(1).toArray());
+        List<Object> objectList = ListUtility.toList(objectArray);
+        List<List<Object>> objectSplitList = ListUtility.split(objectList, 3);
+        Assert.assertEquals(2, objectSplitList.size());
+        Assert.assertArrayEquals(new Object[] {"", 54, objectArray[2]}, objectSplitList.get(0).toArray());
+        Assert.assertArrayEquals(new Object[] {objectArray[3], objectArray[4], null}, objectSplitList.get(1).toArray());
         
         //invalid
         
-        objectList = ListUtility.split(Arrays.asList(objectArray), 0);
-        Assert.assertEquals(objectArray.length, objectList.size());
+        objectSplitList = ListUtility.split(objectList, 0);
+        Assert.assertEquals(objectArray.length, objectSplitList.size());
         
-        objectList = ListUtility.split(Arrays.asList(objectArray), -1);
-        Assert.assertEquals(objectArray.length, objectList.size());
+        objectSplitList = ListUtility.split(objectList, -1);
+        Assert.assertEquals(objectArray.length, objectSplitList.size());
         
-        objectList = ListUtility.split(Arrays.asList(objectArray), 15613);
-        Assert.assertEquals(1, objectList.size());
+        objectSplitList = ListUtility.split(objectList, 15613);
+        Assert.assertEquals(1, objectSplitList.size());
         
-        objectList = ListUtility.split(Collections.emptyList(), 3);
-        Assert.assertEquals(0, objectList.size());
+        objectSplitList = ListUtility.split(Collections.emptyList(), 3);
+        Assert.assertEquals(0, objectSplitList.size());
+        
+        try {
+            List<List<Object>> invalidList = ListUtility.split(null, 3);
+            Assert.fail();
+        } catch (Exception e) {
+            Assert.assertTrue(e instanceof NullPointerException);
+        }
     }
     
     /**
@@ -239,61 +432,92 @@ public class ListUtilityTest {
         Object m = new Object();
         Object n = null;
         List<Object> list;
+        Object[] array;
         
         //all
-        list = Arrays.asList(a, b, c, d, e, f, g, h, i, j, k, l, m, n);
+        array = new Object[] {a, b, c, d, e, f, g, h, i, j, k, l, m, n};
+        list = ListUtility.toList(array);
         Assert.assertTrue(ListUtility.anyNull(list));
+        Assert.assertTrue(ListUtility.anyNull(array));
         Assert.assertTrue(ListUtility.anyNull(a, b, c, d, e, f, g, h, i, j, k, l, m, n));
         
         //all not null
-        list = Arrays.asList(a, c, e, g, i, k, m);
+        array = new Object[] {a, c, e, g, i, k, m};
+        list = ListUtility.toList(array);
         Assert.assertFalse(ListUtility.anyNull(list));
+        Assert.assertFalse(ListUtility.anyNull(array));
         Assert.assertFalse(ListUtility.anyNull(a, c, e, g, i, k, m));
         
         //all null
-        list = Arrays.asList(b, d, f, h, j, l, n);
+        array = new Object[] {b, d, f, h, j, l, n};
+        list = ListUtility.toList(array);
         Assert.assertTrue(ListUtility.anyNull(list));
+        Assert.assertTrue(ListUtility.anyNull(array));
         Assert.assertTrue(ListUtility.anyNull(b, d, f, h, j, l, n));
         
         //none
+        array = new Object[] {};
         list = Collections.emptyList();
         Assert.assertFalse(ListUtility.anyNull(list));
+        Assert.assertFalse(ListUtility.anyNull(array));
         Assert.assertFalse(ListUtility.anyNull());
         
         //boolean
-        list = Arrays.asList(a, b, c, e, g, i, k, m);
+        array = new Object[] {a, b, c, e, g, i, k, m};
+        list = ListUtility.toList(array);
         Assert.assertTrue(ListUtility.anyNull(list));
+        Assert.assertTrue(ListUtility.anyNull(array));
         Assert.assertTrue(ListUtility.anyNull(a, b, c, e, g, i, k, m));
         
         //int
-        list = Arrays.asList(a, c, d, e, g, i, k, m);
+        array = new Object[] {a, c, d, e, g, i, k, m};
+        list = ListUtility.toList(array);
         Assert.assertTrue(ListUtility.anyNull(list));
+        Assert.assertTrue(ListUtility.anyNull(array));
         Assert.assertTrue(ListUtility.anyNull(a, b, c, d, e, g, i, k, m));
         
         //float
-        list = Arrays.asList(a, c, e, f, g, i, k, m);
+        array = new Object[] {a, c, e, f, g, i, k, m};
+        list = ListUtility.toList(array);
         Assert.assertTrue(ListUtility.anyNull(list));
+        Assert.assertTrue(ListUtility.anyNull(array));
         Assert.assertTrue(ListUtility.anyNull(a, c, e, f, g, i, k, m));
         
         //double
-        list = Arrays.asList(a, c, e, g, h, i, k, m);
+        array = new Object[] {a, c, e, g, h, i, k, m};
+        list = ListUtility.toList(array);
         Assert.assertTrue(ListUtility.anyNull(list));
+        Assert.assertTrue(ListUtility.anyNull(array));
         Assert.assertTrue(ListUtility.anyNull(a, c, e, g, h, i, k, m));
         
         //long
-        list = Arrays.asList(a, c, e, g, i, j, k, m);
+        array = new Object[] {a, c, e, g, i, j, k, m};
+        list = ListUtility.toList(array);
         Assert.assertTrue(ListUtility.anyNull(list));
+        Assert.assertTrue(ListUtility.anyNull(array));
         Assert.assertTrue(ListUtility.anyNull(a, c, e, g, i, j, k, m));
         
         //string
-        list = Arrays.asList(a, c, e, g, i, k, l, m);
+        array = new Object[] {a, c, e, g, i, k, l, m};
+        list = ListUtility.toList(array);
         Assert.assertTrue(ListUtility.anyNull(list));
+        Assert.assertTrue(ListUtility.anyNull(array));
         Assert.assertTrue(ListUtility.anyNull(a, c, e, g, i, k, l, m));
         
         //object
-        list = Arrays.asList(a, c, e, g, i, k, m, n);
+        array = new Object[] {a, c, e, g, i, k, m, n};
+        list = ListUtility.toList(array);
         Assert.assertTrue(ListUtility.anyNull(list));
+        Assert.assertTrue(ListUtility.anyNull(array));
         Assert.assertTrue(ListUtility.anyNull(a, c, e, g, i, k, m, n));
+        
+        //invalid
+        try {
+            boolean invalid = ListUtility.anyNull((List<Object>) null);
+            Assert.fail();
+        } catch (Exception exception) {
+            Assert.assertTrue(exception instanceof NullPointerException);
+        }
     }
     
     /**
@@ -302,32 +526,38 @@ public class ListUtilityTest {
      * @throws Exception When there is an exception.
      * @see ListUtility#removeDuplicates(List)
      */
+    @SuppressWarnings("ConstantConditions")
     @Test
     public void testRemoveDuplicates() throws Exception {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
-        List<Boolean> booleanList = ListUtility.removeDuplicates(ListUtility.arrayToList(booleanArray));
-        Assert.assertEquals(2, booleanList.size());
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<Boolean> booleanCleanList = ListUtility.removeDuplicates(booleanList);
+        Assert.assertEquals(2, booleanCleanList.size());
         
         //int
         Integer[] integerArray = new Integer[] {15, 15, 312, 48, 5, 5, -4, -9, -9, 6};
-        List<Integer> integerList = ListUtility.removeDuplicates(ListUtility.arrayToList(integerArray));
-        Assert.assertEquals(7, integerList.size());
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        List<Integer> integerCleanList = ListUtility.removeDuplicates(integerList);
+        Assert.assertEquals(7, integerCleanList.size());
         
         //float
         Float[] floatArray = new Float[] {15.1f, 15.1f, 15.1f, 312.91f, 312.91f, 48.0f, 5.45f, -4.006f, -4.006f, -9.7f, 6.99f, 6.99f};
-        List<Float> floatList = ListUtility.removeDuplicates(ListUtility.arrayToList(floatArray));
-        Assert.assertEquals(7, floatList.size());
+        List<Float> floatList = ListUtility.toList(floatArray);
+        List<Float> floatCleanList = ListUtility.removeDuplicates(floatList);
+        Assert.assertEquals(7, floatCleanList.size());
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 15.104564d, 15.104564d, 312.9113874d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -4.006005001d, -9.70487745d, 6.99546101d, 6.99546101d};
-        List<Double> doubleList = ListUtility.removeDuplicates(ListUtility.arrayToList(doubleArray));
-        Assert.assertEquals(7, doubleList.size());
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<Double> doubleCleanList = ListUtility.removeDuplicates(doubleList);
+        Assert.assertEquals(7, doubleCleanList.size());
         
         //long
         Long[] longArray = new Long[] {15104564L, 15104564L, 15104564L, 3129113874L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -4006005001L, -970487745L, 699546101L, 699546101L};
-        List<Long> longList = ListUtility.removeDuplicates(ListUtility.arrayToList(longArray));
-        Assert.assertEquals(7, longList.size());
+        List<Long> longList = ListUtility.toList(longArray);
+        List<Long> longCleanList = ListUtility.removeDuplicates(longList);
+        Assert.assertEquals(7, longCleanList.size());
         
         //object
         String s = "";
@@ -335,8 +565,17 @@ public class ListUtilityTest {
         HashMap<Object, Object> hm = new HashMap<>();
         Object o = new Object();
         Object[] objectArray = new Object[] {s, s, s, 54, 54, ae, ae, hm, hm, hm, o, o};
-        List<Object> objectList = ListUtility.removeDuplicates(ListUtility.arrayToList(objectArray));
-        Assert.assertEquals(5, objectList.size());
+        List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> objectCleanList = ListUtility.removeDuplicates(objectList);
+        Assert.assertEquals(5, objectCleanList.size());
+        
+        //invalid
+        try {
+            List<Object> invalid = ListUtility.removeDuplicates(null);
+            Assert.fail();
+        } catch (Exception exception) {
+            Assert.assertTrue(exception instanceof NullPointerException);
+        }
     }
     
     /**
@@ -345,11 +584,12 @@ public class ListUtilityTest {
      * @throws Exception When there is an exception.
      * @see ListUtility#selectRandom(List)
      */
+    @SuppressWarnings("ConstantConditions")
     @Test
     public void testSelectRandom() throws Exception {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
-        List<Boolean> booleanList = ListUtility.arrayToList(booleanArray);
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
         for (int i = 0; i < 100; i++) {
             Boolean booleanSelected = ListUtility.selectRandom(booleanList);
             Assert.assertNotNull(booleanSelected);
@@ -358,7 +598,7 @@ public class ListUtilityTest {
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
-        List<Integer> integerList = ListUtility.arrayToList(integerArray);
+        List<Integer> integerList = ListUtility.toList(integerArray);
         for (int i = 0; i < 100; i++) {
             Integer integerSelected = ListUtility.selectRandom(integerList);
             Assert.assertNotNull(integerSelected);
@@ -367,7 +607,7 @@ public class ListUtilityTest {
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
-        List<Float> floatList = ListUtility.arrayToList(floatArray);
+        List<Float> floatList = ListUtility.toList(floatArray);
         for (int i = 0; i < 100; i++) {
             Float floatSelected = ListUtility.selectRandom(floatList);
             Assert.assertNotNull(floatSelected);
@@ -376,7 +616,7 @@ public class ListUtilityTest {
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
-        List<Double> doubleList = ListUtility.arrayToList(doubleArray);
+        List<Double> doubleList = ListUtility.toList(doubleArray);
         for (int i = 0; i < 100; i++) {
             Double doubleSelected = ListUtility.selectRandom(doubleList);
             Assert.assertNotNull(doubleSelected);
@@ -385,7 +625,7 @@ public class ListUtilityTest {
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
-        List<Long> longList = ListUtility.arrayToList(longArray);
+        List<Long> longList = ListUtility.toList(longArray);
         for (int i = 0; i < 100; i++) {
             Long longSelected = ListUtility.selectRandom(longList);
             Assert.assertNotNull(longSelected);
@@ -394,7 +634,7 @@ public class ListUtilityTest {
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
-        List<Object> objectList = ListUtility.arrayToList(objectArray);
+        List<Object> objectList = ListUtility.toList(objectArray);
         for (int i = 0; i < 100; i++) {
             Object objectSelected = ListUtility.selectRandom(objectList);
             Assert.assertNotNull(objectSelected);
@@ -403,20 +643,29 @@ public class ListUtilityTest {
         
         //empty list
         Assert.assertNull(ListUtility.selectRandom(new ArrayList<>()));
+        
+        //invalid
+        try {
+            Object invalid = ListUtility.selectRandom(null);
+            Assert.fail();
+        } catch (Exception exception) {
+            Assert.assertTrue(exception instanceof NullPointerException);
+        }
     }
     
     /**
-     * JUnit test of selectNFromList.
+     * JUnit test of selectN.
      *
      * @throws Exception When there is an exception.
-     * @see ListUtility#selectNFromList(List, int)
+     * @see ListUtility#selectN(List, int)
      */
+    @SuppressWarnings("ConstantConditions")
     @Test
-    public void testSelectNFromList() throws Exception {
+    public void testSelectN() throws Exception {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
-        List<Boolean> booleanList = ListUtility.arrayToList(booleanArray);
-        List<Boolean> booleanSelected = ListUtility.selectNFromList(booleanList, 1);
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<Boolean> booleanSelected = ListUtility.selectN(booleanList, 1);
         Assert.assertEquals(1, booleanSelected.size());
         for (Boolean b : booleanSelected) {
             Assert.assertTrue(booleanList.contains(b));
@@ -424,8 +673,8 @@ public class ListUtilityTest {
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
-        List<Integer> integerList = ListUtility.arrayToList(integerArray);
-        List<Integer> integerSelected = ListUtility.selectNFromList(integerList, 5);
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        List<Integer> integerSelected = ListUtility.selectN(integerList, 5);
         Assert.assertEquals(5, integerSelected.size());
         for (Integer i : integerSelected) {
             Assert.assertTrue(integerList.contains(i));
@@ -433,8 +682,8 @@ public class ListUtilityTest {
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
-        List<Float> floatList = ListUtility.arrayToList(floatArray);
-        List<Float> floatSelected = ListUtility.selectNFromList(floatList, 7);
+        List<Float> floatList = ListUtility.toList(floatArray);
+        List<Float> floatSelected = ListUtility.selectN(floatList, 7);
         Assert.assertEquals(7, floatSelected.size());
         for (Float f : floatSelected) {
             Assert.assertTrue(floatList.contains(f));
@@ -442,8 +691,8 @@ public class ListUtilityTest {
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
-        List<Double> doubleList = ListUtility.arrayToList(doubleArray);
-        List<Double> doubleSelected = ListUtility.selectNFromList(doubleList, 3);
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<Double> doubleSelected = ListUtility.selectN(doubleList, 3);
         Assert.assertEquals(3, doubleSelected.size());
         for (Double d : doubleSelected) {
             Assert.assertTrue(doubleList.contains(d));
@@ -451,45 +700,57 @@ public class ListUtilityTest {
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
-        List<Long> longList = ListUtility.arrayToList(longArray);
-        List<Long> longSelected = ListUtility.selectNFromList(longList, 4);
+        List<Long> longList = ListUtility.toList(longArray);
+        List<Long> longSelected = ListUtility.selectN(longList, 4);
         Assert.assertEquals(4, longSelected.size());
         for (Long l : longSelected) {
             Assert.assertTrue(longList.contains(l));
         }
         
         //object
+        
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
-        List<Object> objectList = ListUtility.arrayToList(objectArray);
-        List<Object> objectSelected = ListUtility.selectNFromList(objectList, 3);
+        List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> objectSelected = ListUtility.selectN(objectList, 3);
         Assert.assertEquals(3, objectSelected.size());
         for (Object o : objectSelected) {
             Assert.assertTrue(objectList.contains(o));
         }
         
-        //over size
-        List<Object> overSizeObjectSelected = ListUtility.selectNFromList(objectList, 999);
+        List<Object> overSizeObjectSelected = ListUtility.selectN(objectList, 999);
         Assert.assertEquals(objectList.size(), overSizeObjectSelected.size());
         for (Object o : overSizeObjectSelected) {
             Assert.assertTrue(objectList.contains(o));
         }
+        
+        //invalid
+        
+        List<Object> underSizeObjectSelected = ListUtility.selectN(objectList, -1);
+        Assert.assertEquals(0, underSizeObjectSelected.size());
+        
+        try {
+            List<Object> invalid = ListUtility.selectN(null, 4);
+            Assert.fail();
+        } catch (Exception exception) {
+            Assert.assertTrue(exception instanceof NullPointerException);
+        }
     }
     
     /**
-     * JUnit test of duplicateListInOrder.
+     * JUnit test of duplicateInOrder.
      *
      * @throws Exception When there is an exception.
-     * @see ListUtility#duplicateListInOrder(List, int)
-     * @see ListUtility#duplicateListInOrder(List)
+     * @see ListUtility#duplicateInOrder(List, int)
+     * @see ListUtility#duplicateInOrder(List)
      */
     @Test
-    public void testDuplicateListInOrder() throws Exception {
+    public void testDuplicateInOrder() throws Exception {
         int x;
         
         //standard
         Object[] standardArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
-        List<Object> standardList = ListUtility.arrayToList(standardArray);
-        List<Object> duplicatedStandardList = ListUtility.duplicateListInOrder(standardList);
+        List<Object> standardList = ListUtility.toList(standardArray);
+        List<Object> duplicatedStandardList = ListUtility.duplicateInOrder(standardList);
         Assert.assertEquals(standardList.size() * 2, duplicatedStandardList.size());
         x = 0;
         for (int y = 0; y < 2; y++) {
@@ -498,10 +759,10 @@ public class ListUtilityTest {
                 x++;
             }
         }
-        duplicatedStandardList = ListUtility.duplicateListInOrder(standardList);
-        Assert.assertEquals(standardList.size() * 2, duplicatedStandardList.size());
+        duplicatedStandardList = ListUtility.duplicateInOrder(standardList, 3);
+        Assert.assertEquals(standardList.size() * 3, duplicatedStandardList.size());
         x = 0;
-        for (int y = 0; y < 2; y++) {
+        for (int y = 0; y < 3; y++) {
             for (Object o : standardList) {
                 Assert.assertEquals(o, duplicatedStandardList.get(x));
                 x++;
@@ -510,8 +771,8 @@ public class ListUtilityTest {
         
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
-        List<Boolean> booleanList = ListUtility.arrayToList(booleanArray);
-        List<Boolean> duplicatedBooleanList = ListUtility.duplicateListInOrder(booleanList);
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<Boolean> duplicatedBooleanList = ListUtility.duplicateInOrder(booleanList);
         Assert.assertEquals(booleanList.size() * 2, duplicatedBooleanList.size());
         x = 0;
         for (int y = 0; y < 2; y++) {
@@ -520,7 +781,7 @@ public class ListUtilityTest {
                 x++;
             }
         }
-        duplicatedBooleanList = ListUtility.duplicateListInOrder(booleanList, 6);
+        duplicatedBooleanList = ListUtility.duplicateInOrder(booleanList, 6);
         Assert.assertEquals(booleanList.size() * 6, duplicatedBooleanList.size());
         x = 0;
         for (int y = 0; y < 6; y++) {
@@ -532,8 +793,8 @@ public class ListUtilityTest {
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
-        List<Integer> integerList = ListUtility.arrayToList(integerArray);
-        List<Integer> duplicatedIntegerList = ListUtility.duplicateListInOrder(integerList);
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        List<Integer> duplicatedIntegerList = ListUtility.duplicateInOrder(integerList);
         Assert.assertEquals(integerList.size() * 2, duplicatedIntegerList.size());
         x = 0;
         for (int y = 0; y < 2; y++) {
@@ -542,7 +803,7 @@ public class ListUtilityTest {
                 x++;
             }
         }
-        duplicatedIntegerList = ListUtility.duplicateListInOrder(integerList, 150);
+        duplicatedIntegerList = ListUtility.duplicateInOrder(integerList, 150);
         Assert.assertEquals(integerList.size() * 150, duplicatedIntegerList.size());
         x = 0;
         for (int y = 0; y < 150; y++) {
@@ -554,8 +815,8 @@ public class ListUtilityTest {
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
-        List<Float> floatList = ListUtility.arrayToList(floatArray);
-        List<Float> duplicatedFloatList = ListUtility.duplicateListInOrder(floatList);
+        List<Float> floatList = ListUtility.toList(floatArray);
+        List<Float> duplicatedFloatList = ListUtility.duplicateInOrder(floatList);
         Assert.assertEquals(floatList.size() * 2, duplicatedFloatList.size());
         x = 0;
         for (int y = 0; y < 2; y++) {
@@ -564,7 +825,7 @@ public class ListUtilityTest {
                 x++;
             }
         }
-        duplicatedFloatList = ListUtility.duplicateListInOrder(floatList, 150);
+        duplicatedFloatList = ListUtility.duplicateInOrder(floatList, 150);
         Assert.assertEquals(floatList.size() * 150, duplicatedFloatList.size());
         x = 0;
         for (int y = 0; y < 150; y++) {
@@ -576,8 +837,8 @@ public class ListUtilityTest {
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
-        List<Double> doubleList = ListUtility.arrayToList(doubleArray);
-        List<Double> duplicatedDoubleList = ListUtility.duplicateListInOrder(doubleList);
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<Double> duplicatedDoubleList = ListUtility.duplicateInOrder(doubleList);
         Assert.assertEquals(doubleList.size() * 2, duplicatedDoubleList.size());
         x = 0;
         for (int y = 0; y < 2; y++) {
@@ -586,7 +847,7 @@ public class ListUtilityTest {
                 x++;
             }
         }
-        duplicatedDoubleList = ListUtility.duplicateListInOrder(doubleList, 8);
+        duplicatedDoubleList = ListUtility.duplicateInOrder(doubleList, 8);
         Assert.assertEquals(doubleList.size() * 8, duplicatedDoubleList.size());
         x = 0;
         for (int y = 0; y < 8; y++) {
@@ -598,8 +859,8 @@ public class ListUtilityTest {
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
-        List<Long> longList = ListUtility.arrayToList(longArray);
-        List<Long> duplicatedLongList = ListUtility.duplicateListInOrder(longList);
+        List<Long> longList = ListUtility.toList(longArray);
+        List<Long> duplicatedLongList = ListUtility.duplicateInOrder(longList);
         Assert.assertEquals(longList.size() * 2, duplicatedLongList.size());
         x = 0;
         for (int y = 0; y < 2; y++) {
@@ -608,7 +869,7 @@ public class ListUtilityTest {
                 x++;
             }
         }
-        duplicatedLongList = ListUtility.duplicateListInOrder(longList, 10);
+        duplicatedLongList = ListUtility.duplicateInOrder(longList, 10);
         Assert.assertEquals(longList.size() * 10, duplicatedLongList.size());
         x = 0;
         for (int y = 0; y < 10; y++) {
@@ -620,8 +881,8 @@ public class ListUtilityTest {
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
-        List<Object> objectList = ListUtility.arrayToList(objectArray);
-        List<Object> duplicatedObjectList = ListUtility.duplicateListInOrder(objectList);
+        List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> duplicatedObjectList = ListUtility.duplicateInOrder(objectList);
         Assert.assertEquals(objectList.size() * 2, duplicatedObjectList.size());
         x = 0;
         for (int y = 0; y < 2; y++) {
@@ -630,7 +891,7 @@ public class ListUtilityTest {
                 x++;
             }
         }
-        duplicatedObjectList = ListUtility.duplicateListInOrder(objectList, 10);
+        duplicatedObjectList = ListUtility.duplicateInOrder(objectList, 10);
         Assert.assertEquals(objectList.size() * 10, duplicatedObjectList.size());
         x = 0;
         for (int y = 0; y < 10; y++) {
@@ -641,7 +902,7 @@ public class ListUtilityTest {
         }
         
         //edge case
-        duplicatedObjectList = ListUtility.duplicateListInOrder(objectList, 1);
+        duplicatedObjectList = ListUtility.duplicateInOrder(objectList, 1);
         Assert.assertEquals(objectList.size(), duplicatedObjectList.size());
         x = 0;
         for (int y = 0; y < 1; y++) {
@@ -650,69 +911,86 @@ public class ListUtilityTest {
                 x++;
             }
         }
-        duplicatedObjectList = ListUtility.duplicateListInOrder(objectList, 0);
+        duplicatedObjectList = ListUtility.duplicateInOrder(objectList, 0);
         Assert.assertEquals(0, duplicatedObjectList.size());
-        duplicatedObjectList = ListUtility.duplicateListInOrder(objectList, -1);
+        duplicatedObjectList = ListUtility.duplicateInOrder(objectList, -1);
         Assert.assertEquals(0, duplicatedObjectList.size());
+        
+        //invalid
+        
+        try {
+            List<Object> invalid = ListUtility.duplicateInOrder(null);
+            Assert.fail();
+        } catch (Exception exception) {
+            Assert.assertTrue(exception instanceof NullPointerException);
+        }
+        
+        try {
+            List<Object> invalid = ListUtility.duplicateInOrder(null, 4);
+            Assert.fail();
+        } catch (Exception exception) {
+            Assert.assertTrue(exception instanceof NullPointerException);
+        }
     }
     
     /**
-     * JUnit test of sortListByNumberOfOccurrences.
+     * JUnit test of sortByNumberOfOccurrences.
      *
      * @throws Exception When there is an exception.
-     * @see ListUtility#sortListByNumberOfOccurrences(List, boolean)
-     * @see ListUtility#sortListByNumberOfOccurrences(List)
+     * @see ListUtility#sortByNumberOfOccurrences(List, boolean)
+     * @see ListUtility#sortByNumberOfOccurrences(List)
      */
+    @SuppressWarnings("ConstantConditions")
     @Test
-    public void testSortListByNumberOfOccurrences() throws Exception {
+    public void testSortByNumberOfOccurrences() throws Exception {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
-        List<Boolean> booleanList = ListUtility.arrayToList(booleanArray);
-        List<Boolean> sortedBooleanList = ListUtility.sortListByNumberOfOccurrences(booleanList);
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<Boolean> sortedBooleanList = ListUtility.sortByNumberOfOccurrences(booleanList);
         Assert.assertArrayEquals(new Boolean[] {false, false, false, true, true}, sortedBooleanList.toArray());
-        sortedBooleanList = ListUtility.sortListByNumberOfOccurrences(booleanList, false);
+        sortedBooleanList = ListUtility.sortByNumberOfOccurrences(booleanList, false);
         Assert.assertArrayEquals(new Boolean[] {false, false, false, true, true}, sortedBooleanList.toArray());
-        sortedBooleanList = ListUtility.sortListByNumberOfOccurrences(booleanList, true);
+        sortedBooleanList = ListUtility.sortByNumberOfOccurrences(booleanList, true);
         Assert.assertArrayEquals(new Boolean[] {true, true, false, false, false}, sortedBooleanList.toArray());
         
         //int
         Integer[] integerArray = new Integer[] {1, 3, -5, 8, 4, 1, 1, 1, 3, 3, 1, 1, 4};
-        List<Integer> integerList = ListUtility.arrayToList(integerArray);
-        List<Integer> sortedIntegerList = ListUtility.sortListByNumberOfOccurrences(integerList);
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        List<Integer> sortedIntegerList = ListUtility.sortByNumberOfOccurrences(integerList);
         Assert.assertArrayEquals(new Integer[] {1, 1, 1, 1, 1, 1, 3, 3, 3, 4, 4, -5, 8}, sortedIntegerList.toArray());
-        sortedIntegerList = ListUtility.sortListByNumberOfOccurrences(integerList, false);
+        sortedIntegerList = ListUtility.sortByNumberOfOccurrences(integerList, false);
         Assert.assertArrayEquals(new Integer[] {1, 1, 1, 1, 1, 1, 3, 3, 3, 4, 4, -5, 8}, sortedIntegerList.toArray());
-        sortedIntegerList = ListUtility.sortListByNumberOfOccurrences(integerList, true);
+        sortedIntegerList = ListUtility.sortByNumberOfOccurrences(integerList, true);
         Assert.assertArrayEquals(new Integer[] {-5, 8, 4, 4, 3, 3, 3, 1, 1, 1, 1, 1, 1}, sortedIntegerList.toArray());
         
         //float
         Float[] floatArray = new Float[] {1.1f, 3.9f, -5.0f, 8.44f, 4.7f, 1.1f, 1.1f, 1.1f, 3.8f, 3.8f, 1.1f, 1.1f, 4.7f};
-        List<Float> floatList = ListUtility.arrayToList(floatArray);
-        List<Float> sortedFloatList = ListUtility.sortListByNumberOfOccurrences(floatList);
+        List<Float> floatList = ListUtility.toList(floatArray);
+        List<Float> sortedFloatList = ListUtility.sortByNumberOfOccurrences(floatList);
         Assert.assertArrayEquals(new Float[] {1.1f, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f, 4.7f, 4.7f, 3.8f, 3.8f, 3.9f, -5.0f, 8.44f}, sortedFloatList.toArray());
-        sortedFloatList = ListUtility.sortListByNumberOfOccurrences(floatList, false);
+        sortedFloatList = ListUtility.sortByNumberOfOccurrences(floatList, false);
         Assert.assertArrayEquals(new Float[] {1.1f, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f, 4.7f, 4.7f, 3.8f, 3.8f, 3.9f, -5.0f, 8.44f}, sortedFloatList.toArray());
-        sortedFloatList = ListUtility.sortListByNumberOfOccurrences(floatList, true);
+        sortedFloatList = ListUtility.sortByNumberOfOccurrences(floatList, true);
         Assert.assertArrayEquals(new Float[] {3.9f, -5.0f, 8.44f, 4.7f, 4.7f, 3.8f, 3.8f, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f}, sortedFloatList.toArray());
         
-        //float
+        //double
         Double[] doubleArray = new Double[] {1.1d, 3.9d, -5.0d, 8.44d, 4.7d, 1.1d, 1.1d, 1.1d, 3.8d, 3.8d, 1.1d, 1.1d, 4.7d};
-        List<Double> doubleList = ListUtility.arrayToList(doubleArray);
-        List<Double> sortedDoubleList = ListUtility.sortListByNumberOfOccurrences(doubleList);
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<Double> sortedDoubleList = ListUtility.sortByNumberOfOccurrences(doubleList);
         Assert.assertArrayEquals(new Double[] {1.1d, 1.1d, 1.1d, 1.1d, 1.1d, 1.1d, 4.7d, 4.7d, 3.8d, 3.8d, 3.9d, -5.0d, 8.44d}, sortedDoubleList.toArray());
-        sortedDoubleList = ListUtility.sortListByNumberOfOccurrences(doubleList, false);
+        sortedDoubleList = ListUtility.sortByNumberOfOccurrences(doubleList, false);
         Assert.assertArrayEquals(new Double[] {1.1d, 1.1d, 1.1d, 1.1d, 1.1d, 1.1d, 4.7d, 4.7d, 3.8d, 3.8d, 3.9d, -5.0d, 8.44d}, sortedDoubleList.toArray());
-        sortedDoubleList = ListUtility.sortListByNumberOfOccurrences(doubleList, true);
+        sortedDoubleList = ListUtility.sortByNumberOfOccurrences(doubleList, true);
         Assert.assertArrayEquals(new Double[] {3.9d, -5.0d, 8.44d, 4.7d, 4.7d, 3.8d, 3.8d, 1.1d, 1.1d, 1.1d, 1.1d, 1.1d, 1.1d}, sortedDoubleList.toArray());
         
         //long
         Long[] longArray = new Long[] {1000L, 3000L, -5000L, 8000L, 4000L, 1000L, 1000L, 1000L, 3000L, 3000L, 1000L, 1000L, 4000L};
-        List<Long> longList = ListUtility.arrayToList(longArray);
-        List<Long> sortedLongList = ListUtility.sortListByNumberOfOccurrences(longList);
+        List<Long> longList = ListUtility.toList(longArray);
+        List<Long> sortedLongList = ListUtility.sortByNumberOfOccurrences(longList);
         Assert.assertArrayEquals(new Long[] {1000L, 1000L, 1000L, 1000L, 1000L, 1000L, 3000L, 3000L, 3000L, 4000L, 4000L, -5000L, 8000L}, sortedLongList.toArray());
-        sortedLongList = ListUtility.sortListByNumberOfOccurrences(longList, false);
+        sortedLongList = ListUtility.sortByNumberOfOccurrences(longList, false);
         Assert.assertArrayEquals(new Long[] {1000L, 1000L, 1000L, 1000L, 1000L, 1000L, 3000L, 3000L, 3000L, 4000L, 4000L, -5000L, 8000L}, sortedLongList.toArray());
-        sortedLongList = ListUtility.sortListByNumberOfOccurrences(longList, true);
+        sortedLongList = ListUtility.sortByNumberOfOccurrences(longList, true);
         Assert.assertArrayEquals(new Long[] {-5000L, 8000L, 4000L, 4000L, 3000L, 3000L, 3000L, 1000L, 1000L, 1000L, 1000L, 1000L, 1000L}, sortedLongList.toArray());
         
         //object
@@ -721,13 +999,29 @@ public class ListUtilityTest {
         Object c = new ArithmeticException();
         Object d = new HashMap<>();
         Object[] objectArray = new Object[] {a, b, a, a, a, c, d, c, d, c};
-        List<Object> objectList = ListUtility.arrayToList(objectArray);
-        List<Object> sortedObjectList = ListUtility.sortListByNumberOfOccurrences(objectList);
+        List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> sortedObjectList = ListUtility.sortByNumberOfOccurrences(objectList);
         Assert.assertArrayEquals(new Object[] {a, a, a, a, c, c, c, d, d, b}, sortedObjectList.toArray());
-        sortedObjectList = ListUtility.sortListByNumberOfOccurrences(objectList, false);
+        sortedObjectList = ListUtility.sortByNumberOfOccurrences(objectList, false);
         Assert.assertArrayEquals(new Object[] {a, a, a, a, c, c, c, d, d, b}, sortedObjectList.toArray());
-        sortedObjectList = ListUtility.sortListByNumberOfOccurrences(objectList, true);
+        sortedObjectList = ListUtility.sortByNumberOfOccurrences(objectList, true);
         Assert.assertArrayEquals(new Object[] {b, d, d, c, c, c, a, a, a, a}, sortedObjectList.toArray());
+        
+        //invalid
+        
+        try {
+            List<Object> invalid = ListUtility.sortByNumberOfOccurrences(null);
+            Assert.fail();
+        } catch (Exception exception) {
+            Assert.assertTrue(exception instanceof NullPointerException);
+        }
+        
+        try {
+            List<Object> invalid = ListUtility.sortByNumberOfOccurrences(null, true);
+            Assert.fail();
+        } catch (Exception exception) {
+            Assert.assertTrue(exception instanceof NullPointerException);
+        }
     }
     
 }
