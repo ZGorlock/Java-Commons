@@ -437,6 +437,54 @@ public final class BigMathUtility {
     }
     
     /**
+     * Performs the square root operation on a number represented by strings.
+     *
+     * @param n         The number.
+     * @param precision The number of decimal points to return.
+     * @return The square root of the number, represented as a string.
+     * @throws NumberFormatException When a number string does not represent a number.
+     * @throws ArithmeticException   When the number is less than zero.
+     */
+    public static String sqrt(String n, int precision) throws NumberFormatException, ArithmeticException {
+        BigDecimal b = new BigDecimal(n);
+        
+        MathContext context = new MathContext(PrecisionMode.MAX_PRECISION.getPrecision(), RoundingMode.HALF_UP);
+        BigDecimal result = BigDecimalMath.sqrt(b, context);
+        if (precision == PrecisionMode.DEFAULT_PRECISION.getPrecision()) {
+            return result.setScale(PrecisionMode.HIGH_PRECISION.getPrecision(), RoundingMode.HALF_UP).stripTrailingZeros().toPlainString();
+        } else {
+            return result.setScale(precision, RoundingMode.HALF_UP).toPlainString();
+        }
+    }
+    
+    /**
+     * Performs the square root operation on a number represented by strings.
+     *
+     * @param n             The number.
+     * @param precisionMode The precision mode specifying the number of decimal points to return.
+     * @return The square root of the number, represented as a string.
+     * @throws NumberFormatException When a number string does not represent a number.
+     * @throws ArithmeticException   When the number is less than zero.
+     * @see #sqrt(String, int)
+     */
+    public static String sqrt(String n, PrecisionMode precisionMode) throws NumberFormatException, ArithmeticException {
+        return sqrt(n, precisionMode.getPrecision());
+    }
+    
+    /**
+     * Performs the square root operation on a number represented by strings.
+     *
+     * @param n The number.
+     * @return The square root of the number, represented as a string.
+     * @throws NumberFormatException When a number string does not represent a number.
+     * @throws ArithmeticException   When the number is less than zero.
+     * @see #sqrt(String, PrecisionMode)
+     */
+    public static String sqrt(String n) throws NumberFormatException, ArithmeticException {
+        return sqrt(n, PrecisionMode.DEFAULT_PRECISION);
+    }
+    
+    /**
      * Computes the log of a number represented by a string to a specified base.
      *
      * @param n         The number.

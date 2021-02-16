@@ -2232,6 +2232,81 @@ public class BigMathUtilityTest {
     }
     
     /**
+     * JUnit test of root.
+     *
+     * @throws Exception When there is an exception.
+     * @see BigMathUtility#sqrt(String, int)
+     * @see BigMathUtility#sqrt(String, BigMathUtility.PrecisionMode)
+     * @see BigMathUtility#sqrt(String)
+     */
+    @Test
+    public void testSqrt() throws Exception {
+        //standard
+        Assert.assertEquals("1", BigMathUtility.sqrt("1"));
+        Assert.assertEquals("4.1231056256176605498214098559740770251471992253736204343986335731", BigMathUtility.sqrt("17"));
+        Assert.assertEquals("3", BigMathUtility.sqrt("9"));
+        Assert.assertEquals("0", BigMathUtility.sqrt("0"));
+        
+        //imaginary numbers
+        try {
+            BigMathUtility.sqrt("-1");
+            Assert.fail();
+        } catch (ArithmeticException ignored) {
+        }
+        
+        //invalid
+        try {
+            BigMathUtility.sqrt("15s5");
+            Assert.fail();
+        } catch (NumberFormatException ignored) {
+        }
+        
+        //decimal
+        Assert.assertEquals("0.3162277660168379331998893544432718533719555139325216826857504853", BigMathUtility.sqrt("0.1"));
+        Assert.assertEquals("0.3162277660168379331998893544432718533719555139325216826857504853", BigMathUtility.sqrt(".1"));
+        Assert.assertEquals("1.7606816861659009145769228176496579286155228680517596833957365273", BigMathUtility.sqrt("3.1"));
+        Assert.assertEquals("1.7606816861659009145769228176496579286155228680517596833957365273", BigMathUtility.sqrt("03.1"));
+        Assert.assertEquals("0.7602631123499284967791190473686339200498102422679187462521050634", BigMathUtility.sqrt(".578"));
+        Assert.assertEquals("0.7602631123499284967791190473686339200498102422679187462521050634", BigMathUtility.sqrt("0.578"));
+        Assert.assertEquals("0.0002404163056034261582962870831156486733568442188140811724400356", BigMathUtility.sqrt(".0000000578"));
+        Assert.assertEquals("4.2426406939310804663671160857775699474512953036348794594149578547", BigMathUtility.sqrt("18.0000000578"));
+        
+        //precision
+        Assert.assertEquals("1", BigMathUtility.sqrt("1", BigMathUtility.PrecisionMode.DEFAULT_PRECISION));
+        Assert.assertEquals("1", BigMathUtility.sqrt("1.0", BigMathUtility.PrecisionMode.DEFAULT_PRECISION));
+        Assert.assertEquals("1", BigMathUtility.sqrt("1", BigMathUtility.PrecisionMode.NO_PRECISION));
+        Assert.assertEquals("1.00000000", BigMathUtility.sqrt("1", BigMathUtility.PrecisionMode.LOW_PRECISION));
+        Assert.assertEquals("1.0000000000000000", BigMathUtility.sqrt("1", BigMathUtility.PrecisionMode.MID_PRECISION));
+        Assert.assertEquals("1.0000000000000000000000000000000000000000000000000000000000000000", BigMathUtility.sqrt("1", BigMathUtility.PrecisionMode.HIGH_PRECISION));
+        Assert.assertEquals("1.00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", BigMathUtility.sqrt("1", BigMathUtility.PrecisionMode.MAX_PRECISION));
+        Assert.assertEquals("1.0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000", BigMathUtility.sqrt("1", BigMathUtility.PrecisionMode.MATH_PRECISION));
+        
+        //custom precision
+        Assert.assertEquals("0.000240416305603", BigMathUtility.sqrt(".0000000578", 15));
+        Assert.assertEquals("0.0002404163056", BigMathUtility.sqrt(".0000000578", 13));
+        Assert.assertEquals("0.000240416306", BigMathUtility.sqrt(".0000000578", 12));
+        Assert.assertEquals("0.0002404163", BigMathUtility.sqrt(".0000000578", 10));
+        Assert.assertEquals("0.000240416", BigMathUtility.sqrt(".0000000578", 9));
+        Assert.assertEquals("0.000240", BigMathUtility.sqrt(".0000000578", 6));
+        Assert.assertEquals("0.000", BigMathUtility.sqrt(".0000000578", 3));
+        Assert.assertEquals("0.00", BigMathUtility.sqrt(".0000000578", 2));
+        Assert.assertEquals("0.0", BigMathUtility.sqrt(".0000000578", 1));
+        Assert.assertEquals("4.242640693931080", BigMathUtility.sqrt("18.0000000578", 15));
+        Assert.assertEquals("4.2426406939311", BigMathUtility.sqrt("18.0000000578", 13));
+        Assert.assertEquals("4.242640693931", BigMathUtility.sqrt("18.0000000578", 12));
+        Assert.assertEquals("4.2426406939", BigMathUtility.sqrt("18.0000000578", 10));
+        Assert.assertEquals("4.242640694", BigMathUtility.sqrt("18.0000000578", 9));
+        Assert.assertEquals("4.242641", BigMathUtility.sqrt("18.0000000578", 6));
+        Assert.assertEquals("4.243", BigMathUtility.sqrt("18.0000000578", 3));
+        Assert.assertEquals("4.24", BigMathUtility.sqrt("18.0000000578", 2));
+        Assert.assertEquals("4.2", BigMathUtility.sqrt("18.0000000578", 1));
+        Assert.assertEquals("1.73205080756887", BigMathUtility.sqrt("2.99999999999999", 14));
+        Assert.assertEquals("1.7320508076", BigMathUtility.sqrt("2.99999999999999", 10));
+        Assert.assertEquals("1.73205", BigMathUtility.sqrt("2.99999999999999", 5));
+        Assert.assertEquals("1.7", BigMathUtility.sqrt("2.99999999999999", 1));
+    }
+    
+    /**
      * JUnit test of log.
      *
      * @throws Exception When there is an exception.
