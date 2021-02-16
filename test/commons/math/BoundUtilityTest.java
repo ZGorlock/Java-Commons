@@ -263,6 +263,12 @@ public class BoundUtilityTest {
         Assert.assertFalse(BoundUtility.inBounds(123456790L, 123456788L, 123456790L, false, false));
         Assert.assertFalse(BoundUtility.inBounds(123456787L, 123456788L, 123456790L, false, false));
         Assert.assertFalse(BoundUtility.inBounds(123456791L, 123456788L, 123456790L, false, false));
+        
+        //edge cases
+        Assert.assertTrue(BoundUtility.inBounds(0, 0, 0));
+        Assert.assertFalse(BoundUtility.inBounds(0, 0, 0, true, false));
+        Assert.assertFalse(BoundUtility.inBounds(0, 0, 0, false, true));
+        Assert.assertFalse(BoundUtility.inBounds(0, 0, 0, false, false));
     }
     
     /**
