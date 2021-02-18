@@ -6,6 +6,7 @@
 
 package commons.math.vector;
 
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -102,7 +103,46 @@ public class Vector4Test {
      */
     @Test
     public void testConstructor() throws Exception {
-        //TODO
+        Vector testVector;
+        
+        //components
+        Vector4 vector = new Vector4(8.6, 4.11, 1.87, 0.4497);
+        Assert.assertArrayEquals(new double[] {8.6, 4.11, 1.87, 0.4497}, vector.components, TestUtils.DELTA);
+        
+        //vector 1D
+        testVector = new Vector(8.6);
+        Vector4 vector1 = new Vector4(testVector);
+        Assert.assertArrayEquals(new double[] {8.6, 0, 0, 0}, vector1.components, TestUtils.DELTA);
+        
+        //vector 2D
+        testVector = new Vector(8.6, 4.11);
+        Vector4 vector2 = new Vector4(testVector);
+        Assert.assertArrayEquals(new double[] {8.6, 4.11, 0, 0}, vector2.components, TestUtils.DELTA);
+        
+        //vector 3D
+        testVector = new Vector(8.6, 4.11, 1.87);
+        Vector4 vector3 = new Vector4(testVector);
+        Assert.assertArrayEquals(new double[] {8.6, 4.11, 1.87, 0}, vector3.components, TestUtils.DELTA);
+        
+        //vector 4D
+        testVector = new Vector(8.6, 4.11, 1.87, 0.4497);
+        Vector4 vector4 = new Vector4(testVector);
+        Assert.assertArrayEquals(new double[] {8.6, 4.11, 1.87, 0.4497}, vector4.components, TestUtils.DELTA);
+        
+        //vector 5D
+        testVector = new Vector(8.6, 4.11, 1.87, 0.4497, 5.73);
+        Vector4 vector5 = new Vector4(testVector);
+        Assert.assertArrayEquals(new double[] {8.6, 4.11, 1.87, 0.4497}, vector5.components, TestUtils.DELTA);
+        
+        //vector 3D and component
+        Vector4 vector3x = new Vector4(new Vector3(8.6, 4.11, 1.87), 0.4497);
+        Assert.assertArrayEquals(new double[] {8.6, 4.11, 1.87, 0.4497}, vector3x.components, TestUtils.DELTA);
+        
+        //equality
+        Assert.assertEquals(vector, vector4);
+        ;
+        Assert.assertEquals(vector4, vector5);
+        Assert.assertEquals(vector5, vector3x);
     }
     
     /**
@@ -113,7 +153,9 @@ public class Vector4Test {
      */
     @Test
     public void testGetDimensionality() throws Exception {
-        //TODO
+        Vector4 vector = new Vector4(8, 4, 2, 6);
+        Assert.assertEquals(4, vector.getDimensionality());
+        Assert.assertEquals(4, vector.getDimensionality());
     }
     
 }

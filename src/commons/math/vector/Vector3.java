@@ -72,11 +72,8 @@ public class Vector3 extends Vector {
      * @return The cross product.
      */
     public Vector3 cross(Vector vector) throws ArithmeticException {
-        if (!dimensionalityEqual(vector)) {
-            throw new ArithmeticException(dimensionalityNotEqualErrorMessage(this, vector));
-        }
-        if (vector.getDimensionality() < 3) {
-            throw new ArithmeticException(dimensionalityMinimumNotMetErrorMessage(vector, 3));
+        if (vector.getDimensionality() != 3) {
+            throw new ArithmeticException(dimensionalityNotEqualErrorMessage(vector, 3));
         }
         
         return new Vector3(
