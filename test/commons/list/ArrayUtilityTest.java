@@ -151,12 +151,14 @@ public class ArrayUtilityTest {
         Assert.assertArrayEquals(objectList.toArray(), objectListArray);
         
         //invalid
+        
         try {
             Object[] invalidArray = ArrayUtility.toArray(null, Object.class);
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(e instanceof NullPointerException);
         }
+        
         try {
             Object[] invalidArray = ArrayUtility.toArray(objectList, null);
             Assert.fail();
@@ -276,8 +278,6 @@ public class ArrayUtilityTest {
         
         //invalid
         
-        Assert.assertEquals(5, objectArray.length);
-        
         try {
             Object[] invalidArray = ArrayUtility.subArray(objectArray, 0, 6);
             Assert.fail();
@@ -318,6 +318,86 @@ public class ArrayUtilityTest {
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(e instanceof NullPointerException);
+        }
+    }
+    
+    /**
+     * JUnit test of merge.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#merge(Object[], Object[], Class)
+     */
+    @SuppressWarnings("ConstantConditions")
+    @Test
+    public void testMerge() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        Boolean[] booleanArray2 = new Boolean[] {true, false};
+        Boolean[] booleanMergeArray = ArrayUtility.merge(booleanArray, booleanArray2, Boolean.class);
+        Assert.assertEquals(7, booleanMergeArray.length);
+        Assert.assertArrayEquals(new Boolean[] {true, false, false, true, false, true, false}, booleanMergeArray);
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        Integer[] integerArray2 = new Integer[] {15, 312, 48};
+        Integer[] integerMergeArray = ArrayUtility.merge(integerArray, integerArray2, Integer.class);
+        Assert.assertEquals(10, integerMergeArray.length);
+        Assert.assertArrayEquals(new Integer[] {15, 312, 48, 5, -4, -9, 6, 15, 312, 48}, integerMergeArray);
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        Float[] floatArray2 = new Float[] {15.1f};
+        Float[] floatMergeArray = ArrayUtility.merge(floatArray, floatArray2, Float.class);
+        Assert.assertEquals(9, floatMergeArray.length);
+        Assert.assertArrayEquals(new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f, 15.1f}, floatMergeArray);
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        Double[] doubleArray2 = new Double[] {-4.006005001d, -9.70487745d, 6.99546101d};
+        Double[] doubleMergeArray = ArrayUtility.merge(doubleArray, doubleArray2, Double.class);
+        Assert.assertEquals(10, doubleMergeArray.length);
+        Assert.assertArrayEquals(new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d, -4.006005001d, -9.70487745d, 6.99546101d}, doubleMergeArray);
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        Long[] longArray2 = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        Long[] longMergeArray = ArrayUtility.merge(longArray, longArray2, Long.class);
+        Assert.assertEquals(14, longMergeArray.length);
+        Assert.assertArrayEquals(new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L, 15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L}, longMergeArray);
+        
+        //object
+        Object a = "";
+        Object b = 54;
+        Object c = new ArithmeticException();
+        Object d = new HashMap<>();
+        Object e = new Object();
+        Object[] objectArray = new Object[] {a, b, c, d, e};
+        Object[] objectArray2 = new Object[] {b, c, e};
+        Object[] objectMergeArray = ArrayUtility.merge(objectArray, objectArray2, Object.class);
+        Assert.assertEquals(8, objectMergeArray.length);
+        Assert.assertArrayEquals(new Object[] {a, b, c, d, e, b, c, e}, objectMergeArray);
+        
+        //invalid
+        
+        try {
+            Object[] invalidList = ArrayUtility.merge(objectArray, null, Object.class);
+            Assert.fail();
+        } catch (Exception exception) {
+            Assert.assertTrue(exception instanceof NullPointerException);
+        }
+        
+        try {
+            Object[] invalidList = ArrayUtility.merge(null, objectArray2, Object.class);
+            Assert.fail();
+        } catch (Exception exception) {
+            Assert.assertTrue(exception instanceof NullPointerException);
+        }
+        
+        try {
+            Object[] invalidList = ArrayUtility.merge(objectArray, objectArray2, null);
+            Assert.fail();
+        } catch (Exception exception) {
+            Assert.assertTrue(exception instanceof NullPointerException);
         }
     }
     

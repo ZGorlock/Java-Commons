@@ -89,6 +89,21 @@ public final class ListUtility {
     }
     
     /**
+     * Merges two lists.
+     *
+     * @param list1 The first list.
+     * @param list2 The second list.
+     * @param <T>   The type of the lists.
+     * @return The merged list.
+     */
+    public static <T> List<T> merge(List<T> list1, List<T> list2) {
+        List<T> result = new ArrayList<>();
+        result.addAll(list1);
+        result.addAll(list2);
+        return result;
+    }
+    
+    /**
      * Splits a list into a list of lists of a certain length.
      *
      * @param list   The list.

@@ -277,8 +277,6 @@ public class ListUtilityTest {
         
         //invalid
         
-        Assert.assertEquals(5, objectList.size());
-        
         try {
             List<Object> invalidList = ListUtility.subList(objectList, 0, 6);
             Assert.fail();
@@ -319,6 +317,90 @@ public class ListUtilityTest {
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(e instanceof NullPointerException);
+        }
+    }
+    
+    /**
+     * JUnit test of merge.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#merge(List, List)
+     */
+    @Test
+    public void testMerge() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        Boolean[] booleanArray2 = new Boolean[] {true, false};
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<Boolean> booleanList2 = ListUtility.toList(booleanArray2);
+        List<Boolean> booleanMergeList = ListUtility.merge(booleanList, booleanList2);
+        Assert.assertEquals(7, booleanMergeList.size());
+        Assert.assertArrayEquals(new Boolean[] {true, false, false, true, false, true, false}, booleanMergeList.toArray());
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        Integer[] integerArray2 = new Integer[] {15, 312, 48};
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        List<Integer> integerList2 = ListUtility.toList(integerArray2);
+        List<Integer> integerMergeList = ListUtility.merge(integerList, integerList2);
+        Assert.assertEquals(10, integerMergeList.size());
+        Assert.assertArrayEquals(new Integer[] {15, 312, 48, 5, -4, -9, 6, 15, 312, 48}, integerMergeList.toArray());
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        Float[] floatArray2 = new Float[] {15.1f};
+        List<Float> floatList = ListUtility.toList(floatArray);
+        List<Float> floatList2 = ListUtility.toList(floatArray2);
+        List<Float> floatMergeList = ListUtility.merge(floatList, floatList2);
+        Assert.assertEquals(9, floatMergeList.size());
+        Assert.assertArrayEquals(new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f, 15.1f}, floatMergeList.toArray());
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        Double[] doubleArray2 = new Double[] {-4.006005001d, -9.70487745d, 6.99546101d};
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<Double> doubleList2 = ListUtility.toList(doubleArray2);
+        List<Double> doubleMergeList = ListUtility.merge(doubleList, doubleList2);
+        Assert.assertEquals(10, doubleMergeList.size());
+        Assert.assertArrayEquals(new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d, -4.006005001d, -9.70487745d, 6.99546101d}, doubleMergeList.toArray());
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        Long[] longArray2 = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        List<Long> longList = ListUtility.toList(longArray);
+        List<Long> longList2 = ListUtility.toList(longArray2);
+        List<Long> longMergeList = ListUtility.merge(longList, longList2);
+        Assert.assertEquals(14, longMergeList.size());
+        Assert.assertArrayEquals(new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L, 15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L}, longMergeList.toArray());
+        
+        //object
+        Object a = "";
+        Object b = 54;
+        Object c = new ArithmeticException();
+        Object d = new HashMap<>();
+        Object e = new Object();
+        Object[] objectArray = new Object[] {a, b, c, d, e};
+        Object[] objectArray2 = new Object[] {b, c, e};
+        List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> objectList2 = ListUtility.toList(objectArray2);
+        List<Object> objectMergeList = ListUtility.merge(objectList, objectList2);
+        Assert.assertEquals(8, objectMergeList.size());
+        Assert.assertArrayEquals(new Object[] {a, b, c, d, e, b, c, e}, objectMergeList.toArray());
+        
+        //invalid
+        
+        try {
+            List<Object> invalidList = ListUtility.merge(objectList, null);
+            Assert.fail();
+        } catch (Exception exception) {
+            Assert.assertTrue(exception instanceof NullPointerException);
+        }
+        
+        try {
+            List<Object> invalidList = ListUtility.merge(null, objectList);
+            Assert.fail();
+        } catch (Exception exception) {
+            Assert.assertTrue(exception instanceof NullPointerException);
         }
     }
     

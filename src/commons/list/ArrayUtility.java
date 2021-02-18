@@ -93,6 +93,23 @@ public final class ArrayUtility {
     }
     
     /**
+     * Merges two arrays.
+     *
+     * @param array1 The first array.
+     * @param array2 The second array.
+     * @param type   The type of the arrays.
+     * @param <T>    The type of the arrays.
+     * @return The merged array.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] merge(T[] array1, T[] array2, Class<?> type) {
+        T[] result = (T[]) Array.newInstance(type, (array1.length + array2.length));
+        System.arraycopy(array1, 0, result, 0, array1.length);
+        System.arraycopy(array2, 0, result, array1.length, array2.length);
+        return result;
+    }
+    
+    /**
      * Splits an array into an array of arrays of a certain length.
      *
      * @param array  The array.
