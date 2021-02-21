@@ -2,6 +2,7 @@
  * File:    StringComparisonUtility.java
  * Package: commons.string
  * Author:  Zachary Gill
+ * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
 package commons.string;
