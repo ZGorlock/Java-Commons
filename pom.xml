@@ -234,6 +234,11 @@
         <directory>${project.basedir}/bin</directory>
         <finalName>${project.artifactId}-${project.version}</finalName>
         
+        <sourceDirectory>${project.basedir}/src</sourceDirectory>
+        <outputDirectory>${project.basedir}/bin/classes</outputDirectory>
+        <testSourceDirectory>${project.basedir}/test</testSourceDirectory>
+        <testOutputDirectory>${project.basedir}/bin/test-classes</testOutputDirectory>
+        
         <pluginManagement>
             <plugins>
                 <plugin>
