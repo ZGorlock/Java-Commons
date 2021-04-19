@@ -509,4 +509,91 @@ public class OperatingSystemTest {
         Assert.assertNotEquals(OperatingSystem.is32Bit(), OperatingSystem.is64Bit());
     }
     
+    /**
+     * JUnit test of getProcessorCount.
+     *
+     * @throws Exception When there is an exception.
+     * @see OperatingSystem#getProcessorCount()
+     */
+    @Test
+    public void testGetProcessorCount() throws Exception {
+        try {
+            Assert.assertNotEquals(0, OperatingSystem.getProcessorCount());
+        } catch (Exception e) {
+            Assert.fail();
+        }
+        
+        Assert.assertEquals(OperatingSystem.getProcessorCount(), OperatingSystem.getProcessorCount());
+    }
+    
+    /**
+     * JUnit test of getMaximumMemory.
+     *
+     * @throws Exception When there is an exception.
+     * @see OperatingSystem#getMaximumMemory()
+     */
+    @Test
+    public void testGetMaximumMemory() throws Exception {
+        try {
+            Assert.assertNotEquals(0, OperatingSystem.getMaximumMemory());
+        } catch (Exception e) {
+            Assert.fail();
+        }
+        
+        Assert.assertEquals(OperatingSystem.getMaximumMemory(), OperatingSystem.getMaximumMemory());
+    }
+    
+    /**
+     * JUnit test of getTotalMemory.
+     *
+     * @throws Exception When there is an exception.
+     * @see OperatingSystem#getTotalMemory()
+     */
+    @Test
+    public void testGetTotalMemory() throws Exception {
+        try {
+            Assert.assertNotEquals(0, OperatingSystem.getTotalMemory());
+        } catch (Exception e) {
+            Assert.fail();
+        }
+        
+        Assert.assertTrue(OperatingSystem.getTotalMemory() <= OperatingSystem.getMaximumMemory());
+        Assert.assertTrue(OperatingSystem.getTotalMemory() > OperatingSystem.getFreeMemory());
+        Assert.assertEquals(OperatingSystem.getTotalMemory(), (OperatingSystem.getFreeMemory() + OperatingSystem.getUsedMemory()));
+    }
+    
+    /**
+     * JUnit test of getFreeMemory.
+     *
+     * @throws Exception When there is an exception.
+     * @see OperatingSystem#getFreeMemory()
+     */
+    @Test
+    public void testGetFreeMemory() throws Exception {
+        try {
+            Assert.assertNotEquals(0, OperatingSystem.getFreeMemory());
+        } catch (Exception e) {
+            Assert.fail();
+        }
+        
+        Assert.assertTrue(OperatingSystem.getFreeMemory() < OperatingSystem.getTotalMemory());
+    }
+    
+    /**
+     * JUnit test of getUsedMemory.
+     *
+     * @throws Exception When there is an exception.
+     * @see OperatingSystem#getUsedMemory()
+     */
+    @Test
+    public void testGetUsedMemory() throws Exception {
+        try {
+            Assert.assertNotEquals(0, OperatingSystem.getUsedMemory());
+        } catch (Exception e) {
+            Assert.fail();
+        }
+        
+        Assert.assertTrue(OperatingSystem.getUsedMemory() < OperatingSystem.getTotalMemory());
+    }
+    
 }

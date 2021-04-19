@@ -161,4 +161,49 @@ public final class OperatingSystem {
         return System.getProperty("os.arch").contains("64");
     }
     
+    /**
+     * Returns the number of processors available.
+     *
+     * @return The number of processors available.
+     */
+    public static int getProcessorCount() {
+        return Runtime.getRuntime().availableProcessors();
+    }
+    
+    /**
+     * Returns the maximum amount of memory the JVM will attempt to use.
+     *
+     * @return The maximum amount of memory the JVM will attempt to use, in bytes.
+     */
+    public static long getMaximumMemory() {
+        return Runtime.getRuntime().maxMemory();
+    }
+    
+    /**
+     * Returns the total amount of memory available in the JVM.
+     *
+     * @return The total amount of memory available in the JVM, in bytes.
+     */
+    public static long getTotalMemory() {
+        return Runtime.getRuntime().totalMemory();
+    }
+    
+    /**
+     * Returns the amount of free memory available in the JVM.
+     *
+     * @return The amount of free memory available in the JVM, in bytes.
+     */
+    public static long getFreeMemory() {
+        return Runtime.getRuntime().freeMemory();
+    }
+    
+    /**
+     * Returns the amount of memory used by the JVM.
+     *
+     * @return The amount of memory used by the JVM, in bytes.
+     */
+    public static long getUsedMemory() {
+        return getTotalMemory() - getFreeMemory();
+    }
+    
 }
