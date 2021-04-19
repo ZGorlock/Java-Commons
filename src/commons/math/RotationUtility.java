@@ -8,7 +8,6 @@
 package commons.math;
 
 import commons.math.matrix.Matrix3;
-import commons.math.matrix.Matrix4;
 import commons.math.vector.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +51,7 @@ public final class RotationUtility {
                 Math.sin(yaw), Math.cos(yaw), 0,
                 0, 0, 1
         });
-        return rollRotation.multiply(pitchRotation).multiply(yawRotation);
+        return (Matrix3) rollRotation.multiply(pitchRotation).multiply(yawRotation);
     }
     
     /**
@@ -66,27 +65,10 @@ public final class RotationUtility {
     public static Vector performRotation(Vector vector, Matrix3 rotationMatrix, Vector center) {
         Vector justifiedCenter = center.justify();
         
-        Matrix4 translationMatrix = new Matrix4(new double[] {
-                1, 0, 0, -justifiedCenter.getX(),
-                0, 1, 0, -justifiedCenter.getY(),
-                0, 0, 1, -justifiedCenter.getZ(),
-                0, 0, 0, 1
-        });
-        Vector result = new Vector(vector, 1);
-        result = translationMatrix.multiply(result);
-        
-        Vector v = rotationMatrix.transform(new Vector(result.getX(), result.getY(), result.getZ()));
-        
-        Matrix4 untranslationMatrix = new Matrix4(new double[] {
-                1, 0, 0, justifiedCenter.getX(),
-                0, 1, 0, justifiedCenter.getY(),
-                0, 0, 1, justifiedCenter.getZ(),
-                0, 0, 0, 1
-        });
-        result = new Vector(v, 1);
-        result = untranslationMatrix.multiply(result);
-        
-        return new Vector(result.getX(), result.getY(), result.getZ());
+        Vector result = vector.minus(center);
+        result = rotationMatrix.transform(result);
+        result = result.plus(center);
+        return result;
     }
     
 }
