@@ -98,7 +98,7 @@ public class EquationUtilityTest {
         //patterns
         Assert.assertEquals("(?:\\d+\\.?\\d*)", EquationUtility.NUMBER_PATTERN.pattern());
         Assert.assertEquals("(?:[a-zA-Z]+)", EquationUtility.VARIABLE_PATTERN.pattern());
-        Assert.assertEquals("(?:\\d+\\.?\\d*)|(?:[a-zA-Z]+)", EquationUtility.ELEMENT_PATTERN.pattern());
+        Assert.assertEquals("(?:(?:\\d+\\.?\\d*)|(?:[a-zA-Z]+))", EquationUtility.ELEMENT_PATTERN.pattern());
     }
     
     /**

@@ -50,7 +50,7 @@ public final class EquationUtility {
     /**
      * The regex pattern to match a number or variable.
      */
-    public static final Pattern ELEMENT_PATTERN = Pattern.compile(NUMBER_PATTERN.pattern() + '|' + VARIABLE_PATTERN.pattern());
+    public static final Pattern ELEMENT_PATTERN = Pattern.compile("(?:" + NUMBER_PATTERN.pattern() + '|' + VARIABLE_PATTERN.pattern() + ')');
     
     
     //Enums
