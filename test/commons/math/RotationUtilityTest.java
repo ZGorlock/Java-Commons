@@ -7,8 +7,8 @@
 
 package commons.math;
 
-import commons.math.matrix.Matrix3;
-import commons.math.vector.Vector;
+import commons.math.component.matrix.Matrix3;
+import commons.math.component.vector.Vector;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -102,109 +102,109 @@ public class RotationUtilityTest {
     @Test
     public void testGetRotationMatrix() throws Exception {
         Assert.assertEquals(
-                new Matrix3(new double[] {
+                new Matrix3(
                         1, 0, 0,
                         0, 1, 0,
                         0, 0, 1
-                }), RotationUtility.getRotationMatrix(0, 0, 0)
+                ), RotationUtility.getRotationMatrix(0, 0, 0)
         );
         Assert.assertEquals(
-                new Matrix3(new double[] {
-                        1, 0, 0,
-                        0, -1, 0,
-                        0, 0, -1
-                }), RotationUtility.getRotationMatrix(Math.PI, 0, 0)
-        );
-        Assert.assertEquals(
-                new Matrix3(new double[] {
-                        -1, 0, 0,
-                        0, 1, 0,
-                        0, 0, -1
-                }), RotationUtility.getRotationMatrix(0, Math.PI, 0)
-        );
-        Assert.assertEquals(
-                new Matrix3(new double[] {
-                        -1, 0, 0,
-                        0, -1, 0,
-                        0, 0, 1
-                }), RotationUtility.getRotationMatrix(0, 0, Math.PI)
-        );
-        Assert.assertEquals(
-                new Matrix3(new double[] {
+                new Matrix3(
                         1, 0, 0,
                         0, -1, 0,
                         0, 0, -1
-                }), RotationUtility.getRotationMatrix(0, Math.PI, Math.PI)
+                ), RotationUtility.getRotationMatrix(Math.PI, 0, 0)
         );
         Assert.assertEquals(
-                new Matrix3(new double[] {
-                        -1, 0, 0,
-                        0, -1, 0,
-                        0, 0, 1
-                }), RotationUtility.getRotationMatrix(Math.PI, Math.PI, 0)
-        );
-        Assert.assertEquals(
-                new Matrix3(new double[] {
+                new Matrix3(
                         -1, 0, 0,
                         0, 1, 0,
                         0, 0, -1
-                }), RotationUtility.getRotationMatrix(Math.PI, 0, Math.PI)
+                ), RotationUtility.getRotationMatrix(0, Math.PI, 0)
         );
         Assert.assertEquals(
-                new Matrix3(new double[] {
+                new Matrix3(
+                        -1, 0, 0,
+                        0, -1, 0,
+                        0, 0, 1
+                ), RotationUtility.getRotationMatrix(0, 0, Math.PI)
+        );
+        Assert.assertEquals(
+                new Matrix3(
+                        1, 0, 0,
+                        0, -1, 0,
+                        0, 0, -1
+                ), RotationUtility.getRotationMatrix(0, Math.PI, Math.PI)
+        );
+        Assert.assertEquals(
+                new Matrix3(
+                        -1, 0, 0,
+                        0, -1, 0,
+                        0, 0, 1
+                ), RotationUtility.getRotationMatrix(Math.PI, Math.PI, 0)
+        );
+        Assert.assertEquals(
+                new Matrix3(
+                        -1, 0, 0,
+                        0, 1, 0,
+                        0, 0, -1
+                ), RotationUtility.getRotationMatrix(Math.PI, 0, Math.PI)
+        );
+        Assert.assertEquals(
+                new Matrix3(
                         1, 0, 0,
                         0, 1, 0,
                         0, 0, 1
-                }), RotationUtility.getRotationMatrix(Math.PI, Math.PI, Math.PI)
+                ), RotationUtility.getRotationMatrix(Math.PI, Math.PI, Math.PI)
         );
         Assert.assertEquals(
-                new Matrix3(new double[] {
+                new Matrix3(
                         1, 0, 0,
                         0, 1, 0,
                         0, 0, 1
-                }), RotationUtility.getRotationMatrix(-Math.PI, -Math.PI, -Math.PI)
+                ), RotationUtility.getRotationMatrix(-Math.PI, -Math.PI, -Math.PI)
         );
         Assert.assertEquals(
-                new Matrix3(new double[] {
+                new Matrix3(
                         1, 0, 0,
                         0, 0, -1,
                         0, 1, 0
-                }), RotationUtility.getRotationMatrix(Math.PI / 2, 0, 0)
+                ), RotationUtility.getRotationMatrix(Math.PI / 2, 0, 0)
         );
         Assert.assertEquals(
-                new Matrix3(new double[] {
+                new Matrix3(
                         0, 0, 1,
                         0, 1, 0,
                         -1, 0, 0
-                }), RotationUtility.getRotationMatrix(0, Math.PI / 2, 0)
+                ), RotationUtility.getRotationMatrix(0, Math.PI / 2, 0)
         );
         Assert.assertEquals(
-                new Matrix3(new double[] {
+                new Matrix3(
                         0, -1, 0,
                         1, 0, 0,
                         0, 0, 1
-                }), RotationUtility.getRotationMatrix(0, 0, Math.PI / 2)
+                ), RotationUtility.getRotationMatrix(0, 0, Math.PI / 2)
         );
         Assert.assertEquals(
-                new Matrix3(new double[] {
+                new Matrix3(
                         0, -1, 0,
                         0, 0, 1,
                         -1, 0, 0
-                }), RotationUtility.getRotationMatrix(Math.PI / 2, Math.PI, 3 * Math.PI / 2)
+                ), RotationUtility.getRotationMatrix(Math.PI / 2, Math.PI, 3 * Math.PI / 2)
         );
         Assert.assertEquals(
-                new Matrix3(new double[] {
+                new Matrix3(
                         -0.07755203967697322, 0.4192832826803205, 0.904537014171756,
                         0.9091279311540784, -0.34266633146647285, 0.23678300208168407,
                         0.4092335347175823, 0.8407028691185273, -0.3546076704167996
-                }), RotationUtility.getRotationMatrix(0.58874, 2.0113, 1.3879)
+                ), RotationUtility.getRotationMatrix(0.58874, 2.0113, 1.3879)
         );
         Assert.assertEquals(
-                new Matrix3(new double[] {
+                new Matrix3(
                         -0.07755203967697322, -0.4192832826803205, -0.904537014171756,
                         -0.7264123201285896, 0.6451813319452019, -0.23678300208168407,
                         0.6828695499927792, 0.6387038263344206, -0.3546076704167996
-                }), RotationUtility.getRotationMatrix(-0.58874, -2.0113, -1.3879)
+                ), RotationUtility.getRotationMatrix(-0.58874, -2.0113, -1.3879)
         );
     }
     

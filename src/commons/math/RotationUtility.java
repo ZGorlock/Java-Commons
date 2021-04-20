@@ -7,8 +7,9 @@
 
 package commons.math;
 
-import commons.math.matrix.Matrix3;
-import commons.math.vector.Vector;
+import commons.math.component.matrix.Matrix;
+import commons.math.component.matrix.Matrix3;
+import commons.math.component.vector.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,22 +37,22 @@ public final class RotationUtility {
      * @return The rotation transformation matrix.
      */
     public static Matrix3 getRotationMatrix(double roll, double pitch, double yaw) {
-        Matrix3 rollRotation = new Matrix3(new double[] {
+        Matrix rollRotation = new Matrix3(
                 1, 0, 0,
                 0, Math.cos(roll), -Math.sin(roll),
                 0, Math.sin(roll), Math.cos(roll)
-        });
-        Matrix3 pitchRotation = new Matrix3(new double[] {
+        );
+        Matrix pitchRotation = new Matrix3(
                 Math.cos(pitch), 0, Math.sin(pitch),
                 0, 1, 0,
                 -Math.sin(pitch), 0, Math.cos(pitch)
-        });
-        Matrix3 yawRotation = new Matrix3(new double[] {
+        );
+        Matrix yawRotation = new Matrix3(
                 Math.cos(yaw), -Math.sin(yaw), 0,
                 Math.sin(yaw), Math.cos(yaw), 0,
                 0, 0, 1
-        });
-        return (Matrix3) rollRotation.multiply(pitchRotation).multiply(yawRotation);
+        );
+        return (Matrix3) rollRotation.times(pitchRotation).times(yawRotation);
     }
     
     /**
@@ -63,12 +64,7 @@ public final class RotationUtility {
      * @return The rotated Vector.
      */
     public static Vector performRotation(Vector vector, Matrix3 rotationMatrix, Vector center) {
-        Vector justifiedCenter = center.justify();
-        
-        Vector result = vector.minus(center);
-        result = rotationMatrix.transform(result);
-        result = result.plus(center);
-        return result;
+        return rotationMatrix.transform(vector.minus(center)).plus(center);
     }
     
 }

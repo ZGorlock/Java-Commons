@@ -1,16 +1,13 @@
 /*
- * File:    ImageTransformationUtilityTest.java
- * Package: commons.graphics
+ * File:    ComponentErrorHandlerProviderTest.java
+ * Package: commons.math.component.handler.error
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.graphics;
+package commons.math.component.handler.error;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.util.List;
-
+import commons.math.component.ComponentInterface;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -23,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of ImageTransformationUtility.
+ * JUnit test of ComponentErrorHandlerProvider.
  *
- * @see ImageTransformationUtility
+ * @see ComponentErrorHandlerProvider
  */
 @SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ImageTransformationUtility.class})
-public class ImageTransformationUtilityTest {
+@PrepareForTest({ComponentErrorHandlerProvider.class})
+public class ComponentErrorHandlerProviderTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(ImageTransformationUtilityTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ComponentErrorHandlerProviderTest.class);
     
     
     //Initialization
@@ -95,36 +92,57 @@ public class ImageTransformationUtilityTest {
     }
     
     /**
-     * JUnit test of transformImage.
+     * JUnit test of getErrorHandler.
      *
      * @throws Exception When there is an exception.
-     * @see ImageTransformationUtility#transformImage(BufferedImage, List, BufferedImage, List)
-     * @see ImageTransformationUtility#transformImage(BufferedImage, List, Graphics2D, int, int, List)
+     * @see ComponentErrorHandlerProvider#getErrorHandler()
      */
     @Test
-    public void testTransformImage() throws Exception {
+    public void testGetErrorHandler() throws Exception {
         //TODO
     }
     
     /**
-     * JUnit test of calculateProjectiveMatrix.
+     * JUnit test of setErrorHandler.
      *
      * @throws Exception When there is an exception.
-     * @see ImageTransformationUtility#calculateProjectiveMatrix(List, List)
+     * @see ComponentErrorHandlerProvider#setErrorHandler(ComponentErrorHandlerInterface)
      */
     @Test
-    public void testCalculateProjectiveMatrix() throws Exception {
+    public void testSetErrorHandler() throws Exception {
         //TODO
     }
     
     /**
-     * JUnit test of getBoundsForImage.
+     * JUnit test of assertDimensionalitySame.
      *
      * @throws Exception When there is an exception.
-     * @see ImageTransformationUtility#getBoundsForImage(BufferedImage)
+     * @see ComponentErrorHandlerProvider#assertDimensionalitySame(ComponentInterface, ComponentInterface)
      */
     @Test
-    public void testGetBoundsForImage() throws Exception {
+    public void testAssertDimensionalitySame() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of assertDimensionalityEqual.
+     *
+     * @throws Exception When there is an exception.
+     * @see ComponentErrorHandlerProvider#assertDimensionalityEqual(ComponentInterface, int)
+     */
+    @Test
+    public void testAssertDimensionalityEqual() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of assertIndexInBounds.
+     *
+     * @throws Exception When there is an exception.
+     * @see ComponentErrorHandlerProvider#assertIndexInBounds(ComponentInterface, int)
+     */
+    @Test
+    public void testAssertIndexInBounds() throws Exception {
         //TODO
     }
     

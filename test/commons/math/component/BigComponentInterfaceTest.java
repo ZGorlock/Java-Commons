@@ -1,15 +1,13 @@
 /*
- * File:    ImageTransformationUtilityTest.java
- * Package: commons.graphics
+ * File:    BigComponentInterfaceTest.java
+ * Package: commons.math.component
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.graphics;
+package commons.math.component;
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
-import java.util.List;
+import java.math.MathContext;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -23,21 +21,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of ImageTransformationUtility.
+ * JUnit test of BigComponentInterface.
  *
- * @see ImageTransformationUtility
+ * @see BigComponentInterface
  */
 @SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ImageTransformationUtility.class})
-public class ImageTransformationUtilityTest {
+@PrepareForTest({BigComponentInterface.class})
+public class BigComponentInterfaceTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(ImageTransformationUtilityTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(BigComponentInterfaceTest.class);
     
     
     //Initialization
@@ -95,37 +93,56 @@ public class ImageTransformationUtilityTest {
     }
     
     /**
-     * JUnit test of transformImage.
+     * JUnit test of movePointLeft.
      *
      * @throws Exception When there is an exception.
-     * @see ImageTransformationUtility#transformImage(BufferedImage, List, BufferedImage, List)
-     * @see ImageTransformationUtility#transformImage(BufferedImage, List, Graphics2D, int, int, List)
+     * @see BigComponentInterface#movePointLeft(int)
      */
     @Test
-    public void testTransformImage() throws Exception {
+    public void testMovePointLeft() throws Exception {
         //TODO
     }
     
     /**
-     * JUnit test of calculateProjectiveMatrix.
+     * JUnit test of movePointRight.
      *
      * @throws Exception When there is an exception.
-     * @see ImageTransformationUtility#calculateProjectiveMatrix(List, List)
+     * @see BigComponentInterface#movePointRight(int)
      */
     @Test
-    public void testCalculateProjectiveMatrix() throws Exception {
+    public void testMovePointRight() throws Exception {
         //TODO
     }
     
     /**
-     * JUnit test of getBoundsForImage.
+     * JUnit test of stripTrailingZeros.
      *
      * @throws Exception When there is an exception.
-     * @see ImageTransformationUtility#getBoundsForImage(BufferedImage)
+     * @see BigComponentInterface#stripTrailingZeros()
      */
     @Test
-    public void testGetBoundsForImage() throws Exception {
+    public void testStripTrailingZeros() throws Exception {
         //TODO
+    }
+    
+    /**
+     * JUnit test of getMathContext.
+     *
+     * @throws Exception When there is an exception.
+     * @see BigComponentInterface#getMathContext()
+     */
+    @Test
+    public void testGetMathContext() throws Exception {
+    }
+    
+    /**
+     * JUnit test of setMathContext.
+     *
+     * @throws Exception When there is an exception.
+     * @see BigComponentInterface#setMathContext(MathContext)
+     */
+    @Test
+    public void testSetMathContext() throws Exception {
     }
     
 }

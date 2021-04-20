@@ -7,7 +7,7 @@
 
 package commons.math;
 
-import commons.math.vector.Vector;
+import commons.math.component.vector.Vector;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;

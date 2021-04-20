@@ -7,7 +7,7 @@
 
 package commons.math;
 
-import commons.math.vector.Vector;
+import commons.math.component.vector.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
