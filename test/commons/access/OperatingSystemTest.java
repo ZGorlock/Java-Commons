@@ -559,7 +559,6 @@ public class OperatingSystemTest {
         
         Assert.assertTrue(OperatingSystem.getTotalMemory() <= OperatingSystem.getMaximumMemory());
         Assert.assertTrue(OperatingSystem.getTotalMemory() > OperatingSystem.getFreeMemory());
-        Assert.assertEquals(OperatingSystem.getTotalMemory(), (OperatingSystem.getFreeMemory() + OperatingSystem.getUsedMemory()));
     }
     
     /**
@@ -593,7 +592,7 @@ public class OperatingSystemTest {
             Assert.fail();
         }
         
-        Assert.assertTrue(OperatingSystem.getUsedMemory() < OperatingSystem.getTotalMemory());
+        Assert.assertTrue(OperatingSystem.getUsedMemory() <= OperatingSystem.getTotalMemory());
     }
     
 }
