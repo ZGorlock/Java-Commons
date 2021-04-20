@@ -2,6 +2,7 @@
  * File:    VectorInterface.java
  * Package: commons.math.component.vector
  * Author:  Zachary Gill
+ * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
 package commons.math.component.vector;

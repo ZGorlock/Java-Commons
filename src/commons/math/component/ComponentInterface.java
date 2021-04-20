@@ -2,6 +2,7 @@
  * File:    ComponentInterface.java
  * Package: commons.math.component
  * Author:  Zachary Gill
+ * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
 package commons.math.component;

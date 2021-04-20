@@ -2,6 +2,7 @@
  * File:    MatrixInterface.java
  * Package: commons.math.component.matrix
  * Author:  Zachary Gill
+ * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
 package commons.math.component.matrix;
