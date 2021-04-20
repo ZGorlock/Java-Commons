@@ -94,12 +94,12 @@ public final class Console {
         /**
          * The code of the Console Effect.
          */
-        private int code;
+        private final int code;
         
         /**
          * The key of the Console Effect.
          */
-        private String key;
+        private final String key;
         
         
         //Constructors

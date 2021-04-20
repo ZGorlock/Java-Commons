@@ -155,7 +155,6 @@ public final class StringUtility {
      * @return A list of the lines in the passed string.
      * @see #tokenize(String, String, boolean)
      */
-    @SuppressWarnings("HardcodedLineSeparator")
     public static List<String> splitLines(String str) {
         return tokenize(str, "\\r?\\n", true);
     }
@@ -1045,7 +1044,8 @@ public final class StringUtility {
             String work = lSnip(text, width);
             
             boolean addDash = false;
-            int finalWidth = Math.min(width, text.length());
+            int trueWidth = Math.min(width, text.length());
+            int finalWidth = trueWidth;
             if (clean && !text.equals(work) && !isWhitespace(text.charAt(finalWidth))) {
                 for (int i = work.length() - 1; i >= 0; i--) {
                     if (isWhitespace(work.charAt(i))) {
@@ -1053,7 +1053,7 @@ public final class StringUtility {
                     }
                     finalWidth--;
                 }
-                if (finalWidth < ((Math.min(width, text.length()) - (spaces + (first ? 0 : breakIndent))) / (width / 10.0))) {
+                if (finalWidth < ((trueWidth - (spaces + (first ? 0 : breakIndent))) / (width / 10.0))) {
                     finalWidth = width - 1;
                     addDash = true;
                 }

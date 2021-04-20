@@ -261,7 +261,7 @@ public class NumberStringUtilityTest {
         
         //invalid
         try {
-            NumberStringUtility.numberValueOf("156a87");
+            Number n = NumberStringUtility.numberValueOf("156a87");
             Assert.fail();
         } catch (NumberFormatException ignored) {
         }

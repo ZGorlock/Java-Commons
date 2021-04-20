@@ -79,7 +79,7 @@ public class WaveRecording {
     /**
      * The WAV file to store the recording to.
      */
-    private File wavFile;
+    private final File wavFile;
     
     /**
      * The format of the WAV recording.

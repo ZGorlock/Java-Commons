@@ -76,7 +76,7 @@ public final class EquationUtility {
         /**
          * The symbol of the Operation.
          */
-        private char symbol;
+        private final char symbol;
         
         
         //Constructors
@@ -139,7 +139,7 @@ public final class EquationUtility {
         /**
          * The string of symbols corresponding to the stage in the order of operations.
          */
-        private String symbols;
+        private final String symbols;
         
         
         //Constructors

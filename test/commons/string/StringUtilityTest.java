@@ -47,27 +47,27 @@ public class StringUtilityTest {
     /**
      * A string of vowel characters.
      */
-    private String vowels = "AEIOUaeiou";
+    private final String vowels = "AEIOUaeiou";
     
     /**
      * A string of consonant characters.
      */
-    private String consonants = "BCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz";
+    private final String consonants = "BCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz";
     
     /**
      * A string of number characters.
      */
-    private String numbers = "012345679";
+    private final String numbers = "012345679";
     
     /**
      * A string of symbol characters.
      */
-    private String symbols = "`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?";
+    private final String symbols = "`~!@#$%^&*()-_=+[{]}\\|;:'\",<.>/?";
     
     /**
      * A string of whitespace characters.
      */
-    private String whiteSpace = " \t\r\n\0";
+    private final String whiteSpace = " \t\r\n\0";
     
     
     //Initialization

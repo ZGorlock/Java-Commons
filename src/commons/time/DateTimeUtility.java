@@ -607,9 +607,9 @@ public final class DateTimeUtility {
         }
         
         long duration = unitValues[0] +
-                (unitValues[1] * 1000) +
-                (unitValues[2] * 60 * 1000) +
-                (unitValues[3] * 60 * 60 * 1000);
+                (unitValues[1] * 1000L) +
+                (unitValues[2] * 60 * 1000L) +
+                (unitValues[3] * 60 * 60 * 1000L);
         duration *= (isNegative ? -1 : 1);
         return duration;
     }

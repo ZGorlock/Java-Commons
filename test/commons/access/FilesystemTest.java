@@ -70,62 +70,62 @@ public class FilesystemTest {
     /**
      * An example file for Filesystem testing.
      */
-    private static File testFile = new File(tmpDir, "test.txt");
+    private static final File testFile = new File(tmpDir, "test.txt");
     
     /**
      * An example file for Filesystem testing.
      */
-    private static File test2File = new File(tmpDir, "test2.txt");
+    private static final File test2File = new File(tmpDir, "test2.txt");
     
     /**
      * An example directory for Filesystem testing.
      */
-    private static File testDir = new File(tmpDir, "testDir");
+    private static final File testDir = new File(tmpDir, "testDir");
     
     /**
      * An example directory for Filesystem testing.
      */
-    private static File test2Dir = new File(tmpDir, "test2Dir");
+    private static final File test2Dir = new File(tmpDir, "test2Dir");
     
     /**
      * An example directory for Filesystem testing.
      */
-    private static File testDir2 = new File(testDir, "testDir2");
+    private static final File testDir2 = new File(testDir, "testDir2");
     
     /**
      * An example directory for Filesystem testing.
      */
-    private static File test2Dir2 = new File(testDir, "test2Dir2");
+    private static final File test2Dir2 = new File(testDir, "test2Dir2");
     
     /**
      * An example directory for Filesystem testing.
      */
-    private static File testDir3 = new File(testDir2, "testDir3");
+    private static final File testDir3 = new File(testDir2, "testDir3");
     
     /**
      * An example directory for Filesystem testing.
      */
-    private static File test2Dir3 = new File(testDir2, "test2Dir3");
+    private static final File test2Dir3 = new File(testDir2, "test2Dir3");
     
     /**
      * An example file for Filesystem testing.
      */
-    private static File testFile2 = new File(testDir, "test.txt");
+    private static final File testFile2 = new File(testDir, "test.txt");
     
     /**
      * An example file for Filesystem testing.
      */
-    private static File test2File2 = new File(testDir, "test2.txt");
+    private static final File test2File2 = new File(testDir, "test2.txt");
     
     /**
      * An example file for Filesystem testing.
      */
-    private static File testFile3 = new File(testDir3, "test.txt");
+    private static final File testFile3 = new File(testDir3, "test.txt");
     
     /**
      * An example file for Filesystem testing.
      */
-    private static File test2File3 = new File(testDir3, "test2.txt");
+    private static final File test2File3 = new File(testDir3, "test2.txt");
     
     /**
      * An example nested directory for Filesystem testing.
@@ -204,6 +204,7 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      */
+    @SuppressWarnings("ConstantConditions")
     @After
     public void cleanup() throws Exception {
         if ((nestedInternalFile2 != null) && nestedInternalFile2.exists()) {

@@ -39,7 +39,7 @@ public class ProgressBarOutputStream extends CountingOutputStream {
     /**
      * The progress bar for the output stream.
      */
-    private ConsoleProgressBar progressBar;
+    private final ConsoleProgressBar progressBar;
     
     
     //Constructors

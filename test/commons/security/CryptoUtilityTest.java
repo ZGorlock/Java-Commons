@@ -49,7 +49,7 @@ public class CryptoUtilityTest {
     /**
      * The sample string to use for testing cryptography.
      */
-    private String message = "A sample message for cryptography";
+    private final String message = "A sample message for cryptography";
     
     
     //Initialization

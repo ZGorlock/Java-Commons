@@ -99,7 +99,7 @@ public final class Speech {
     /**
      * A flag indicating whether or not the system is currently speaking or not.
      */
-    private AtomicBoolean speaking = new AtomicBoolean(false);
+    private final AtomicBoolean speaking = new AtomicBoolean(false);
     
     /**
      * The name of the current speech voice.
@@ -109,7 +109,7 @@ public final class Speech {
     /**
      * A map of the current speech effects.
      */
-    private Map<String, String> effects = new HashMap<>();
+    private final Map<String, String> effects = new HashMap<>();
     
     /**
      * A flag indicating whether the DLA speech system has been setup already or not.

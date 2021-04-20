@@ -65,6 +65,7 @@ public final class AudioUtility {
         
         while (!done.get()) {
             try {
+                //noinspection BusyWait
                 Thread.sleep(5);
             } catch (InterruptedException ignored) {
             }

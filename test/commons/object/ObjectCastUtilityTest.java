@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ObjectCastUtility
  */
-@SuppressWarnings({"SpellCheckingInspection", "ConstantConditions", "UnnecessaryUnboxing"})
+@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection", "ConstantConditions", "UnnecessaryUnboxing"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ObjectCastUtility.class})
 public class ObjectCastUtilityTest {

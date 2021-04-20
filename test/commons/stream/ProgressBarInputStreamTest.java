@@ -136,6 +136,7 @@ public class ProgressBarInputStreamTest {
      * @throws Exception When there is an exception.
      * @see ProgressBarInputStream#read(byte[], int, int)
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testRead() throws Exception {
         ProgressBarInputStream sut;
@@ -184,7 +185,7 @@ public class ProgressBarInputStreamTest {
         Whitebox.setInternalState(sut, "progressBar", progressBar);
         buffer = new byte[200];
         try {
-            read = sut.read(buffer, 0, 201);
+            sut.read(buffer, 0, 201);
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(e instanceof IndexOutOfBoundsException);

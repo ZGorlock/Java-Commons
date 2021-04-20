@@ -43,7 +43,7 @@ public class CommonsLoggingTest {
     /**
      * The Commons Logger implementation to use for testing.
      */
-    private CommonsLogger commonsLogger = new CommonsLogger() {
+    private final CommonsLogger commonsLogger = new CommonsLogger() {
         
         @Override
         public boolean logFilesystem() {

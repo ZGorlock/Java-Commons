@@ -342,7 +342,7 @@ public class Vector4Test {
      * JUnit test of dot.
      *
      * @throws Exception When there is an exception.
-     * @see Vector4#dot(Vector4Interface)
+     * @see Vector4#dot(VectorInterface)
      */
     @Test
     public void testDot() throws Exception {
@@ -409,8 +409,8 @@ public class Vector4Test {
      * JUnit test of subVector4.
      *
      * @throws Exception When there is an exception.
-     * @see Vector4#subVector4(int, int)
-     * @see Vector4#subVector4(int)
+     * @see Vector4#subVector(int, int)
+     * @see Vector4#subVector(int)
      */
     @Test
     public void testSubVector4() throws Exception {
