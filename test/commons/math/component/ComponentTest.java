@@ -105,7 +105,7 @@ public class ComponentTest {
      * @see Component#Component()
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         //TODO
     }
     

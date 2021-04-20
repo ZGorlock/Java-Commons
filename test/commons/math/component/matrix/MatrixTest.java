@@ -113,7 +113,7 @@ public class MatrixTest {
      * @see Matrix#Matrix()
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         //TODO
     }
     

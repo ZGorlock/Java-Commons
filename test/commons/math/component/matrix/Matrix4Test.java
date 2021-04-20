@@ -112,7 +112,7 @@ public class Matrix4Test {
      * @see Matrix4#Matrix4()
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         //TODO
     }
     

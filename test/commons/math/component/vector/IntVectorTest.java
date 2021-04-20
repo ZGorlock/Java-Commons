@@ -115,7 +115,7 @@ public class IntVectorTest {
      * @see IntVector#IntVector()
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         //TODO
     }
     

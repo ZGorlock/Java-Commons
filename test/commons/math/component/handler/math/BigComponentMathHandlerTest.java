@@ -103,7 +103,7 @@ public class BigComponentMathHandlerTest {
      * @see BigComponentMathHandler#BigComponentMathHandler()
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         BigComponentMathHandler sut = new BigComponentMathHandler();
         Assert.assertNotNull(sut);
     }

@@ -114,7 +114,7 @@ public class IntMatrixTest {
      * @see IntMatrix#IntMatrix()
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         //TODO
     }
     

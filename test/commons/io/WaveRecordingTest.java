@@ -110,7 +110,7 @@ public class WaveRecordingTest {
      * @see WaveRecording#WaveRecording(String)
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         //TODO
     }
     

@@ -105,7 +105,7 @@ public class IntComponentTest {
      * @see IntComponent#IntComponent()
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         //TODO
     }
     

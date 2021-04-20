@@ -128,7 +128,7 @@ public class BigVectorTest {
      * @see BigVector#BigVector()
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         //TODO
     }
     

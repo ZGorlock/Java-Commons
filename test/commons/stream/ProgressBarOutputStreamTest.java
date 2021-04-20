@@ -108,7 +108,7 @@ public class ProgressBarOutputStreamTest {
      * @see ProgressBarOutputStream#ProgressBarOutputStream(OutputStream, long)
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         ProgressBarOutputStream sut;
         ConsoleProgressBar progressBar;
         OutputStream outputStream = new ByteArrayOutputStream(100);

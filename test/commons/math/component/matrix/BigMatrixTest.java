@@ -123,7 +123,7 @@ public class BigMatrixTest {
      * @see BigMatrix#BigMatrix()
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         //TODO
     }
     

@@ -101,7 +101,7 @@ public class IntComponentMathHandlerTest {
      * @see IntComponentMathHandler#IntComponentMathHandler()
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         IntComponentMathHandler sut = new IntComponentMathHandler();
         Assert.assertNotNull(sut);
     }

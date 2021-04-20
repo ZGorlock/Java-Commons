@@ -113,7 +113,7 @@ public class Vector3Test {
      * @see Vector3#Vector3()
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         //TODO
     }
     

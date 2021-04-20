@@ -112,7 +112,7 @@ public class Vector2Test {
      * @see Vector2#Vector2()
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         //TODO
     }
     

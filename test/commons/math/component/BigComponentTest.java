@@ -112,7 +112,7 @@ public class BigComponentTest {
      * @see BigComponent#BigComponent()
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         //TODO
     }
     

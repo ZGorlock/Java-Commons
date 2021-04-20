@@ -133,7 +133,7 @@ public class ConsoleProgressBarTest {
      * @see ConsoleProgressBar#ConsoleProgressBar(String, long)
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         //standard
         progressBar = new ConsoleProgressBar("Test", 1000, 50, "B", false);
         Assert.assertEquals("Test", progressBar.getTitle());

@@ -101,7 +101,7 @@ public class DoubleComponentMathHandlerTest {
      * @see DoubleComponentMathHandler#DoubleComponentMathHandler()
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         DoubleComponentMathHandler sut = new DoubleComponentMathHandler();
         Assert.assertNotNull(sut);
     }

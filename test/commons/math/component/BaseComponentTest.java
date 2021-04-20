@@ -104,7 +104,7 @@ public class BaseComponentTest {
      * @see BaseComponent#BaseComponent(Class, ComponentMathHandlerInterface)
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         //TODO
     }
     

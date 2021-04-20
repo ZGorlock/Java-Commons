@@ -108,7 +108,7 @@ public class ProgressBarInputStreamTest {
      * @see ProgressBarInputStream#ProgressBarInputStream(InputStream, long)
      */
     @Test
-    public void testConstructor() throws Exception {
+    public void testConstructors() throws Exception {
         ProgressBarInputStream sut;
         ConsoleProgressBar progressBar;
         InputStream inputStream = new ByteArrayInputStream("test".getBytes(StandardCharsets.UTF_8));
