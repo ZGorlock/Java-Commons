@@ -11941,86 +11941,66 @@ public class FilesystemTest {
         String dataString;
         
         //standard
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text"));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(13, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text"));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(13, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //multi-line
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text\nanother sample text"));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(33, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text\nanother sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text\nanother sample text"));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(33, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text\nanother sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //empty
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(-1, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(-1, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //does not exist
-        try {
-            Assert.assertFalse(testFile.exists());
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNull(fis);
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertFalse(testFile.exists());
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNull(fis);
+        Assert.assertFalse(testFile.exists());
         
         //directory
-        try {
-            Assert.assertTrue(Filesystem.createDirectory(testDir));
-            Assert.assertTrue(testDir.exists());
-            Assert.assertTrue(testDir.isDirectory());
-            fis = Filesystem.openInputStream(testDir);
-            Assert.assertNull(fis);
-            Assert.assertTrue(testDir.delete());
-            Assert.assertFalse(testDir.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        fis = Filesystem.openInputStream(testDir);
+        Assert.assertNull(fis);
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(testDir.exists());
     }
     
     /**
@@ -12036,198 +12016,150 @@ public class FilesystemTest {
         String dataString;
         
         //standard
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile);
-            Assert.assertNotNull(fos);
-            fos.write("a sample text".getBytes());
-            fos.close();
-            dataString = Filesystem.readFileToString(testFile);
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile);
+        Assert.assertNotNull(fos);
+        fos.write("a sample text".getBytes());
+        fos.close();
+        dataString = Filesystem.readFileToString(testFile);
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //multi-line
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile);
-            Assert.assertNotNull(fos);
-            fos.write("a sample text\nanother sample text".getBytes());
-            fos.close();
-            dataString = Filesystem.readFileToString(testFile);
-            Assert.assertEquals("a sample text\nanother sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile);
+        Assert.assertNotNull(fos);
+        fos.write("a sample text\nanother sample text".getBytes());
+        fos.close();
+        dataString = Filesystem.readFileToString(testFile);
+        Assert.assertEquals("a sample text\nanother sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //overwrite
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile);
-            Assert.assertNotNull(fos);
-            fos.write("a sample text".getBytes());
-            fos.close();
-            fos = Filesystem.openOutputStream(testFile);
-            Assert.assertNotNull(fos);
-            fos.write("another sample text".getBytes());
-            fos.close();
-            dataString = Filesystem.readFileToString(testFile);
-            Assert.assertEquals("another sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile);
+        Assert.assertNotNull(fos);
+        fos.write("a sample text".getBytes());
+        fos.close();
+        fos = Filesystem.openOutputStream(testFile);
+        Assert.assertNotNull(fos);
+        fos.write("another sample text".getBytes());
+        fos.close();
+        dataString = Filesystem.readFileToString(testFile);
+        Assert.assertEquals("another sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //empty
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile);
-            Assert.assertNotNull(fos);
-            fos.close();
-            dataString = Filesystem.readFileToString(testFile);
-            Assert.assertEquals("", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile);
+        Assert.assertNotNull(fos);
+        fos.close();
+        dataString = Filesystem.readFileToString(testFile);
+        Assert.assertEquals("", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //does not exist
-        try {
-            Assert.assertFalse(testFile.exists());
-            fos = Filesystem.openOutputStream(testFile);
-            Assert.assertNotNull(fos);
-            fos.close();
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertFalse(testFile.exists());
+        fos = Filesystem.openOutputStream(testFile);
+        Assert.assertNotNull(fos);
+        fos.close();
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //directory
-        try {
-            Assert.assertTrue(Filesystem.createDirectory(testDir));
-            Assert.assertTrue(testDir.exists());
-            Assert.assertTrue(testDir.isDirectory());
-            fos = Filesystem.openOutputStream(testDir);
-            Assert.assertNull(fos);
-            Assert.assertTrue(testDir.delete());
-            Assert.assertFalse(testDir.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        fos = Filesystem.openOutputStream(testDir);
+        Assert.assertNull(fos);
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(testDir.exists());
         
         //standard, append
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile, true);
-            Assert.assertNotNull(fos);
-            fos.write("a sample text".getBytes());
-            fos.close();
-            dataString = Filesystem.readFileToString(testFile);
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile, true);
+        Assert.assertNotNull(fos);
+        fos.write("a sample text".getBytes());
+        fos.close();
+        dataString = Filesystem.readFileToString(testFile);
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //multi-line
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile, true);
-            Assert.assertNotNull(fos);
-            fos.write("a sample text\nanother sample text".getBytes());
-            fos.close();
-            dataString = Filesystem.readFileToString(testFile);
-            Assert.assertEquals("a sample text\nanother sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile, true);
+        Assert.assertNotNull(fos);
+        fos.write("a sample text\nanother sample text".getBytes());
+        fos.close();
+        dataString = Filesystem.readFileToString(testFile);
+        Assert.assertEquals("a sample text\nanother sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //overwrite, append
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile, true);
-            Assert.assertNotNull(fos);
-            fos.write("a sample text".getBytes());
-            fos.close();
-            fos = Filesystem.openOutputStream(testFile, true);
-            Assert.assertNotNull(fos);
-            fos.write("another sample text".getBytes());
-            fos.close();
-            dataString = Filesystem.readFileToString(testFile);
-            Assert.assertEquals("a sample textanother sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile, true);
+        Assert.assertNotNull(fos);
+        fos.write("a sample text".getBytes());
+        fos.close();
+        fos = Filesystem.openOutputStream(testFile, true);
+        Assert.assertNotNull(fos);
+        fos.write("another sample text".getBytes());
+        fos.close();
+        dataString = Filesystem.readFileToString(testFile);
+        Assert.assertEquals("a sample textanother sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //empty, append
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile, true);
-            Assert.assertNotNull(fos);
-            fos.close();
-            dataString = Filesystem.readFileToString(testFile);
-            Assert.assertEquals("", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile, true);
+        Assert.assertNotNull(fos);
+        fos.close();
+        dataString = Filesystem.readFileToString(testFile);
+        Assert.assertEquals("", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //does not exist, append
-        try {
-            Assert.assertFalse(testFile.exists());
-            fos = Filesystem.openOutputStream(testFile, true);
-            Assert.assertNotNull(fos);
-            fos.close();
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertFalse(testFile.exists());
+        fos = Filesystem.openOutputStream(testFile, true);
+        Assert.assertNotNull(fos);
+        fos.close();
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //directory, append
-        try {
-            Assert.assertTrue(Filesystem.createDirectory(testDir));
-            Assert.assertTrue(testDir.exists());
-            Assert.assertTrue(testDir.isDirectory());
-            fos = Filesystem.openOutputStream(testDir, true);
-            Assert.assertNull(fos);
-            Assert.assertTrue(testDir.delete());
-            Assert.assertFalse(testDir.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        fos = Filesystem.openOutputStream(testDir, true);
+        Assert.assertNull(fos);
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(testDir.exists());
     }
     
     /**
@@ -12242,77 +12174,57 @@ public class FilesystemTest {
         String dataString;
         
         //standard
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile);
-            Assert.assertNotNull(fos);
-            fos.write("a sample text".getBytes());
-            fos.close();
-            dataString = Filesystem.readFileToString(testFile);
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile);
+        Assert.assertNotNull(fos);
+        fos.write("a sample text".getBytes());
+        fos.close();
+        dataString = Filesystem.readFileToString(testFile);
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //multi-line
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile);
-            Assert.assertNotNull(fos);
-            fos.write("a sample text\nanother sample text".getBytes());
-            fos.close();
-            dataString = Filesystem.readFileToString(testFile);
-            Assert.assertEquals("a sample text\nanother sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile);
+        Assert.assertNotNull(fos);
+        fos.write("a sample text\nanother sample text".getBytes());
+        fos.close();
+        dataString = Filesystem.readFileToString(testFile);
+        Assert.assertEquals("a sample text\nanother sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //empty
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile);
-            Assert.assertNotNull(fos);
-            fos.close();
-            dataString = Filesystem.readFileToString(testFile);
-            Assert.assertEquals("", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile);
+        Assert.assertNotNull(fos);
+        fos.close();
+        dataString = Filesystem.readFileToString(testFile);
+        Assert.assertEquals("", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //does not exist
-        try {
-            Assert.assertFalse(testFile.exists());
-            dataString = Filesystem.readFileToString(testFile);
-            Assert.assertEquals("", dataString);
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertFalse(testFile.exists());
+        dataString = Filesystem.readFileToString(testFile);
+        Assert.assertEquals("", dataString);
+        Assert.assertFalse(testFile.exists());
         
         //directory
-        try {
-            Assert.assertTrue(Filesystem.createDirectory(testDir));
-            Assert.assertTrue(testDir.exists());
-            Assert.assertTrue(testDir.isDirectory());
-            dataString = Filesystem.readFileToString(testDir);
-            Assert.assertEquals("", dataString);
-            Assert.assertTrue(testDir.delete());
-            Assert.assertFalse(testDir.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        dataString = Filesystem.readFileToString(testDir);
+        Assert.assertEquals("", dataString);
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(testDir.exists());
     }
     
     /**
@@ -12327,78 +12239,58 @@ public class FilesystemTest {
         byte[] dataArray;
         
         //standard
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile);
-            Assert.assertNotNull(fos);
-            byte[] a = "a sample text".getBytes();
-            fos.write(a);
-            fos.close();
-            dataArray = Filesystem.readFileToByteArray(testFile);
-            Assert.assertArrayEquals("a sample text".getBytes(), dataArray);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile);
+        Assert.assertNotNull(fos);
+        byte[] a = "a sample text".getBytes();
+        fos.write(a);
+        fos.close();
+        dataArray = Filesystem.readFileToByteArray(testFile);
+        Assert.assertArrayEquals("a sample text".getBytes(), dataArray);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //multi-line
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile);
-            Assert.assertNotNull(fos);
-            fos.write("a sample text\nanother sample text".getBytes());
-            fos.close();
-            dataArray = Filesystem.readFileToByteArray(testFile);
-            Assert.assertArrayEquals("a sample text\nanother sample text".getBytes(), dataArray);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile);
+        Assert.assertNotNull(fos);
+        fos.write("a sample text\nanother sample text".getBytes());
+        fos.close();
+        dataArray = Filesystem.readFileToByteArray(testFile);
+        Assert.assertArrayEquals("a sample text\nanother sample text".getBytes(), dataArray);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //empty
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile);
-            Assert.assertNotNull(fos);
-            fos.close();
-            dataArray = Filesystem.readFileToByteArray(testFile);
-            Assert.assertArrayEquals("".getBytes(), dataArray);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile);
+        Assert.assertNotNull(fos);
+        fos.close();
+        dataArray = Filesystem.readFileToByteArray(testFile);
+        Assert.assertArrayEquals("".getBytes(), dataArray);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //does not exist
-        try {
-            Assert.assertFalse(testFile.exists());
-            dataArray = Filesystem.readFileToByteArray(testFile);
-            Assert.assertArrayEquals("".getBytes(), dataArray);
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertFalse(testFile.exists());
+        dataArray = Filesystem.readFileToByteArray(testFile);
+        Assert.assertArrayEquals("".getBytes(), dataArray);
+        Assert.assertFalse(testFile.exists());
         
         //directory
-        try {
-            Assert.assertTrue(Filesystem.createDirectory(testDir));
-            Assert.assertTrue(testDir.exists());
-            Assert.assertTrue(testDir.isDirectory());
-            dataArray = Filesystem.readFileToByteArray(testDir);
-            Assert.assertArrayEquals("".getBytes(), dataArray);
-            Assert.assertTrue(testDir.delete());
-            Assert.assertFalse(testDir.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        dataArray = Filesystem.readFileToByteArray(testDir);
+        Assert.assertArrayEquals("".getBytes(), dataArray);
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(testDir.exists());
     }
     
     /**
@@ -12413,77 +12305,57 @@ public class FilesystemTest {
         List<String> dataStrings;
         
         //standard
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile);
-            Assert.assertNotNull(fos);
-            fos.write("a sample text".getBytes());
-            fos.close();
-            dataStrings = Filesystem.readLines(testFile);
-            Assert.assertArrayEquals(new String[] {"a sample text"}, dataStrings.toArray());
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile);
+        Assert.assertNotNull(fos);
+        fos.write("a sample text".getBytes());
+        fos.close();
+        dataStrings = Filesystem.readLines(testFile);
+        Assert.assertArrayEquals(new String[] {"a sample text"}, dataStrings.toArray());
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //multi-line
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile);
-            Assert.assertNotNull(fos);
-            fos.write("a sample text\nanother sample text\n\n\none more sample text".getBytes());
-            fos.close();
-            dataStrings = Filesystem.readLines(testFile);
-            Assert.assertArrayEquals(new String[] {"a sample text", "another sample text", "", "", "one more sample text"}, dataStrings.toArray());
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile);
+        Assert.assertNotNull(fos);
+        fos.write("a sample text\nanother sample text\n\n\none more sample text".getBytes());
+        fos.close();
+        dataStrings = Filesystem.readLines(testFile);
+        Assert.assertArrayEquals(new String[] {"a sample text", "another sample text", "", "", "one more sample text"}, dataStrings.toArray());
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //empty
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            fos = Filesystem.openOutputStream(testFile);
-            Assert.assertNotNull(fos);
-            fos.close();
-            dataStrings = Filesystem.readLines(testFile);
-            Assert.assertArrayEquals(new String[] {}, dataStrings.toArray());
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        fos = Filesystem.openOutputStream(testFile);
+        Assert.assertNotNull(fos);
+        fos.close();
+        dataStrings = Filesystem.readLines(testFile);
+        Assert.assertArrayEquals(new String[] {}, dataStrings.toArray());
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //does not exist
-        try {
-            Assert.assertFalse(testFile.exists());
-            dataStrings = Filesystem.readLines(testFile);
-            Assert.assertArrayEquals(new String[] {}, dataStrings.toArray());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertFalse(testFile.exists());
+        dataStrings = Filesystem.readLines(testFile);
+        Assert.assertArrayEquals(new String[] {}, dataStrings.toArray());
+        Assert.assertFalse(testFile.exists());
         
         //directory
-        try {
-            Assert.assertTrue(Filesystem.createDirectory(testDir));
-            Assert.assertTrue(testDir.exists());
-            Assert.assertTrue(testDir.isDirectory());
-            dataStrings = Filesystem.readLines(testDir);
-            Assert.assertArrayEquals(new String[] {}, dataStrings.toArray());
-            Assert.assertTrue(testDir.delete());
-            Assert.assertFalse(testDir.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        dataStrings = Filesystem.readLines(testDir);
+        Assert.assertArrayEquals(new String[] {}, dataStrings.toArray());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(testDir.exists());
     }
     
     /**
@@ -12501,227 +12373,179 @@ public class FilesystemTest {
         String dataString;
         
         //standard
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text"));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(13, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text"));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(13, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //multi-line
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text\nanother sample text"));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(33, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text\nanother sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text\nanother sample text"));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(33, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text\nanother sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //overwrite
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text"));
-            Assert.assertTrue(Filesystem.writeStringToFile(testFile, "another sample text"));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(19, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("another sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text"));
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, "another sample text"));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(19, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("another sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //empty
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeStringToFile(testFile, ""));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(-1, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, ""));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(-1, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //does not exist
-        try {
-            Assert.assertFalse(testFile.exists());
-            Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text"));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(13, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertFalse(testFile.exists());
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text"));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(13, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //directory
-        try {
-            Assert.assertTrue(Filesystem.createDirectory(testDir));
-            Assert.assertTrue(testDir.exists());
-            Assert.assertTrue(testDir.isDirectory());
-            Assert.assertFalse(Filesystem.writeStringToFile(testDir, "a sample text"));
-            Assert.assertTrue(testDir.delete());
-            Assert.assertFalse(testDir.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertFalse(Filesystem.writeStringToFile(testDir, "a sample text"));
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(testDir.exists());
         
         //standard, append
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text", true));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(13, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text", true));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(13, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //multi-line, append
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text\nanother sample text", true));
-            Assert.assertTrue(Filesystem.writeStringToFile(testFile, "\n\n\none more sample text", true));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(56, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text\nanother sample text\n\n\none more sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text\nanother sample text", true));
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, "\n\n\none more sample text", true));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(56, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text\nanother sample text\n\n\none more sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //overwrite, append
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text", true));
-            Assert.assertTrue(Filesystem.writeStringToFile(testFile, "another sample text", true));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(32, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample textanother sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text", true));
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, "another sample text", true));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(32, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample textanother sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //empty, append
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeStringToFile(testFile, "", true));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(-1, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, "", true));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(-1, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //does not exist, append
-        try {
-            Assert.assertFalse(testFile.exists());
-            Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text", true));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(13, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertFalse(testFile.exists());
+        Assert.assertTrue(Filesystem.writeStringToFile(testFile, "a sample text", true));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(13, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //directory, append
-        try {
-            Assert.assertTrue(Filesystem.createDirectory(testDir));
-            Assert.assertTrue(testDir.exists());
-            Assert.assertTrue(testDir.isDirectory());
-            Assert.assertFalse(Filesystem.writeStringToFile(testDir, "a sample text", true));
-            Assert.assertTrue(testDir.delete());
-            Assert.assertFalse(testDir.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertFalse(Filesystem.writeStringToFile(testDir, "a sample text", true));
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(testDir.exists());
     }
     
     /**
@@ -12739,227 +12563,179 @@ public class FilesystemTest {
         String dataString;
         
         //standard
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text".getBytes()));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(13, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text".getBytes()));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(13, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //multi-line
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text\nanother sample text".getBytes()));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(33, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text\nanother sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text\nanother sample text".getBytes()));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(33, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text\nanother sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //overwrite
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text".getBytes()));
-            Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "another sample text".getBytes()));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(19, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("another sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text".getBytes()));
+        Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "another sample text".getBytes()));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(19, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("another sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //empty
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "".getBytes()));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(-1, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "".getBytes()));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(-1, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //does not exist
-        try {
-            Assert.assertFalse(testFile.exists());
-            Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text".getBytes()));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(13, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertFalse(testFile.exists());
+        Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text".getBytes()));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(13, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //directory
-        try {
-            Assert.assertTrue(Filesystem.createDirectory(testDir));
-            Assert.assertTrue(testDir.exists());
-            Assert.assertTrue(testDir.isDirectory());
-            Assert.assertFalse(Filesystem.writeByteArrayToFile(testDir, "a sample text".getBytes()));
-            Assert.assertTrue(testDir.delete());
-            Assert.assertFalse(testDir.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertFalse(Filesystem.writeByteArrayToFile(testDir, "a sample text".getBytes()));
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(testDir.exists());
         
         //standard, append
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text".getBytes(), true));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(13, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text".getBytes(), true));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(13, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //multi-line, append
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text\nanother sample text".getBytes(), true));
-            Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "\n\n\none more sample text".getBytes(), true));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(56, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text\nanother sample text\n\n\none more sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text\nanother sample text".getBytes(), true));
+        Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "\n\n\none more sample text".getBytes(), true));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(56, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text\nanother sample text\n\n\none more sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //overwrite, append
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text".getBytes(), true));
-            Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "another sample text".getBytes(), true));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(32, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample textanother sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text".getBytes(), true));
+        Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "another sample text".getBytes(), true));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(32, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample textanother sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //empty, append
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "".getBytes(), true));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(-1, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "".getBytes(), true));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(-1, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //does not exist, append
-        try {
-            Assert.assertFalse(testFile.exists());
-            Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text".getBytes(), true));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(13, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertFalse(testFile.exists());
+        Assert.assertTrue(Filesystem.writeByteArrayToFile(testFile, "a sample text".getBytes(), true));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(13, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //directory, append
-        try {
-            Assert.assertTrue(Filesystem.createDirectory(testDir));
-            Assert.assertTrue(testDir.exists());
-            Assert.assertTrue(testDir.isDirectory());
-            Assert.assertFalse(Filesystem.writeByteArrayToFile(testDir, "a sample text".getBytes(), true));
-            Assert.assertTrue(testDir.delete());
-            Assert.assertFalse(testDir.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertFalse(Filesystem.writeByteArrayToFile(testDir, "a sample text".getBytes(), true));
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(testDir.exists());
     }
     
     /**
@@ -12978,259 +12754,211 @@ public class FilesystemTest {
         String dataString;
         
         //standard
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            lines = new ArrayList<>();
-            lines.add("a sample text");
-            Assert.assertTrue(Filesystem.writeLines(testFile, lines));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(15, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        lines = new ArrayList<>();
+        lines.add("a sample text");
+        Assert.assertTrue(Filesystem.writeLines(testFile, lines));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(15, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //multi-line
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            lines = new ArrayList<>();
-            lines.add("a sample text");
-            lines.add("another sample text");
-            Assert.assertTrue(Filesystem.writeLines(testFile, lines));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(36, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text\r\nanother sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        lines = new ArrayList<>();
+        lines.add("a sample text");
+        lines.add("another sample text");
+        Assert.assertTrue(Filesystem.writeLines(testFile, lines));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(36, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text\r\nanother sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //overwrite
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            lines = new ArrayList<>();
-            lines.add("a sample text");
-            Assert.assertTrue(Filesystem.writeLines(testFile, lines));
-            lines = new ArrayList<>();
-            lines.add("another sample text");
-            Assert.assertTrue(Filesystem.writeLines(testFile, lines));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(21, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("another sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        lines = new ArrayList<>();
+        lines.add("a sample text");
+        Assert.assertTrue(Filesystem.writeLines(testFile, lines));
+        lines = new ArrayList<>();
+        lines.add("another sample text");
+        Assert.assertTrue(Filesystem.writeLines(testFile, lines));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(21, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("another sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //empty
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            lines = new ArrayList<>();
-            lines.add("");
-            Assert.assertTrue(Filesystem.writeLines(testFile, lines));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(2, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        lines = new ArrayList<>();
+        lines.add("");
+        Assert.assertTrue(Filesystem.writeLines(testFile, lines));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(2, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //does not exist
-        try {
-            Assert.assertFalse(testFile.exists());
-            lines = new ArrayList<>();
-            lines.add("a sample text");
-            Assert.assertTrue(Filesystem.writeLines(testFile, lines));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(15, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertFalse(testFile.exists());
+        lines = new ArrayList<>();
+        lines.add("a sample text");
+        Assert.assertTrue(Filesystem.writeLines(testFile, lines));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(15, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //directory
-        try {
-            Assert.assertTrue(Filesystem.createDirectory(testDir));
-            Assert.assertTrue(testDir.exists());
-            Assert.assertTrue(testDir.isDirectory());
-            lines = new ArrayList<>();
-            lines.add("a sample text");
-            Assert.assertFalse(Filesystem.writeLines(testDir, lines));
-            Assert.assertTrue(testDir.delete());
-            Assert.assertFalse(testDir.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        lines = new ArrayList<>();
+        lines.add("a sample text");
+        Assert.assertFalse(Filesystem.writeLines(testDir, lines));
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(testDir.exists());
         
         //standard, append
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            lines = new ArrayList<>();
-            lines.add("a sample text");
-            Assert.assertTrue(Filesystem.writeLines(testFile, lines, true));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(15, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        lines = new ArrayList<>();
+        lines.add("a sample text");
+        Assert.assertTrue(Filesystem.writeLines(testFile, lines, true));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(15, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //multi-line, append
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            lines = new ArrayList<>();
-            lines.add("a sample text");
-            lines.add("another sample text");
-            lines.add("");
-            lines.add("");
-            lines.add("one more sample text");
-            Assert.assertTrue(Filesystem.writeLines(testFile, lines, true));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(62, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text\r\nanother sample text\r\n\r\n\r\none more sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        lines = new ArrayList<>();
+        lines.add("a sample text");
+        lines.add("another sample text");
+        lines.add("");
+        lines.add("");
+        lines.add("one more sample text");
+        Assert.assertTrue(Filesystem.writeLines(testFile, lines, true));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(62, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text\r\nanother sample text\r\n\r\n\r\none more sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //overwrite, append
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            lines = new ArrayList<>();
-            lines.add("a sample text");
-            Assert.assertTrue(Filesystem.writeLines(testFile, lines, true));
-            lines = new ArrayList<>();
-            lines.add("another sample text");
-            Assert.assertTrue(Filesystem.writeLines(testFile, lines, true));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(36, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text\r\nanother sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        lines = new ArrayList<>();
+        lines.add("a sample text");
+        Assert.assertTrue(Filesystem.writeLines(testFile, lines, true));
+        lines = new ArrayList<>();
+        lines.add("another sample text");
+        Assert.assertTrue(Filesystem.writeLines(testFile, lines, true));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(36, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text\r\nanother sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //empty, append
-        try {
-            Assert.assertTrue(Filesystem.createFile(testFile));
-            Assert.assertTrue(testFile.exists());
-            Assert.assertTrue(testFile.isFile());
-            lines = new ArrayList<>();
-            lines.add("");
-            Assert.assertTrue(Filesystem.writeLines(testFile, lines, true));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(2, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(testFile.exists());
+        Assert.assertTrue(testFile.isFile());
+        lines = new ArrayList<>();
+        lines.add("");
+        Assert.assertTrue(Filesystem.writeLines(testFile, lines, true));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(2, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //does not exist, append
-        try {
-            Assert.assertFalse(testFile.exists());
-            lines = new ArrayList<>();
-            lines.add("a sample text");
-            Assert.assertTrue(Filesystem.writeLines(testFile, lines, true));
-            fis = Filesystem.openInputStream(testFile);
-            Assert.assertNotNull(fis);
-            data = new byte[1024];
-            read = fis.read(data);
-            fis.close();
-            Assert.assertEquals(15, read);
-            dataString = StringUtility.trim(new String(data));
-            Assert.assertEquals("a sample text", dataString);
-            Assert.assertTrue(testFile.delete());
-            Assert.assertFalse(testFile.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertFalse(testFile.exists());
+        lines = new ArrayList<>();
+        lines.add("a sample text");
+        Assert.assertTrue(Filesystem.writeLines(testFile, lines, true));
+        fis = Filesystem.openInputStream(testFile);
+        Assert.assertNotNull(fis);
+        data = new byte[1024];
+        read = fis.read(data);
+        fis.close();
+        Assert.assertEquals(15, read);
+        dataString = StringUtility.trim(new String(data));
+        Assert.assertEquals("a sample text", dataString);
+        Assert.assertTrue(testFile.delete());
+        Assert.assertFalse(testFile.exists());
         
         //directory, append
-        try {
-            Assert.assertTrue(Filesystem.createDirectory(testDir));
-            Assert.assertTrue(testDir.exists());
-            Assert.assertTrue(testDir.isDirectory());
-            lines = new ArrayList<>();
-            lines.add("a sample text");
-            Assert.assertFalse(Filesystem.writeLines(testDir, lines, true));
-            Assert.assertTrue(testDir.delete());
-            Assert.assertFalse(testDir.exists());
-        } catch (Exception ignored) {
-            Assert.fail();
-        }
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        lines = new ArrayList<>();
+        lines.add("a sample text");
+        Assert.assertFalse(Filesystem.writeLines(testDir, lines, true));
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(testDir.exists());
     }
     
     /**

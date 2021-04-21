@@ -260,11 +260,9 @@ public class NumberStringUtilityTest {
         Assert.assertEquals(56428452456781L, NumberStringUtility.numberValueOf("56428452456781").longValue());
         
         //invalid
-        try {
-            Number n = NumberStringUtility.numberValueOf("156a87");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
+        //noinspection ResultOfMethodCallIgnored
+        TestUtils.assertException(NumberFormatException.class, () ->
+                NumberStringUtility.numberValueOf("156a87"));
         
         //exponential notation
         Assert.assertEquals(1.1564e12,

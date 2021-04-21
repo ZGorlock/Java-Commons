@@ -10,6 +10,7 @@ package commons.access;
 import java.util.Arrays;
 import java.util.List;
 
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -517,11 +518,8 @@ public class OperatingSystemTest {
      */
     @Test
     public void testGetProcessorCount() throws Exception {
-        try {
-            Assert.assertNotEquals(0, OperatingSystem.getProcessorCount());
-        } catch (Exception e) {
-            Assert.fail();
-        }
+        TestUtils.assertNoException(() ->
+                Assert.assertNotEquals(0, OperatingSystem.getProcessorCount()));
         
         Assert.assertEquals(OperatingSystem.getProcessorCount(), OperatingSystem.getProcessorCount());
     }
@@ -534,11 +532,8 @@ public class OperatingSystemTest {
      */
     @Test
     public void testGetMaximumMemory() throws Exception {
-        try {
-            Assert.assertNotEquals(0, OperatingSystem.getMaximumMemory());
-        } catch (Exception e) {
-            Assert.fail();
-        }
+        TestUtils.assertNoException(() ->
+                Assert.assertNotEquals(0, OperatingSystem.getMaximumMemory()));
         
         Assert.assertEquals(OperatingSystem.getMaximumMemory(), OperatingSystem.getMaximumMemory());
     }
@@ -551,11 +546,8 @@ public class OperatingSystemTest {
      */
     @Test
     public void testGetTotalMemory() throws Exception {
-        try {
-            Assert.assertNotEquals(0, OperatingSystem.getTotalMemory());
-        } catch (Exception e) {
-            Assert.fail();
-        }
+        TestUtils.assertNoException(() ->
+                Assert.assertNotEquals(0, OperatingSystem.getTotalMemory()));
         
         Assert.assertTrue(OperatingSystem.getTotalMemory() <= OperatingSystem.getMaximumMemory());
         Assert.assertTrue(OperatingSystem.getTotalMemory() > OperatingSystem.getFreeMemory());
@@ -569,11 +561,8 @@ public class OperatingSystemTest {
      */
     @Test
     public void testGetFreeMemory() throws Exception {
-        try {
-            Assert.assertNotEquals(0, OperatingSystem.getFreeMemory());
-        } catch (Exception e) {
-            Assert.fail();
-        }
+        TestUtils.assertNoException(() ->
+                Assert.assertNotEquals(0, OperatingSystem.getFreeMemory()));
         
         Assert.assertTrue(OperatingSystem.getFreeMemory() < OperatingSystem.getTotalMemory());
     }
@@ -586,11 +575,8 @@ public class OperatingSystemTest {
      */
     @Test
     public void testGetUsedMemory() throws Exception {
-        try {
-            Assert.assertNotEquals(0, OperatingSystem.getUsedMemory());
-        } catch (Exception e) {
-            Assert.fail();
-        }
+        TestUtils.assertNoException(() ->
+                Assert.assertNotEquals(0, OperatingSystem.getUsedMemory()));
         
         Assert.assertTrue(OperatingSystem.getUsedMemory() <= OperatingSystem.getTotalMemory());
     }

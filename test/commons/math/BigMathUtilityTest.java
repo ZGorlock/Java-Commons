@@ -9,6 +9,7 @@ package commons.math;
 
 import java.math.RoundingMode;
 
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -142,21 +143,12 @@ public class BigMathUtilityTest {
         Assert.assertEquals("549", BigMathUtility.add("0549", "0"));
         
         //invalid
-        try {
-            BigMathUtility.add("1", "15s5");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.add("15s5", "1");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.add("15s5", "a");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.add("1", "15s5"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.add("15s5", "1"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.add("15s5", "a"));
         
         //negative
         Assert.assertEquals("0", BigMathUtility.add("-1", "1"));
@@ -498,21 +490,12 @@ public class BigMathUtilityTest {
         Assert.assertEquals("549", BigMathUtility.subtract("0549", "0"));
         
         //invalid
-        try {
-            BigMathUtility.subtract("1", "15s5");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.subtract("15s5", "1");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.subtract("15s5", "a");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.subtract("1", "15s5"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.subtract("15s5", "1"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.subtract("15s5", "a"));
         
         //negative
         Assert.assertEquals("-2", BigMathUtility.subtract("-1", "1"));
@@ -854,21 +837,12 @@ public class BigMathUtilityTest {
         Assert.assertEquals("0", BigMathUtility.multiply("0549", "0"));
         
         //invalid
-        try {
-            BigMathUtility.multiply("1", "15s5");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.multiply("15s5", "1");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.multiply("15s5", "a");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.multiply("1", "15s5"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.multiply("15s5", "1"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.multiply("15s5", "a"));
         
         //negative
         Assert.assertEquals("-1", BigMathUtility.multiply("-1", "1"));
@@ -1233,28 +1207,16 @@ public class BigMathUtilityTest {
         Assert.assertEquals("0", BigMathUtility.divide("0", "88"));
         
         //divide by zero
-        try {
-            BigMathUtility.divide("0549", "0");
-            Assert.fail();
-        } catch (ArithmeticException ignored) {
-        }
+        TestUtils.assertException(ArithmeticException.class, () ->
+                BigMathUtility.divide("0549", "0"));
         
         //invalid
-        try {
-            BigMathUtility.divide("1", "15s5");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.divide("15s5", "1");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.divide("15s5", "a");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.divide("1", "15s5"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.divide("15s5", "1"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.divide("15s5", "a"));
         
         //negative
         Assert.assertEquals("-1", BigMathUtility.divide("-1", "1"));
@@ -1616,28 +1578,16 @@ public class BigMathUtilityTest {
         Assert.assertEquals("0", BigMathUtility.mod("0", "88"));
         
         //mod by zero
-        try {
-            BigMathUtility.mod("0549", "0");
-            Assert.fail();
-        } catch (ArithmeticException ignored) {
-        }
+        TestUtils.assertException(ArithmeticException.class, () ->
+                BigMathUtility.mod("0549", "0"));
         
         //invalid
-        try {
-            BigMathUtility.mod("1", "15s5");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.mod("15s5", "1");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.mod("15s5", "a");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.mod("1", "15s5"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.mod("15s5", "1"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.mod("15s5", "a"));
         
         //negative
         Assert.assertEquals("0", BigMathUtility.mod("-1", "1"));
@@ -2000,21 +1950,12 @@ public class BigMathUtilityTest {
         Assert.assertEquals("1", BigMathUtility.power("0549", "0"));
         
         //invalid
-        try {
-            BigMathUtility.power("1", "15s5");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.power("15s5", "1");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.power("15s5", "a");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.power("1", "15s5"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.power("15s5", "1"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.power("15s5", "a"));
         
         //negative
         Assert.assertEquals("1", BigMathUtility.power("1", "-1"));
@@ -2122,33 +2063,18 @@ public class BigMathUtilityTest {
         Assert.assertEquals("0", BigMathUtility.root("0", "88"));
         
         //imaginary numbers
-        try {
-            BigMathUtility.root("-1", "1");
-            Assert.fail();
-        } catch (ArithmeticException ignored) {
-        }
-        try {
-            BigMathUtility.root("0549", "0");
-            Assert.fail();
-        } catch (ArithmeticException ignored) {
-        }
+        TestUtils.assertException(ArithmeticException.class, () ->
+                BigMathUtility.root("-1", "1"));
+        TestUtils.assertException(ArithmeticException.class, () ->
+                BigMathUtility.root("0549", "0"));
         
         //invalid
-        try {
-            BigMathUtility.root("1", "15s5");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.root("15s5", "1");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.root("15s5", "a");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.root("1", "15s5"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.root("15s5", "1"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.root("15s5", "a"));
         
         //negative
         Assert.assertEquals("1", BigMathUtility.root("1", "-1"));
@@ -2255,18 +2181,12 @@ public class BigMathUtilityTest {
         Assert.assertEquals("0", BigMathUtility.sqrt("0"));
         
         //imaginary numbers
-        try {
-            BigMathUtility.sqrt("-1");
-            Assert.fail();
-        } catch (ArithmeticException ignored) {
-        }
+        TestUtils.assertException(ArithmeticException.class, () ->
+                BigMathUtility.sqrt("-1"));
         
         //invalid
-        try {
-            BigMathUtility.sqrt("15s5");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.sqrt("15s5"));
         
         //decimal
         Assert.assertEquals("0.3162277660168379331998893544432718533719555139325216826857504853", BigMathUtility.sqrt("0.1"));
@@ -2330,35 +2250,20 @@ public class BigMathUtilityTest {
         Assert.assertEquals("7.7416033471438101343043086923917835687985581359699429124459764835", BigMathUtility.log("8976464100065468", 115));
         
         //invalid number
-        try {
-            BigMathUtility.log("-88", 10);
-            Assert.fail();
-        } catch (ArithmeticException ignored) {
-        }
+        TestUtils.assertException(ArithmeticException.class, () ->
+                BigMathUtility.log("-88", 10));
         
         //invalid base
-        try {
-            BigMathUtility.log("88", 0);
-            Assert.fail();
-        } catch (ArithmeticException ignored) {
-        }
-        try {
-            BigMathUtility.log("88", 1);
-            Assert.fail();
-        } catch (ArithmeticException ignored) {
-        }
-        try {
-            BigMathUtility.log("88", -1);
-            Assert.fail();
-        } catch (ArithmeticException ignored) {
-        }
+        TestUtils.assertException(ArithmeticException.class, () ->
+                BigMathUtility.log("88", 0));
+        TestUtils.assertException(ArithmeticException.class, () ->
+                BigMathUtility.log("88", 1));
+        TestUtils.assertException(ArithmeticException.class, () ->
+                BigMathUtility.log("88", -1));
         
         //invalid
-        try {
-            BigMathUtility.log("15s5", 10);
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.log("15s5", 10));
         
         //decimal
         Assert.assertEquals("-1.2295235577981631081928840810289268477073326768745561420897153278", BigMathUtility.log(".058949", 10));
@@ -2417,18 +2322,12 @@ public class BigMathUtilityTest {
         Assert.assertEquals("84.5817388374975215812641301657376711018943538822161890891117948071", BigMathUtility.ln("8976464100065468"));
         
         //invalid number
-        try {
-            BigMathUtility.ln("-88");
-            Assert.fail();
-        } catch (ArithmeticException ignored) {
-        }
+        TestUtils.assertException(ArithmeticException.class, () ->
+                BigMathUtility.ln("-88"));
         
         //invalid
-        try {
-            BigMathUtility.ln("15s5");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.ln("15a5"));
         
         //decimal
         Assert.assertEquals("-6.5188086278787583687889208936710068012941815586077141031193054891", BigMathUtility.ln(".058949"));
@@ -2521,21 +2420,12 @@ public class BigMathUtilityTest {
         Assert.assertTrue(BigMathUtility.greaterThan("0549", "0"));
         
         //invalid
-        try {
-            BigMathUtility.greaterThan("1", "15s5");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.greaterThan("15s5", "1");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.greaterThan("15s5", "a");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.greaterThan("1", "15s5"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.greaterThan("15s5", "1"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.greaterThan("15s5", "a"));
         
         //negative
         Assert.assertFalse(BigMathUtility.greaterThan("-1", "1"));
@@ -2811,21 +2701,12 @@ public class BigMathUtilityTest {
         Assert.assertFalse(BigMathUtility.lessThan("0549", "0"));
         
         //invalid
-        try {
-            BigMathUtility.lessThan("1", "15s5");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.lessThan("15s5", "1");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.lessThan("15s5", "a");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.lessThan("1", "15s5"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.lessThan("15s5", "1"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.lessThan("15s5", "a"));
         
         //negative
         Assert.assertTrue(BigMathUtility.lessThan("-1", "1"));
@@ -3101,21 +2982,12 @@ public class BigMathUtilityTest {
         Assert.assertFalse(BigMathUtility.equalTo("0549", "0"));
         
         //invalid
-        try {
-            BigMathUtility.equalTo("1", "15s5");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.equalTo("15s5", "1");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
-        try {
-            BigMathUtility.equalTo("15s5", "a");
-            Assert.fail();
-        } catch (NumberFormatException ignored) {
-        }
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.equalTo("1", "15s5"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.equalTo("15s5", "1"));
+        TestUtils.assertException(NumberFormatException.class, () ->
+                BigMathUtility.equalTo("15s5", "a"));
         
         //negative
         Assert.assertFalse(BigMathUtility.equalTo("-1", "1"));

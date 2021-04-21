@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -141,12 +142,8 @@ public class ListUtilityTest {
         Assert.assertArrayEquals(objectArray, objectList.toArray());
         
         //invalid
-        try {
-            List<Object> invalidList = ListUtility.toList(null);
-            Assert.fail();
-        } catch (Exception e) {
-            Assert.assertTrue(e instanceof NullPointerException);
-        }
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.toList(null));
     }
     
     /**
@@ -212,12 +209,8 @@ public class ListUtilityTest {
         Assert.assertNotEquals(System.identityHashCode(objectList), System.identityHashCode(objectClone));
         
         //invalid
-        try {
-            List<Object> invalidList = ListUtility.clone(null);
-            Assert.fail();
-        } catch (Exception e) {
-            Assert.assertTrue(e instanceof NullPointerException);
-        }
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.clone(null));
     }
     
     /**
@@ -277,48 +270,21 @@ public class ListUtilityTest {
         Assert.assertEquals(0, subList.size());
         
         //invalid
+        TestUtils.assertException(IndexOutOfBoundsException.class, () ->
+                ListUtility.subList(objectList, 0, 6));
+        TestUtils.assertException(IndexOutOfBoundsException.class, () ->
+                ListUtility.subList(objectList, -1, 5));
         
-        try {
-            List<Object> invalidList = ListUtility.subList(objectList, 0, 6);
-            Assert.fail();
-        } catch (Exception e) {
-            Assert.assertTrue(e instanceof IndexOutOfBoundsException);
-        }
+        TestUtils.assertException(IndexOutOfBoundsException.class, () ->
+                ListUtility.subList(objectList, 4, 2));
         
-        try {
-            List<Object> invalidList = ListUtility.subList(objectList, -1, 5);
-            Assert.fail();
-        } catch (Exception e) {
-            Assert.assertTrue(e instanceof IndexOutOfBoundsException);
-        }
+        TestUtils.assertException(IndexOutOfBoundsException.class, () ->
+                ListUtility.subList(objectList, 6));
+        TestUtils.assertException(IndexOutOfBoundsException.class, () ->
+                ListUtility.subList(objectList, -1));
         
-        try {
-            List<Object> invalidList = ListUtility.subList(objectList, 4, 2);
-            Assert.fail();
-        } catch (Exception e) {
-            Assert.assertTrue(e instanceof IndexOutOfBoundsException);
-        }
-        
-        try {
-            List<Object> invalidList = ListUtility.subList(objectList, 6);
-            Assert.fail();
-        } catch (Exception e) {
-            Assert.assertTrue(e instanceof IndexOutOfBoundsException);
-        }
-        
-        try {
-            List<Object> invalidList = ListUtility.subList(objectList, -1);
-            Assert.fail();
-        } catch (Exception e) {
-            Assert.assertTrue(e instanceof IndexOutOfBoundsException);
-        }
-        
-        try {
-            List<Object> invalidList = ListUtility.subList(null, 2, 4);
-            Assert.fail();
-        } catch (Exception e) {
-            Assert.assertTrue(e instanceof NullPointerException);
-        }
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.subList(null, 2, 4));
     }
     
     /**
@@ -389,20 +355,10 @@ public class ListUtilityTest {
         Assert.assertArrayEquals(new Object[] {a, b, c, d, e, b, c, e}, objectMergeList.toArray());
         
         //invalid
-        
-        try {
-            List<Object> invalidList = ListUtility.merge(objectList, null);
-            Assert.fail();
-        } catch (Exception exception) {
-            Assert.assertTrue(exception instanceof NullPointerException);
-        }
-        
-        try {
-            List<Object> invalidList = ListUtility.merge(null, objectList);
-            Assert.fail();
-        } catch (Exception exception) {
-            Assert.assertTrue(exception instanceof NullPointerException);
-        }
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.merge(objectList, null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.merge(null, objectList2));
     }
     
     /**
@@ -482,12 +438,8 @@ public class ListUtilityTest {
         objectSplitList = ListUtility.split(Collections.emptyList(), 3);
         Assert.assertEquals(0, objectSplitList.size());
         
-        try {
-            List<List<Object>> invalidList = ListUtility.split(null, 3);
-            Assert.fail();
-        } catch (Exception e) {
-            Assert.assertTrue(e instanceof NullPointerException);
-        }
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.split(null, 3));
     }
     
     /**
@@ -595,12 +547,9 @@ public class ListUtilityTest {
         Assert.assertTrue(ListUtility.anyNull(a, c, e, g, i, k, m, n));
         
         //invalid
-        try {
-            boolean invalid = ListUtility.anyNull((List<Object>) null);
-            Assert.fail();
-        } catch (Exception exception) {
-            Assert.assertTrue(exception instanceof NullPointerException);
-        }
+        //noinspection ResultOfMethodCallIgnored
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.anyNull((List<Object>) null));
     }
     
     /**
@@ -653,12 +602,8 @@ public class ListUtilityTest {
         Assert.assertEquals(5, objectCleanList.size());
         
         //invalid
-        try {
-            List<Object> invalid = ListUtility.removeDuplicates(null);
-            Assert.fail();
-        } catch (Exception exception) {
-            Assert.assertTrue(exception instanceof NullPointerException);
-        }
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.removeDuplicates(null));
     }
     
     /**
@@ -728,12 +673,8 @@ public class ListUtilityTest {
         Assert.assertNull(ListUtility.selectRandom(new ArrayList<>()));
         
         //invalid
-        try {
-            Object invalid = ListUtility.selectRandom(null);
-            Assert.fail();
-        } catch (Exception exception) {
-            Assert.assertTrue(exception instanceof NullPointerException);
-        }
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.selectRandom(null));
     }
     
     /**
@@ -811,12 +752,8 @@ public class ListUtilityTest {
         List<Object> underSizeObjectSelected = ListUtility.selectN(objectList, -1);
         Assert.assertEquals(0, underSizeObjectSelected.size());
         
-        try {
-            List<Object> invalid = ListUtility.selectN(null, 4);
-            Assert.fail();
-        } catch (Exception exception) {
-            Assert.assertTrue(exception instanceof NullPointerException);
-        }
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.selectN(null, 4));
     }
     
     /**
@@ -1000,20 +937,10 @@ public class ListUtilityTest {
         Assert.assertEquals(0, duplicatedObjectList.size());
         
         //invalid
-        
-        try {
-            List<Object> invalid = ListUtility.duplicateInOrder(null);
-            Assert.fail();
-        } catch (Exception exception) {
-            Assert.assertTrue(exception instanceof NullPointerException);
-        }
-        
-        try {
-            List<Object> invalid = ListUtility.duplicateInOrder(null, 4);
-            Assert.fail();
-        } catch (Exception exception) {
-            Assert.assertTrue(exception instanceof NullPointerException);
-        }
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.duplicateInOrder(null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.duplicateInOrder(null, 4));
     }
     
     /**
@@ -1091,20 +1018,10 @@ public class ListUtilityTest {
         Assert.assertArrayEquals(new Object[] {b, d, d, c, c, c, a, a, a, a}, sortedObjectList.toArray());
         
         //invalid
-        
-        try {
-            List<Object> invalid = ListUtility.sortByNumberOfOccurrences(null);
-            Assert.fail();
-        } catch (Exception exception) {
-            Assert.assertTrue(exception instanceof NullPointerException);
-        }
-        
-        try {
-            List<Object> invalid = ListUtility.sortByNumberOfOccurrences(null, true);
-            Assert.fail();
-        } catch (Exception exception) {
-            Assert.assertTrue(exception instanceof NullPointerException);
-        }
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.sortByNumberOfOccurrences(null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.sortByNumberOfOccurrences(null, true));
     }
     
 }

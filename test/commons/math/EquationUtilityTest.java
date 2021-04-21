@@ -914,7 +914,8 @@ public class EquationUtilityTest {
      */
     @Test
     public void testMathOperation() throws Exception {
-        EquationUtility.MathOperation operation = new EquationUtility.MathOperation();
+        final EquationUtility.MathOperation operation = new EquationUtility.MathOperation();
+        final EquationUtility.MathOperation operation2 = new EquationUtility.MathOperation();
         
         //basic case
         
@@ -937,10 +938,9 @@ public class EquationUtilityTest {
         
         //order of operations
         
-        operation = new EquationUtility.MathOperation();
-        operation.operand1 = new EquationUtility.MathOperand();
-        operation.operand2 = new EquationUtility.MathOperand();
-        operation.operation = EquationUtility.Operation.ADD;
+        operation2.operand1 = new EquationUtility.MathOperand();
+        operation2.operand2 = new EquationUtility.MathOperand();
+        operation2.operation = EquationUtility.Operation.ADD;
         
         EquationUtility.MathOperation subOperationA = new EquationUtility.MathOperation();
         subOperationA.operand1 = new EquationUtility.MathOperand();
@@ -958,7 +958,7 @@ public class EquationUtilityTest {
         subOperationA1.operand2.n = "5";
         
         subOperationA.operand2.op = subOperationA1;
-        operation.operand1.op = subOperationA;
+        operation2.operand1.op = subOperationA;
         
         EquationUtility.MathOperation subOperationB = new EquationUtility.MathOperation();
         subOperationB.operand1 = new EquationUtility.MathOperand();
@@ -968,10 +968,10 @@ public class EquationUtilityTest {
         subOperationB.operand1.n = "3";
         subOperationB.operand2.n = "4";
         
-        operation.operand2.op = subOperationB;
+        operation2.operand2.op = subOperationB;
         
-        Assert.assertEquals("(9*(3^5))+(3/4)", operation.toString());
-        Assert.assertEquals(2187.75, operation.evaluate().doubleValue(), TestUtils.DELTA);
+        Assert.assertEquals("(9*(3^5))+(3/4)", operation2.toString());
+        Assert.assertEquals(2187.75, operation2.evaluate().doubleValue(), TestUtils.DELTA);
         
         //variables
         
@@ -983,27 +983,24 @@ public class EquationUtilityTest {
         subOperationA1.operand2.var = "y";
         subOperationB.operand2.var = "z";
         
-        Assert.assertEquals("(x*(3^y))+(3/z)", operation.toString());
+        Assert.assertEquals("(x*(3^y))+(3/z)", operation2.toString());
         
-        Map<String, Number> vars = new HashMap<>();
+        final Map<String, Number> vars = new HashMap<>();
         vars.put("x", 6);
         vars.put("y", 2.4);
         vars.put("z", Math.sin(Math.PI * 3 / 4));
         
-        Assert.assertEquals(new BigDecimal("88.0423016785487071035707696631600004229391971494347347553572409381"), operation.evaluate(vars));
+        Assert.assertEquals(new BigDecimal("88.0423016785487071035707696631600004229391971494347347553572409381"), operation2.evaluate(vars));
         
         //invalid variables
         
-        vars = new HashMap<>();
+        vars.clear();
         vars.put("x", 6);
         vars.put("y", 2.4);
         vars.put("d", Math.sin(Math.PI * 3 / 4)); //missing z
         
-        try {
-            operation.evaluate(vars);
-            Assert.fail();
-        } catch (Exception ignored) {
-        }
+        TestUtils.assertException(NullPointerException.class, () ->
+                operation2.evaluate(vars));
     }
     
 }

@@ -15,6 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import commons.string.StringUtility;
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -534,19 +535,13 @@ public class ConsoleProgressBarTest {
         
         Whitebox.setInternalState(progressBar, "current", 0L);
         Whitebox.setInternalState(progressBar, "total", 0L);
-        try {
-            Assert.assertEquals(1.0, progressBar.getRatio(), 0.0000001);
-        } catch (Exception e) {
-            Assert.fail();
-        }
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals(1.0, progressBar.getRatio(), 0.0000001));
         
         Whitebox.setInternalState(progressBar, "current", 1L);
         Whitebox.setInternalState(progressBar, "total", 0L);
-        try {
-            Assert.assertEquals(1.0, progressBar.getRatio(), 0.0000001);
-        } catch (Exception e) {
-            Assert.fail();
-        }
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals(1.0, progressBar.getRatio(), 0.0000001));
     }
     
     /**
@@ -603,19 +598,13 @@ public class ConsoleProgressBarTest {
         
         Whitebox.setInternalState(progressBar, "current", 0L);
         Whitebox.setInternalState(progressBar, "total", 0L);
-        try {
-            Assert.assertEquals(100, progressBar.getPercentage());
-        } catch (Exception e) {
-            Assert.fail();
-        }
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals(100, progressBar.getPercentage()));
         
         Whitebox.setInternalState(progressBar, "current", 1L);
         Whitebox.setInternalState(progressBar, "total", 0L);
-        try {
-            Assert.assertEquals(100, progressBar.getPercentage());
-        } catch (Exception e) {
-            Assert.fail();
-        }
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals(100, progressBar.getPercentage()));
     }
     
     /**
