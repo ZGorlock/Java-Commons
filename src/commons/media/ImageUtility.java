@@ -8,7 +8,6 @@
 package commons.media;
 
 import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
@@ -42,7 +41,10 @@ import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 
 import commons.access.Filesystem;
+import commons.graphics.DrawUtility;
 import commons.math.BoundUtility;
+import commons.math.component.vector.IntVector;
+import commons.math.component.vector.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,8 +78,8 @@ public class ImageUtility {
             BufferedImage tmpImage = ImageIO.read(file);
             BufferedImage image = new BufferedImage(tmpImage.getWidth(), tmpImage.getHeight(), BufferedImage.TYPE_INT_RGB);
             Graphics2D imageGraphics = image.createGraphics();
-            imageGraphics.drawImage(tmpImage, 0, 0, tmpImage.getWidth(), tmpImage.getHeight(), null);
-            imageGraphics.dispose();
+            DrawUtility.drawImage(imageGraphics, tmpImage);
+            DrawUtility.dispose(imageGraphics);
             return image;
             
         } catch (Exception e) {
@@ -244,9 +246,9 @@ public class ImageUtility {
         rect.height = BoundUtility.truncateNum(rect.getHeight(), 1, image.getHeight() - rect.y).intValue();
         
         BufferedImage cropped = new BufferedImage((int) rect.getWidth(), (int) rect.getHeight(), image.getType());
-        Graphics g = cropped.getGraphics();
-        g.drawImage(image, 0, 0, (int) rect.getWidth(), (int) rect.getHeight(), (int) rect.getX(), (int) rect.getY(), (int) (rect.getX() + rect.getWidth()), (int) (rect.getY() + rect.getHeight()), null);
-        g.dispose();
+        Graphics2D g2 = (Graphics2D) cropped.getGraphics();
+        DrawUtility.drawImage(g2, image, new Vector(rect.getX(), rect.getY()), (int) rect.getWidth(), (int) rect.getHeight(), new IntVector(0, 0), (int) rect.getWidth(), (int) rect.getHeight());
+        DrawUtility.dispose(g2);
         return cropped;
     }
     

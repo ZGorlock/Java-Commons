@@ -10,7 +10,6 @@ package commons.graphics;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Point;
-import java.awt.Polygon;
 import java.awt.Shape;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferInt;
@@ -23,6 +22,7 @@ import java.util.Stack;
 import commons.math.BoundUtility;
 import commons.math.component.matrix.Matrix;
 import commons.math.component.matrix.Matrix3;
+import commons.math.component.vector.IntVector;
 import commons.math.component.vector.Vector;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +53,7 @@ public class ImageTransformationUtility {
     public static void transformImage(BufferedImage src, List<Vector> srcBounds, BufferedImage dest, List<Vector> destBounds) {
         Graphics2D destGraphics = dest.createGraphics();
         transformImage(src, srcBounds, destGraphics, dest.getWidth(), dest.getHeight(), destBounds);
-        destGraphics.dispose();
+        DrawUtility.dispose(destGraphics);
     }
     
     /**
@@ -81,18 +81,14 @@ public class ImageTransformationUtility {
         final int filterColor = new Color(0, 255, 0).getRGB();
         
         BufferedImage maskImage = new BufferedImage(destWidth, destHeight, BufferedImage.TYPE_INT_RGB);
-        Graphics2D maskGraphics = maskImage.createGraphics();
-        maskGraphics.setColor(new Color(filterColor));
-        maskGraphics.fillRect(0, 0, maskImage.getWidth(), maskImage.getHeight());
-        Polygon mask = new Polygon(
-                destBounds.stream().mapToInt(e -> e.getX().intValue()).toArray(),
-                destBounds.stream().mapToInt(e -> e.getY().intValue()).toArray(),
-                4
-        );
         Vector maskCenter = Vector.averageVector(destBounds);
-        maskGraphics.setColor(new Color(0, 0, 0));
-        maskGraphics.fillPolygon(mask);
-        maskGraphics.dispose();
+        
+        Graphics2D maskGraphics = maskImage.createGraphics();
+        DrawUtility.setColor(maskGraphics, new Color(filterColor));
+        DrawUtility.fillRect(maskGraphics, new IntVector(0, 0), maskImage.getWidth(), maskImage.getHeight());
+        DrawUtility.setColor(maskGraphics, new Color(0, 0, 0));
+        DrawUtility.fillPolygon(maskGraphics, destBounds);
+        DrawUtility.dispose(maskGraphics);
         
         int srcWidth = src.getWidth();
         int srcHeight = src.getHeight();
@@ -131,10 +127,10 @@ public class ImageTransformationUtility {
         });
         visited.clear();
         
-        Shape saveClip = dest.getClip();
-        dest.setClip(mask);
-        dest.drawImage(maskImage, 0, 0, maskWidth, maskHeight, null);
-        dest.setClip(saveClip);
+        Shape saveClip = DrawUtility.getClip(dest);
+        DrawUtility.setClip(dest, destBounds);
+        DrawUtility.drawImage(dest, maskImage);
+        DrawUtility.setClip(dest, saveClip);
     }
     
     /**
