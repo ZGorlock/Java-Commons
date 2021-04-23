@@ -1716,6 +1716,64 @@ public class StringUtilityTest {
     }
     
     /**
+     * JUnit test of justifyAOrAn.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#justifyAOrAn(String, boolean)
+     * @see StringUtility#justifyAOrAn(String)
+     */
+    @Test
+    public void testJustifyAOrAn() throws Exception {
+        //valid
+        Assert.assertEquals("a test", StringUtility.justifyAOrAn("test"));
+        Assert.assertEquals("an apple", StringUtility.justifyAOrAn("apple"));
+        Assert.assertEquals("an Indication", StringUtility.justifyAOrAn("Indication"));
+        Assert.assertEquals("a sample string", StringUtility.justifyAOrAn("sample string"));
+        Assert.assertEquals("a test", StringUtility.justifyAOrAn("test", false));
+        Assert.assertEquals("an apple", StringUtility.justifyAOrAn("apple", false));
+        Assert.assertEquals("an Indication", StringUtility.justifyAOrAn("Indication", false));
+        Assert.assertEquals("a sample string", StringUtility.justifyAOrAn("sample string", false));
+        Assert.assertEquals("A test", StringUtility.justifyAOrAn("test", true));
+        Assert.assertEquals("An apple", StringUtility.justifyAOrAn("apple", true));
+        Assert.assertEquals("An Indication", StringUtility.justifyAOrAn("Indication", true));
+        Assert.assertEquals("A sample string", StringUtility.justifyAOrAn("sample string", true));
+        
+        //edge case
+        Assert.assertEquals("", StringUtility.justifyAOrAn(""));
+        Assert.assertEquals("", StringUtility.justifyAOrAn(" "));
+        Assert.assertEquals("", StringUtility.justifyAOrAn("\r\n"));
+        Assert.assertEquals("", StringUtility.justifyAOrAn("", false));
+        Assert.assertEquals("", StringUtility.justifyAOrAn(" ", false));
+        Assert.assertEquals("", StringUtility.justifyAOrAn("\r\n", false));
+        Assert.assertEquals("", StringUtility.justifyAOrAn("", true));
+        Assert.assertEquals("", StringUtility.justifyAOrAn(" ", true));
+        Assert.assertEquals("", StringUtility.justifyAOrAn("\r\n", true));
+    }
+    
+    /**
+     * JUnit test of justifyQuantity.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#justifyQuantity(int, String)
+     */
+    @Test
+    public void testJustifyQuantity() throws Exception {
+        //valid
+        Assert.assertEquals("15 tests", StringUtility.justifyQuantity(15, "test"));
+        Assert.assertEquals("1 apple", StringUtility.justifyQuantity(1, "apple"));
+        Assert.assertEquals("0 Indications", StringUtility.justifyQuantity(0, "Indication"));
+        Assert.assertEquals("184 sample strings", StringUtility.justifyQuantity(184, "sample string"));
+        
+        //edge case
+        Assert.assertEquals("1", StringUtility.justifyQuantity(1, ""));
+        Assert.assertEquals("1097", StringUtility.justifyQuantity(1097, ""));
+        Assert.assertEquals("8", StringUtility.justifyQuantity(8, " "));
+        Assert.assertEquals("0", StringUtility.justifyQuantity(0, "\r\n"));
+        Assert.assertEquals("-1 apples", StringUtility.justifyQuantity(-1, "apple"));
+        Assert.assertEquals("-67 apples", StringUtility.justifyQuantity(-67, "apple"));
+    }
+    
+    /**
      * JUnit test of centerText.
      *
      * @throws Exception When there is an exception.

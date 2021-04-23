@@ -992,6 +992,47 @@ public final class StringUtility {
     }
     
     /**
+     * Returns '[aA] {str}' or '[aA]n {str}' depending on the string.
+     *
+     * @param str       The string to justify.
+     * @param uppercase Whether or not to capitalize the first letter.
+     * @return '[aA] {str}' or '[aA]n {str}'.
+     */
+    public static String justifyAOrAn(String str, boolean uppercase) {
+        if (str.isBlank()) {
+            return "";
+        }
+        
+        return (uppercase ? 'A' : 'a') + (isVowel(str.charAt(0)) ? "n" : "") + ' ' + str;
+    }
+    
+    /**
+     * Returns 'a {str}' or 'an {str}' depending on the string.
+     *
+     * @param str The string to justify.
+     * @return 'a {str}' or 'an {str}'.
+     * @see #justifyAOrAn(String, boolean)
+     */
+    public static String justifyAOrAn(String str) {
+        return justifyAOrAn(str, false);
+    }
+    
+    /**
+     * Returns '{quantity} {unit}' or '{quantity} {unit}s' depending on the quantity.
+     *
+     * @param quantity The quantity.
+     * @param unit     The name of the unit.
+     * @return '{quantity} {unit}' or '{quantity} {unit}s' depending on the quantity
+     */
+    public static String justifyQuantity(int quantity, String unit) {
+        if (unit.isBlank()) {
+            return String.valueOf(quantity);
+        }
+        
+        return String.valueOf(quantity) + ' ' + unit + ((quantity != 1) ? "s" : "");
+    }
+    
+    /**
      * Centers a text within a certain width.
      *
      * @param text  The text to center.
