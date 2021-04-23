@@ -1,10 +1,10 @@
 /*
  * File:    package-info.java
- * Package: commons.stream
+ * Package: commons.io.stream
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  *
- * Contains common stream resource classes.
+ * Contains common input and output stream resource classes.
  */
 
-package commons.stream;
+package commons.io.stream;

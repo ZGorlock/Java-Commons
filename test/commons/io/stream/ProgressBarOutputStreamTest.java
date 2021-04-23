@@ -1,14 +1,14 @@
 /*
- * File:    ProgressBarInputStream.java
- * Package: commons.stream
+ * File:    ProgressBarOutputStreamTest.java
+ * Package: commons.io.stream
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.stream;
+package commons.io.stream;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
 import commons.console.ConsoleProgressBar;
@@ -29,21 +29,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of ProgressBarInputStream.
+ * JUnit test of ProgressBarOutputStream.
  *
- * @see ProgressBarInputStream
+ * @see ProgressBarOutputStream
  */
 @SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ProgressBarInputStream.class})
-public class ProgressBarInputStreamTest {
+@PrepareForTest({ProgressBarOutputStream.class})
+public class ProgressBarOutputStreamTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(ProgressBarInputStreamTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProgressBarOutputStreamTest.class);
     
     
     //Initialization
@@ -104,17 +104,17 @@ public class ProgressBarInputStreamTest {
      * JUnit test of constructors.
      *
      * @throws Exception When there is an exception.
-     * @see ProgressBarInputStream#ProgressBarInputStream(String, InputStream, long)
-     * @see ProgressBarInputStream#ProgressBarInputStream(InputStream, long)
+     * @see ProgressBarOutputStream#ProgressBarOutputStream(String, OutputStream, long)
+     * @see ProgressBarOutputStream#ProgressBarOutputStream(OutputStream, long)
      */
     @Test
     public void testConstructors() throws Exception {
-        ProgressBarInputStream sut;
+        ProgressBarOutputStream sut;
         ConsoleProgressBar progressBar;
-        InputStream inputStream = new ByteArrayInputStream("test".getBytes(StandardCharsets.UTF_8));
+        OutputStream outputStream = new ByteArrayOutputStream(100);
         
         //standard
-        sut = new ProgressBarInputStream("test", inputStream, 4);
+        sut = new ProgressBarOutputStream("test", outputStream, 4);
         progressBar = Whitebox.getInternalState(sut, "progressBar");
         Assert.assertEquals("test", progressBar.getTitle());
         Assert.assertEquals(4, progressBar.getTotal());
@@ -122,7 +122,7 @@ public class ProgressBarInputStreamTest {
         Assert.assertEquals(0L, (long) Whitebox.getInternalState(sut, "progress"));
         
         //default title
-        sut = new ProgressBarInputStream(inputStream, 100);
+        sut = new ProgressBarOutputStream(outputStream, 100);
         progressBar = Whitebox.getInternalState(sut, "progressBar");
         Assert.assertEquals("", progressBar.getTitle());
         Assert.assertEquals(100, progressBar.getTotal());
@@ -131,61 +131,56 @@ public class ProgressBarInputStreamTest {
     }
     
     /**
-     * JUnit test of read.
+     * JUnit test of write.
      *
      * @throws Exception When there is an exception.
-     * @see ProgressBarInputStream#read(byte[], int, int)
+     * @see ProgressBarOutputStream#write(byte[], int, int)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
-    public void testRead() throws Exception {
-        ProgressBarInputStream sut;
+    public void testWrite() throws Exception {
+        ProgressBarOutputStream sut;
         ConsoleProgressBar progressBar;
-        InputStream inputStream;
+        OutputStream outputStream;
         byte[] buffer;
-        int read;
         
         //standard
-        inputStream = new ByteArrayInputStream(StringUtility.repeatString("test", 50).getBytes(StandardCharsets.UTF_8));
-        sut = new ProgressBarInputStream("test", inputStream, 200);
+        outputStream = new ByteArrayOutputStream(200);
+        sut = new ProgressBarOutputStream("test", outputStream, 200);
         progressBar = Mockito.mock(ConsoleProgressBar.class);
         Whitebox.setInternalState(sut, "progressBar", progressBar);
-        buffer = new byte[5];
-        read = sut.read(buffer, 0, 5);
-        Assert.assertEquals(5, read);
-        Assert.assertEquals("testt", new String(buffer));
+        buffer = "testt".getBytes(StandardCharsets.UTF_8);
+        sut.write(buffer, 0, 5);
         Assert.assertEquals(5L, (long) Whitebox.getInternalState(sut, "progress"));
         Mockito.verify(progressBar).update(ArgumentMatchers.eq(5L));
-        buffer = new byte[3];
-        read = sut.read(buffer, 0, 3);
-        Assert.assertEquals(3, read);
-        Assert.assertEquals("est", new String(buffer));
+        buffer = "est".getBytes(StandardCharsets.UTF_8);
+        sut.write(buffer, 0, 3);
         Assert.assertEquals(8L, (long) Whitebox.getInternalState(sut, "progress"));
         Mockito.verify(progressBar).update(ArgumentMatchers.eq(8L));
-        buffer = new byte[192];
-        read = sut.read(buffer, 0, 192);
-        Assert.assertEquals(192, read);
-        Assert.assertEquals(StringUtility.repeatString("test", 48), new String(buffer));
+        buffer = StringUtility.repeatString("test", 48).getBytes(StandardCharsets.UTF_8);
+        sut.write(buffer, 0, 192);
         Assert.assertEquals(200L, (long) Whitebox.getInternalState(sut, "progress"));
         Mockito.verify(progressBar).update(ArgumentMatchers.eq(200L));
         
         //end of stream
-        inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
-        sut = new ProgressBarInputStream("test", inputStream, 200);
+        outputStream = new ByteArrayOutputStream(0);
+        sut = new ProgressBarOutputStream("test", outputStream, 200);
         progressBar = Mockito.mock(ConsoleProgressBar.class);
         Whitebox.setInternalState(sut, "progressBar", progressBar);
         buffer = new byte[5];
-        read = sut.read(buffer, 0, 5);
-        Assert.assertEquals(-1, read);
+        try {
+            sut.write(buffer, 0, 5);
+        } catch (Exception e) {
+            Assert.fail();
+        }
         
         //overflow
-        inputStream = new ByteArrayInputStream(StringUtility.repeatString("test", 50).getBytes(StandardCharsets.UTF_8));
-        sut = new ProgressBarInputStream("test", inputStream, 200);
+        outputStream = new ByteArrayOutputStream(200);
+        sut = new ProgressBarOutputStream("test", outputStream, 200);
         progressBar = Mockito.mock(ConsoleProgressBar.class);
         Whitebox.setInternalState(sut, "progressBar", progressBar);
-        buffer = new byte[200];
+        buffer = StringUtility.repeatString("test", 50).getBytes(StandardCharsets.UTF_8);
         try {
-            sut.read(buffer, 0, 201);
+            sut.write(buffer, 0, 201);
             Assert.fail();
         } catch (Exception e) {
             Assert.assertTrue(e instanceof IndexOutOfBoundsException);
@@ -196,12 +191,12 @@ public class ProgressBarInputStreamTest {
      * JUnit test of close.
      *
      * @throws Exception When there is an exception.
-     * @see ProgressBarInputStream#close()
+     * @see ProgressBarOutputStream#close()
      */
     @Test
     public void testClose() throws Exception {
-        InputStream inputStream = new ByteArrayInputStream(StringUtility.repeatString("test", 50).getBytes(StandardCharsets.UTF_8));
-        ProgressBarInputStream sut = new ProgressBarInputStream("test", inputStream, 200);
+        OutputStream outputStream = new ByteArrayOutputStream(100);
+        ProgressBarOutputStream sut = new ProgressBarOutputStream("test", outputStream, 200);
         ConsoleProgressBar progressBar = Mockito.mock(ConsoleProgressBar.class);
         Whitebox.setInternalState(sut, "progressBar", progressBar);
         sut.close();

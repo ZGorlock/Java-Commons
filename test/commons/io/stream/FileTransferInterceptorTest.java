@@ -1,11 +1,11 @@
 /*
  * File:    FileTransferInterceptorTest.java
- * Package: commons.stream
+ * Package: commons.io.stream
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.stream;
+package commons.io.stream;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
