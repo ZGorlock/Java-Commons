@@ -963,37 +963,31 @@ public class CryptoUtilityTest {
         Assert.assertTrue(Filesystem.createDirectory(dir));
         File file = new File(dir, "testChecksumMD5.txt");
         File file2 = new File(dir, "testChecksumMD5x.txt");
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> Filesystem.deleteDirectory(dir)));
         
         String checksum;
         String checksum2;
         
-        try {
-            Assert.assertTrue(Filesystem.writeStringToFile(file, message));
-            
-            //valid
-            Assert.assertNotEquals("", CryptoUtility.checksum(file.getAbsolutePath(), CryptoUtility.MD5_ALGORITHM));
-            
-            //directory
-            checksum = CryptoUtility.checksum(dir.getAbsolutePath(), CryptoUtility.MD5_ALGORITHM);
-            Assert.assertNotEquals("", checksum);
-            
-            //directory multiple files
-            Assert.assertTrue(Filesystem.writeStringToFile(file2, message));
-            checksum2 = CryptoUtility.checksum(dir.getAbsolutePath(), CryptoUtility.MD5_ALGORITHM);
-            Assert.assertNotEquals("", checksum2);
-            Assert.assertNotEquals(checksum2, checksum);
-            
-            //invalid algorithm
-            Assert.assertEquals("", CryptoUtility.checksum(file.getAbsolutePath(), "ALGORITHM"));
-            
-            //invalid file
-            Assert.assertEquals("", CryptoUtility.checksum(file.getAbsolutePath() + ".invalid", CryptoUtility.MD5_ALGORITHM));
-            
-        } finally {
-            Filesystem.deleteFile(file);
-            Filesystem.deleteFile(file2);
-            Filesystem.deleteDirectory(dir);
-        }
+        Assert.assertTrue(Filesystem.writeStringToFile(file, message));
+        
+        //valid
+        Assert.assertNotEquals("", CryptoUtility.checksum(file.getAbsolutePath(), CryptoUtility.MD5_ALGORITHM));
+        
+        //directory
+        checksum = CryptoUtility.checksum(dir.getAbsolutePath(), CryptoUtility.MD5_ALGORITHM);
+        Assert.assertNotEquals("", checksum);
+        
+        //directory multiple files
+        Assert.assertTrue(Filesystem.writeStringToFile(file2, message));
+        checksum2 = CryptoUtility.checksum(dir.getAbsolutePath(), CryptoUtility.MD5_ALGORITHM);
+        Assert.assertNotEquals("", checksum2);
+        Assert.assertNotEquals(checksum2, checksum);
+        
+        //invalid algorithm
+        Assert.assertEquals("", CryptoUtility.checksum(file.getAbsolutePath(), "ALGORITHM"));
+        
+        //invalid file
+        Assert.assertEquals("", CryptoUtility.checksum(file.getAbsolutePath() + ".invalid", CryptoUtility.MD5_ALGORITHM));
     }
     
     /**
@@ -1005,16 +999,12 @@ public class CryptoUtilityTest {
     @Test
     public void testChecksumMD5() throws Exception {
         File file = new File("tmp", "testChecksumMD5.txt");
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> Filesystem.deleteFile(file)));
         
-        try {
-            Assert.assertTrue(Filesystem.writeStringToFile(file, message));
-            
-            Assert.assertEquals("000000000000000000000000000000001e39effaec303bac0f30ed554528a7c9",
-                    CryptoUtility.checksumMD5(file.getAbsolutePath()));
-            
-        } finally {
-            Filesystem.deleteFile(file);
-        }
+        Assert.assertTrue(Filesystem.writeStringToFile(file, message));
+        
+        Assert.assertEquals("000000000000000000000000000000001e39effaec303bac0f30ed554528a7c9",
+                CryptoUtility.checksumMD5(file.getAbsolutePath()));
     }
     
     /**

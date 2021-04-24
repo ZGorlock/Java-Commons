@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 
 import commons.console.ConsoleProgressBar;
 import commons.string.StringUtility;
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -184,12 +185,8 @@ public class ProgressBarInputStreamTest {
         progressBar = Mockito.mock(ConsoleProgressBar.class);
         Whitebox.setInternalState(sut, "progressBar", progressBar);
         buffer = new byte[200];
-        try {
-            sut.read(buffer, 0, 201);
-            Assert.fail();
-        } catch (Exception e) {
-            Assert.assertTrue(e instanceof IndexOutOfBoundsException);
-        }
+        TestUtils.assertInputStreamReadThrowsException(IndexOutOfBoundsException.class,
+                sut, buffer, 0, 201);
     }
     
     /**
