@@ -10,8 +10,6 @@ package commons.test;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Method;
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 import commons.string.StringUtility;
 import org.junit.Assert;
@@ -152,7 +150,7 @@ public final class TestUtils {
         try {
             Method method = clazz.getDeclaredMethod(methodName, argClasses);
         } catch (Exception e) {
-            AssertWrapper.fail("Expected method " + clazz.getSimpleName() + "::" + methodName + "(" + Arrays.stream(argClasses).sequential().map(Class::getSimpleName).collect(Collectors.joining(", ")) + ") to exist" +
+            AssertWrapper.fail("Expected method " + StringUtility.methodString(clazz, methodName, argClasses) + " to exist" +
                     " but it does not");
         }
     }
@@ -167,7 +165,7 @@ public final class TestUtils {
     public static void assertMethodDoesNotExist(Class<?> clazz, String methodName, Class<?>... argClasses) {
         try {
             Method method = clazz.getDeclaredMethod(methodName, argClasses);
-            AssertWrapper.fail("Expected method " + clazz.getSimpleName() + "::" + methodName + "(" + Arrays.stream(argClasses).sequential().map(Class::getSimpleName).collect(Collectors.joining(", ")) + ") to not exist" +
+            AssertWrapper.fail("Expected method " + StringUtility.methodString(clazz, methodName, argClasses) + " to not exist" +
                     " but it does");
         } catch (Exception ignored) {
         }

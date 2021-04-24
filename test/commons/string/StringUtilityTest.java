@@ -7,11 +7,13 @@
 
 package commons.string;
 
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import commons.console.Console;
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -1771,6 +1773,36 @@ public class StringUtilityTest {
         Assert.assertEquals("0", StringUtility.justifyQuantity(0, "\r\n"));
         Assert.assertEquals("-1 apples", StringUtility.justifyQuantity(-1, "apple"));
         Assert.assertEquals("-67 apples", StringUtility.justifyQuantity(-67, "apple"));
+    }
+    
+    /**
+     * JUnit test of methodString.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#methodString(Class, String, Class[])
+     */
+    @SuppressWarnings("ConstantConditions")
+    @Test
+    public void testMethodString() throws Exception {
+        //valid
+        Assert.assertEquals("StringUtility::methodString(Class, String, Class[])",
+                StringUtility.methodString(StringUtility.class, "methodString", Class.class, String.class, Class[].class));
+        Assert.assertEquals("OutputStream::println()",
+                StringUtility.methodString(OutputStream.class, "println"));
+        
+        //edge case
+        Assert.assertEquals("StringUtility::(Class, String, Class[])",
+                StringUtility.methodString(StringUtility.class, "", Class.class, String.class, Class[].class));
+        Assert.assertEquals("StringUtility::null(Class, String, Class[])",
+                StringUtility.methodString(StringUtility.class, null, Class.class, String.class, Class[].class));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.methodString(null, "methodString", Class.class, String.class, Class[].class));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.methodString(StringUtility.class, "methodString", Class.class, String.class, null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.methodString(StringUtility.class, "methodString", (Class<?>) null));
     }
     
     /**

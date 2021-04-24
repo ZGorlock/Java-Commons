@@ -14,6 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -1030,6 +1031,19 @@ public final class StringUtility {
         }
         
         return String.valueOf(quantity) + ' ' + unit + ((quantity != 1) ? "s" : "");
+    }
+    
+    /**
+     * Returns a string representing a method.
+     *
+     * @param clazz           The class that has the method.
+     * @param methodName      The name of the method.
+     * @param argumentClasses The classes of the arguments of the method.
+     * @return The method string.
+     */
+    public static String methodString(Class<?> clazz, String methodName, Class<?>... argumentClasses) {
+        return clazz.getSimpleName() + "::" + methodName +
+                '(' + Arrays.stream(argumentClasses).sequential().map(Class::getSimpleName).collect(Collectors.joining(", ")) + ')';
     }
     
     /**
