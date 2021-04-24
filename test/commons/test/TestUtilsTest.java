@@ -15,6 +15,7 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 
 import commons.math.component.BaseComponent;
+import commons.math.component.ComponentInterface;
 import commons.string.StringUtility;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -314,6 +315,33 @@ public class TestUtilsTest {
                 BaseComponent.class, "set", Integer.class, Number.class);
         TestUtils.assertMethodDoesNotExist(
                 BaseComponent.class, "sat", int.class, Number.class);
+        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+    }
+    
+    /**
+     * JUnit test of invokeInterfaceDefaultMethod.
+     *
+     * @throws Exception When there is an exception.
+     * @see TestUtils#invokeInterfaceDefaultMethod(Class, String, Object...)
+     */
+    @Test
+    public void testInvokeInterfaceDefaultMethod() throws Exception {
+        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        
+        Assert.assertNull(
+                TestUtils.invokeInterfaceDefaultMethod(ComponentInterface.class, "thisMethod"));
+        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class);
+        TestUtils.AssertWrapper.fail(
+                "Attempted to invoke the method ComponentInterface::thisMethod() but an exception occurred");
+        
+        Assert.assertNull(
+                TestUtils.invokeInterfaceDefaultMethod(ComponentInterface.class, "thatMethod", "test", 5, 9));
+        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class);
+        TestUtils.AssertWrapper.fail(
+                "Attempted to invoke the method ComponentInterface::thatMethod(String, Integer, Integer) but an exception occurred");
+        
+        Assert.assertEquals("Component Interface",
+                TestUtils.invokeInterfaceDefaultMethod(ComponentInterface.class, "getName"));
         PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
     }
     
