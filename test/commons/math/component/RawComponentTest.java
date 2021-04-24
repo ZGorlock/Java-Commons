@@ -1,17 +1,14 @@
 /*
- * File:    VectorTest.java
- * Package: commons.math.component.vector
+ * File:    RawComponentTest.java
+ * Package: commons.math.component
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.math.component.vector;
+package commons.math.component;
 
 import java.util.List;
 
-import commons.math.component.BaseComponent;
-import commons.math.component.Component;
-import commons.math.component.ComponentInterface;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -26,21 +23,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of Vector.
+ * JUnit test of RawComponent.
  *
- * @see Vector
+ * @see RawComponent
  */
 @SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Vector.class})
-public class VectorTest {
+@PrepareForTest({RawComponent.class})
+public class RawComponentTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(VectorTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(RawComponentTest.class);
     
     
     //Initialization
@@ -92,25 +89,20 @@ public class VectorTest {
      * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#STANDARD_PRECISION
-     * @see Vector#PRECISION
+     * @see RawComponent#RAW_PRECISION
+     * @see RawComponent#PRECISION
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertEquals(0.000000000001, Vector.STANDARD_PRECISION, TestUtils.DELTA);
-        Assert.assertEquals(0.000000000001, Vector.PRECISION.doubleValue(), TestUtils.DELTA);
+        Assert.assertEquals(0.000000000001, RawComponent.RAW_PRECISION.doubleValue(), TestUtils.DELTA);
+        Assert.assertEquals(0.000000000001, RawComponent.PRECISION.doubleValue(), TestUtils.DELTA);
     }
     
     /**
      * JUnit test of constructors.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#Vector(double...)
-     * @see Vector#Vector(List)
-     * @see Vector#Vector(Vector)
-     * @see Vector#Vector(Vector, double...)
-     * @see Vector#Vector(int)
-     * @see Vector#Vector()
+     * @see RawComponent#RawComponent()
      */
     @Test
     public void testConstructors() throws Exception {
@@ -118,21 +110,10 @@ public class VectorTest {
     }
     
     /**
-     * JUnit test of vectorString.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#vectorString()
-     */
-    @Test
-    public void testVectorString() throws Exception {
-        //TODO
-    }
-    
-    /**
      * JUnit test of toString.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#toString()
+     * @see RawComponent#toString()
      */
     @Test
     public void testToString() throws Exception {
@@ -143,7 +124,7 @@ public class VectorTest {
      * JUnit test of equals.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#equals(Object)
+     * @see RawComponent#equals(Object)
      */
     @Test
     public void testEquals() throws Exception {
@@ -154,7 +135,7 @@ public class VectorTest {
      * JUnit test of dimensionalityEqual.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#dimensionalityEqual(ComponentInterface)
+     * @see RawComponent#dimensionalityEqual(ComponentInterface)
      */
     @Test
     public void testDimensionalityEqual() throws Exception {
@@ -165,7 +146,7 @@ public class VectorTest {
      * JUnit test of lengthEqual.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#lengthEqual(ComponentInterface)
+     * @see RawComponent#lengthEqual(ComponentInterface)
      */
     @Test
     public void testLengthEqual() throws Exception {
@@ -176,10 +157,10 @@ public class VectorTest {
      * JUnit test of componentTypeEqual.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#componentTypeEqual(ComponentInterface)
+     * @see RawComponent#componentTypeEqual(ComponentInterface)
      */
     @Test
-    public void testComponentTypeEqual() throws Exception {
+    public void testRawComponentTypeEqual() throws Exception {
         //TODO
     }
     
@@ -187,40 +168,37 @@ public class VectorTest {
      * JUnit test of cloned.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#cloned()
+     * @see RawComponent#cloned()
      */
     @Test
     public void testCloned() throws Exception {
-        //TODO
     }
     
     /**
      * JUnit test of emptyCopy.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#emptyCopy()
+     * @see RawComponent#emptyCopy()
      */
     @Test
     public void testEmptyCopy() throws Exception {
-        //TODO
     }
     
     /**
      * JUnit test of createNewInstance.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#createNewInstance(int)
+     * @see RawComponent#createNewInstance(int)
      */
     @Test
     public void testCreateNewInstance() throws Exception {
-        //TODO
     }
     
     /**
      * JUnit test of reverse.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#reverse()
+     * @see RawComponent#reverse()
      */
     @Test
     public void testReverse() throws Exception {
@@ -231,7 +209,7 @@ public class VectorTest {
      * JUnit test of distance.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#distance(BaseComponent)
+     * @see RawComponent#distance(RawComponent)
      */
     @Test
     public void testDistance() throws Exception {
@@ -242,7 +220,7 @@ public class VectorTest {
      * JUnit test of midpoint.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#midpoint(BaseComponent)
+     * @see RawComponent#midpoint(RawComponent)
      */
     @Test
     public void testMidpoint() throws Exception {
@@ -253,8 +231,8 @@ public class VectorTest {
      * JUnit test of average.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#average(List)
-     * @see Vector#average(BaseComponent...)
+     * @see RawComponent#average(List)
+     * @see RawComponent#average(RawComponent...)
      */
     @Test
     public void testAverage() throws Exception {
@@ -265,7 +243,7 @@ public class VectorTest {
      * JUnit test of sum.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#sum()
+     * @see RawComponent#sum()
      */
     @Test
     public void testSum() throws Exception {
@@ -276,7 +254,7 @@ public class VectorTest {
      * JUnit test of squareSum.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#squareSum()
+     * @see RawComponent#squareSum()
      */
     @Test
     public void testSquareSum() throws Exception {
@@ -287,7 +265,7 @@ public class VectorTest {
      * JUnit test of plus.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#plus(BaseComponent)
+     * @see RawComponent#plus(RawComponent)
      */
     @Test
     public void testPlus() throws Exception {
@@ -298,7 +276,7 @@ public class VectorTest {
      * JUnit test of minus.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#minus(BaseComponent)
+     * @see RawComponent#minus(RawComponent)
      */
     @Test
     public void testMinus() throws Exception {
@@ -309,7 +287,7 @@ public class VectorTest {
      * JUnit test of times.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#times(BaseComponent)
+     * @see RawComponent#times(RawComponent)
      */
     @Test
     public void testTimes() throws Exception {
@@ -320,7 +298,7 @@ public class VectorTest {
      * JUnit test of scale.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#scale(Number)
+     * @see RawComponent#scale(Number)
      */
     @Test
     public void testScale() throws Exception {
@@ -331,7 +309,7 @@ public class VectorTest {
      * JUnit test of dividedBy.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#dividedBy(BaseComponent)
+     * @see RawComponent#dividedBy(RawComponent)
      */
     @Test
     public void testDividedBy() throws Exception {
@@ -342,7 +320,7 @@ public class VectorTest {
      * JUnit test of round.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#round()
+     * @see RawComponent#round()
      */
     @Test
     public void testRound() throws Exception {
@@ -350,43 +328,10 @@ public class VectorTest {
     }
     
     /**
-     * JUnit test of dot.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#dot(VectorInterface)
-     */
-    @Test
-    public void testDot() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of normalize.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#normalize()
-     */
-    @Test
-    public void testNormalize() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of hypotenuse.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#hypotenuse()
-     */
-    @Test
-    public void testHypotenuse() throws Exception {
-        //TODO
-    }
-    
-    /**
      * JUnit test of copy.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#copy(BaseComponent)
+     * @see RawComponent#copy(RawComponent)
      */
     @Test
     public void testCopy() throws Exception {
@@ -397,7 +342,7 @@ public class VectorTest {
      * JUnit test of copyMeta.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#copyMeta(Component)
+     * @see RawComponent#copyMeta(RawComponent)
      */
     @SuppressWarnings("JavadocReference")
     @Test
@@ -409,7 +354,7 @@ public class VectorTest {
      * JUnit test of redim.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#redim(int)
+     * @see RawComponent#redim(int)
      */
     @Test
     public void testRedim() throws Exception {
@@ -417,23 +362,11 @@ public class VectorTest {
     }
     
     /**
-     * JUnit test of subVector.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#subVector(int, int)
-     * @see Vector#subVector(int)
-     */
-    @Test
-    public void testSubVector() throws Exception {
-        //TODO
-    }
-    
-    /**
      * JUnit test of dimensionalityToLength.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#dimensionalityToLength(int)
-     * @see Vector#dimensionalityToLength()
+     * @see RawComponent#dimensionalityToLength(int)
+     * @see RawComponent#dimensionalityToLength()
      */
     @Test
     public void testDimensionalityToLength() throws Exception {
@@ -444,8 +377,8 @@ public class VectorTest {
      * JUnit test of lengthToDimensionality.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#lengthToDimensionality(int)
-     * @see Vector#lengthToDimensionality()
+     * @see RawComponent#lengthToDimensionality(int)
+     * @see RawComponent#lengthToDimensionality()
      */
     @Test
     public void testLengthToDimensionality() throws Exception {
@@ -456,7 +389,7 @@ public class VectorTest {
      * JUnit test of calculateDimensionality.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#calculateDimensionality()
+     * @see RawComponent#calculateDimensionality()
      */
     @Test
     public void testCalculateDimensionality() throws Exception {
@@ -464,24 +397,24 @@ public class VectorTest {
     }
     
     /**
-     * JUnit test of getComponents.
+     * JUnit test of getRawComponents.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#getComponents()
+     * @see RawComponent#getComponents()
      */
     @Test
-    public void testGetComponents() throws Exception {
+    public void testGetRawComponents() throws Exception {
         //TODO
     }
     
     /**
-     * JUnit test of getPrimitiveComponents.
+     * JUnit test of getPrimitiveRawComponents.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#getPrimitiveComponents()
+     * @see RawComponent#getPrimitiveComponents()
      */
     @Test
-    public void testGetPrimitiveComponents() throws Exception {
+    public void testGetPrimitiveRawComponents() throws Exception {
         //TODO
     }
     
@@ -489,7 +422,7 @@ public class VectorTest {
      * JUnit test of get.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#get(int)
+     * @see RawComponent#get(int)
      */
     @Test
     public void testGet() throws Exception {
@@ -497,54 +430,10 @@ public class VectorTest {
     }
     
     /**
-     * JUnit test of getX.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#getX()
-     */
-    @Test
-    public void testGetX() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of getY.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#getY()
-     */
-    @Test
-    public void testGetY() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of getZ.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#getZ()
-     */
-    @Test
-    public void testGetZ() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of getW.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#getW()
-     */
-    @Test
-    public void testGetW() throws Exception {
-        //TODO
-    }
-    
-    /**
      * JUnit test of getDimensionality.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#getDimensionality()
+     * @see RawComponent#getDimensionality()
      */
     @Test
     public void testGetDimensionality() throws Exception {
@@ -555,7 +444,7 @@ public class VectorTest {
      * JUnit test of getLength.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#getLength()
+     * @see RawComponent#getLength()
      */
     @Test
     public void testGetLength() throws Exception {
@@ -563,13 +452,13 @@ public class VectorTest {
     }
     
     /**
-     * JUnit test of getComponentClass.
+     * JUnit test of getRawComponentClass.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#getComponentClass()
+     * @see RawComponent#getComponentClass()
      */
     @Test
-    public void testGetComponentClass() throws Exception {
+    public void testGetRawComponentClass() throws Exception {
         //TODO
     }
     
@@ -577,7 +466,7 @@ public class VectorTest {
      * JUnit test of getType.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#getType()
+     * @see RawComponent#getType()
      */
     @Test
     public void testGetType() throws Exception {
@@ -588,7 +477,7 @@ public class VectorTest {
      * JUnit test of getHandler.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#getHandler()
+     * @see RawComponent#getHandler()
      */
     @Test
     public void testGetHandler() throws Exception {
@@ -599,7 +488,7 @@ public class VectorTest {
      * JUnit test of getErrorHandler.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#getErrorHandler()
+     * @see RawComponent#getErrorHandler()
      */
     @Test
     public void testetErrorHandler() throws Exception {
@@ -610,7 +499,7 @@ public class VectorTest {
      * JUnit test of getName.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#getName()
+     * @see RawComponent#getName()
      */
     @Test
     public void testGetName() throws Exception {
@@ -621,7 +510,7 @@ public class VectorTest {
      * JUnit test of getNamePlural.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#getNamePlural()
+     * @see RawComponent#getNamePlural()
      */
     @Test
     public void testGetNamePlural() throws Exception {
@@ -632,7 +521,7 @@ public class VectorTest {
      * JUnit test of getPrecision.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#getPrecision()
+     * @see RawComponent#getPrecision()
      */
     @Test
     public void testGetPrecision() throws Exception {
@@ -643,7 +532,7 @@ public class VectorTest {
      * JUnit test of isResizeable.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#isResizeable()
+     * @see RawComponent#isResizeable()
      */
     @Test
     public void testIsResizeable() throws Exception {
@@ -651,115 +540,13 @@ public class VectorTest {
     }
     
     /**
-     * JUnit test of setComponents.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#setComponents(Number[])
-     */
-    @Test
-    public void testSetComponents() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of set.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#set(int, Number)
-     */
-    @Test
-    public void testSet() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of setX.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#setX(Number)
-     */
-    @Test
-    public void testSetX() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of setY.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#setY(Number)
-     */
-    @Test
-    public void testSetY() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of setZ.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#setZ(Number)
-     */
-    @Test
-    public void testSetZ() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of setW.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#setW(Number)
-     */
-    @Test
-    public void testSetW() throws Exception {
-        //TODO
-    }
-    
-    /**
      * JUnit test of copy.
      *
      * @throws Exception When there is an exception.
-     * @see Vector#copy(BaseComponent, BaseComponent)
+     * @see RawComponent#copy(BaseComponent, BaseComponent)
      */
     @Test
     public void testStaticCopy() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of createInstance.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#createInstance(int)
-     * @see Vector#createInstance(int, Class)
-     */
-    @Test
-    public void testCreateInstance() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of identity.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#identity(int)
-     * @see Vector#identity(int, Class)
-     */
-    @Test
-    public void testIdentity() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of origin.
-     *
-     * @throws Exception When there is an exception.
-     * @see Vector#origin(int)
-     * @see Vector#origin(int, Class)
-     */
-    @Test
-    public void testOrigin() throws Exception {
         //TODO
     }
     

@@ -120,6 +120,17 @@ public class IntVectorTest {
     }
     
     /**
+     * JUnit test of vectorString.
+     *
+     * @throws Exception When there is an exception.
+     * @see IntVector#vectorString()
+     */
+    @Test
+    public void testVectorString() throws Exception {
+        //TODO
+    }
+    
+    /**
      * JUnit test of toString.
      *
      * @throws Exception When there is an exception.

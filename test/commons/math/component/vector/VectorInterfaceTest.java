@@ -91,6 +91,17 @@ public class VectorInterfaceTest {
     }
     
     /**
+     * JUnit test of vectorString.
+     *
+     * @throws Exception When there is an exception.
+     * @see VectorInterface#vectorString()
+     */
+    @Test
+    public void testVectorString() throws Exception {
+        //TODO
+    }
+    
+    /**
      * JUnit test of dot.
      *
      * @throws Exception When there is an exception.

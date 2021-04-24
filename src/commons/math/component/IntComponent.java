@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Defines the properties of a Int Component.
+ * Defines the properties of an Integer Component.
  *
  * @param <I> The type of the Component.
  */
@@ -39,7 +39,7 @@ public abstract class IntComponent<I extends IntComponent<?>> extends BaseCompon
     //Constructors
     
     /**
-     * The protected no-argument constructor for a Component.
+     * The protected no-argument constructor for an Integer Component.
      */
     protected IntComponent() {
         super(Integer.class, new IntComponentMathHandler());
@@ -49,9 +49,9 @@ public abstract class IntComponent<I extends IntComponent<?>> extends BaseCompon
     //Methods
     
     /**
-     * Copies this Component's metadata to another Component.
+     * Copies this Integer Component's metadata to another Integer Component.
      *
-     * @param to The Component to copy the metadata to.
+     * @param to The Integer Component to copy the metadata to.
      */
     @Override
     public void copyMeta(I to) {
@@ -61,9 +61,9 @@ public abstract class IntComponent<I extends IntComponent<?>> extends BaseCompon
     //Getters
     
     /**
-     * Returns the components that define the Component.
+     * Returns the components that define the Integer Component.
      *
-     * @return The components that define the Component.
+     * @return The components that define the Integer Component.
      */
     @Override
     public final Integer[] getComponents() {
@@ -71,12 +71,22 @@ public abstract class IntComponent<I extends IntComponent<?>> extends BaseCompon
     }
     
     /**
-     * Returns the primitive components that define the Component.
+     * Returns the primitive components that define the Integer Component.
      *
-     * @return The primitive components that define the Component.
+     * @return The primitive components that define the Integer Component.
      */
     public final int[] getPrimitiveComponents() {
         return Arrays.stream(getComponents()).mapToInt(e -> e).toArray();
+    }
+    
+    /**
+     * Returns the name of the type of Component.
+     *
+     * @return The name of the type of Component.
+     */
+    @Override
+    public String getName() {
+        return "Integer Component";
     }
     
     /**

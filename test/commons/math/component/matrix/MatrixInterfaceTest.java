@@ -92,6 +92,17 @@ public class MatrixInterfaceTest {
     }
     
     /**
+     * JUnit test of matrixString.
+     *
+     * @throws Exception When there is an exception.
+     * @see MatrixInterface#matrixString()
+     */
+    @Test
+    public void testMatrixString() throws Exception {
+        //TODO
+    }
+    
+    /**
      * JUnit test of newVector.
      *
      * @throws Exception When there is an exception.

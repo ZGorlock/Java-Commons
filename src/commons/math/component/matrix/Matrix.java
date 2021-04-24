@@ -10,9 +10,7 @@ package commons.math.component.matrix;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import commons.list.ListUtility;
 import commons.math.component.Component;
 import commons.math.component.vector.Vector;
 import org.apache.commons.lang3.ArrayUtils;
@@ -75,7 +73,7 @@ public class Matrix extends Component<Matrix> implements MatrixInterface<Double,
     }
     
     /**
-     * The constructor for a Matrix from another Matrix of a certain dimensionality.
+     * The constructor for a Matrix of a certain dimensionality.
      *
      * @param dim The dimensionality of the Matrix.
      * @see #Matrix(double...)
@@ -101,12 +99,11 @@ public class Matrix extends Component<Matrix> implements MatrixInterface<Double,
      * Returns a string that represents the Matrix.
      *
      * @return A string that represents the Matrix.
+     * @see MatrixInterface#matrixString() 
      */
     @Override
     public String toString() {
-        return ListUtility.split(ListUtility.toList(getComponents()), getDimensionality()).stream()
-                .map(e -> e.stream().map(Object::toString).collect(Collectors.joining(", ", "<", ">")))
-                .collect(Collectors.joining(", ", "[", "]"));
+        return MatrixInterface.super.matrixString();
     }
     
     /**

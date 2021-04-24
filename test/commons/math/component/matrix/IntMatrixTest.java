@@ -119,6 +119,17 @@ public class IntMatrixTest {
     }
     
     /**
+     * JUnit test of matrixString.
+     *
+     * @throws Exception When there is an exception.
+     * @see IntMatrix#matrixString()
+     */
+    @Test
+    public void testMatrixString() throws Exception {
+        //TODO
+    }
+    
+    /**
      * JUnit test of toString.
      *
      * @throws Exception When there is an exception.

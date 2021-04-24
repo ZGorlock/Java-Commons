@@ -603,7 +603,7 @@ public abstract class BaseComponent<T extends Number, I extends BaseComponent<?,
      */
     @Override
     public String getName() {
-        return "Component";
+        return "Base Component";
     }
     
     /**

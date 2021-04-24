@@ -80,6 +80,16 @@ public abstract class Component<I extends Component<?>> extends BaseComponent<Do
     }
     
     /**
+     * Returns the name of the type of Component.
+     *
+     * @return The name of the type of Component.
+     */
+    @Override
+    public String getName() {
+        return "Component";
+    }
+    
+    /**
      * Returns the precision to use in comparisons.
      *
      * @return The precision to use in comparisons.

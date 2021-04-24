@@ -10,9 +10,7 @@ package commons.math.component.matrix;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import commons.list.ListUtility;
 import commons.math.component.IntComponent;
 import commons.math.component.vector.IntVector;
 import org.apache.commons.lang3.ArrayUtils;
@@ -86,7 +84,7 @@ public class IntMatrix extends IntComponent<IntMatrix> implements MatrixInterfac
     }
     
     /**
-     * The constructor for an Integer Matrix from another Integer Matrix of a certain dimensionality.
+     * The constructor for an Integer Matrix of a certain dimensionality.
      *
      * @param dim The dimensionality of the Integer Matrix.
      * @see #IntMatrix(int...)
@@ -112,12 +110,11 @@ public class IntMatrix extends IntComponent<IntMatrix> implements MatrixInterfac
      * Returns a string that represents the Integer Matrix.
      *
      * @return A string that represents the Integer Matrix.
+     * @see MatrixInterface#matrixString()
      */
     @Override
     public String toString() {
-        return ListUtility.split(ListUtility.toList(getComponents()), getDimensionality()).stream()
-                .map(e -> e.stream().map(Object::toString).collect(Collectors.joining(", ", "<", ">")))
-                .collect(Collectors.joining(", ", "[", "]"));
+        return MatrixInterface.super.matrixString();
     }
     
     /**

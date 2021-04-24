@@ -8,7 +8,9 @@
 package commons.math.component.vector;
 
 import java.lang.reflect.InvocationTargetException;
+import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 import commons.math.component.ComponentInterface;
 import commons.math.component.handler.error.ComponentErrorHandlerProvider;
@@ -23,6 +25,17 @@ import commons.math.component.handler.error.ComponentErrorHandlerProvider;
 public interface VectorInterface<T extends Number, I extends VectorInterface<?, ?>> extends ComponentInterface<Number, I, T> {
     
     //Methods
+    
+    /**
+     * Returns a string that represents the Vector.
+     *
+     * @return A string that represents the Vector.
+     */
+    default String vectorString() {
+        return Arrays.stream(getComponents())
+                .map(e -> (e instanceof BigDecimal) ? ((BigDecimal) e).toPlainString() : e.toString())
+                .collect(Collectors.joining(", ", "<", ">"));
+    }
     
     /**
      * Calculates the dot product of this Vector with another Vector.

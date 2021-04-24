@@ -32,6 +32,18 @@ public interface MatrixInterface<T extends Number, I extends MatrixInterface<?, 
     //Methods
     
     /**
+     * Returns a string that represents the Matrix.
+     *
+     * @return A string that represents the Matrix.
+     */
+    default String matrixString() {
+        return ListUtility.split(ListUtility.toList(getComponents()), getDimensionality()).stream()
+                .map(e -> e.stream().map(c -> (c instanceof BigDecimal) ? ((BigDecimal) c).toPlainString() : c.toString())
+                        .collect(Collectors.joining(", ", "<", ">")))
+                .collect(Collectors.joining(", ", "[", "]"));
+    }
+    
+    /**
      * Creates a new Vector instance for the Matrix.
      *
      * @return The new Vector.

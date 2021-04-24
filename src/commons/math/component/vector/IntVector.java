@@ -10,7 +10,6 @@ package commons.math.component.vector;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import commons.list.ArrayUtility;
 import commons.list.ListUtility;
@@ -133,11 +132,11 @@ public class IntVector extends IntComponent<IntVector> implements VectorInterfac
      * Returns a string that represents the Integer Vector.
      *
      * @return A string that represents the Integer Vector.
+     * @see VectorInterface#vectorString()
      */
     @Override
     public String toString() {
-        return Arrays.stream(getComponents()).map(String::valueOf)
-                .collect(Collectors.joining(", ", "<", ">"));
+        return VectorInterface.super.vectorString();
     }
     
     /**

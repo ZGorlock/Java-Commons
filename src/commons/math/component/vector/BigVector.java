@@ -11,7 +11,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import commons.list.ArrayUtility;
 import commons.list.ListUtility;
@@ -215,11 +214,11 @@ public class BigVector extends BigComponent<BigVector> implements VectorInterfac
      * Returns a string that represents the Big Vector.
      *
      * @return A string that represents the Big Vector.
+     * @see VectorInterface#vectorString()
      */
     @Override
     public String toString() {
-        return Arrays.stream(getComponents()).map(BigDecimal::toPlainString)
-                .collect(Collectors.joining(", ", "<", ">"));
+        return VectorInterface.super.vectorString();
     }
     
     /**

@@ -18,6 +18,8 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Defines the properties of a Big Component.
+ *
+ * @param <I> The type of the Component.
  */
 public abstract class BigComponent<I extends BigComponent<?>> extends BaseComponent<BigDecimal, I> implements BigComponentInterface<I> {
     
@@ -91,9 +93,9 @@ public abstract class BigComponent<I extends BigComponent<?>> extends BaseCompon
     }
     
     /**
-     * Returns the primitive components that define the Component.
+     * Returns the primitive components that define the Big Component.
      *
-     * @return The primitive components that define the Component.
+     * @return The primitive components that define the Big Component.
      */
     public final BigDecimal[] getPrimitiveComponents() {
         return getComponents();
@@ -135,7 +137,7 @@ public abstract class BigComponent<I extends BigComponent<?>> extends BaseCompon
     /**
      * Sets the Math Context used when doing Big Component math.
      *
-     * @param mathContext The Math Context used when doing BigDecimal math.
+     * @param mathContext The Math Context used when doing Big Component math.
      */
     @Override
     public final void setMathContext(MathContext mathContext) {

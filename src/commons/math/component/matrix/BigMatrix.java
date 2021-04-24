@@ -11,9 +11,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
-import commons.list.ListUtility;
 import commons.math.component.BigComponent;
 import commons.math.component.vector.BigVector;
 import org.slf4j.Logger;
@@ -110,7 +108,7 @@ public class BigMatrix extends BigComponent<BigMatrix> implements MatrixInterfac
     }
     
     /**
-     * The constructor for a Big Matrix from another Big Matrix of a certain dimensionality.
+     * The constructor for a Big Matrix of a certain dimensionality.
      *
      * @param dim The dimensionality of the Big Matrix.
      * @see #BigMatrix(BigDecimal...)
@@ -136,12 +134,11 @@ public class BigMatrix extends BigComponent<BigMatrix> implements MatrixInterfac
      * Returns a string that represents the Big Matrix.
      *
      * @return A string that represents the Big Matrix.
+     * @see MatrixInterface#matrixString()
      */
     @Override
     public String toString() {
-        return ListUtility.split(ListUtility.toList(getComponents()), getDimensionality()).stream()
-                .map(e -> e.stream().map(BigDecimal::toPlainString).collect(Collectors.joining(", ", "<", ">")))
-                .collect(Collectors.joining(", ", "[", "]"));
+        return MatrixInterface.super.matrixString();
     }
     
     /**
