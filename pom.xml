@@ -50,7 +50,8 @@
         <!-- INTERNET -->
         <jsoup.version>1.12.1</jsoup.version>
         
-        <!-- VLC -->
+        <!-- MEDIA -->
+        <metadata-extractor.version>2.15.0</metadata-extractor.version>
         <vlcj.version>4.1.0</vlcj.version>
         
         <!-- SPEECH OUTPUT -->
@@ -165,7 +166,12 @@
             <version>${jsoup.version}</version>
         </dependency>
         
-        <!-- VLC -->
+        <!-- MEDIA -->
+        <dependency>
+            <groupId>com.drewnoakes</groupId>
+            <artifactId>metadata-extractor</artifactId>
+            <version>${metadata-extractor.version}</version>
+        </dependency>
         <dependency>
             <groupId>uk.co.caprica</groupId>
             <artifactId>vlcj</artifactId>
