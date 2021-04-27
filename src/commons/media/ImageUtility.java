@@ -23,11 +23,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.attribute.FileTime;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 import javax.imageio.IIOImage;
 import javax.imageio.ImageIO;
 import javax.imageio.ImageReader;
@@ -166,6 +170,46 @@ public class ImageUtility {
     }
     
     /**
+     * Returns the date the image was taken.
+     *
+     * @param image The image file.
+     * @return The date the image was taken, or the 'last modified time' if that metadata is not present.
+     */
+    public static Date getDateTaken(File image) {
+        MetadataUtility.MetadataTag dateTaken = null;
+        switch (Filesystem.getFileType(image).toLowerCase()) {
+            case "jpg":
+            case "jpeg":
+                dateTaken = MetadataUtility.getMetadataTag(image, "Date/Time Original");
+                if (dateTaken != null) {
+                    break;
+                }
+            case "png":
+            case "gif":
+            case "bmp":
+            case "tif":
+            case "tiff":
+            case "wbmp":
+                dateTaken = MetadataUtility.getMetadata(image).stream()
+                        .filter(e -> e.name.equals("Textual Data") && e.value.startsWith("Creation Time: "))
+                        .findFirst().orElse(null);
+                if (dateTaken != null) {
+                    dateTaken.value = dateTaken.value.substring(15);
+                }
+                break;
+        }
+        
+        if (dateTaken != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy:MM:dd HH:mm:ss");
+            try {
+                return sdf.parse(dateTaken.value);
+            } catch (ParseException ignored) {
+            }
+        }
+        return Filesystem.getLastModifiedTime(image);
+    }
+    
+    /**
      * Deletes the extra data in an image file, reducing the file size.
      *
      * @param image            The image file.
@@ -180,33 +224,37 @@ public class ImageUtility {
         try {
             File tmp = Filesystem.createTemporaryFile(Filesystem.getFileType(image));
             
+            Map<String, FileTime> dates = Filesystem.readDates(image);
+            
             if (preserveMetadata) {
-                Map<String, FileTime> dates = Filesystem.readDates(image);
                 try (FileInputStream fileInputStream = new FileInputStream(image);
                      FileOutputStream fileOutputStream = new FileOutputStream(tmp)) {
                     
                     ImageInputStream imageInputStream = ImageIO.createImageInputStream(fileInputStream);
                     ImageReader reader = ImageIO.getImageReaders(imageInputStream).next();
-                    reader.setInput(imageInputStream);
+                    reader.setInput(imageInputStream, true);
                     IIOMetadata metadata = reader.getImageMetadata(0);
+                    IIOMetadata streamMetadata = reader.getStreamMetadata();
                     BufferedImage data = reader.read(0);
                     imageInputStream.flush();
                     
                     ImageOutputStream imageOutputStream = ImageIO.createImageOutputStream(fileOutputStream);
                     ImageWriter writer = ImageIO.getImageWriter(reader);
                     writer.setOutput(imageOutputStream);
-                    ImageWriteParam params = writer.getDefaultWriteParam();
-                    writer.write(null, new IIOImage(data, null, null), params);
+                    ImageWriteParam writeParams = writer.getDefaultWriteParam();
+                    writeParams.setCompressionMode(ImageWriteParam.MODE_COPY_FROM_METADATA);
+                    
+                    writer.write(streamMetadata, new IIOImage(data, null, metadata), writeParams);
                     writer.dispose();
-                    ImageIO.write(data, Filesystem.getFileType(image), imageOutputStream);
                     imageOutputStream.flush();
                 }
-                Filesystem.writeDates(tmp, dates);
                 
             } else {
                 BufferedImage data = ImageIO.read(image);
-                ImageIO.write(data, Filesystem.getFileType(image), tmp);
+                ImageIO.write(data, Filesystem.getFileType(image).toLowerCase(), tmp);
             }
+            
+            Filesystem.writeDates(tmp, dates);
             
             if (!Filesystem.safeReplace(tmp, image)) {
                 throw new Exception("Failed to safely replace image file");
@@ -283,7 +331,7 @@ public class ImageUtility {
      * @return The scaled image.
      */
     public static BufferedImage scaleImage(BufferedImage image, double scale) {
-        if (scale == 1.0) {
+        if (!BoundUtility.inBounds(scale, 0.0, 1.0, false, false)) {
             return image;
         }
         
@@ -398,6 +446,7 @@ public class ImageUtility {
         while (serviceProviders.hasNext()) {
             imageFormats.addAll(Arrays.asList(serviceProviders.next().getFormatNames()));
         }
+        imageFormats = imageFormats.stream().map(String::toUpperCase).distinct().sorted().collect(Collectors.toList());
         return imageFormats;
     }
     

@@ -150,6 +150,17 @@ public class ImageUtilityTest {
     }
     
     /**
+     * JUnit test of getDateTaken.
+     *
+     * @throws Exception When there is an exception.
+     * @see ImageUtility#getDateTaken(File)
+     */
+    @Test
+    public void testGetDateTaken() throws Exception {
+        //TODO
+    }
+    
+    /**
      * JUnit test of cleanImageFile.
      *
      * @throws Exception When there is an exception.
