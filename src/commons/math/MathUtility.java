@@ -7,6 +7,9 @@
 
 package commons.math;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -76,6 +79,29 @@ public class MathUtility {
      */
     public static int dice(int sides) {
         return dice(sides, 1);
+    }
+    
+    /**
+     * Rounds a decimal number with a certain precision.
+     *
+     * @param value     The number.
+     * @param precision The maximum number of decimal places of the result.
+     * @return The rounded number.
+     */
+    public static double roundWithPrecision(double value, int precision) {
+        double inversePrecision = Math.pow(10.0, precision);
+        return (double) Math.round(value * inversePrecision) / inversePrecision;
+    }
+    
+    /**
+     * Rounds a Big Decimal number with a certain precision.
+     *
+     * @param value     The number.
+     * @param precision The maximum number of decimal places of the result.
+     * @return The rounded number.
+     */
+    public static BigDecimal roundWithPrecision(BigDecimal value, int precision) {
+        return value.setScale(precision, RoundingMode.HALF_UP).stripTrailingZeros();
     }
     
     /**

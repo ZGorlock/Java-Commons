@@ -7,6 +7,7 @@
 
 package commons.math;
 
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 import commons.test.TestUtils;
@@ -180,6 +181,90 @@ public class MathUtilityTest {
         Assert.assertEquals(0, MathUtility.dice(0, -1));
         Assert.assertEquals(0, MathUtility.dice(-999, 0));
         Assert.assertEquals(0, MathUtility.dice(0, -999));
+    }
+    
+    /**
+     * JUnit test of roundWithPrecision.
+     *
+     * @throws Exception When there is an exception.
+     * @see MathUtility#roundWithPrecision(double, int)
+     * @see MathUtility#roundWithPrecision(BigDecimal, int)
+     */
+    @Test
+    public void testRoundWithPrecision() throws Exception {
+        //standard
+        
+        Assert.assertEquals("111.704",
+                String.valueOf(MathUtility.roundWithPrecision(111.70400000000001, 12)));
+        Assert.assertEquals("111.704",
+                String.valueOf(MathUtility.roundWithPrecision(111.704000000000000000001, 12)));
+        Assert.assertEquals("111.704",
+                String.valueOf(MathUtility.roundWithPrecision(111.7040000000001, 12)));
+        Assert.assertEquals("111.704000000001",
+                String.valueOf(MathUtility.roundWithPrecision(111.704000000001, 12)));
+        Assert.assertEquals("111.70400000001",
+                String.valueOf(MathUtility.roundWithPrecision(111.70400000001, 12)));
+        Assert.assertEquals("111.704",
+                String.valueOf(MathUtility.roundWithPrecision(111.70400000001, 6)));
+        
+        Assert.assertEquals("0.5933",
+                String.valueOf(MathUtility.roundWithPrecision(0.59329999999996, 12)));
+        Assert.assertEquals("0.59329999999996",
+                String.valueOf(MathUtility.roundWithPrecision(0.59329999999996, 14)));
+        Assert.assertEquals("0.593",
+                String.valueOf(MathUtility.roundWithPrecision(0.59329999999996, 3)));
+        Assert.assertEquals("0.6",
+                String.valueOf(MathUtility.roundWithPrecision(0.59329999999996, 1)));
+        
+        Assert.assertEquals("112.0",
+                String.valueOf(MathUtility.roundWithPrecision(111.70400000001, 0)));
+        Assert.assertEquals("110.0",
+                String.valueOf(MathUtility.roundWithPrecision(111.70400000001, -1)));
+        Assert.assertEquals("100.0",
+                String.valueOf(MathUtility.roundWithPrecision(111.70400000001, -2)));
+        Assert.assertEquals("0.0",
+                String.valueOf(MathUtility.roundWithPrecision(111.70400000001, -3)));
+        
+        //big decimal
+        
+        Assert.assertEquals("111.704",
+                MathUtility.roundWithPrecision(new BigDecimal("111.70400000000001"), 12).toPlainString());
+        Assert.assertEquals("111.704",
+                MathUtility.roundWithPrecision(new BigDecimal("111.704000000000000000001"), 12).toPlainString());
+        Assert.assertEquals("111.704",
+                MathUtility.roundWithPrecision(new BigDecimal("111.7040000000001"), 12).toPlainString());
+        Assert.assertEquals("111.704000000001",
+                MathUtility.roundWithPrecision(new BigDecimal("111.704000000001"), 12).toPlainString());
+        Assert.assertEquals("111.70400000001",
+                MathUtility.roundWithPrecision(new BigDecimal("111.70400000001"), 12).toPlainString());
+        Assert.assertEquals("111.704",
+                MathUtility.roundWithPrecision(new BigDecimal("111.70400000001"), 6).toPlainString());
+        Assert.assertEquals("111.70400000000000000000000000000000000000000000000001",
+                MathUtility.roundWithPrecision(new BigDecimal("111.70400000000000000000000000000000000000000000000001"), 50).toPlainString());
+        Assert.assertEquals("111.704",
+                MathUtility.roundWithPrecision(new BigDecimal("111.704000000000000000000000000000000000000000000000001"), 50).toPlainString());
+        
+        Assert.assertEquals("0.5933",
+                MathUtility.roundWithPrecision(new BigDecimal("0.59329999999996"), 12).toPlainString());
+        Assert.assertEquals("0.59329999999996",
+                MathUtility.roundWithPrecision(new BigDecimal("0.59329999999996"), 14).toPlainString());
+        Assert.assertEquals("0.593",
+                MathUtility.roundWithPrecision(new BigDecimal("0.59329999999996"), 3).toPlainString());
+        Assert.assertEquals("0.6",
+                MathUtility.roundWithPrecision(new BigDecimal("0.59329999999996"), 1).toPlainString());
+        Assert.assertEquals("0.59329999999999999999999999999999999999999999999996",
+                MathUtility.roundWithPrecision(new BigDecimal("0.59329999999999999999999999999999999999999999999996"), 50).toPlainString());
+        Assert.assertEquals("0.5933",
+                MathUtility.roundWithPrecision(new BigDecimal("0.593299999999999999999999999999999999999999999999996"), 50).toPlainString());
+        
+        Assert.assertEquals("112",
+                MathUtility.roundWithPrecision(new BigDecimal("111.70400000001"), 0).toPlainString());
+        Assert.assertEquals("110",
+                MathUtility.roundWithPrecision(new BigDecimal("111.70400000001"), -1).toPlainString());
+        Assert.assertEquals("100",
+                MathUtility.roundWithPrecision(new BigDecimal("111.70400000001"), -2).toPlainString());
+        Assert.assertEquals("0",
+                MathUtility.roundWithPrecision(new BigDecimal("111.70400000001"), -3).toPlainString());
     }
     
     /**
