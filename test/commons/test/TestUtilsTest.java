@@ -24,6 +24,7 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -109,6 +110,7 @@ public class TestUtilsTest {
      *
      * @throws Exception When there is an exception.
      * @see TestUtils#assertException(Class, Runnable)
+     * @see TestUtils#assertException(Class, String, Runnable)
      */
     @Test
     public void testAssertException() throws Exception {
@@ -121,12 +123,40 @@ public class TestUtilsTest {
                 "Expected code to produce a NumberFormatException but instead it produced a NumberFormatException", //success
                 NumberFormatException.class, NumberFormatException.class);
         
+        TestUtils.assertException(NumberFormatException.class, "Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\"", () ->
+                new BigDecimal("15a4"));
+        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(2));
+        TestUtils.AssertWrapper.assertEquals(
+                "Expected code to produce a NumberFormatException but instead it produced a NumberFormatException", //success
+                NumberFormatException.class, NumberFormatException.class);
+        TestUtils.AssertWrapper.assertEquals(
+                "Expected the error message of the NumberFormatException to be: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\" but the error message was: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\"", //success
+                "Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", "Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.");
+        
+        TestUtils.assertException(NumberFormatException.class, "Could not parse BigDecimal", () ->
+                new BigDecimal("15a4"));
+        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(3));
+        TestUtils.AssertWrapper.assertEquals(
+                "Expected code to produce a NumberFormatException but instead it produced a NumberFormatException", //success
+                NumberFormatException.class, NumberFormatException.class);
+        TestUtils.AssertWrapper.assertEquals(
+                "Expected the error message of the NumberFormatException to be: \"Could not parse BigDecimal\" but the error message was: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\"",
+                "Could not parse BigDecimal", "Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.");
+        
         TestUtils.assertException(NullPointerException.class, () ->
                 new BigDecimal("15a4"));
         PowerMockito.verifyStatic(TestUtils.AssertWrapper.class);
         TestUtils.AssertWrapper.assertEquals(
                 "Expected code to produce a NullPointerException but instead it produced a NumberFormatException",
                 NullPointerException.class, NumberFormatException.class);
+        
+        TestUtils.assertException(NullPointerException.class, "Could not parse the BigDecimal", () ->
+                new BigDecimal("15a4"));
+        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(2));
+        TestUtils.AssertWrapper.assertEquals(
+                "Expected code to produce a NullPointerException but instead it produced a NumberFormatException",
+                NullPointerException.class, NumberFormatException.class);
+        PowerMockito.verifyNoMoreInteractions();
         
         TestUtils.assertException(NullPointerException.class, () ->
                 new BigDecimal("1564"));

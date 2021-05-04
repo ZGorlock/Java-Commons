@@ -30,6 +30,7 @@ public final class TestUtils {
      */
     private static final Logger logger = LoggerFactory.getLogger(TestUtils.class);
     
+    
     //Constants
     
     /**
@@ -41,21 +42,40 @@ public final class TestUtils {
     //Functions
     
     /**
-     * Asserts that a call throws an exception.
+     * Asserts that a call throws an exception with a particular message.
      *
-     * @param exception The expected exception class.
-     * @param call      The call.
+     * @param exception       The expected exception class.
+     * @param expectedMessage The expected message.
+     * @param call            The call.
      */
-    public static void assertException(Class<? extends Exception> exception, Runnable call) {
+    public static void assertException(Class<? extends Exception> exception, String expectedMessage, Runnable call) {
         try {
             call.run();
             AssertWrapper.fail("Expected code to produce " + StringUtility.justifyAOrAn(exception.getSimpleName()) +
                     " but no exception was produced");
+            
         } catch (Exception e) {
             AssertWrapper.assertEquals("Expected code to produce " + StringUtility.justifyAOrAn(exception.getSimpleName()) +
                             " but instead it produced " + StringUtility.justifyAOrAn(e.getClass().getSimpleName()),
                     exception, e.getClass());
+            
+            if (expectedMessage != null) {
+                AssertWrapper.assertEquals("Expected the error message of the " + exception.getSimpleName() + " to be: \"" + expectedMessage + '\"' +
+                                " but the error message was: \"" + e.getMessage() + '\"',
+                        expectedMessage, e.getMessage());
+            }
         }
+    }
+    
+    /**
+     * Asserts that a call throws an exception.
+     *
+     * @param exception The expected exception class.
+     * @param call      The call.
+     * @see #assertException(Class, String, Runnable)
+     */
+    public static void assertException(Class<? extends Exception> exception, Runnable call) {
+        assertException(exception, null, call);
     }
     
     /**
@@ -66,6 +86,7 @@ public final class TestUtils {
     public static void assertNoException(Runnable call) {
         try {
             call.run();
+            
         } catch (Exception e) {
             AssertWrapper.fail("Expected code to produce no Exception" +
                     " but instead it produced " + StringUtility.justifyAOrAn(e.getClass().getSimpleName()));
@@ -87,6 +108,7 @@ public final class TestUtils {
             in.read(buffer, offset, length);
             AssertWrapper.fail("Expected input stream read operation to produce " + StringUtility.justifyAOrAn(exception.getSimpleName()) +
                     " but no exception was produced");
+            
         } catch (Exception e) {
             AssertWrapper.assertEquals("Expected input stream read operation to produce " + StringUtility.justifyAOrAn(exception.getSimpleName()) +
                             " but instead it produced " + StringUtility.justifyAOrAn(e.getClass().getSimpleName()),
@@ -106,6 +128,7 @@ public final class TestUtils {
     public static void assertInputStreamReadDoesNotThrowException(InputStream in, byte[] buffer, int offset, int length) {
         try {
             in.read(buffer, offset, length);
+            
         } catch (Exception e) {
             AssertWrapper.fail("Expected input stream read operation to produce no Exception" +
                     " but instead it produced " + StringUtility.justifyAOrAn(e.getClass().getSimpleName()));
@@ -126,6 +149,7 @@ public final class TestUtils {
             out.write(buffer, offset, length);
             AssertWrapper.fail("Expected output stream write operation to produce " + StringUtility.justifyAOrAn(exception.getSimpleName()) +
                     " but no exception was produced");
+            
         } catch (Exception e) {
             AssertWrapper.assertEquals("Expected output stream write operation to produce " + StringUtility.justifyAOrAn(exception.getSimpleName()) +
                             " but instead it produced " + StringUtility.justifyAOrAn(e.getClass().getSimpleName()),
@@ -144,6 +168,7 @@ public final class TestUtils {
     public static void assertOutputStreamWriteDoesNotThrowException(OutputStream output, byte[] buffer, int offset, int length) {
         try {
             output.write(buffer, offset, length);
+            
         } catch (Exception e) {
             AssertWrapper.fail("Expected output stream write operation to produce no Exception" +
                     " but instead it produced " + StringUtility.justifyAOrAn(e.getClass().getSimpleName()));
@@ -160,6 +185,7 @@ public final class TestUtils {
     public static void assertMethodExists(Class<?> clazz, String methodName, Class<?>... argumentClasses) {
         try {
             Method method = clazz.getDeclaredMethod(methodName, argumentClasses);
+            
         } catch (Exception e) {
             AssertWrapper.fail("Expected method " + StringUtility.methodString(clazz, methodName, argumentClasses) + " to exist" +
                     " but it does not");
@@ -178,6 +204,7 @@ public final class TestUtils {
             Method method = clazz.getDeclaredMethod(methodName, argumentClasses);
             AssertWrapper.fail("Expected method " + StringUtility.methodString(clazz, methodName, argumentClasses) + " to not exist" +
                     " but it does");
+            
         } catch (Exception ignored) {
         }
     }
@@ -202,6 +229,7 @@ public final class TestUtils {
             final MethodHandles.Lookup lookup = (MethodHandles.Lookup) field.get(null);
             return lookup.unreflectSpecial(method, method.getDeclaringClass())
                     .bindTo(target).invokeWithArguments(arguments);
+            
         } catch (Throwable ignored) {
             AssertWrapper.fail("Attempted to invoke the method " + StringUtility.methodString(clazz, methodName, Arrays.stream(arguments).map(Object::getClass).toArray(Class<?>[]::new)) +
                     " but an exception occurred");

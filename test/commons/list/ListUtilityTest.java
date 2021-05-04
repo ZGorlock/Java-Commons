@@ -270,17 +270,17 @@ public class ListUtilityTest {
         Assert.assertEquals(0, subList.size());
         
         //invalid
-        TestUtils.assertException(IndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(IndexOutOfBoundsException.class, "The range [0,6) is out of bounds of the list", () ->
                 ListUtility.subList(objectList, 0, 6));
-        TestUtils.assertException(IndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(IndexOutOfBoundsException.class, "The range [-1,5) is out of bounds of the list", () ->
                 ListUtility.subList(objectList, -1, 5));
         
-        TestUtils.assertException(IndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(IndexOutOfBoundsException.class, "The range [4,2) is out of bounds of the list", () ->
                 ListUtility.subList(objectList, 4, 2));
         
-        TestUtils.assertException(IndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(IndexOutOfBoundsException.class, "The range [6,5) is out of bounds of the list", () ->
                 ListUtility.subList(objectList, 6));
-        TestUtils.assertException(IndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(IndexOutOfBoundsException.class, "The range [-1,5) is out of bounds of the list", () ->
                 ListUtility.subList(objectList, -1));
         
         TestUtils.assertException(NullPointerException.class, () ->

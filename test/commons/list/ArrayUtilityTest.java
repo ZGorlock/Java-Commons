@@ -266,17 +266,17 @@ public class ArrayUtilityTest {
         Assert.assertEquals(0, subArray.length);
         
         //invalid
-        TestUtils.assertException(IndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(IndexOutOfBoundsException.class, "The range [0,6) is out of bounds of the array", () ->
                 ArrayUtility.subArray(objectArray, 0, 6));
-        TestUtils.assertException(IndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(IndexOutOfBoundsException.class, "The range [-1,5) is out of bounds of the array", () ->
                 ArrayUtility.subArray(objectArray, -1, 5));
         
-        TestUtils.assertException(IndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(IndexOutOfBoundsException.class, "The range [4,2) is out of bounds of the array", () ->
                 ArrayUtility.subArray(objectArray, 4, 2));
         
-        TestUtils.assertException(IndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(IndexOutOfBoundsException.class, "The range [6,5) is out of bounds of the array", () ->
                 ArrayUtility.subArray(objectArray, 6));
-        TestUtils.assertException(IndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(IndexOutOfBoundsException.class, "The range [-1,5) is out of bounds of the array", () ->
                 ArrayUtility.subArray(objectArray, -1));
         
         TestUtils.assertException(NullPointerException.class, () ->

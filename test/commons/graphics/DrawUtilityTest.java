@@ -144,7 +144,7 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.drawPoint(graphics, null));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawPoint(graphics, new Vector(133.0)));
     }
     
@@ -179,11 +179,11 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.drawLine(graphics, null, null));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawLine(graphics, new Vector(80.0, 95.0), new Vector(120.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawLine(graphics, new Vector(80.0), new Vector(120.0, 135.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawLine(graphics, new Vector(80.0), new Vector(120.0)));
     }
     
@@ -228,13 +228,13 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.drawRect(graphics, null, 40, 40));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawRect(graphics, new Vector(80.0, 95.0), new Vector(120.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawRect(graphics, new Vector(80.0), new Vector(120.0, 135.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawRect(graphics, new Vector(80.0), new Vector(120.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawRect(graphics, new Vector(80.0), 40, 40));
     }
     
@@ -265,7 +265,7 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.drawCircle(graphics, null, 50));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawCircle(graphics, new Vector(133.0), 50));
     }
     
@@ -310,13 +310,13 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.drawOval(graphics, null, 60, 30));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawOval(graphics, new Vector(80.0, 95.0), new Vector(140.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawOval(graphics, new Vector(80.0), new Vector(140.0, 125.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawOval(graphics, new Vector(80.0), new Vector(140.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawOval(graphics, new Vector(110.0), 60, 30));
     }
     
@@ -393,9 +393,9 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.drawPolygon(graphics, (List<Vector>) null));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawPolygon(graphics, Arrays.asList(new Vector(80.0, 95.0), new Vector(140.0))));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawPolygon(graphics, Arrays.asList(new Vector(80.0), new Vector(140.0, 135.0))));
     }
     
@@ -469,13 +469,13 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.drawArc(graphics, null, null, startAngle, endAngle));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawArc(graphics, new Vector(80.0, 95.0), new Vector(140.0), startAngle, endAngle));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawArc(graphics, new Vector(80.0), new Vector(140.0, 125.0), startAngle, endAngle));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawArc(graphics, new Vector(80.0), new Vector(140.0), startAngle, endAngle));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawArc(graphics, new Vector(110.0), 60, 30, startAngle, endAngle));
     }
     
@@ -523,13 +523,13 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.draw3DRect(graphics, null, 40, 40, true));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.draw3DRect(graphics, new Vector(80.0, 95.0), new Vector(120.0), true));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.draw3DRect(graphics, new Vector(80.0), new Vector(120.0, 135.0), true));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.draw3DRect(graphics, new Vector(80.0), new Vector(120.0), true));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.draw3DRect(graphics, new Vector(80.0), 40, 40, true));
     }
     
@@ -574,13 +574,13 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.drawRoundRect(graphics, null, 40, 40, 10, 15));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawRoundRect(graphics, new Vector(80.0, 95.0), new Vector(120.0), 10, 15));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawRoundRect(graphics, new Vector(80.0), new Vector(120.0, 135.0), 10, 15));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawRoundRect(graphics, new Vector(80.0), new Vector(120.0), 10, 15));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawRoundRect(graphics, new Vector(80.0), 40, 40, 10, 15));
     }
     
@@ -625,13 +625,13 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.fillRect(graphics, null, 40, 40));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillRect(graphics, new Vector(80.0, 95.0), new Vector(120.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillRect(graphics, new Vector(80.0), new Vector(120.0, 135.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillRect(graphics, new Vector(80.0), new Vector(120.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillRect(graphics, new Vector(80.0), 40, 40));
     }
     
@@ -662,7 +662,7 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.fillCircle(graphics, null, 50));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillCircle(graphics, new Vector(133.0), 50));
     }
     
@@ -707,13 +707,13 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.fillOval(graphics, null, 60, 30));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillOval(graphics, new Vector(80.0, 95.0), new Vector(140.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillOval(graphics, new Vector(80.0), new Vector(140.0, 125.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillOval(graphics, new Vector(80.0), new Vector(140.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillOval(graphics, new Vector(110.0), 60, 30));
     }
     
@@ -790,9 +790,9 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.fillPolygon(graphics, (List<Vector>) null));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillPolygon(graphics, Arrays.asList(new Vector(80.0, 95.0), new Vector(140.0))));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillPolygon(graphics, Arrays.asList(new Vector(80.0), new Vector(140.0, 135.0))));
     }
     
@@ -866,13 +866,13 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.fillArc(graphics, null, null, startAngle, endAngle));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillArc(graphics, new Vector(80.0, 95.0), new Vector(140.0), startAngle, endAngle));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillArc(graphics, new Vector(80.0), new Vector(140.0, 125.0), startAngle, endAngle));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillArc(graphics, new Vector(80.0), new Vector(140.0), startAngle, endAngle));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillArc(graphics, new Vector(110.0), 60, 30, startAngle, endAngle));
     }
     
@@ -920,13 +920,13 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.fill3DRect(graphics, null, 40, 40, true));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fill3DRect(graphics, new Vector(80.0, 95.0), new Vector(120.0), true));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fill3DRect(graphics, new Vector(80.0), new Vector(120.0, 135.0), true));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fill3DRect(graphics, new Vector(80.0), new Vector(120.0), true));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fill3DRect(graphics, new Vector(80.0), 40, 40, true));
     }
     
@@ -971,13 +971,13 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.fillRoundRect(graphics, null, 40, 40, 10, 15));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillRoundRect(graphics, new Vector(80.0, 95.0), new Vector(120.0), 10, 15));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillRoundRect(graphics, new Vector(80.0), new Vector(120.0, 135.0), 10, 15));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillRoundRect(graphics, new Vector(80.0), new Vector(120.0), 10, 15));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.fillRoundRect(graphics, new Vector(80.0), 40, 40, 10, 15));
     }
     
@@ -1127,35 +1127,35 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.drawImage(graphics, image, null));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawImage(graphics, image, new Vector(50.0), new Vector(250.0, 400.0), new Vector(10.0, 10.0), new Vector(210.0, 210.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawImage(graphics, image, new Vector(50.0, 500.0), new Vector(250.0), new Vector(10.0, 10.0), new Vector(210.0, 210.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawImage(graphics, image, new Vector(50.0, 500.0), new Vector(250.0, 400.0), new Vector(10.0), new Vector(210.0, 210.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawImage(graphics, image, new Vector(50.0, 500.0), new Vector(250.0, 400.0), new Vector(10, 10.0), new Vector(210.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawImage(graphics, image, new Vector(50.0), new Vector(250.0), new Vector(10.0), new Vector(210.0)));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawImage(graphics, image, new Vector(50.0), 200, 200, new Vector(10.0, 10.0), 200, 200));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawImage(graphics, image, new Vector(50.0, 200.0), 200, 200, new Vector(10.0), 200, 200));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawImage(graphics, image, new Vector(50.0), 200, 200, new Vector(10.0), 200, 200));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawImage(graphics, image, new Vector(10.0), new Vector(210.0, 210.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawImage(graphics, image, new Vector(10.0, 10.0), new Vector(210.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawImage(graphics, image, new Vector(10.0), new Vector(210.0)));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawImage(graphics, image, new Vector(10.0), 200, 200));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawImage(graphics, image, new Vector(10.0)));
     }
     
@@ -1189,7 +1189,7 @@ public class DrawUtilityTest {
         TestUtils.assertNoException(() ->
                 DrawUtility.drawString(graphics, null, new IntVector(80, 95)));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.drawString(graphics, "test", new Vector(133.0)));
     }
     
@@ -1240,19 +1240,19 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.copyArea(graphics, null, 200, 200, null));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.copyArea(graphics, new Vector(50.0), new Vector(250.0, 400.0), new Vector(10.0, 10.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.copyArea(graphics, new Vector(50.0, 200.0), new Vector(250.0), new Vector(10.0, 10.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.copyArea(graphics, new Vector(50.0, 200.0), new Vector(250.0, 400.0), new Vector(10.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.copyArea(graphics, new Vector(50.0), new Vector(250.0), new Vector(10.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.copyArea(graphics, new Vector(50.0), 200, 200, new Vector(10.0, 10.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.copyArea(graphics, new Vector(50.0, 200.0), 200, 200, new Vector(10.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.copyArea(graphics, new Vector(50.0), 200, 200, new Vector(10.0)));
     }
     
@@ -1297,13 +1297,13 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.clearArea(graphics, null, 40, 40));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.clearArea(graphics, new Vector(80.0, 95.0), new Vector(120.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.clearArea(graphics, new Vector(80.0), new Vector(120.0, 135.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.clearArea(graphics, new Vector(80.0), new Vector(120.0)));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.clearArea(graphics, new Vector(80.0), 40, 40));
     }
     
@@ -1473,9 +1473,9 @@ public class DrawUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 DrawUtility.setClip(graphics, null, 40, 40));
         
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.setClip(graphics, Arrays.asList(new Vector(80.0, 95.0), new Vector(140.0))));
-        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, () ->
+        TestUtils.assertException(ArrayIndexOutOfBoundsException.class, "Index 1 out of bounds for length 1", () ->
                 DrawUtility.setClip(graphics, Arrays.asList(new Vector(80.0), new Vector(140.0, 135.0))));
     }
     

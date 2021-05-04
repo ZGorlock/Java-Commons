@@ -143,11 +143,11 @@ public class BigMathUtilityTest {
         Assert.assertEquals("549", BigMathUtility.add("0549", "0"));
         
         //invalid
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.add("1", "15s5"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.add("15s5", "1"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.add("15s5", "a"));
         
         //negative
@@ -490,11 +490,11 @@ public class BigMathUtilityTest {
         Assert.assertEquals("549", BigMathUtility.subtract("0549", "0"));
         
         //invalid
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.subtract("1", "15s5"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.subtract("15s5", "1"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.subtract("15s5", "a"));
         
         //negative
@@ -837,11 +837,11 @@ public class BigMathUtilityTest {
         Assert.assertEquals("0", BigMathUtility.multiply("0549", "0"));
         
         //invalid
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.multiply("1", "15s5"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.multiply("15s5", "1"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.multiply("15s5", "a"));
         
         //negative
@@ -1207,15 +1207,15 @@ public class BigMathUtilityTest {
         Assert.assertEquals("0", BigMathUtility.divide("0", "88"));
         
         //divide by zero
-        TestUtils.assertException(ArithmeticException.class, () ->
+        TestUtils.assertException(ArithmeticException.class, "Cannot divide by zero", () ->
                 BigMathUtility.divide("0549", "0"));
         
         //invalid
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.divide("1", "15s5"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.divide("15s5", "1"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.divide("15s5", "a"));
         
         //negative
@@ -1578,15 +1578,15 @@ public class BigMathUtilityTest {
         Assert.assertEquals("0", BigMathUtility.mod("0", "88"));
         
         //mod by zero
-        TestUtils.assertException(ArithmeticException.class, () ->
+        TestUtils.assertException(ArithmeticException.class, "Cannot divide by zero", () ->
                 BigMathUtility.mod("0549", "0"));
         
         //invalid
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.mod("1", "15s5"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.mod("15s5", "1"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.mod("15s5", "a"));
         
         //negative
@@ -1950,11 +1950,11 @@ public class BigMathUtilityTest {
         Assert.assertEquals("1", BigMathUtility.power("0549", "0"));
         
         //invalid
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.power("1", "15s5"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.power("15s5", "1"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.power("15s5", "a"));
         
         //negative
@@ -2063,17 +2063,17 @@ public class BigMathUtilityTest {
         Assert.assertEquals("0", BigMathUtility.root("0", "88"));
         
         //imaginary numbers
-        TestUtils.assertException(ArithmeticException.class, () ->
+        TestUtils.assertException(ArithmeticException.class, "Illegal root(x) for x < 0: x = -1", () ->
                 BigMathUtility.root("-1", "1"));
-        TestUtils.assertException(ArithmeticException.class, () ->
+        TestUtils.assertException(ArithmeticException.class, "Division by zero", () ->
                 BigMathUtility.root("0549", "0"));
         
         //invalid
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.root("1", "15s5"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.root("15s5", "1"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.root("15s5", "a"));
         
         //negative
@@ -2181,11 +2181,11 @@ public class BigMathUtilityTest {
         Assert.assertEquals("0", BigMathUtility.sqrt("0"));
         
         //imaginary numbers
-        TestUtils.assertException(ArithmeticException.class, () ->
+        TestUtils.assertException(ArithmeticException.class, "Illegal sqrt(x) for x < 0: x = -1", () ->
                 BigMathUtility.sqrt("-1"));
         
         //invalid
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.sqrt("15s5"));
         
         //decimal
@@ -2250,19 +2250,19 @@ public class BigMathUtilityTest {
         Assert.assertEquals("7.7416033471438101343043086923917835687985581359699429124459764835", BigMathUtility.log("8976464100065468", 115));
         
         //invalid number
-        TestUtils.assertException(ArithmeticException.class, () ->
+        TestUtils.assertException(ArithmeticException.class, "Cannot handle imaginary numbers", () ->
                 BigMathUtility.log("-88", 10));
         
         //invalid base
-        TestUtils.assertException(ArithmeticException.class, () ->
+        TestUtils.assertException(ArithmeticException.class, "Cannot take a log with base: 0", () ->
                 BigMathUtility.log("88", 0));
-        TestUtils.assertException(ArithmeticException.class, () ->
+        TestUtils.assertException(ArithmeticException.class, "Cannot take a log with base: 1", () ->
                 BigMathUtility.log("88", 1));
-        TestUtils.assertException(ArithmeticException.class, () ->
+        TestUtils.assertException(ArithmeticException.class, "Cannot take a log with base: -1", () ->
                 BigMathUtility.log("88", -1));
         
         //invalid
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.log("15s5", 10));
         
         //decimal
@@ -2322,11 +2322,11 @@ public class BigMathUtilityTest {
         Assert.assertEquals("84.5817388374975215812641301657376711018943538822161890891117948071", BigMathUtility.ln("8976464100065468"));
         
         //invalid number
-        TestUtils.assertException(ArithmeticException.class, () ->
+        TestUtils.assertException(ArithmeticException.class, "Cannot handle imaginary numbers", () ->
                 BigMathUtility.ln("-88"));
         
         //invalid
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.ln("15a5"));
         
         //decimal
@@ -2420,11 +2420,11 @@ public class BigMathUtilityTest {
         Assert.assertTrue(BigMathUtility.greaterThan("0549", "0"));
         
         //invalid
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.greaterThan("1", "15s5"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.greaterThan("15s5", "1"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.greaterThan("15s5", "a"));
         
         //negative
@@ -2701,11 +2701,11 @@ public class BigMathUtilityTest {
         Assert.assertFalse(BigMathUtility.lessThan("0549", "0"));
         
         //invalid
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.lessThan("1", "15s5"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.lessThan("15s5", "1"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.lessThan("15s5", "a"));
         
         //negative
@@ -2982,11 +2982,11 @@ public class BigMathUtilityTest {
         Assert.assertFalse(BigMathUtility.equalTo("0549", "0"));
         
         //invalid
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.equalTo("1", "15s5"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.equalTo("15s5", "1"));
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character s is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 BigMathUtility.equalTo("15s5", "a"));
         
         //negative

@@ -261,7 +261,7 @@ public class NumberStringUtilityTest {
         
         //invalid
         //noinspection ResultOfMethodCallIgnored
-        TestUtils.assertException(NumberFormatException.class, () ->
+        TestUtils.assertException(NumberFormatException.class, "Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 NumberStringUtility.numberValueOf("156a87"));
         
         //exponential notation
