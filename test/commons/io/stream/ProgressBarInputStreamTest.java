@@ -97,6 +97,7 @@ public class ProgressBarInputStreamTest {
      *
      * @throws Exception When there is an exception.
      */
+    @SuppressWarnings("EmptyMethod")
     @Test
     public void testConstants() throws Exception {
     }
