@@ -82,6 +82,40 @@ public class MathUtility {
     }
     
     /**
+     * Determines if a number is a perfect square or not.
+     *
+     * @param value The number.
+     * @return Whether the number is a perfect square or not.
+     */
+    public static boolean isSquare(long value) {
+        if (value < 0) {
+            return false;
+        }
+        
+        double sqrt = Math.sqrt(value);
+        return sqrt - Math.floor(sqrt) == 0;
+    }
+    
+    /**
+     * Determines if a number is prime or not.
+     *
+     * @param value The number.
+     * @return Whether the number is prime or not.
+     */
+    public static boolean isPrime(long value) {
+        if (value < 2) {
+            return false;
+        }
+        
+        for (long i = 2; i <= value / 2; i++) {
+            if (value % i == 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    /**
      * Rounds a decimal number with a certain precision.
      *
      * @param value     The number.
@@ -96,12 +130,25 @@ public class MathUtility {
     /**
      * Rounds a Big Decimal number with a certain precision.
      *
+     * @param value        The number.
+     * @param precision    The maximum number of decimal places of the result.
+     * @param roundingMode The rounding mode to use when rounding the result.
+     * @return The rounded number.
+     */
+    public static BigDecimal roundWithPrecision(BigDecimal value, int precision, RoundingMode roundingMode) {
+        return new BigDecimal(value.setScale(precision, roundingMode).stripTrailingZeros().toPlainString());
+    }
+    
+    /**
+     * Rounds a Big Decimal number with a certain precision.
+     *
      * @param value     The number.
      * @param precision The maximum number of decimal places of the result.
      * @return The rounded number.
+     * @see #roundWithPrecision(BigDecimal, int, RoundingMode)
      */
     public static BigDecimal roundWithPrecision(BigDecimal value, int precision) {
-        return value.setScale(precision, RoundingMode.HALF_UP).stripTrailingZeros();
+        return roundWithPrecision(value, precision, RoundingMode.HALF_UP);
     }
     
     /**

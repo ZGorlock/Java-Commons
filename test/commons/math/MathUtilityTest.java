@@ -8,6 +8,7 @@
 package commons.math;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Arrays;
 
 import commons.test.TestUtils;
@@ -185,10 +186,70 @@ public class MathUtilityTest {
     }
     
     /**
+     * JUnit test of isSquare.
+     *
+     * @throws Exception When there is an exception.
+     * @see MathUtility#isSquare(long)
+     */
+    @Test
+    public void testIsSquare() throws Exception {
+        //standard
+        Assert.assertTrue(MathUtility.isSquare(0));
+        Assert.assertTrue(MathUtility.isSquare(1));
+        Assert.assertTrue(MathUtility.isSquare(4));
+        Assert.assertTrue(MathUtility.isSquare(9));
+        Assert.assertTrue(MathUtility.isSquare(25));
+        Assert.assertTrue(MathUtility.isSquare(100));
+        Assert.assertTrue(MathUtility.isSquare(10000));
+        Assert.assertTrue(MathUtility.isSquare(1048576));
+        Assert.assertFalse(MathUtility.isSquare(2));
+        Assert.assertFalse(MathUtility.isSquare(3));
+        Assert.assertFalse(MathUtility.isSquare(8));
+        Assert.assertFalse(MathUtility.isSquare(99));
+        Assert.assertFalse(MathUtility.isSquare(10001));
+        Assert.assertFalse(MathUtility.isSquare(1543211));
+        
+        //invalid
+        Assert.assertFalse(MathUtility.isSquare(-1));
+        Assert.assertFalse(MathUtility.isSquare(-16));
+    }
+    
+    /**
+     * JUnit test of isPrime.
+     *
+     * @throws Exception When there is an exception.
+     * @see MathUtility#isPrime(long)
+     */
+    @Test
+    public void testIsPrime() throws Exception {
+        //standard
+        Assert.assertTrue(MathUtility.isPrime(2));
+        Assert.assertTrue(MathUtility.isPrime(3));
+        Assert.assertTrue(MathUtility.isPrime(17));
+        Assert.assertTrue(MathUtility.isPrime(197));
+        Assert.assertTrue(MathUtility.isPrime(2731));
+        Assert.assertTrue(MathUtility.isPrime(16033));
+        Assert.assertTrue(MathUtility.isPrime(512927377));
+        Assert.assertFalse(MathUtility.isPrime(0));
+        Assert.assertFalse(MathUtility.isPrime(1));
+        Assert.assertFalse(MathUtility.isPrime(4));
+        Assert.assertFalse(MathUtility.isPrime(9));
+        Assert.assertFalse(MathUtility.isPrime(20));
+        Assert.assertFalse(MathUtility.isPrime(100));
+        Assert.assertFalse(MathUtility.isPrime(2022));
+        Assert.assertFalse(MathUtility.isPrime(1048576));
+        
+        //invalid
+        Assert.assertFalse(MathUtility.isPrime(-1));
+        Assert.assertFalse(MathUtility.isPrime(-16));
+    }
+    
+    /**
      * JUnit test of roundWithPrecision.
      *
      * @throws Exception When there is an exception.
      * @see MathUtility#roundWithPrecision(double, int)
+     * @see MathUtility#roundWithPrecision(BigDecimal, int, java.math.RoundingMode)
      * @see MathUtility#roundWithPrecision(BigDecimal, int)
      */
     @Test
@@ -244,6 +305,10 @@ public class MathUtilityTest {
                 MathUtility.roundWithPrecision(new BigDecimal("111.70400000000000000000000000000000000000000000000001"), 50).toPlainString());
         Assert.assertEquals("111.704",
                 MathUtility.roundWithPrecision(new BigDecimal("111.704000000000000000000000000000000000000000000000001"), 50).toPlainString());
+        Assert.assertEquals("111.704001",
+                MathUtility.roundWithPrecision(new BigDecimal("111.70400000001"), 6, RoundingMode.CEILING).toPlainString());
+        Assert.assertEquals("111.704",
+                MathUtility.roundWithPrecision(new BigDecimal("111.704000000000000000000000000000000000000000000000001"), 50, RoundingMode.DOWN).toPlainString());
         
         Assert.assertEquals("0.5933",
                 MathUtility.roundWithPrecision(new BigDecimal("0.59329999999996"), 12).toPlainString());
@@ -257,6 +322,10 @@ public class MathUtilityTest {
                 MathUtility.roundWithPrecision(new BigDecimal("0.59329999999999999999999999999999999999999999999996"), 50).toPlainString());
         Assert.assertEquals("0.5933",
                 MathUtility.roundWithPrecision(new BigDecimal("0.593299999999999999999999999999999999999999999999996"), 50).toPlainString());
+        Assert.assertEquals("0.5933",
+                MathUtility.roundWithPrecision(new BigDecimal("0.59329999999996"), 12, RoundingMode.HALF_DOWN).toPlainString());
+        Assert.assertEquals("0.59329999999999999999999999999999999999999999999999",
+                MathUtility.roundWithPrecision(new BigDecimal("0.593299999999999999999999999999999999999999999999996"), 50, RoundingMode.FLOOR).toPlainString());
         
         Assert.assertEquals("112",
                 MathUtility.roundWithPrecision(new BigDecimal("111.70400000001"), 0).toPlainString());
@@ -266,6 +335,8 @@ public class MathUtilityTest {
                 MathUtility.roundWithPrecision(new BigDecimal("111.70400000001"), -2).toPlainString());
         Assert.assertEquals("0",
                 MathUtility.roundWithPrecision(new BigDecimal("111.70400000001"), -3).toPlainString());
+        Assert.assertEquals("120",
+                MathUtility.roundWithPrecision(new BigDecimal("111.70400000001"), -1, RoundingMode.UP).toPlainString());
     }
     
     /**
