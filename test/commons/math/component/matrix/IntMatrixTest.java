@@ -132,6 +132,53 @@ public class IntMatrixTest {
     @SuppressWarnings("ConstantConditions")
     @Test
     public void testConstructors() throws Exception {
+        //components
+        IntMatrix matrix = new IntMatrix(0, 2, 1, -9, 1, 8, -0, 5, 4);
+        Assert.assertArrayEquals(new Number[] {0, 2, 1, -9, 1, 8, -0, 5, 4}, matrix.getRawComponents());
+        Assert.assertEquals(3, matrix.getDimensionality());
+        
+        //list of components
+        List<Number> values = Arrays.asList(0, 2, 1, -9, 1, 8, -0, 5, 4);
+        IntMatrix matrix2 = new IntMatrix(values);
+        Assert.assertArrayEquals(new Number[] {0, 2, 1, -9, 1, 8, -0, 5, 4}, matrix2.getRawComponents());
+        Assert.assertEquals(3, matrix2.getDimensionality());
+        
+        //raw matrix
+        IntMatrix matrix3 = new IntMatrix(new IntMatrix(0, 2, 1, -9, 1, 8, -0, 5, 4));
+        Assert.assertArrayEquals(new Number[] {0, 2, 1, -9, 1, 8, -0, 5, 4}, matrix3.getRawComponents());
+        Assert.assertEquals(3, matrix3.getDimensionality());
+        
+        //matrix
+        IntMatrix matrix4 = new IntMatrix(new Matrix(0.884, 2, 1.1, -9.3, 1.61, 8, -0.77, 5.06, 4.4));
+        Assert.assertArrayEquals(new Number[] {0, 2, 1, -9, 1, 8, -0, 5, 4}, matrix4.getRawComponents());
+        Assert.assertEquals(3, matrix4.getDimensionality());
+        
+        //dimensionality
+        IntMatrix matrixDimensionality = new IntMatrix(4);
+        Assert.assertArrayEquals(new Number[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}, matrixDimensionality.getRawComponents());
+        Assert.assertEquals(4, matrixDimensionality.getDimensionality());
+        
+        //empty
+        IntMatrix matrixDefault = new IntMatrix();
+        Assert.assertArrayEquals(new Number[] {}, matrixDefault.getRawComponents());
+        Assert.assertEquals(0, matrixDefault.getDimensionality());
+        
+        //equality
+        Assert.assertEquals(matrix, matrix2);
+        Assert.assertEquals(matrix2, matrix3);
+        Assert.assertEquals(matrix3, matrix4);
+        
+        //invalid
+        
+        TestUtils.assertException(ArithmeticException.class, new IntMatrix().getErrorHandler().componentLengthNotSquareErrorMessage(new Integer[] {0, 2, 1, -9, 1, 8, -0, 5}), () ->
+                new IntMatrix(0, 2, 1, -9, 1, 8, -0, 5));
+        
+        TestUtils.assertException(NullPointerException.class, () ->
+                new IntMatrix(Arrays.asList(0.884, null, 1.1, -9.3)));
+        TestUtils.assertException(NullPointerException.class, () ->
+                new IntMatrix((IntMatrix) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                new IntMatrix((Matrix) null));
     }
     
     /**
