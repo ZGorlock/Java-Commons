@@ -43,7 +43,7 @@ public class DrawUtility {
      */
     public static void drawPoint(Graphics2D graphics, VectorInterface<?, ?> point) throws ArrayIndexOutOfBoundsException {
         graphics.drawRect(
-                point.getComponents()[0].intValue(), point.getComponents()[1].intValue(),
+                point.getRawComponents()[0].intValue(), point.getRawComponents()[1].intValue(),
                 1, 1);
     }
     
@@ -57,8 +57,8 @@ public class DrawUtility {
      */
     public static void drawLine(Graphics2D graphics, VectorInterface<?, ?> from, VectorInterface<?, ?> to) throws ArrayIndexOutOfBoundsException {
         graphics.drawLine(
-                from.getComponents()[0].intValue(), from.getComponents()[1].intValue(),
-                to.getComponents()[0].intValue(), to.getComponents()[1].intValue());
+                from.getRawComponents()[0].intValue(), from.getRawComponents()[1].intValue(),
+                to.getRawComponents()[0].intValue(), to.getRawComponents()[1].intValue());
     }
     
     /**
@@ -71,8 +71,8 @@ public class DrawUtility {
      */
     public static void drawRect(Graphics2D graphics, VectorInterface<?, ?> upperLeft, VectorInterface<?, ?> lowerRight) throws ArrayIndexOutOfBoundsException {
         graphics.drawRect(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
-                lowerRight.getComponents()[0].intValue() - upperLeft.getComponents()[0].intValue(), lowerRight.getComponents()[1].intValue() - upperLeft.getComponents()[1].intValue());
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
+                lowerRight.getRawComponents()[0].intValue() - upperLeft.getRawComponents()[0].intValue(), lowerRight.getRawComponents()[1].intValue() - upperLeft.getRawComponents()[1].intValue());
     }
     
     /**
@@ -86,7 +86,7 @@ public class DrawUtility {
      */
     public static void drawRect(Graphics2D graphics, VectorInterface<?, ?> upperLeft, int width, int height) throws ArrayIndexOutOfBoundsException {
         graphics.drawRect(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
                 width, height);
     }
     
@@ -100,7 +100,7 @@ public class DrawUtility {
      */
     public static void drawCircle(Graphics2D graphics, VectorInterface<?, ?> center, int radius) throws ArrayIndexOutOfBoundsException {
         graphics.drawOval(
-                center.getComponents()[0].intValue() - radius, center.getComponents()[1].intValue() - radius,
+                center.getRawComponents()[0].intValue() - radius, center.getRawComponents()[1].intValue() - radius,
                 (radius * 2), (radius * 2));
     }
     
@@ -114,8 +114,8 @@ public class DrawUtility {
      */
     public static void drawOval(Graphics2D graphics, VectorInterface<?, ?> upperLeft, VectorInterface<?, ?> lowerRight) throws ArrayIndexOutOfBoundsException {
         graphics.drawOval(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
-                lowerRight.getComponents()[0].intValue() - upperLeft.getComponents()[0].intValue(), lowerRight.getComponents()[1].intValue() - upperLeft.getComponents()[1].intValue());
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
+                lowerRight.getRawComponents()[0].intValue() - upperLeft.getRawComponents()[0].intValue(), lowerRight.getRawComponents()[1].intValue() - upperLeft.getRawComponents()[1].intValue());
     }
     
     /**
@@ -129,7 +129,7 @@ public class DrawUtility {
      */
     public static void drawOval(Graphics2D graphics, VectorInterface<?, ?> center, int width, int height) throws ArrayIndexOutOfBoundsException {
         graphics.drawOval(
-                center.getComponents()[0].intValue() - (width / 2), center.getComponents()[1].intValue() - (height / 2),
+                center.getRawComponents()[0].intValue() - (width / 2), center.getRawComponents()[1].intValue() - (height / 2),
                 width, height);
     }
     
@@ -152,8 +152,8 @@ public class DrawUtility {
      */
     public static void drawPolygon(Graphics2D graphics, List<? extends VectorInterface<?, ?>> points) throws ArrayIndexOutOfBoundsException {
         graphics.drawPolygon(
-                points.stream().mapToInt(e -> e.getComponents()[0].intValue()).toArray(),
-                points.stream().mapToInt(e -> e.getComponents()[1].intValue()).toArray(),
+                points.stream().mapToInt(e -> e.getRawComponents()[0].intValue()).toArray(),
+                points.stream().mapToInt(e -> e.getRawComponents()[1].intValue()).toArray(),
                 points.size());
     }
     
@@ -179,8 +179,8 @@ public class DrawUtility {
      */
     public static void drawArc(Graphics2D graphics, VectorInterface<?, ?> upperLeft, VectorInterface<?, ?> lowerRight, double startAngle, double endAngle) throws ArrayIndexOutOfBoundsException {
         graphics.drawArc(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
-                lowerRight.getComponents()[0].intValue() - upperLeft.getComponents()[0].intValue(), lowerRight.getComponents()[1].intValue() - upperLeft.getComponents()[1].intValue(),
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
+                lowerRight.getRawComponents()[0].intValue() - upperLeft.getRawComponents()[0].intValue(), lowerRight.getRawComponents()[1].intValue() - upperLeft.getRawComponents()[1].intValue(),
                 (int) Math.toDegrees(startAngle), (int) Math.toDegrees(endAngle - startAngle));
     }
     
@@ -197,7 +197,7 @@ public class DrawUtility {
      */
     public static void drawArc(Graphics2D graphics, VectorInterface<?, ?> center, int width, int height, double startAngle, double endAngle) throws ArrayIndexOutOfBoundsException {
         graphics.drawArc(
-                center.getComponents()[0].intValue() - (width / 2), center.getComponents()[1].intValue() - (height / 2),
+                center.getRawComponents()[0].intValue() - (width / 2), center.getRawComponents()[1].intValue() - (height / 2),
                 width, height,
                 (int) Math.toDegrees(startAngle), (int) Math.toDegrees(endAngle - startAngle));
     }
@@ -213,8 +213,8 @@ public class DrawUtility {
      */
     public static void draw3DRect(Graphics2D graphics, VectorInterface<?, ?> upperLeft, VectorInterface<?, ?> lowerRight, boolean raised) throws ArrayIndexOutOfBoundsException {
         graphics.draw3DRect(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
-                lowerRight.getComponents()[0].intValue() - upperLeft.getComponents()[0].intValue(), lowerRight.getComponents()[1].intValue() - upperLeft.getComponents()[1].intValue(),
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
+                lowerRight.getRawComponents()[0].intValue() - upperLeft.getRawComponents()[0].intValue(), lowerRight.getRawComponents()[1].intValue() - upperLeft.getRawComponents()[1].intValue(),
                 raised);
     }
     
@@ -230,7 +230,7 @@ public class DrawUtility {
      */
     public static void draw3DRect(Graphics2D graphics, VectorInterface<?, ?> upperLeft, int width, int height, boolean raised) throws ArrayIndexOutOfBoundsException {
         graphics.draw3DRect(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
                 width, height,
                 raised);
     }
@@ -247,8 +247,8 @@ public class DrawUtility {
      */
     public static void drawRoundRect(Graphics2D graphics, VectorInterface<?, ?> upperLeft, VectorInterface<?, ?> lowerRight, int arcWidth, int arcHeight) throws ArrayIndexOutOfBoundsException {
         graphics.drawRoundRect(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
-                lowerRight.getComponents()[0].intValue() - upperLeft.getComponents()[0].intValue(), lowerRight.getComponents()[1].intValue() - upperLeft.getComponents()[1].intValue(),
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
+                lowerRight.getRawComponents()[0].intValue() - upperLeft.getRawComponents()[0].intValue(), lowerRight.getRawComponents()[1].intValue() - upperLeft.getRawComponents()[1].intValue(),
                 arcWidth, arcHeight);
     }
     
@@ -265,7 +265,7 @@ public class DrawUtility {
      */
     public static void drawRoundRect(Graphics2D graphics, VectorInterface<?, ?> upperLeft, int width, int height, int arcWidth, int arcHeight) throws ArrayIndexOutOfBoundsException {
         graphics.drawRoundRect(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
                 width, height,
                 arcWidth, arcHeight);
     }
@@ -280,8 +280,8 @@ public class DrawUtility {
      */
     public static void fillRect(Graphics2D graphics, VectorInterface<?, ?> upperLeft, VectorInterface<?, ?> lowerRight) throws ArrayIndexOutOfBoundsException {
         graphics.fillRect(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
-                lowerRight.getComponents()[0].intValue() - upperLeft.getComponents()[0].intValue(), lowerRight.getComponents()[1].intValue() - upperLeft.getComponents()[1].intValue());
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
+                lowerRight.getRawComponents()[0].intValue() - upperLeft.getRawComponents()[0].intValue(), lowerRight.getRawComponents()[1].intValue() - upperLeft.getRawComponents()[1].intValue());
     }
     
     /**
@@ -295,7 +295,7 @@ public class DrawUtility {
      */
     public static void fillRect(Graphics2D graphics, VectorInterface<?, ?> upperLeft, int width, int height) throws ArrayIndexOutOfBoundsException {
         graphics.fillRect(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
                 width, height);
     }
     
@@ -309,7 +309,7 @@ public class DrawUtility {
      */
     public static void fillCircle(Graphics2D graphics, VectorInterface<?, ?> center, int radius) throws ArrayIndexOutOfBoundsException {
         graphics.fillOval(
-                center.getComponents()[0].intValue() - radius, center.getComponents()[1].intValue() - radius,
+                center.getRawComponents()[0].intValue() - radius, center.getRawComponents()[1].intValue() - radius,
                 (radius * 2), (radius * 2));
     }
     
@@ -323,8 +323,8 @@ public class DrawUtility {
      */
     public static void fillOval(Graphics2D graphics, VectorInterface<?, ?> upperLeft, VectorInterface<?, ?> lowerRight) throws ArrayIndexOutOfBoundsException {
         graphics.fillOval(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
-                lowerRight.getComponents()[0].intValue() - upperLeft.getComponents()[0].intValue(), lowerRight.getComponents()[1].intValue() - upperLeft.getComponents()[1].intValue());
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
+                lowerRight.getRawComponents()[0].intValue() - upperLeft.getRawComponents()[0].intValue(), lowerRight.getRawComponents()[1].intValue() - upperLeft.getRawComponents()[1].intValue());
     }
     
     /**
@@ -338,7 +338,7 @@ public class DrawUtility {
      */
     public static void fillOval(Graphics2D graphics, VectorInterface<?, ?> center, int width, int height) throws ArrayIndexOutOfBoundsException {
         graphics.fillOval(
-                center.getComponents()[0].intValue() - (width / 2), center.getComponents()[1].intValue() - (height / 2),
+                center.getRawComponents()[0].intValue() - (width / 2), center.getRawComponents()[1].intValue() - (height / 2),
                 width, height);
     }
     
@@ -361,8 +361,8 @@ public class DrawUtility {
      */
     public static void fillPolygon(Graphics2D graphics, List<? extends VectorInterface<?, ?>> points) throws ArrayIndexOutOfBoundsException {
         graphics.fillPolygon(
-                points.stream().mapToInt(e -> e.getComponents()[0].intValue()).toArray(),
-                points.stream().mapToInt(e -> e.getComponents()[1].intValue()).toArray(),
+                points.stream().mapToInt(e -> e.getRawComponents()[0].intValue()).toArray(),
+                points.stream().mapToInt(e -> e.getRawComponents()[1].intValue()).toArray(),
                 points.size());
     }
     
@@ -388,8 +388,8 @@ public class DrawUtility {
      */
     public static void fillArc(Graphics2D graphics, VectorInterface<?, ?> upperLeft, VectorInterface<?, ?> lowerRight, double startAngle, double endAngle) throws ArrayIndexOutOfBoundsException {
         graphics.fillArc(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
-                lowerRight.getComponents()[0].intValue() - upperLeft.getComponents()[0].intValue(), lowerRight.getComponents()[1].intValue() - upperLeft.getComponents()[1].intValue(),
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
+                lowerRight.getRawComponents()[0].intValue() - upperLeft.getRawComponents()[0].intValue(), lowerRight.getRawComponents()[1].intValue() - upperLeft.getRawComponents()[1].intValue(),
                 (int) Math.toDegrees(startAngle), (int) Math.toDegrees(endAngle - startAngle));
     }
     
@@ -406,7 +406,7 @@ public class DrawUtility {
      */
     public static void fillArc(Graphics2D graphics, VectorInterface<?, ?> center, int width, int height, double startAngle, double endAngle) throws ArrayIndexOutOfBoundsException {
         graphics.fillArc(
-                center.getComponents()[0].intValue() - (width / 2), center.getComponents()[1].intValue() - (height / 2),
+                center.getRawComponents()[0].intValue() - (width / 2), center.getRawComponents()[1].intValue() - (height / 2),
                 width, height,
                 (int) Math.toDegrees(startAngle), (int) Math.toDegrees(endAngle - startAngle));
     }
@@ -422,8 +422,8 @@ public class DrawUtility {
      */
     public static void fill3DRect(Graphics2D graphics, VectorInterface<?, ?> upperLeft, VectorInterface<?, ?> lowerRight, boolean raised) throws ArrayIndexOutOfBoundsException {
         graphics.fill3DRect(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
-                lowerRight.getComponents()[0].intValue() - upperLeft.getComponents()[0].intValue(), lowerRight.getComponents()[1].intValue() - upperLeft.getComponents()[1].intValue(),
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
+                lowerRight.getRawComponents()[0].intValue() - upperLeft.getRawComponents()[0].intValue(), lowerRight.getRawComponents()[1].intValue() - upperLeft.getRawComponents()[1].intValue(),
                 raised);
     }
     
@@ -439,7 +439,7 @@ public class DrawUtility {
      */
     public static void fill3DRect(Graphics2D graphics, VectorInterface<?, ?> upperLeft, int width, int height, boolean raised) throws ArrayIndexOutOfBoundsException {
         graphics.fill3DRect(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
                 width, height,
                 raised);
     }
@@ -456,8 +456,8 @@ public class DrawUtility {
      */
     public static void fillRoundRect(Graphics2D graphics, VectorInterface<?, ?> upperLeft, VectorInterface<?, ?> lowerRight, int arcWidth, int arcHeight) throws ArrayIndexOutOfBoundsException {
         graphics.fillRoundRect(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
-                lowerRight.getComponents()[0].intValue() - upperLeft.getComponents()[0].intValue(), lowerRight.getComponents()[1].intValue() - upperLeft.getComponents()[1].intValue(),
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
+                lowerRight.getRawComponents()[0].intValue() - upperLeft.getRawComponents()[0].intValue(), lowerRight.getRawComponents()[1].intValue() - upperLeft.getRawComponents()[1].intValue(),
                 arcWidth, arcHeight);
     }
     
@@ -474,7 +474,7 @@ public class DrawUtility {
      */
     public static void fillRoundRect(Graphics2D graphics, VectorInterface<?, ?> upperLeft, int width, int height, int arcWidth, int arcHeight) throws ArrayIndexOutOfBoundsException {
         graphics.fillRoundRect(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
                 width, height,
                 arcWidth, arcHeight);
     }
@@ -492,10 +492,10 @@ public class DrawUtility {
      */
     public static void drawImage(Graphics2D graphics, BufferedImage image, VectorInterface<?, ?> sourceUpperLeft, VectorInterface<?, ?> sourceLowerRight, VectorInterface<?, ?> destUpperLeft, VectorInterface<?, ?> destLowerRight) throws ArrayIndexOutOfBoundsException {
         graphics.drawImage(image,
-                destUpperLeft.getComponents()[0].intValue(), destUpperLeft.getComponents()[1].intValue(),
-                destLowerRight.getComponents()[0].intValue(), destLowerRight.getComponents()[1].intValue(),
-                sourceUpperLeft.getComponents()[0].intValue(), sourceUpperLeft.getComponents()[1].intValue(),
-                sourceLowerRight.getComponents()[0].intValue(), sourceLowerRight.getComponents()[1].intValue(),
+                destUpperLeft.getRawComponents()[0].intValue(), destUpperLeft.getRawComponents()[1].intValue(),
+                destLowerRight.getRawComponents()[0].intValue(), destLowerRight.getRawComponents()[1].intValue(),
+                sourceUpperLeft.getRawComponents()[0].intValue(), sourceUpperLeft.getRawComponents()[1].intValue(),
+                sourceLowerRight.getRawComponents()[0].intValue(), sourceLowerRight.getRawComponents()[1].intValue(),
                 null);
     }
     
@@ -514,10 +514,10 @@ public class DrawUtility {
      */
     public static void drawImage(Graphics2D graphics, BufferedImage image, VectorInterface<?, ?> sourceUpperLeft, int sourceWidth, int sourceHeight, VectorInterface<?, ?> destUpperLeft, int destWidth, int destHeight) throws ArrayIndexOutOfBoundsException {
         graphics.drawImage(image,
-                destUpperLeft.getComponents()[0].intValue(), destUpperLeft.getComponents()[1].intValue(),
-                destUpperLeft.getComponents()[0].intValue() + destWidth, destUpperLeft.getComponents()[1].intValue() + destHeight,
-                sourceUpperLeft.getComponents()[0].intValue(), sourceUpperLeft.getComponents()[1].intValue(),
-                sourceUpperLeft.getComponents()[0].intValue() + sourceWidth, sourceUpperLeft.getComponents()[1].intValue() + sourceHeight,
+                destUpperLeft.getRawComponents()[0].intValue(), destUpperLeft.getRawComponents()[1].intValue(),
+                destUpperLeft.getRawComponents()[0].intValue() + destWidth, destUpperLeft.getRawComponents()[1].intValue() + destHeight,
+                sourceUpperLeft.getRawComponents()[0].intValue(), sourceUpperLeft.getRawComponents()[1].intValue(),
+                sourceUpperLeft.getRawComponents()[0].intValue() + sourceWidth, sourceUpperLeft.getRawComponents()[1].intValue() + sourceHeight,
                 null);
     }
     
@@ -532,8 +532,8 @@ public class DrawUtility {
      */
     public static void drawImage(Graphics2D graphics, BufferedImage image, VectorInterface<?, ?> destUpperLeft, VectorInterface<?, ?> destLowerRight) throws ArrayIndexOutOfBoundsException {
         graphics.drawImage(image,
-                destUpperLeft.getComponents()[0].intValue(), destUpperLeft.getComponents()[1].intValue(),
-                destLowerRight.getComponents()[0].intValue() - destUpperLeft.getComponents()[0].intValue(), destLowerRight.getComponents()[1].intValue() - destUpperLeft.getComponents()[1].intValue(),
+                destUpperLeft.getRawComponents()[0].intValue(), destUpperLeft.getRawComponents()[1].intValue(),
+                destLowerRight.getRawComponents()[0].intValue() - destUpperLeft.getRawComponents()[0].intValue(), destLowerRight.getRawComponents()[1].intValue() - destUpperLeft.getRawComponents()[1].intValue(),
                 null);
     }
     
@@ -549,7 +549,7 @@ public class DrawUtility {
      */
     public static void drawImage(Graphics2D graphics, BufferedImage image, VectorInterface<?, ?> destUpperLeft, int destWidth, int destHeight) throws ArrayIndexOutOfBoundsException {
         graphics.drawImage(image,
-                destUpperLeft.getComponents()[0].intValue(), destUpperLeft.getComponents()[1].intValue(),
+                destUpperLeft.getRawComponents()[0].intValue(), destUpperLeft.getRawComponents()[1].intValue(),
                 destWidth, destHeight,
                 null);
     }
@@ -564,7 +564,7 @@ public class DrawUtility {
      */
     public static void drawImage(Graphics2D graphics, BufferedImage image, VectorInterface<?, ?> destUpperLeft) throws ArrayIndexOutOfBoundsException {
         graphics.drawImage(image,
-                destUpperLeft.getComponents()[0].intValue(), destUpperLeft.getComponents()[1].intValue(),
+                destUpperLeft.getRawComponents()[0].intValue(), destUpperLeft.getRawComponents()[1].intValue(),
                 null);
     }
     
@@ -590,7 +590,7 @@ public class DrawUtility {
      */
     public static void drawString(Graphics2D graphics, String string, VectorInterface<?, ?> lowerLeft) throws ArrayIndexOutOfBoundsException {
         graphics.drawString(string,
-                lowerLeft.getComponents()[0].intValue(), lowerLeft.getComponents()[1].intValue());
+                lowerLeft.getRawComponents()[0].intValue(), lowerLeft.getRawComponents()[1].intValue());
     }
     
     /**
@@ -604,9 +604,9 @@ public class DrawUtility {
      */
     public static void copyArea(Graphics2D graphics, VectorInterface<?, ?> sourceUpperLeft, VectorInterface<?, ?> sourceLowerRight, VectorInterface<?, ?> destUpperLeft) throws ArrayIndexOutOfBoundsException {
         graphics.copyArea(
-                sourceUpperLeft.getComponents()[0].intValue(), sourceUpperLeft.getComponents()[1].intValue(),
-                sourceLowerRight.getComponents()[0].intValue() - sourceUpperLeft.getComponents()[0].intValue(), sourceLowerRight.getComponents()[1].intValue() - sourceUpperLeft.getComponents()[1].intValue(),
-                destUpperLeft.getComponents()[0].intValue() - sourceUpperLeft.getComponents()[0].intValue(), destUpperLeft.getComponents()[1].intValue() - sourceUpperLeft.getComponents()[1].intValue());
+                sourceUpperLeft.getRawComponents()[0].intValue(), sourceUpperLeft.getRawComponents()[1].intValue(),
+                sourceLowerRight.getRawComponents()[0].intValue() - sourceUpperLeft.getRawComponents()[0].intValue(), sourceLowerRight.getRawComponents()[1].intValue() - sourceUpperLeft.getRawComponents()[1].intValue(),
+                destUpperLeft.getRawComponents()[0].intValue() - sourceUpperLeft.getRawComponents()[0].intValue(), destUpperLeft.getRawComponents()[1].intValue() - sourceUpperLeft.getRawComponents()[1].intValue());
     }
     
     /**
@@ -621,9 +621,9 @@ public class DrawUtility {
      */
     public static void copyArea(Graphics2D graphics, VectorInterface<?, ?> sourceUpperLeft, int sourceWidth, int sourceHeight, VectorInterface<?, ?> destUpperLeft) throws ArrayIndexOutOfBoundsException {
         graphics.copyArea(
-                sourceUpperLeft.getComponents()[0].intValue(), sourceUpperLeft.getComponents()[1].intValue(),
+                sourceUpperLeft.getRawComponents()[0].intValue(), sourceUpperLeft.getRawComponents()[1].intValue(),
                 sourceWidth, sourceHeight,
-                destUpperLeft.getComponents()[0].intValue() - sourceUpperLeft.getComponents()[0].intValue(), destUpperLeft.getComponents()[1].intValue() - sourceUpperLeft.getComponents()[1].intValue());
+                destUpperLeft.getRawComponents()[0].intValue() - sourceUpperLeft.getRawComponents()[0].intValue(), destUpperLeft.getRawComponents()[1].intValue() - sourceUpperLeft.getRawComponents()[1].intValue());
     }
     
     /**
@@ -636,8 +636,8 @@ public class DrawUtility {
      */
     public static void clearArea(Graphics2D graphics, VectorInterface<?, ?> upperLeft, VectorInterface<?, ?> lowerRight) throws ArrayIndexOutOfBoundsException {
         graphics.clearRect(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
-                lowerRight.getComponents()[0].intValue() - upperLeft.getComponents()[0].intValue(), lowerRight.getComponents()[1].intValue() - upperLeft.getComponents()[1].intValue());
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
+                lowerRight.getRawComponents()[0].intValue() - upperLeft.getRawComponents()[0].intValue(), lowerRight.getRawComponents()[1].intValue() - upperLeft.getRawComponents()[1].intValue());
     }
     
     /**
@@ -651,7 +651,7 @@ public class DrawUtility {
      */
     public static void clearArea(Graphics2D graphics, VectorInterface<?, ?> upperLeft, int width, int height) throws ArrayIndexOutOfBoundsException {
         graphics.clearRect(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
                 width, height);
     }
     
@@ -704,8 +704,8 @@ public class DrawUtility {
      */
     public static void setClip(Graphics2D graphics, List<? extends VectorInterface<?, ?>> points) throws ArrayIndexOutOfBoundsException {
         graphics.setClip(new Polygon(
-                points.stream().mapToInt(e -> e.getComponents()[0].intValue()).toArray(),
-                points.stream().mapToInt(e -> e.getComponents()[1].intValue()).toArray(),
+                points.stream().mapToInt(e -> e.getRawComponents()[0].intValue()).toArray(),
+                points.stream().mapToInt(e -> e.getRawComponents()[1].intValue()).toArray(),
                 points.size()));
     }
     
@@ -719,8 +719,8 @@ public class DrawUtility {
      */
     public static void setClip(Graphics2D graphics, VectorInterface<?, ?> upperLeft, VectorInterface<?, ?> lowerRight) throws ArrayIndexOutOfBoundsException {
         graphics.setClip(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
-                lowerRight.getComponents()[0].intValue() - upperLeft.getComponents()[0].intValue(), lowerRight.getComponents()[1].intValue() - upperLeft.getComponents()[1].intValue());
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
+                lowerRight.getRawComponents()[0].intValue() - upperLeft.getRawComponents()[0].intValue(), lowerRight.getRawComponents()[1].intValue() - upperLeft.getRawComponents()[1].intValue());
     }
     
     /**
@@ -734,7 +734,7 @@ public class DrawUtility {
      */
     public static void setClip(Graphics2D graphics, VectorInterface<?, ?> upperLeft, int width, int height) throws ArrayIndexOutOfBoundsException {
         graphics.setClip(
-                upperLeft.getComponents()[0].intValue(), upperLeft.getComponents()[1].intValue(),
+                upperLeft.getRawComponents()[0].intValue(), upperLeft.getRawComponents()[1].intValue(),
                 width, height);
     }
     

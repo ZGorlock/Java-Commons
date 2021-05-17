@@ -166,8 +166,8 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(Math.sqrt(2), 3 * Math.PI / 4, Math.PI / 2), CoordinateUtility.cartesianToSpherical(new Vector(-1, 1)));
         Assert.assertEquals(new Vector(Math.sqrt(2), 5 * Math.PI / 4, Math.PI / 2), CoordinateUtility.cartesianToSpherical(new Vector(-1, -1)));
         Assert.assertEquals(new Vector(9.848857801796104, 0.41822432957922906, Math.PI / 2), CoordinateUtility.cartesianToSpherical(new Vector(9, 4)));
-        Assert.assertEquals(new Vector(5.4800000104854924E-5, 6.186131378970239E-5, Math.PI / 2), CoordinateUtility.cartesianToSpherical(new Vector(0.0000548, 0.00000000339)));
-        Assert.assertEquals(new Vector(5.4800000104854924E-5, 3.1415307922760034, Math.PI / 2), CoordinateUtility.cartesianToSpherical(new Vector(-0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(5.48E-5, 6.186131378970239E-5, Math.PI / 2), CoordinateUtility.cartesianToSpherical(new Vector(0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(5.48E-5, 3.1415307922760034, Math.PI / 2), CoordinateUtility.cartesianToSpherical(new Vector(-0.0000548, 0.00000000339)));
         Assert.assertEquals(new Vector(2.2629905367791623, 0.8170374004982911, Math.PI / 2), CoordinateUtility.cartesianToSpherical(new Vector(1.5487552, 1.649995)));
         Assert.assertEquals(new Vector(2.2629905367791623, 5.466147906681295, Math.PI / 2), CoordinateUtility.cartesianToSpherical(new Vector(1.5487552, -1.649995)));
         Assert.assertEquals(new Vector(3.5124073655203634, 0.4636476090008061, Math.PI / 2), CoordinateUtility.cartesianToSpherical(new Vector(Math.PI, Math.PI / 2)));
@@ -179,7 +179,7 @@ public class CoordinateUtilityTest {
         Vector sphericalTest = CoordinateUtility.cartesianToSpherical(CoordinateUtility.sphericalToCartesian(cartesianToSpherical));
         Vector cylindricalTest = CoordinateUtility.cylindricalToSpherical(cartesianToCylindrical);
         Vector polarTest = CoordinateUtility.polarToSpherical(cartesianToPolar);
-        polarTest = new Vector(cartesianToSpherical.getX(), polarTest.getY(), cartesianToSpherical.getZ()); //adjust for x, z
+        polarTest = new Vector(cartesianToSpherical.getRawX(), polarTest.getRawY(), cartesianToSpherical.getRawZ()); //adjust for x, z
         Assert.assertEquals(cartesianToSpherical, sphericalTest);
         Assert.assertEquals(cartesianToSpherical, cylindricalTest);
         Assert.assertEquals(cartesianToSpherical, polarTest);
@@ -231,8 +231,8 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(Math.sqrt(2), 3 * Math.PI / 4, -1), CoordinateUtility.cartesianToCylindrical(new Vector(-1, 1, -1)));
         Assert.assertEquals(new Vector(Math.sqrt(2), 5 * Math.PI / 4, -1), CoordinateUtility.cartesianToCylindrical(new Vector(-1, -1, -1)));
         Assert.assertEquals(new Vector(9.848857801796104, 0.41822432957922906, 8.0), CoordinateUtility.cartesianToCylindrical(new Vector(9, 4, 8)));
-        Assert.assertEquals(new Vector(5.4800000104854924E-5, 6.186131378970239E-5, 1.0003477E-4), CoordinateUtility.cartesianToCylindrical(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
-        Assert.assertEquals(new Vector(5.4800000104854924E-5, 3.1415307922760034, -1.0003477E-4), CoordinateUtility.cartesianToCylindrical(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
+        Assert.assertEquals(new Vector(5.48E-5, 6.186131378970239E-5, 1.0003477E-4), CoordinateUtility.cartesianToCylindrical(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
+        Assert.assertEquals(new Vector(5.48E-5, 3.1415307922760034, -1.0003477E-4), CoordinateUtility.cartesianToCylindrical(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
         Assert.assertEquals(new Vector(2.2629905367791623, 0.8170374004982911, 0.8842111), CoordinateUtility.cartesianToCylindrical(new Vector(1.5487552, 1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(2.2629905367791623, 5.466147906681295, 0.8842111), CoordinateUtility.cartesianToCylindrical(new Vector(1.5487552, -1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(3.5124073655203634, 0.4636476090008061, 9.42477796076938), CoordinateUtility.cartesianToCylindrical(new Vector(Math.PI, Math.PI / 2, 3 * Math.PI)));
@@ -248,8 +248,8 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(Math.sqrt(2), 3 * Math.PI / 4, 0), CoordinateUtility.cartesianToCylindrical(new Vector(-1, 1)));
         Assert.assertEquals(new Vector(Math.sqrt(2), 5 * Math.PI / 4, 0), CoordinateUtility.cartesianToCylindrical(new Vector(-1, -1)));
         Assert.assertEquals(new Vector(9.848857801796104, 0.41822432957922906, 0), CoordinateUtility.cartesianToCylindrical(new Vector(9, 4)));
-        Assert.assertEquals(new Vector(5.4800000104854924E-5, 6.186131378970239E-5, 0), CoordinateUtility.cartesianToCylindrical(new Vector(0.0000548, 0.00000000339)));
-        Assert.assertEquals(new Vector(5.4800000104854924E-5, 3.1415307922760034, 0), CoordinateUtility.cartesianToCylindrical(new Vector(-0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(5.48E-5, 6.186131378970239E-5, 0), CoordinateUtility.cartesianToCylindrical(new Vector(0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(5.48E-5, 3.1415307922760034, 0), CoordinateUtility.cartesianToCylindrical(new Vector(-0.0000548, 0.00000000339)));
         Assert.assertEquals(new Vector(2.2629905367791623, 0.8170374004982911, 0), CoordinateUtility.cartesianToCylindrical(new Vector(1.5487552, 1.649995)));
         Assert.assertEquals(new Vector(2.2629905367791623, 5.466147906681295, 0), CoordinateUtility.cartesianToCylindrical(new Vector(1.5487552, -1.649995)));
         Assert.assertEquals(new Vector(3.5124073655203634, 0.4636476090008061, 0), CoordinateUtility.cartesianToCylindrical(new Vector(Math.PI, Math.PI / 2)));
@@ -261,7 +261,7 @@ public class CoordinateUtilityTest {
         Vector sphericalTest = CoordinateUtility.sphericalToCylindrical(cartesianToSpherical);
         Vector cylindricalTest = CoordinateUtility.cartesianToCylindrical(CoordinateUtility.cylindricalToCartesian(cartesianToCylindrical));
         Vector polarTest = CoordinateUtility.polarToCylindrical(cartesianToPolar);
-        polarTest = new Vector(polarTest.getX(), polarTest.getY(), cartesianToCylindrical.getZ()); //adjust for z
+        polarTest = new Vector(polarTest.getRawX(), polarTest.getRawY(), cartesianToCylindrical.getRawZ()); //adjust for z
         Assert.assertEquals(cartesianToCylindrical, sphericalTest);
         Assert.assertEquals(cartesianToCylindrical, cylindricalTest);
         Assert.assertEquals(cartesianToCylindrical, polarTest);
@@ -313,8 +313,8 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(Math.sqrt(2), 3 * Math.PI / 4), CoordinateUtility.cartesianToPolar(new Vector(-1, 1, -1)));
         Assert.assertEquals(new Vector(Math.sqrt(2), 5 * Math.PI / 4), CoordinateUtility.cartesianToPolar(new Vector(-1, -1, -1)));
         Assert.assertEquals(new Vector(9.848857801796104, 0.41822432957922906), CoordinateUtility.cartesianToPolar(new Vector(9, 4, 8)));
-        Assert.assertEquals(new Vector(5.4800000104854924E-5, 6.186131378970239E-5), CoordinateUtility.cartesianToPolar(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
-        Assert.assertEquals(new Vector(5.4800000104854924E-5, 3.1415307922760034), CoordinateUtility.cartesianToPolar(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
+        Assert.assertEquals(new Vector(5.48E-5, 6.186131378970239E-5), CoordinateUtility.cartesianToPolar(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
+        Assert.assertEquals(new Vector(5.48E-5, 3.1415307922760034), CoordinateUtility.cartesianToPolar(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
         Assert.assertEquals(new Vector(2.2629905367791623, 0.8170374004982911), CoordinateUtility.cartesianToPolar(new Vector(1.5487552, 1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(2.2629905367791623, 5.466147906681295), CoordinateUtility.cartesianToPolar(new Vector(1.5487552, -1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(3.5124073655203634, 0.4636476090008061), CoordinateUtility.cartesianToPolar(new Vector(Math.PI, Math.PI / 2, 3 * Math.PI)));
@@ -330,8 +330,8 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(Math.sqrt(2), 3 * Math.PI / 4), CoordinateUtility.cartesianToPolar(new Vector(-1, 1)));
         Assert.assertEquals(new Vector(Math.sqrt(2), 5 * Math.PI / 4), CoordinateUtility.cartesianToPolar(new Vector(-1, -1)));
         Assert.assertEquals(new Vector(9.848857801796104, 0.41822432957922906), CoordinateUtility.cartesianToPolar(new Vector(9, 4)));
-        Assert.assertEquals(new Vector(5.4800000104854924E-5, 6.186131378970239E-5), CoordinateUtility.cartesianToPolar(new Vector(0.0000548, 0.00000000339)));
-        Assert.assertEquals(new Vector(5.4800000104854924E-5, 3.1415307922760034), CoordinateUtility.cartesianToPolar(new Vector(-0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(5.48E-5, 6.186131378970239E-5), CoordinateUtility.cartesianToPolar(new Vector(0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(5.48E-5, 3.1415307922760034), CoordinateUtility.cartesianToPolar(new Vector(-0.0000548, 0.00000000339)));
         Assert.assertEquals(new Vector(2.2629905367791623, 0.8170374004982911), CoordinateUtility.cartesianToPolar(new Vector(1.5487552, 1.649995)));
         Assert.assertEquals(new Vector(2.2629905367791623, 5.466147906681295), CoordinateUtility.cartesianToPolar(new Vector(1.5487552, -1.649995)));
         Assert.assertEquals(new Vector(3.5124073655203634, 0.4636476090008061), CoordinateUtility.cartesianToPolar(new Vector(Math.PI, Math.PI / 2)));
@@ -394,8 +394,8 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(0.4546487134128409, 0.7080734182735712, -Math.cos(1)), CoordinateUtility.sphericalToCartesian(new Vector(-1, 1, -1)));
         Assert.assertEquals(new Vector(0.4546487134128409, -0.7080734182735712, -Math.cos(1)), CoordinateUtility.sphericalToCartesian(new Vector(-1, -1, -1)));
         Assert.assertEquals(new Vector(-5.820189359887634, -6.738739108182468, -1.3095003042775217), CoordinateUtility.sphericalToCartesian(new Vector(9, 4, 8)));
-        Assert.assertEquals(new Vector(5.481905386857136E-9, 1.858365926144569E-17, 5.479999972580942E-5), CoordinateUtility.sphericalToCartesian(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
-        Assert.assertEquals(new Vector(5.481905386857136E-9, 1.858365926144569E-17, -5.479999972580942E-5), CoordinateUtility.sphericalToCartesian(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
+        Assert.assertEquals(new Vector(5.481905386857136E-9, 0, 5.479999972580942E-5), CoordinateUtility.sphericalToCartesian(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
+        Assert.assertEquals(new Vector(5.481905386857136E-9, 0, -5.479999972580942E-5), CoordinateUtility.sphericalToCartesian(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
         Assert.assertEquals(new Vector(-0.09476746133702522, 1.1940760350486674, 0.9817556826019541), CoordinateUtility.sphericalToCartesian(new Vector(1.5487552, 1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(-0.09476746133702522, -1.1940760350486674, 0.9817556826019541), CoordinateUtility.sphericalToCartesian(new Vector(1.5487552, -1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(0, 0, -Math.PI), CoordinateUtility.sphericalToCartesian(new Vector(Math.PI, Math.PI / 2, 3 * Math.PI)));
@@ -424,7 +424,7 @@ public class CoordinateUtilityTest {
         Vector cartesianTest = CoordinateUtility.sphericalToCartesian(CoordinateUtility.cartesianToSpherical(sphericalToCartesian));
         Vector cylindricalTest = CoordinateUtility.cylindricalToCartesian(sphericalToCylindrical);
         Vector polarTest = CoordinateUtility.polarToCartesian(sphericalToPolar);
-        polarTest = new Vector(polarTest.getX(), polarTest.getY(), sphericalToCartesian.getZ()); //adjust for z
+        polarTest = new Vector(polarTest.getRawX(), polarTest.getRawY(), sphericalToCartesian.getRawZ()); //adjust for z
         Assert.assertEquals(sphericalToCartesian, cartesianTest);
         Assert.assertEquals(sphericalToCartesian, cylindricalTest);
         Assert.assertEquals(sphericalToCartesian, polarTest);
@@ -476,11 +476,11 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(Math.sin(1), 1, -Math.cos(1)), CoordinateUtility.sphericalToCylindrical(new Vector(-1, 1, -1)));
         Assert.assertEquals(new Vector(Math.sin(1), 2 * Math.PI - 1, -Math.cos(1)), CoordinateUtility.sphericalToCylindrical(new Vector(-1, -1, -1)));
         Assert.assertEquals(new Vector(8.904224219610436, 4.0, -1.3095003042775217), CoordinateUtility.sphericalToCylindrical(new Vector(9, 4, 8)));
-        Assert.assertEquals(new Vector(5.481905386857136E-9, 3.3900002804898577E-9, 5.479999972580942E-5), CoordinateUtility.sphericalToCylindrical(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
-        Assert.assertEquals(new Vector(5.481905386857136E-9, 3.3900002804898577E-9, -5.479999972580942E-5), CoordinateUtility.sphericalToCylindrical(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
-        Assert.assertEquals(new Vector(1.1978307264408485, 1.6499950000000005, 0.9817556826019541), CoordinateUtility.sphericalToCylindrical(new Vector(1.5487552, 1.649995, 0.8842111)));
+        Assert.assertEquals(new Vector(5.481905386857136E-9, 3.39E-9, 5.479999972580942E-5), CoordinateUtility.sphericalToCylindrical(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
+        Assert.assertEquals(new Vector(5.481905386857136E-9, 3.39E-9, -5.479999972580942E-5), CoordinateUtility.sphericalToCylindrical(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
+        Assert.assertEquals(new Vector(1.1978307264408485, 1.649995, 0.9817556826019541), CoordinateUtility.sphericalToCylindrical(new Vector(1.5487552, 1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(1.1978307264408485, 4.633190307179586, 0.9817556826019541), CoordinateUtility.sphericalToCylindrical(new Vector(1.5487552, -1.649995, 0.8842111)));
-        Assert.assertEquals(new Vector(1.1542024162330739E-15, Math.PI / 2, -Math.PI), CoordinateUtility.sphericalToCylindrical(new Vector(Math.PI, Math.PI / 2, 3 * Math.PI)));
+        Assert.assertEquals(new Vector(0, Math.PI / 2, -Math.PI), CoordinateUtility.sphericalToCylindrical(new Vector(Math.PI, Math.PI / 2, 3 * Math.PI)));
         
         //2D vector
         Assert.assertEquals(new Vector(0, 0, 0), CoordinateUtility.sphericalToCylindrical(new Vector(0, 0)));
@@ -493,9 +493,9 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(0, 1, -1), CoordinateUtility.sphericalToCylindrical(new Vector(-1, 1)));
         Assert.assertEquals(new Vector(0, 2 * Math.PI - 1, -1), CoordinateUtility.sphericalToCylindrical(new Vector(-1, -1)));
         Assert.assertEquals(new Vector(0, 4.0, 9.0), CoordinateUtility.sphericalToCylindrical(new Vector(9, 4)));
-        Assert.assertEquals(new Vector(0, 3.3900002804898577E-9, 5.48E-5), CoordinateUtility.sphericalToCylindrical(new Vector(0.0000548, 0.00000000339)));
-        Assert.assertEquals(new Vector(0, 3.3900002804898577E-9, -5.48E-5), CoordinateUtility.sphericalToCylindrical(new Vector(-0.0000548, 0.00000000339)));
-        Assert.assertEquals(new Vector(0, 1.6499950000000005, 1.5487552), CoordinateUtility.sphericalToCylindrical(new Vector(1.5487552, 1.649995)));
+        Assert.assertEquals(new Vector(0, 3.39E-9, 5.48E-5), CoordinateUtility.sphericalToCylindrical(new Vector(0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(0, 3.39E-9, -5.48E-5), CoordinateUtility.sphericalToCylindrical(new Vector(-0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(0, 1.649995, 1.5487552), CoordinateUtility.sphericalToCylindrical(new Vector(1.5487552, 1.649995)));
         Assert.assertEquals(new Vector(0, 4.633190307179586, 1.5487552), CoordinateUtility.sphericalToCylindrical(new Vector(1.5487552, -1.649995)));
         Assert.assertEquals(new Vector(0, Math.PI / 2, Math.PI), CoordinateUtility.sphericalToCylindrical(new Vector(Math.PI, Math.PI / 2)));
         
@@ -506,7 +506,7 @@ public class CoordinateUtilityTest {
         Vector cartesianTest = CoordinateUtility.cartesianToCylindrical(sphericalToCartesian);
         Vector cylindricalTest = CoordinateUtility.sphericalToCylindrical(CoordinateUtility.cylindricalToSpherical(sphericalToCylindrical));
         Vector polarTest = CoordinateUtility.polarToCylindrical(sphericalToPolar);
-        polarTest = new Vector(polarTest.getX(), polarTest.getY(), sphericalToCylindrical.getZ()); //adjust for z
+        polarTest = new Vector(polarTest.getRawX(), polarTest.getRawY(), sphericalToCylindrical.getRawZ()); //adjust for z
         Assert.assertEquals(sphericalToCylindrical, cartesianTest);
         Assert.assertEquals(sphericalToCylindrical, cylindricalTest);
         Assert.assertEquals(sphericalToCylindrical, polarTest);
@@ -558,11 +558,11 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(Math.sin(1), 1), CoordinateUtility.sphericalToPolar(new Vector(-1, 1, -1)));
         Assert.assertEquals(new Vector(Math.sin(1), 2 * Math.PI - 1), CoordinateUtility.sphericalToPolar(new Vector(-1, -1, -1)));
         Assert.assertEquals(new Vector(8.904224219610436, 4.0), CoordinateUtility.sphericalToPolar(new Vector(9, 4, 8)));
-        Assert.assertEquals(new Vector(5.481905386857136E-9, 3.3900002804898577E-9), CoordinateUtility.sphericalToPolar(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
-        Assert.assertEquals(new Vector(5.481905386857136E-9, 3.3900002804898577E-9), CoordinateUtility.sphericalToPolar(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
-        Assert.assertEquals(new Vector(1.1978307264408485, 1.6499950000000005), CoordinateUtility.sphericalToPolar(new Vector(1.5487552, 1.649995, 0.8842111)));
+        Assert.assertEquals(new Vector(5.481905386857136E-9, 3.39E-9), CoordinateUtility.sphericalToPolar(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
+        Assert.assertEquals(new Vector(5.481905386857136E-9, 3.39E-9), CoordinateUtility.sphericalToPolar(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
+        Assert.assertEquals(new Vector(1.1978307264408485, 1.649995), CoordinateUtility.sphericalToPolar(new Vector(1.5487552, 1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(1.1978307264408485, 4.633190307179586), CoordinateUtility.sphericalToPolar(new Vector(1.5487552, -1.649995, 0.8842111)));
-        Assert.assertEquals(new Vector(1.1542024162330739E-15, Math.PI / 2), CoordinateUtility.sphericalToPolar(new Vector(Math.PI, Math.PI / 2, 3 * Math.PI)));
+        Assert.assertEquals(new Vector(0, Math.PI / 2), CoordinateUtility.sphericalToPolar(new Vector(Math.PI, Math.PI / 2, 3 * Math.PI)));
         
         //2D vector
         Assert.assertEquals(new Vector(0, 0), CoordinateUtility.sphericalToPolar(new Vector(0, 0)));
@@ -575,9 +575,9 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(0, 1), CoordinateUtility.sphericalToPolar(new Vector(-1, 1)));
         Assert.assertEquals(new Vector(0, 2 * Math.PI - 1), CoordinateUtility.sphericalToPolar(new Vector(-1, -1)));
         Assert.assertEquals(new Vector(0, 4.0), CoordinateUtility.sphericalToPolar(new Vector(9, 4)));
-        Assert.assertEquals(new Vector(0, 3.3900002804898577E-9), CoordinateUtility.sphericalToPolar(new Vector(0.0000548, 0.00000000339)));
-        Assert.assertEquals(new Vector(0, 3.3900002804898577E-9), CoordinateUtility.sphericalToPolar(new Vector(-0.0000548, 0.00000000339)));
-        Assert.assertEquals(new Vector(0, 1.6499950000000005), CoordinateUtility.sphericalToPolar(new Vector(1.5487552, 1.649995)));
+        Assert.assertEquals(new Vector(0, 3.39E-9), CoordinateUtility.sphericalToPolar(new Vector(0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(0, 3.39E-9), CoordinateUtility.sphericalToPolar(new Vector(-0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(0, 1.649995), CoordinateUtility.sphericalToPolar(new Vector(1.5487552, 1.649995)));
         Assert.assertEquals(new Vector(0, 4.633190307179586), CoordinateUtility.sphericalToPolar(new Vector(1.5487552, -1.649995)));
         Assert.assertEquals(new Vector(0, Math.PI / 2), CoordinateUtility.sphericalToPolar(new Vector(Math.PI, Math.PI / 2)));
         
@@ -639,11 +639,11 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(-Math.cos(1), -Math.sin(1)), CoordinateUtility.polarToCartesian(new Vector(-1, 1, -1)));
         Assert.assertEquals(new Vector(-Math.cos(1), Math.sin(1)), CoordinateUtility.polarToCartesian(new Vector(-1, -1, -1)));
         Assert.assertEquals(new Vector(-5.882792587772507, -6.811222457771354), CoordinateUtility.polarToCartesian(new Vector(9, 4, 8)));
-        Assert.assertEquals(new Vector(5.48E-5, 1.85772E-13), CoordinateUtility.polarToCartesian(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
-        Assert.assertEquals(new Vector(-5.48E-5, -1.85772E-13), CoordinateUtility.polarToCartesian(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
+        Assert.assertEquals(new Vector(5.48E-5, 0), CoordinateUtility.polarToCartesian(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
+        Assert.assertEquals(new Vector(-5.48E-5, 0), CoordinateUtility.polarToCartesian(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
         Assert.assertEquals(new Vector(-0.12253116846703688, 1.5439005091912958), CoordinateUtility.polarToCartesian(new Vector(1.5487552, 1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(-0.12253116846703688, -1.5439005091912958), CoordinateUtility.polarToCartesian(new Vector(1.5487552, -1.649995, 0.8842111)));
-        Assert.assertEquals(new Vector(1.9236706937217898E-16, Math.PI), CoordinateUtility.polarToCartesian(new Vector(Math.PI, Math.PI / 2, 3 * Math.PI)));
+        Assert.assertEquals(new Vector(0, Math.PI), CoordinateUtility.polarToCartesian(new Vector(Math.PI, Math.PI / 2, 3 * Math.PI)));
         
         //2D vector
         Assert.assertEquals(new Vector(0, 0), CoordinateUtility.polarToCartesian(new Vector(0, 0)));
@@ -656,11 +656,11 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(-Math.cos(1), -Math.sin(1)), CoordinateUtility.polarToCartesian(new Vector(-1, 1)));
         Assert.assertEquals(new Vector(-Math.cos(1), Math.sin(1)), CoordinateUtility.polarToCartesian(new Vector(-1, -1)));
         Assert.assertEquals(new Vector(-5.882792587772507, -6.811222457771354), CoordinateUtility.polarToCartesian(new Vector(9, 4)));
-        Assert.assertEquals(new Vector(5.48E-5, 1.85772E-13), CoordinateUtility.polarToCartesian(new Vector(0.0000548, 0.00000000339)));
-        Assert.assertEquals(new Vector(-5.48E-5, -1.85772E-13), CoordinateUtility.polarToCartesian(new Vector(-0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(5.48E-5, 0), CoordinateUtility.polarToCartesian(new Vector(0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(-5.48E-5, 0), CoordinateUtility.polarToCartesian(new Vector(-0.0000548, 0.00000000339)));
         Assert.assertEquals(new Vector(-0.12253116846703688, 1.5439005091912958), CoordinateUtility.polarToCartesian(new Vector(1.5487552, 1.649995)));
         Assert.assertEquals(new Vector(-0.12253116846703688, -1.5439005091912958), CoordinateUtility.polarToCartesian(new Vector(1.5487552, -1.649995)));
-        Assert.assertEquals(new Vector(1.9236706937217898E-16, Math.PI), CoordinateUtility.polarToCartesian(new Vector(Math.PI, Math.PI / 2)));
+        Assert.assertEquals(new Vector(0, Math.PI), CoordinateUtility.polarToCartesian(new Vector(Math.PI, Math.PI / 2)));
         
         //conversion
         Vector polarToCartesian = CoordinateUtility.polarToCartesian(new Vector(8.1560, 0.1123, -1.7988));
@@ -669,8 +669,8 @@ public class CoordinateUtilityTest {
         Vector cartesianTest = CoordinateUtility.polarToCartesian(CoordinateUtility.cartesianToPolar(polarToCartesian));
         Vector sphericalTest = CoordinateUtility.sphericalToCartesian(polarToSpherical);
         Vector cylindricalTest = CoordinateUtility.cylindricalToCartesian(polarToCylindrical);
-        sphericalTest = new Vector(sphericalTest.getX(), sphericalTest.getY()); // adjust for z
-        cylindricalTest = new Vector(cylindricalTest.getX(), cylindricalTest.getY()); // adjust for z
+        sphericalTest = new Vector(sphericalTest.getRawX(), sphericalTest.getRawY()); // adjust for z
+        cylindricalTest = new Vector(cylindricalTest.getRawX(), cylindricalTest.getRawY()); // adjust for z
         Assert.assertEquals(polarToCartesian, cartesianTest);
         Assert.assertEquals(polarToCartesian, sphericalTest);
         Assert.assertEquals(polarToCartesian, cylindricalTest);
@@ -722,9 +722,9 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(1, Math.PI + 1, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(-1, 1, -1)));
         Assert.assertEquals(new Vector(1, Math.PI - 1, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(-1, -1, -1)));
         Assert.assertEquals(new Vector(9.0, 4.0, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(9, 4, 8)));
-        Assert.assertEquals(new Vector(5.48E-5, 3.3900002804898577E-9, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
+        Assert.assertEquals(new Vector(5.48E-5, 3.39E-9, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
         Assert.assertEquals(new Vector(5.48E-5, 3.1415926569797925, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
-        Assert.assertEquals(new Vector(1.5487552, 1.6499950000000005, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(1.5487552, 1.649995, 0.8842111)));
+        Assert.assertEquals(new Vector(1.5487552, 1.649995, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(1.5487552, 1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(1.5487552, 4.633190307179586, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(1.5487552, -1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(Math.PI, Math.PI / 2, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(Math.PI, Math.PI / 2, 3 * Math.PI)));
         
@@ -739,9 +739,9 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(1, Math.PI + 1, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(-1, 1)));
         Assert.assertEquals(new Vector(1, Math.PI - 1, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(-1, -1)));
         Assert.assertEquals(new Vector(9.0, 4.0, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(9, 4)));
-        Assert.assertEquals(new Vector(5.48E-5, 3.3900002804898577E-9, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(5.48E-5, 3.39E-9, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(0.0000548, 0.00000000339)));
         Assert.assertEquals(new Vector(5.48E-5, 3.1415926569797925, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(-0.0000548, 0.00000000339)));
-        Assert.assertEquals(new Vector(1.5487552, 1.6499950000000005, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(1.5487552, 1.649995)));
+        Assert.assertEquals(new Vector(1.5487552, 1.649995, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(1.5487552, 1.649995)));
         Assert.assertEquals(new Vector(1.5487552, 4.633190307179586, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(1.5487552, -1.649995)));
         Assert.assertEquals(new Vector(Math.PI, Math.PI / 2, Math.PI / 2), CoordinateUtility.polarToSpherical(new Vector(Math.PI, Math.PI / 2)));
         
@@ -803,9 +803,9 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(1, Math.PI + 1, 0), CoordinateUtility.polarToCylindrical(new Vector(-1, 1, -1)));
         Assert.assertEquals(new Vector(1, Math.PI - 1, 0), CoordinateUtility.polarToCylindrical(new Vector(-1, -1, -1)));
         Assert.assertEquals(new Vector(9.0, 4.0, 0), CoordinateUtility.polarToCylindrical(new Vector(9, 4, 8)));
-        Assert.assertEquals(new Vector(5.48E-5, 3.3900002804898577E-9, 0), CoordinateUtility.polarToCylindrical(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
+        Assert.assertEquals(new Vector(5.48E-5, 3.39E-9, 0), CoordinateUtility.polarToCylindrical(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
         Assert.assertEquals(new Vector(5.48E-5, 3.1415926569797925, 0), CoordinateUtility.polarToCylindrical(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
-        Assert.assertEquals(new Vector(1.5487552, 1.6499950000000005, 0), CoordinateUtility.polarToCylindrical(new Vector(1.5487552, 1.649995, 0.8842111)));
+        Assert.assertEquals(new Vector(1.5487552, 1.649995, 0), CoordinateUtility.polarToCylindrical(new Vector(1.5487552, 1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(1.5487552, 4.633190307179586, 0), CoordinateUtility.polarToCylindrical(new Vector(1.5487552, -1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(Math.PI, Math.PI / 2, 0), CoordinateUtility.polarToCylindrical(new Vector(Math.PI, Math.PI / 2, 3 * Math.PI)));
         
@@ -820,9 +820,9 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(1, Math.PI + 1, 0), CoordinateUtility.polarToCylindrical(new Vector(-1, 1)));
         Assert.assertEquals(new Vector(1, Math.PI - 1, 0), CoordinateUtility.polarToCylindrical(new Vector(-1, -1)));
         Assert.assertEquals(new Vector(9.0, 4.0, 0), CoordinateUtility.polarToCylindrical(new Vector(9, 4)));
-        Assert.assertEquals(new Vector(5.48E-5, 3.3900002804898577E-9, 0), CoordinateUtility.polarToCylindrical(new Vector(0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(5.48E-5, 3.39E-9, 0), CoordinateUtility.polarToCylindrical(new Vector(0.0000548, 0.00000000339)));
         Assert.assertEquals(new Vector(5.48E-5, 3.1415926569797925, 0), CoordinateUtility.polarToCylindrical(new Vector(-0.0000548, 0.00000000339)));
-        Assert.assertEquals(new Vector(1.5487552, 1.6499950000000005, 0), CoordinateUtility.polarToCylindrical(new Vector(1.5487552, 1.649995)));
+        Assert.assertEquals(new Vector(1.5487552, 1.649995, 0), CoordinateUtility.polarToCylindrical(new Vector(1.5487552, 1.649995)));
         Assert.assertEquals(new Vector(1.5487552, 4.633190307179586, 0), CoordinateUtility.polarToCylindrical(new Vector(1.5487552, -1.649995)));
         Assert.assertEquals(new Vector(Math.PI, Math.PI / 2, 0), CoordinateUtility.polarToCylindrical(new Vector(Math.PI, Math.PI / 2)));
         
@@ -884,11 +884,11 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(-Math.cos(1), -Math.sin(1), -1), CoordinateUtility.cylindricalToCartesian(new Vector(-1, 1, -1)));
         Assert.assertEquals(new Vector(-Math.cos(1), Math.sin(1), -1), CoordinateUtility.cylindricalToCartesian(new Vector(-1, -1, -1)));
         Assert.assertEquals(new Vector(-5.882792587772507, -6.811222457771354, 8.0), CoordinateUtility.cylindricalToCartesian(new Vector(9, 4, 8)));
-        Assert.assertEquals(new Vector(5.48E-5, 1.85772E-13, 1.0003477E-4), CoordinateUtility.cylindricalToCartesian(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
-        Assert.assertEquals(new Vector(-5.48E-5, -1.85772E-13, -1.0003477E-4), CoordinateUtility.cylindricalToCartesian(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
+        Assert.assertEquals(new Vector(5.48E-5, 0, 1.0003477E-4), CoordinateUtility.cylindricalToCartesian(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
+        Assert.assertEquals(new Vector(-5.48E-5, 0, -1.0003477E-4), CoordinateUtility.cylindricalToCartesian(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
         Assert.assertEquals(new Vector(-0.12253116846703688, 1.5439005091912958, 0.8842111), CoordinateUtility.cylindricalToCartesian(new Vector(1.5487552, 1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(-0.12253116846703688, -1.5439005091912958, 0.8842111), CoordinateUtility.cylindricalToCartesian(new Vector(1.5487552, -1.649995, 0.8842111)));
-        Assert.assertEquals(new Vector(1.9236706937217898E-16, Math.PI, 9.42477796076938), CoordinateUtility.cylindricalToCartesian(new Vector(Math.PI, Math.PI / 2, 3 * Math.PI)));
+        Assert.assertEquals(new Vector(0, Math.PI, 9.42477796076938), CoordinateUtility.cylindricalToCartesian(new Vector(Math.PI, Math.PI / 2, 3 * Math.PI)));
         
         //2D vector
         Assert.assertEquals(new Vector(0, 0, 0), CoordinateUtility.cylindricalToCartesian(new Vector(0, 0)));
@@ -901,11 +901,11 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(-Math.cos(1), -Math.sin(1), 0), CoordinateUtility.cylindricalToCartesian(new Vector(-1, 1)));
         Assert.assertEquals(new Vector(-Math.cos(1), Math.sin(1), 0), CoordinateUtility.cylindricalToCartesian(new Vector(-1, -1)));
         Assert.assertEquals(new Vector(-5.882792587772507, -6.811222457771354, 0), CoordinateUtility.cylindricalToCartesian(new Vector(9, 4)));
-        Assert.assertEquals(new Vector(5.48E-5, 1.85772E-13, 0), CoordinateUtility.cylindricalToCartesian(new Vector(0.0000548, 0.00000000339)));
-        Assert.assertEquals(new Vector(-5.48E-5, -1.85772E-13, 0), CoordinateUtility.cylindricalToCartesian(new Vector(-0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(5.48E-5, 0, 0), CoordinateUtility.cylindricalToCartesian(new Vector(0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(-5.48E-5, 0, 0), CoordinateUtility.cylindricalToCartesian(new Vector(-0.0000548, 0.00000000339)));
         Assert.assertEquals(new Vector(-0.12253116846703688, 1.5439005091912958, 0), CoordinateUtility.cylindricalToCartesian(new Vector(1.5487552, 1.649995)));
         Assert.assertEquals(new Vector(-0.12253116846703688, -1.5439005091912958, 0), CoordinateUtility.cylindricalToCartesian(new Vector(1.5487552, -1.649995)));
-        Assert.assertEquals(new Vector(1.9236706937217898E-16, Math.PI, 0), CoordinateUtility.cylindricalToCartesian(new Vector(Math.PI, Math.PI / 2)));
+        Assert.assertEquals(new Vector(0, Math.PI, 0), CoordinateUtility.cylindricalToCartesian(new Vector(Math.PI, Math.PI / 2)));
         
         //conversion
         Vector cylindricalToCartesian = CoordinateUtility.cylindricalToCartesian(new Vector(8.1560, 0.1123, -1.7988));
@@ -914,7 +914,7 @@ public class CoordinateUtilityTest {
         Vector cartesianTest = CoordinateUtility.cylindricalToCartesian(CoordinateUtility.cartesianToCylindrical(cylindricalToCartesian));
         Vector sphericalTest = CoordinateUtility.sphericalToCartesian(cylindricalToSpherical);
         Vector polarTest = CoordinateUtility.polarToCartesian(cylindricalToPolar);
-        polarTest = new Vector(polarTest.getX(), polarTest.getY(), cylindricalToCartesian.getZ()); //adjust for z
+        polarTest = new Vector(polarTest.getRawX(), polarTest.getRawY(), cylindricalToCartesian.getRawZ()); //adjust for z
         Assert.assertEquals(cylindricalToCartesian, cartesianTest);
         Assert.assertEquals(cylindricalToCartesian, sphericalTest);
         Assert.assertEquals(cylindricalToCartesian, polarTest);
@@ -966,9 +966,9 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(Math.sqrt(2), 1, 3 * Math.PI / 4), CoordinateUtility.cylindricalToSpherical(new Vector(-1, 1, -1)));
         Assert.assertEquals(new Vector(Math.sqrt(2), 2 * Math.PI - 1, 3 * Math.PI / 4), CoordinateUtility.cylindricalToSpherical(new Vector(-1, -1, -1)));
         Assert.assertEquals(new Vector(12.041594578792296, 4.0, 0.8441539861131709), CoordinateUtility.cylindricalToSpherical(new Vector(9, 4, 8)));
-        Assert.assertEquals(new Vector(1.1406136597881379E-4, 3.3900002804898577E-9, 0.5011599101389467), CoordinateUtility.cylindricalToSpherical(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
-        Assert.assertEquals(new Vector(1.1406136597881379E-4, 3.3900002804898577E-9, 2.6404327434508463), CoordinateUtility.cylindricalToSpherical(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
-        Assert.assertEquals(new Vector(1.7833877701975671, 1.6499950000000005, 1.0520357355208994), CoordinateUtility.cylindricalToSpherical(new Vector(1.5487552, 1.649995, 0.8842111)));
+        Assert.assertEquals(new Vector(1.1406136597881379E-4, 3.39E-9, 0.5011599101389467), CoordinateUtility.cylindricalToSpherical(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
+        Assert.assertEquals(new Vector(1.1406136597881379E-4, 3.39E-9, 2.6404327434508463), CoordinateUtility.cylindricalToSpherical(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
+        Assert.assertEquals(new Vector(1.7833877701975671, 1.649995, 1.0520357355208994), CoordinateUtility.cylindricalToSpherical(new Vector(1.5487552, 1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(1.7833877701975671, 4.633190307179586, 1.0520357355208994), CoordinateUtility.cylindricalToSpherical(new Vector(1.5487552, -1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(9.934588265796101, Math.PI / 2, 0.3217505543966423), CoordinateUtility.cylindricalToSpherical(new Vector(Math.PI, Math.PI / 2, 3 * Math.PI)));
         
@@ -983,9 +983,9 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(1, 1, Math.PI / 2), CoordinateUtility.cylindricalToSpherical(new Vector(-1, 1)));
         Assert.assertEquals(new Vector(1, 2 * Math.PI - 1, Math.PI / 2), CoordinateUtility.cylindricalToSpherical(new Vector(-1, -1)));
         Assert.assertEquals(new Vector(9.0, 4.0, Math.PI / 2), CoordinateUtility.cylindricalToSpherical(new Vector(9, 4)));
-        Assert.assertEquals(new Vector(5.48E-5, 3.3900002804898577E-9, Math.PI / 2), CoordinateUtility.cylindricalToSpherical(new Vector(0.0000548, 0.00000000339)));
-        Assert.assertEquals(new Vector(5.48E-5, 3.3900002804898577E-9, Math.PI / 2), CoordinateUtility.cylindricalToSpherical(new Vector(-0.0000548, 0.00000000339)));
-        Assert.assertEquals(new Vector(1.5487552, 1.6499950000000005, Math.PI / 2), CoordinateUtility.cylindricalToSpherical(new Vector(1.5487552, 1.649995)));
+        Assert.assertEquals(new Vector(5.48E-5, 3.39E-9, Math.PI / 2), CoordinateUtility.cylindricalToSpherical(new Vector(0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(5.48E-5, 3.39E-9, Math.PI / 2), CoordinateUtility.cylindricalToSpherical(new Vector(-0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(1.5487552, 1.649995, Math.PI / 2), CoordinateUtility.cylindricalToSpherical(new Vector(1.5487552, 1.649995)));
         Assert.assertEquals(new Vector(1.5487552, 4.633190307179586, Math.PI / 2), CoordinateUtility.cylindricalToSpherical(new Vector(1.5487552, -1.649995)));
         Assert.assertEquals(new Vector(Math.PI, Math.PI / 2, Math.PI / 2), CoordinateUtility.cylindricalToSpherical(new Vector(Math.PI, Math.PI / 2)));
         
@@ -996,7 +996,7 @@ public class CoordinateUtilityTest {
         Vector cartesianTest = CoordinateUtility.cartesianToSpherical(cylindricalToCartesian);
         Vector sphericalTest = CoordinateUtility.cylindricalToSpherical(CoordinateUtility.sphericalToCylindrical(cylindricalToSpherical));
         Vector polarTest = CoordinateUtility.polarToSpherical(cylindricalToPolar);
-        polarTest = new Vector(cylindricalToSpherical.getX(), polarTest.getY(), cylindricalToSpherical.getZ()); //adjust for x, z
+        polarTest = new Vector(cylindricalToSpherical.getRawX(), polarTest.getRawY(), cylindricalToSpherical.getRawZ()); //adjust for x, z
         Assert.assertEquals(cylindricalToSpherical, cartesianTest);
         Assert.assertEquals(cylindricalToSpherical, sphericalTest);
         Assert.assertEquals(cylindricalToSpherical, polarTest);
@@ -1048,9 +1048,9 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(1, Math.PI + 1), CoordinateUtility.cylindricalToPolar(new Vector(-1, 1, -1)));
         Assert.assertEquals(new Vector(1, Math.PI - 1), CoordinateUtility.cylindricalToPolar(new Vector(-1, -1, -1)));
         Assert.assertEquals(new Vector(9.0, 4.0), CoordinateUtility.cylindricalToPolar(new Vector(9, 4, 8)));
-        Assert.assertEquals(new Vector(5.48E-5, 3.3900002804898577E-9), CoordinateUtility.cylindricalToPolar(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
+        Assert.assertEquals(new Vector(5.48E-5, 3.39E-9), CoordinateUtility.cylindricalToPolar(new Vector(0.0000548, 0.00000000339, 0.00010003477)));
         Assert.assertEquals(new Vector(5.48E-5, 3.1415926569797925), CoordinateUtility.cylindricalToPolar(new Vector(-0.0000548, 0.00000000339, -0.00010003477)));
-        Assert.assertEquals(new Vector(1.5487552, 1.6499950000000005), CoordinateUtility.cylindricalToPolar(new Vector(1.5487552, 1.649995, 0.8842111)));
+        Assert.assertEquals(new Vector(1.5487552, 1.649995), CoordinateUtility.cylindricalToPolar(new Vector(1.5487552, 1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(1.5487552, 4.633190307179586), CoordinateUtility.cylindricalToPolar(new Vector(1.5487552, -1.649995, 0.8842111)));
         Assert.assertEquals(new Vector(Math.PI, Math.PI / 2), CoordinateUtility.cylindricalToPolar(new Vector(Math.PI, Math.PI / 2, 3 * Math.PI)));
         
@@ -1065,9 +1065,9 @@ public class CoordinateUtilityTest {
         Assert.assertEquals(new Vector(1, Math.PI + 1), CoordinateUtility.cylindricalToPolar(new Vector(-1, 1)));
         Assert.assertEquals(new Vector(1, Math.PI - 1), CoordinateUtility.cylindricalToPolar(new Vector(-1, -1)));
         Assert.assertEquals(new Vector(9.0, 4.0), CoordinateUtility.cylindricalToPolar(new Vector(9, 4)));
-        Assert.assertEquals(new Vector(5.48E-5, 3.3900002804898577E-9), CoordinateUtility.cylindricalToPolar(new Vector(0.0000548, 0.00000000339)));
+        Assert.assertEquals(new Vector(5.48E-5, 3.39E-9), CoordinateUtility.cylindricalToPolar(new Vector(0.0000548, 0.00000000339)));
         Assert.assertEquals(new Vector(5.48E-5, 3.1415926569797925), CoordinateUtility.cylindricalToPolar(new Vector(-0.0000548, 0.00000000339)));
-        Assert.assertEquals(new Vector(1.5487552, 1.6499950000000005), CoordinateUtility.cylindricalToPolar(new Vector(1.5487552, 1.649995)));
+        Assert.assertEquals(new Vector(1.5487552, 1.649995), CoordinateUtility.cylindricalToPolar(new Vector(1.5487552, 1.649995)));
         Assert.assertEquals(new Vector(1.5487552, 4.633190307179586), CoordinateUtility.cylindricalToPolar(new Vector(1.5487552, -1.649995)));
         Assert.assertEquals(new Vector(Math.PI, Math.PI / 2), CoordinateUtility.cylindricalToPolar(new Vector(Math.PI, Math.PI / 2)));
         

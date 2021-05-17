@@ -50,7 +50,7 @@ public interface VectorInterface<T extends Number, I extends VectorInterface<?, 
         Number dot = getHandler().zero();
         for (int c = 0; c < getLength(); c++) {
             dot = getHandler().add(dot,
-                    getHandler().multiply(getComponents()[c], other.getComponents()[c]));
+                    getHandler().multiply(getRawComponents()[c], other.getRawComponents()[c]));
         }
         return (T) dot;
     }
@@ -78,10 +78,11 @@ public interface VectorInterface<T extends Number, I extends VectorInterface<?, 
     /**
      * Creates a sub Vector from the Vector.
      *
-     * @param from The index to start the sub Vector from.
-     * @param to   The index to end the sub Vector at.
+     * @param from The index to start the sub Vector from, inclusive.
+     * @param to   The index to end the sub Vector at, exclusive.
      * @return The sub Vector.
      * @throws IndexOutOfBoundsException When the range of indices is out of bounds of the Vector.
+     * @throws ArithmeticException       When the Vector is not resizable.
      */
     default I subVector(int from, int to) throws IndexOutOfBoundsException {
         int dim = to - from;
@@ -89,8 +90,12 @@ public interface VectorInterface<T extends Number, I extends VectorInterface<?, 
             throw new IndexOutOfBoundsException(getErrorHandler().componentRangeOutOfBoundsErrorMessage(this, from, to));
         }
         
+        if (!isResizeable() && (getDimensionality() != dim)) {
+            throw new ArithmeticException(getErrorHandler().dimensionalityNotEqualErrorMessage(this, getDimensionality()));
+        }
+        
         I subVector = createNewInstance(dim);
-        System.arraycopy(getComponents(), from, subVector.getComponents(), 0, (to - from));
+        System.arraycopy(getRawComponents(), from, subVector.getRawComponents(), 0, (to - from));
         copyMeta(subVector);
         return subVector;
     }
@@ -98,7 +103,7 @@ public interface VectorInterface<T extends Number, I extends VectorInterface<?, 
     /**
      * Creates a sub Vector from the Vector.
      *
-     * @param from The index to start the sub Vector from.
+     * @param from The index to start the sub Vector from, inclusive.
      * @return The sub Vector.
      * @throws IndexOutOfBoundsException When the range of indices is out of bounds of the Vector.
      * @see #subVector(int, int)
@@ -111,43 +116,83 @@ public interface VectorInterface<T extends Number, I extends VectorInterface<?, 
     //Getters
     
     /**
+     * Returns the raw x component of the Vector.
+     *
+     * @return The raw x component of the Vector.
+     */
+    default T getRawX() {
+        return (getDimensionality() > 0) ?
+               (T) getRawComponents()[0] : (T) getHandler().zero();
+    }
+    
+    /**
      * Returns the x component of the Vector.
      *
      * @return The x component of the Vector.
+     * @see #getRawX()
      */
     default T getX() {
-        return (getDimensionality() > 0) ?
-               (T) getComponents()[0] : (T) getHandler().zero();
+        return (T) getHandler().clean(getRawX());
+    }
+    
+    /**
+     * Returns the raw y component of the Vector.
+     *
+     * @return The raw y component of the Vector.
+     */
+    default T getRawY() {
+        return (getDimensionality() >= Vector2.DIMENSIONALITY) ?
+               (T) getRawComponents()[1] : (T) getHandler().zero();
     }
     
     /**
      * Returns the y component of the Vector.
      *
      * @return The y component of the Vector.
+     * @see #getRawY()
      */
     default T getY() {
-        return (getDimensionality() >= Vector2.DIMENSIONALITY) ?
-               (T) getComponents()[1] : (T) getHandler().zero();
+        return (T) getHandler().clean(getRawY());
+    }
+    
+    /**
+     * Returns the raw z component of the Vector.
+     *
+     * @return The raw z component of the Vector.
+     */
+    default T getRawZ() {
+        return (getDimensionality() >= Vector3.DIMENSIONALITY) ?
+               (T) getRawComponents()[2] : (T) getHandler().zero();
     }
     
     /**
      * Returns the z component of the Vector.
      *
      * @return The z component of the Vector.
+     * @see #getRawZ()
      */
     default T getZ() {
-        return (getDimensionality() >= Vector3.DIMENSIONALITY) ?
-               (T) getComponents()[2] : (T) getHandler().zero();
+        return (T) getHandler().clean(getRawZ());
+    }
+    
+    /**
+     * Returns the raw w component of the Vector.
+     *
+     * @return The raw w component of the Vector.
+     */
+    default T getRawW() {
+        return (getDimensionality() >= Vector4.DIMENSIONALITY) ?
+               (T) getRawComponents()[3] : (T) getHandler().zero();
     }
     
     /**
      * Returns the w component of the Vector.
      *
      * @return The w component of the Vector.
+     * @see #getRawW()
      */
     default T getW() {
-        return (getDimensionality() >= Vector4.DIMENSIONALITY) ?
-               (T) getComponents()[3] : (T) getHandler().zero();
+        return (T) getHandler().clean(getRawW());
     }
     
     
@@ -159,8 +204,8 @@ public interface VectorInterface<T extends Number, I extends VectorInterface<?, 
      * @param x The new x component of the Vector.
      */
     default void setX(T x) {
-        if (getDimensionality() > 0) {
-            getComponents()[0] = x;
+        if ((getDimensionality() > 0) && (x != null)) {
+            getRawComponents()[0] = x;
         }
     }
     
@@ -170,8 +215,8 @@ public interface VectorInterface<T extends Number, I extends VectorInterface<?, 
      * @param y The new y component of the Vector.
      */
     default void setY(T y) {
-        if (getDimensionality() >= Vector2.DIMENSIONALITY) {
-            getComponents()[1] = y;
+        if ((getDimensionality() >= Vector2.DIMENSIONALITY) && (y != null)) {
+            getRawComponents()[1] = y;
         }
     }
     
@@ -181,8 +226,8 @@ public interface VectorInterface<T extends Number, I extends VectorInterface<?, 
      * @param z The new z component of the Vector.
      */
     default void setZ(T z) {
-        if (getDimensionality() >= Vector3.DIMENSIONALITY) {
-            getComponents()[2] = z;
+        if ((getDimensionality() >= Vector3.DIMENSIONALITY) && (z != null)) {
+            getRawComponents()[2] = z;
         }
     }
     
@@ -192,8 +237,8 @@ public interface VectorInterface<T extends Number, I extends VectorInterface<?, 
      * @param w The new w component of the Vector.
      */
     default void setW(T w) {
-        if (getDimensionality() >= Vector4.DIMENSIONALITY) {
-            getComponents()[3] = w;
+        if ((getDimensionality() >= Vector4.DIMENSIONALITY) && (w != null)) {
+            getRawComponents()[3] = w;
         }
     }
     
@@ -210,7 +255,7 @@ public interface VectorInterface<T extends Number, I extends VectorInterface<?, 
      */
     static <I extends VectorInterface<?, ?>> I createInstance(int dim, Class<? extends I> clazz) {
         try {
-            return clazz.getConstructor(int.class).newInstance(dim);
+            return clazz.getConstructor(int.class).newInstance(Math.max(dim, 0));
         } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
             return null;
         }
@@ -230,7 +275,7 @@ public interface VectorInterface<T extends Number, I extends VectorInterface<?, 
             return null;
         }
         
-        Arrays.fill(result.getComponents(), result.getHandler().one());
+        Arrays.fill(result.getRawComponents(), result.getHandler().one());
         return result;
     }
     
@@ -248,7 +293,7 @@ public interface VectorInterface<T extends Number, I extends VectorInterface<?, 
             return null;
         }
         
-        Arrays.fill(result.getComponents(), result.getHandler().zero());
+        Arrays.fill(result.getRawComponents(), result.getHandler().zero());
         return result;
     }
     

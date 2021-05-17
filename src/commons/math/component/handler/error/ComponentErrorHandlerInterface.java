@@ -50,7 +50,7 @@ public interface ComponentErrorHandlerInterface {
      * @param type      The component type.
      * @return The error message.
      */
-    <T extends Number> String componentTypeNotEqualErrorMessage(ComponentInterface<?, ?, ?> component, T type);
+    <T extends Number> String componentTypeNotEqualErrorMessage(ComponentInterface<?, ?, ?> component, Class<T> type);
     
     /**
      * Returns the error message to display when a Component does not have a minimum dimensionality.

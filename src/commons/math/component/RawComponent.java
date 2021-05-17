@@ -28,14 +28,6 @@ public abstract class RawComponent<I extends RawComponent<?>> extends BaseCompon
     private static final Logger logger = LoggerFactory.getLogger(RawComponent.class);
     
     
-    //Constants
-    
-    /**
-     * The precision to use in comparisons.
-     */
-    public static final Number RAW_PRECISION = BaseComponent.PRECISION;
-    
-    
     //Constructors
     
     /**
@@ -61,12 +53,12 @@ public abstract class RawComponent<I extends RawComponent<?>> extends BaseCompon
     //Getters
     
     /**
-     * Returns the components that define the Raw Component.
+     * Returns the raw components that define the Raw Component.
      *
-     * @return The components that define the Raw Component.
+     * @return The raw components that define the Raw Component.
      */
     @Override
-    public final Number[] getComponents() {
+    public final Number[] getRawComponents() {
         return components;
     }
     
@@ -74,6 +66,7 @@ public abstract class RawComponent<I extends RawComponent<?>> extends BaseCompon
      * Returns the primitive components that define the Raw Component.
      *
      * @return The primitive components that define the Raw Component.
+     * @see #getComponents()
      */
     public final double[] getPrimitiveComponents() {
         return Arrays.stream(getComponents()).mapToDouble(Number::doubleValue).toArray();
@@ -87,16 +80,6 @@ public abstract class RawComponent<I extends RawComponent<?>> extends BaseCompon
     @Override
     public String getName() {
         return "Raw Component";
-    }
-    
-    /**
-     * Returns the precision to use in comparisons.
-     *
-     * @return The precision to use in comparisons.
-     */
-    @Override
-    public Number getPrecision() {
-        return RAW_PRECISION;
     }
     
 }

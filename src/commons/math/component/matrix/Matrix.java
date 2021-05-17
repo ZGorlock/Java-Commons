@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import commons.math.MathUtility;
 import commons.math.component.Component;
 import commons.math.component.vector.Vector;
 import org.apache.commons.lang3.ArrayUtils;
@@ -40,10 +41,9 @@ public class Matrix extends Component<Matrix> implements MatrixInterface<Double,
      */
     public Matrix(double... components) throws ArithmeticException {
         super();
-        setComponents(new Double[components.length]);
-        System.arraycopy(ArrayUtils.toObject(components), 0, getComponents(), 0, getLength());
+        setComponents(ArrayUtils.toObject(components));
         
-        if (dimensionalityToLength() != components.length) {
+        if (!MathUtility.isSquare(components.length)) {
             throw new ArithmeticException(getErrorHandler().componentLengthNotSquareErrorMessage(ArrayUtils.toObject(components)));
         }
     }
@@ -68,7 +68,7 @@ public class Matrix extends Component<Matrix> implements MatrixInterface<Double,
      * @see #Matrix(double...)
      */
     public Matrix(Matrix matrix) {
-        this(Arrays.stream(matrix.getComponents())
+        this(Arrays.stream(matrix.getRawComponents())
                 .mapToDouble(e -> e).toArray());
     }
     
@@ -99,7 +99,7 @@ public class Matrix extends Component<Matrix> implements MatrixInterface<Double,
      * Returns a string that represents the Matrix.
      *
      * @return A string that represents the Matrix.
-     * @see MatrixInterface#matrixString() 
+     * @see MatrixInterface#matrixString()
      */
     @Override
     public String toString() {
@@ -151,7 +151,7 @@ public class Matrix extends Component<Matrix> implements MatrixInterface<Double,
      */
     @Override
     public Matrix createNewInstance(int dim) {
-        return createInstance(dim);
+        return createInstance(Math.max(dim, 0));
     }
     
     /**
@@ -215,16 +215,6 @@ public class Matrix extends Component<Matrix> implements MatrixInterface<Double,
         return "Matrix";
     }
     
-    /**
-     * Returns the plural name of the type of the Component.
-     *
-     * @return The plural name of the type of the Component.
-     */
-    @Override
-    public String getNamePlural() {
-        return "Matrices";
-    }
-    
     
     //Functions
     
@@ -236,7 +226,7 @@ public class Matrix extends Component<Matrix> implements MatrixInterface<Double,
      * @see #Matrix(int)
      */
     public static Matrix createInstance(int dim) {
-        return new Matrix(dim);
+        return new Matrix(Math.max(dim, 0));
     }
     
     /**

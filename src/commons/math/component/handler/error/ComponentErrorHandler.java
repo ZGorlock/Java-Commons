@@ -62,8 +62,8 @@ public class ComponentErrorHandler implements ComponentErrorHandlerInterface {
      * @return The error message.
      */
     @Override
-    public <T extends Number> String componentTypeNotEqualErrorMessage(ComponentInterface<?, ?, ?> component, T type) {
-        return "The " + component.getName() + ": " + component + " does not have the expected component type of: " + type.getClass().getSimpleName();
+    public <T extends Number> String componentTypeNotEqualErrorMessage(ComponentInterface<?, ?, ?> component, Class<T> type) {
+        return "The " + component.getName() + ": " + component + " does not have the expected component type of: " + type.getSimpleName();
     }
     
     /**

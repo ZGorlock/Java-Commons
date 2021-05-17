@@ -28,7 +28,7 @@ public interface BigComponentInterface<I extends BigComponent<?>> extends Compon
     default I movePointLeft(int move) {
         I result = emptyCopy();
         for (int c = 0; c < getLength(); c++) {
-            result.getComponents()[c] = ((BigDecimal) getComponents()[c]).movePointLeft(move);
+            result.getRawComponents()[c] = ((BigDecimal) getRawComponents()[c]).movePointLeft(move);
         }
         copyMeta(result);
         return result;
@@ -43,7 +43,7 @@ public interface BigComponentInterface<I extends BigComponent<?>> extends Compon
     default I movePointRight(int move) {
         I result = emptyCopy();
         for (int c = 0; c < getLength(); c++) {
-            result.getComponents()[c] = ((BigDecimal) getComponents()[c]).movePointRight(move);
+            result.getRawComponents()[c] = ((BigDecimal) getRawComponents()[c]).movePointRight(move);
         }
         copyMeta(result);
         return result;
@@ -57,7 +57,7 @@ public interface BigComponentInterface<I extends BigComponent<?>> extends Compon
     default I stripTrailingZeros() {
         I result = emptyCopy();
         for (int c = 0; c < getLength(); c++) {
-            result.getComponents()[c] = ((BigDecimal) getComponents()[c]).stripTrailingZeros();
+            result.getRawComponents()[c] = ((BigDecimal) getRawComponents()[c]).stripTrailingZeros();
         }
         copyMeta(result);
         return result;

@@ -258,6 +258,13 @@ public interface ComponentInterface<T extends Number, I extends ComponentInterfa
     //Getters
     
     /**
+     * Returns the raw components that define the Component.
+     *
+     * @return The raw components that define the Component.
+     */
+    T[] getRawComponents();
+    
+    /**
      * Returns the components that define the Component.
      *
      * @return The components that define the Component.
@@ -265,10 +272,19 @@ public interface ComponentInterface<T extends Number, I extends ComponentInterfa
     T[] getComponents();
     
     /**
-     * Returns a components of the Component.
+     * Returns a raw component of the Component.
      *
      * @param index The index of the component.
-     * @return The components of the Component at the specified index.
+     * @return The raw component of the Component at the specified index.
+     * @throws IndexOutOfBoundsException When the Component does not contain a component at the specified index.
+     */
+    T getRaw(int index) throws IndexOutOfBoundsException;
+    
+    /**
+     * Returns a component of the Component.
+     *
+     * @param index The index of the component.
+     * @return The component of the Component at the specified index.
      * @throws IndexOutOfBoundsException When the Component does not contain a component at the specified index.
      */
     T get(int index) throws IndexOutOfBoundsException;
@@ -326,14 +342,18 @@ public interface ComponentInterface<T extends Number, I extends ComponentInterfa
      *
      * @return The name of the type of Component.
      */
-    String getName();
+    default String getName() {
+        return "Component Interface";
+    }
     
     /**
      * Returns the plural name of the type of the Component.
      *
      * @return The plural name of the type of the Component.
      */
-    String getNamePlural();
+    default String getNamePlural() {
+        return getName() + 's';
+    }
     
     /**
      * Returns the precision to use in comparisons.

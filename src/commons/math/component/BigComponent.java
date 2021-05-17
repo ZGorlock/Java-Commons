@@ -9,9 +9,7 @@ package commons.math.component;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.math.RoundingMode;
 
-import commons.math.BigMathUtility;
 import commons.math.component.handler.math.BigComponentMathHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,32 +27,6 @@ public abstract class BigComponent<I extends BigComponent<?>> extends BaseCompon
      * The logger.
      */
     private static final Logger logger = LoggerFactory.getLogger(BigComponent.class);
-    
-    
-    //Constants
-    
-    /**
-     * The precision to use in comparisons.
-     */
-    public static final BigDecimal BIG_PRECISION = new BigDecimal("0.000000000000000000000000000000000001");
-    
-    /**
-     * The default value of the precision of a Big Component math context.
-     */
-    public static final int DEFAULT_MATH_PRECISION = BigMathUtility.DEFAULT_MATH_PRECISION / 2;
-    
-    /**
-     * The default rounding mode of a Big Component math context.
-     */
-    public static final RoundingMode DEFAULT_ROUNDING_MODE = BigMathUtility.DEFAULT_ROUNDING_MODE;
-    
-    
-    //Fields
-    
-    /**
-     * The MathContext to use when doing Big Component math.
-     */
-    public MathContext mathContext = new MathContext(DEFAULT_MATH_PRECISION, DEFAULT_ROUNDING_MODE);
     
     
     //Constructors
@@ -76,19 +48,19 @@ public abstract class BigComponent<I extends BigComponent<?>> extends BaseCompon
      */
     @Override
     public void copyMeta(I to) {
-        to.setMathContext(new MathContext(mathContext.getPrecision(), mathContext.getRoundingMode()));
+        to.setMathContext(new MathContext(getMathContext().getPrecision(), getMathContext().getRoundingMode()));
     }
     
     
     //Getters
     
     /**
-     * Returns the components that define the Big Component.
+     * Returns the raw components that define the Big Component.
      *
-     * @return The components that define the Big Component.
+     * @return The raw components that define the Big Component.
      */
     @Override
-    public final BigDecimal[] getComponents() {
+    public final BigDecimal[] getRawComponents() {
         return components;
     }
     
@@ -96,6 +68,7 @@ public abstract class BigComponent<I extends BigComponent<?>> extends BaseCompon
      * Returns the primitive components that define the Big Component.
      *
      * @return The primitive components that define the Big Component.
+     * @see #getComponents()
      */
     public final BigDecimal[] getPrimitiveComponents() {
         return getComponents();
@@ -112,23 +85,13 @@ public abstract class BigComponent<I extends BigComponent<?>> extends BaseCompon
     }
     
     /**
-     * Returns the precision to use in comparisons.
-     *
-     * @return The precision to use in comparisons.
-     */
-    @Override
-    public BigDecimal getPrecision() {
-        return BIG_PRECISION;
-    }
-    
-    /**
      * Returns the Math Context used when doing Big Component math.
      *
      * @return The Math Context used when doing Big Component math.
      */
     @Override
     public final MathContext getMathContext() {
-        return mathContext;
+        return ((BigComponentMathHandler) getHandler()).getMathContext();
     }
     
     
@@ -141,7 +104,6 @@ public abstract class BigComponent<I extends BigComponent<?>> extends BaseCompon
      */
     @Override
     public final void setMathContext(MathContext mathContext) {
-        this.mathContext = mathContext;
         ((BigComponentMathHandler) this.getHandler()).setMathContext(mathContext);
     }
     

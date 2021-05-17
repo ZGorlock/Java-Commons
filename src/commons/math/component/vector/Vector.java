@@ -40,8 +40,7 @@ public class Vector extends Component<Vector> implements VectorInterface<Double,
      */
     public Vector(double... components) {
         super();
-        setComponents(new Double[components.length]);
-        System.arraycopy(ArrayUtils.toObject(components), 0, getComponents(), 0, getLength());
+        setComponents(ArrayUtils.toObject(components));
     }
     
     /**
@@ -63,7 +62,7 @@ public class Vector extends Component<Vector> implements VectorInterface<Double,
      * @see #Vector(double...)
      */
     public Vector(Vector vector) {
-        this(Arrays.stream(vector.getComponents())
+        this(Arrays.stream(vector.getRawComponents())
                 .mapToDouble(e -> e).toArray());
     }
     
@@ -76,18 +75,19 @@ public class Vector extends Component<Vector> implements VectorInterface<Double,
      */
     public Vector(Vector vector, double... components) {
         this(Arrays.stream(ArrayUtility.merge(
-                vector.getComponents(),
+                vector.getRawComponents(),
                 ArrayUtils.toObject(components), Double.class)
         ).mapToDouble(e -> e).toArray());
     }
     
     /**
-     * The constructor for a Vector of a certain length.
+     * The constructor for a Vector of a certain dimensionality.
      *
+     * @param dim The dimensionality of the Vector.
      * @see #Vector(double...)
      */
-    public Vector(int length) {
-        this(Collections.nCopies(length, 0.0).stream()
+    public Vector(int dim) {
+        this(Collections.nCopies(dim, 0.0).stream()
                 .mapToDouble(e -> e).toArray());
     }
     
@@ -147,7 +147,7 @@ public class Vector extends Component<Vector> implements VectorInterface<Double,
      */
     @Override
     public Vector createNewInstance(int dim) {
-        return createInstance(dim);
+        return createInstance(Math.max(dim, 0));
     }
     
     
@@ -174,7 +174,7 @@ public class Vector extends Component<Vector> implements VectorInterface<Double,
      * @see #Vector(int)
      */
     public static Vector createInstance(int dim) {
-        return new Vector(dim);
+        return new Vector(Math.max(dim, 0));
     }
     
     /**

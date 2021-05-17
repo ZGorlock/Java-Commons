@@ -40,8 +40,7 @@ public class RawVector extends RawComponent<RawVector> implements VectorInterfac
      */
     public RawVector(Number... components) {
         super();
-        setComponents(new Number[components.length]);
-        System.arraycopy(components, 0, getComponents(), 0, getLength());
+        setComponents(components);
     }
     
     /**
@@ -63,7 +62,7 @@ public class RawVector extends RawComponent<RawVector> implements VectorInterfac
      * @see #RawVector(Number...)
      */
     public RawVector(RawVector vector) {
-        this(Arrays.stream(vector.getComponents())
+        this(Arrays.stream(vector.getRawComponents())
                 .toArray(Number[]::new));
     }
     
@@ -74,7 +73,7 @@ public class RawVector extends RawComponent<RawVector> implements VectorInterfac
      * @see #RawVector(Number...)
      */
     public RawVector(Vector vector) {
-        this(Arrays.stream(vector.getComponents())
+        this(Arrays.stream(vector.getRawComponents())
                 .map(Number.class::cast).toArray(Number[]::new));
     }
     
@@ -87,7 +86,7 @@ public class RawVector extends RawComponent<RawVector> implements VectorInterfac
      */
     public RawVector(RawVector vector, Number... components) {
         this(Arrays.stream(ArrayUtility.merge(
-                vector.getComponents(),
+                vector.getRawComponents(),
                 components, Number.class)
         ).toArray(Number[]::new));
     }
@@ -101,18 +100,19 @@ public class RawVector extends RawComponent<RawVector> implements VectorInterfac
      */
     public RawVector(Vector vector, Number... components) {
         this(Arrays.stream(ArrayUtility.merge(
-                ArrayUtils.toObject(Arrays.stream(vector.getComponents()).mapToInt(Double::intValue).toArray()),
+                ArrayUtils.toObject(Arrays.stream(vector.getRawComponents()).mapToDouble(Double::doubleValue).toArray()),
                 components, Number.class)
         ).toArray(Number[]::new));
     }
     
     /**
-     * The constructor for a Raw Vector of a certain length.
+     * The constructor for a Raw Vector of a certain dimensionality.
      *
+     * @param dim The dimensionality of the Raw Vector.
      * @see #RawVector(Number...)
      */
-    public RawVector(int length) {
-        this(Collections.nCopies(length, 0).stream()
+    public RawVector(int dim) {
+        this(Collections.nCopies(dim, 0.0).stream()
                 .map(Number.class::cast).toArray(Number[]::new));
     }
     
@@ -172,7 +172,7 @@ public class RawVector extends RawComponent<RawVector> implements VectorInterfac
      */
     @Override
     public RawVector createNewInstance(int dim) {
-        return createInstance(dim);
+        return createInstance(Math.max(dim, 0));
     }
     
     
@@ -199,7 +199,7 @@ public class RawVector extends RawComponent<RawVector> implements VectorInterfac
      * @see #RawVector(int)
      */
     public static RawVector createInstance(int dim) {
-        return new RawVector(dim);
+        return new RawVector(Math.max(dim, 0));
     }
     
     /**

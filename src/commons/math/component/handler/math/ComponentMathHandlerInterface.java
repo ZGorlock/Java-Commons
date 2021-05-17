@@ -7,12 +7,27 @@
 
 package commons.math.component.handler.math;
 
+import java.util.function.IntFunction;
+
 /**
  * Defines the contract for Component Math Handler classes.
  *
  * @param <T> The type of the Component Math Handler.
  */
 public interface ComponentMathHandlerInterface<T extends Number> {
+    
+    //Constants
+    
+    /**
+     * The default precision to use in comparisons.
+     */
+    Number DEFAULT_PRECISION = 0.000000000001;
+    
+    /**
+     * The default number of significant figures of the precision.
+     */
+    int DEFAULT_SIGNIFICANT_FIGURES = 12;
+    
     
     //Methods
     
@@ -52,6 +67,13 @@ public interface ComponentMathHandlerInterface<T extends Number> {
      * @return An empty array of the specified length.
      */
     T[] array(int length);
+    
+    /**
+     * Returns an array generator.
+     *
+     * @return An array generator.
+     */
+    IntFunction<T[]> arrayGenerator();
     
     /**
      * Defines the addition of one component with another.
@@ -106,7 +128,7 @@ public interface ComponentMathHandlerInterface<T extends Number> {
      * @param a The component.
      * @param n The root.
      * @return The result of the root operation of the component.
-     * @throws ArithmeticException When the result is imaginary.
+     * @throws ArithmeticException When the result is imaginary, or when the degree of the root is divided by zero.
      */
     T root(T a, T n) throws ArithmeticException;
     
@@ -177,5 +199,30 @@ public interface ComponentMathHandlerInterface<T extends Number> {
      * @return Whether the component is zero or not.
      */
     boolean isZero(T a);
+    
+    /**
+     * Cleans a component.
+     *
+     * @param a The component.
+     * @return The cleaned component.
+     */
+    T clean(T a);
+    
+    
+    //Getters
+    
+    /**
+     * Returns the precision of the Component Math Handler.
+     *
+     * @return The precision of the Component Math Handler.
+     */
+    T getPrecision();
+    
+    /**
+     * Returns the significant figures of the Component Math Handler.
+     *
+     * @return The significant figures of the Component Math Handler.
+     */
+    int getSignificantFigures();
     
 }

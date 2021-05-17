@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import commons.math.MathUtility;
 import commons.math.component.BigComponent;
 import commons.math.component.vector.BigVector;
 import org.slf4j.Logger;
@@ -40,10 +41,9 @@ public class BigMatrix extends BigComponent<BigMatrix> implements MatrixInterfac
      */
     public BigMatrix(BigDecimal... components) throws ArithmeticException {
         super();
-        setComponents(new BigDecimal[components.length]);
-        System.arraycopy(components, 0, getComponents(), 0, getLength());
+        setComponents(components);
         
-        if (dimensionalityToLength() != components.length) {
+        if (!MathUtility.isSquare(components.length)) {
             throw new ArithmeticException(getErrorHandler().componentLengthNotSquareErrorMessage(components));
         }
     }
@@ -92,7 +92,7 @@ public class BigMatrix extends BigComponent<BigMatrix> implements MatrixInterfac
      * @see #BigMatrix(BigDecimal...)
      */
     public BigMatrix(BigMatrix matrix) {
-        this(matrix.getComponents());
+        this(matrix.getRawComponents());
         setMathContext(matrix.getMathContext());
     }
     
@@ -103,7 +103,7 @@ public class BigMatrix extends BigComponent<BigMatrix> implements MatrixInterfac
      * @see #BigMatrix(BigDecimal...)
      */
     public BigMatrix(Matrix matrix) {
-        this(Arrays.stream(matrix.getComponents())
+        this(Arrays.stream(matrix.getRawComponents())
                 .map(BigDecimal::new).toArray(BigDecimal[]::new));
     }
     
@@ -186,7 +186,7 @@ public class BigMatrix extends BigComponent<BigMatrix> implements MatrixInterfac
      */
     @Override
     public BigMatrix createNewInstance(int dim) {
-        return createInstance(dim);
+        return createInstance(Math.max(dim, 0));
     }
     
     /**
@@ -250,16 +250,6 @@ public class BigMatrix extends BigComponent<BigMatrix> implements MatrixInterfac
         return "Big Matrix";
     }
     
-    /**
-     * Returns the plural name of the type of the Component.
-     *
-     * @return The plural name of the type of the Component.
-     */
-    @Override
-    public String getNamePlural() {
-        return "Big Matrices";
-    }
-    
     
     //Functions
     
@@ -271,7 +261,7 @@ public class BigMatrix extends BigComponent<BigMatrix> implements MatrixInterfac
      * @see #BigMatrix(int)
      */
     public static BigMatrix createInstance(int dim) {
-        return new BigMatrix(dim);
+        return new BigMatrix(Math.max(dim, 0));
     }
     
     /**

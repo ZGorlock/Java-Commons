@@ -7,7 +7,9 @@
 
 package commons.math.component.handler.math;
 
-import commons.math.component.RawComponent;
+import java.util.function.IntFunction;
+
+import commons.math.MathUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,7 +31,12 @@ public class RawComponentMathHandler implements ComponentMathHandlerInterface<Nu
     /**
      * The precision to use in comparisons.
      */
-    public static final Number PRECISION = RawComponent.RAW_PRECISION;
+    public static final Number PRECISION = DEFAULT_PRECISION;
+    
+    /**
+     * The number of significant figures of the precision.
+     */
+    public static final int SIGNIFICANT_FIGURES = DEFAULT_SIGNIFICANT_FIGURES;
     
     
     //Constructors
@@ -96,6 +103,16 @@ public class RawComponentMathHandler implements ComponentMathHandlerInterface<Nu
     }
     
     /**
+     * Returns an array generator.
+     *
+     * @return An array generator.
+     */
+    @Override
+    public IntFunction<Number[]> arrayGenerator() {
+        return Number[]::new;
+    }
+    
+    /**
      * Defines the addition of one component with another.
      *
      * @param a The first component.
@@ -141,6 +158,9 @@ public class RawComponentMathHandler implements ComponentMathHandlerInterface<Nu
      */
     @Override
     public Number divide(Number a, Number b) throws ArithmeticException {
+        if (isZero(b)) {
+            throw new ArithmeticException("Attempted to divide by zero");
+        }
         return a.doubleValue() / b.doubleValue();
     }
     
@@ -163,11 +183,14 @@ public class RawComponentMathHandler implements ComponentMathHandlerInterface<Nu
      * @param a The component.
      * @param n The root.
      * @return The result of the root operation of the component.
-     * @throws ArithmeticException When the result is imaginary.
+     * @throws ArithmeticException When the result is imaginary, or when the degree of the root is divided by zero.
      */
     @Override
     public Number root(Number a, Number n) throws ArithmeticException {
-        return Math.pow(a.doubleValue(), (1.0 / n.doubleValue()));
+        if (compare(a, zero()) < 0) {
+            throw new ArithmeticException("Result of root is imaginary");
+        }
+        return Math.pow(a.doubleValue(), reciprocal(n).doubleValue());
     }
     
     /**
@@ -179,6 +202,9 @@ public class RawComponentMathHandler implements ComponentMathHandlerInterface<Nu
      */
     @Override
     public Number sqrt(Number a) throws ArithmeticException {
+        if (compare(a, zero()) < 0) {
+            throw new ArithmeticException("Result of square root is imaginary");
+        }
         return Math.sqrt(a.doubleValue());
     }
     
@@ -191,10 +217,6 @@ public class RawComponentMathHandler implements ComponentMathHandlerInterface<Nu
      */
     @Override
     public Number reciprocal(Number a) throws ArithmeticException {
-        if (isZero(a)) {
-            throw new ArithmeticException("Attempted to divide by zero");
-        }
-        
         return divide(one(), a);
     }
     
@@ -264,7 +286,39 @@ public class RawComponentMathHandler implements ComponentMathHandlerInterface<Nu
      */
     @Override
     public boolean isZero(Number a) {
-        return a.equals(zero());
+        return clean(a).equals(zero());
+    }
+    
+    /**
+     * Cleans a component.
+     *
+     * @param a The component.
+     * @return The cleaned component.
+     */
+    @Override
+    public Number clean(Number a) {
+        return MathUtility.roundWithPrecision(a.doubleValue(), SIGNIFICANT_FIGURES);
+    }
+    
+    
+    //Getters
+    
+    /**
+     * Returns the precision of the Component Math Handler.
+     *
+     * @return The precision of the Component Math Handler.
+     */
+    public Number getPrecision() {
+        return PRECISION;
+    }
+    
+    /**
+     * Returns the significant figures of the Component Math Handler.
+     *
+     * @return The significant figures of the Component Math Handler.
+     */
+    public int getSignificantFigures() {
+        return SIGNIFICANT_FIGURES;
     }
     
 }

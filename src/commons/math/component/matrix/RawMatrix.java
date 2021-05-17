@@ -11,6 +11,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import commons.math.MathUtility;
 import commons.math.component.RawComponent;
 import commons.math.component.vector.IntVector;
 import commons.math.component.vector.RawVector;
@@ -40,10 +41,9 @@ public class RawMatrix extends RawComponent<RawMatrix> implements MatrixInterfac
      */
     public RawMatrix(Number... components) throws ArithmeticException {
         super();
-        setComponents(new Number[components.length]);
-        System.arraycopy(components, 0, getComponents(), 0, getLength());
+        setComponents(components);
         
-        if (dimensionalityToLength() != components.length) {
+        if (!MathUtility.isSquare(components.length)) {
             throw new ArithmeticException(getErrorHandler().componentLengthNotSquareErrorMessage(components));
         }
     }
@@ -68,7 +68,7 @@ public class RawMatrix extends RawComponent<RawMatrix> implements MatrixInterfac
      * @see #RawMatrix(Number...)
      */
     public RawMatrix(RawMatrix matrix) {
-        this(Arrays.stream(matrix.getComponents())
+        this(Arrays.stream(matrix.getRawComponents())
                 .toArray(Number[]::new));
     }
     
@@ -79,7 +79,7 @@ public class RawMatrix extends RawComponent<RawMatrix> implements MatrixInterfac
      * @see #RawMatrix(Number...)
      */
     public RawMatrix(Matrix matrix) {
-        this(Arrays.stream(matrix.getComponents())
+        this(Arrays.stream(matrix.getRawComponents())
                 .map(Number.class::cast).toArray(Number[]::new));
     }
     
@@ -90,7 +90,7 @@ public class RawMatrix extends RawComponent<RawMatrix> implements MatrixInterfac
      * @see #RawMatrix(Number...)
      */
     public RawMatrix(int dim) {
-        this(Collections.nCopies(dim * dim, 0).stream()
+        this(Collections.nCopies(dim * dim, 0.0).stream()
                 .map(Number.class::cast).toArray(Number[]::new));
     }
     
@@ -162,7 +162,7 @@ public class RawMatrix extends RawComponent<RawMatrix> implements MatrixInterfac
      */
     @Override
     public RawMatrix createNewInstance(int dim) {
-        return createInstance(dim);
+        return createInstance(Math.max(dim, 0));
     }
     
     /**
@@ -226,16 +226,6 @@ public class RawMatrix extends RawComponent<RawMatrix> implements MatrixInterfac
         return "Raw Matrix";
     }
     
-    /**
-     * Returns the plural name of the type of the Component.
-     *
-     * @return The plural name of the type of the Component.
-     */
-    @Override
-    public String getNamePlural() {
-        return "Raw Matrices";
-    }
-    
     
     //Functions
     
@@ -247,7 +237,7 @@ public class RawMatrix extends RawComponent<RawMatrix> implements MatrixInterfac
      * @see #RawMatrix(int)
      */
     public static RawMatrix createInstance(int dim) {
-        return new RawMatrix(dim);
+        return new RawMatrix(Math.max(dim, 0));
     }
     
     /**

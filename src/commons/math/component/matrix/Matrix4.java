@@ -57,6 +57,16 @@ public class Matrix4 extends Matrix {
         super(DIMENSIONALITY);
     }
     
+    /**
+     * The protected constructor for a 4D Matrix with a dimensionality argument.
+     *
+     * @param dim The dimensionality argument. *Ignored for Matrix4*
+     * @see #Matrix4()
+     */
+    protected Matrix4(int dim) {
+        this();
+    }
+    
     
     //Methods
     
@@ -68,7 +78,7 @@ public class Matrix4 extends Matrix {
      */
     @Override
     public Matrix4 cloned() {
-        Matrix4 clone = new Matrix4(Arrays.stream(getComponents())
+        Matrix4 clone = new Matrix4(Arrays.stream(this.getRawComponents())
                 .mapToDouble(e -> e).toArray());
         copyMeta(clone);
         return clone;
@@ -94,7 +104,7 @@ public class Matrix4 extends Matrix {
      */
     @Override
     public Matrix4 createNewInstance(int dim) {
-        return createInstance(dim);
+        return createInstance(Math.max(dim, 0));
     }
     
     
@@ -108,16 +118,6 @@ public class Matrix4 extends Matrix {
     @Override
     public String getName() {
         return "4D Matrix";
-    }
-    
-    /**
-     * Returns the plural name of the type of the Component.
-     *
-     * @return The plural name of the type of the Component.
-     */
-    @Override
-    public String getNamePlural() {
-        return "4D Matrices";
     }
     
     /**
@@ -136,12 +136,32 @@ public class Matrix4 extends Matrix {
     /**
      * Creates a new 4D Matrix instance.
      *
-     * @param dim *Ignored for Matrix4*
      * @return The new Matrix.
      * @see #Matrix4()
      */
-    public static Matrix4 createInstance(int dim) {
+    public static Matrix4 createInstance() {
         return new Matrix4();
+    }
+    
+    /**
+     * Creates a new 4D Matrix instance.
+     *
+     * @param dim *Ignored for Matrix4*
+     * @return The new Matrix.
+     * @see #createInstance()
+     */
+    public static Matrix4 createInstance(int dim) {
+        return createInstance();
+    }
+    
+    /**
+     * Creates a 4D identity Matrix.
+     *
+     * @return The identity Matrix.
+     * @see MatrixInterface#identity(int, Class)
+     */
+    public static Matrix4 identity() {
+        return MatrixInterface.identity(DIMENSIONALITY, Matrix4.class);
     }
     
     /**
@@ -149,10 +169,20 @@ public class Matrix4 extends Matrix {
      *
      * @param dim *Ignored for Matrix4*
      * @return The identity Matrix.
-     * @see MatrixInterface#identity(int, Class)
+     * @see #identity()
      */
     public static Matrix4 identity(int dim) {
-        return MatrixInterface.identity(DIMENSIONALITY, Matrix4.class);
+        return identity();
+    }
+    
+    /**
+     * Creates a 4D origin Matrix.
+     *
+     * @return The origin Matrix.
+     * @see MatrixInterface#origin(int, Class)
+     */
+    public static Matrix4 origin() {
+        return MatrixInterface.origin(DIMENSIONALITY, Matrix4.class);
     }
     
     /**
@@ -160,10 +190,20 @@ public class Matrix4 extends Matrix {
      *
      * @param dim *Ignored for Matrix4*
      * @return The origin Matrix.
-     * @see MatrixInterface#origin(int, Class)
+     * @see #origin()
      */
     public static Matrix4 origin(int dim) {
-        return MatrixInterface.origin(DIMENSIONALITY, Matrix4.class);
+        return origin();
+    }
+    
+    /**
+     * Creates a 4D sign chart Matrix.
+     *
+     * @return The sign chart Matrix.
+     * @see MatrixInterface#signChart(int, Class)
+     */
+    public static Matrix4 signChart() {
+        return MatrixInterface.signChart(DIMENSIONALITY, Matrix4.class);
     }
     
     /**
@@ -171,10 +211,10 @@ public class Matrix4 extends Matrix {
      *
      * @param dim *Ignored for Matrix4*
      * @return The sign chart Matrix.
-     * @see MatrixInterface#signChart(int, Class)
+     * @see #signChart()
      */
     public static Matrix4 signChart(int dim) {
-        return MatrixInterface.signChart(DIMENSIONALITY, Matrix4.class);
+        return signChart();
     }
     
 }

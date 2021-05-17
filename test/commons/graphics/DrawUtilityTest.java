@@ -346,16 +346,16 @@ public class DrawUtilityTest {
         }
         
         Polygon polygon = new Polygon(
-                points.stream().mapToInt(e -> e.getComponents()[0].intValue()).toArray(),
-                points.stream().mapToInt(e -> e.getComponents()[1].intValue()).toArray(),
+                points.stream().mapToInt(e -> e.getRawComponents()[0].intValue()).toArray(),
+                points.stream().mapToInt(e -> e.getRawComponents()[1].intValue()).toArray(),
                 points.size());
         Polygon intPolygon = new Polygon(
-                intPoints.stream().mapToInt(e -> e.getComponents()[0]).toArray(),
-                intPoints.stream().mapToInt(e -> e.getComponents()[1]).toArray(),
+                intPoints.stream().mapToInt(e -> e.getRawComponents()[0]).toArray(),
+                intPoints.stream().mapToInt(e -> e.getRawComponents()[1]).toArray(),
                 intPoints.size());
         Polygon bigPolygon = new Polygon(
-                bigPoints.stream().mapToInt(e -> e.getComponents()[0].intValue()).toArray(),
-                bigPoints.stream().mapToInt(e -> e.getComponents()[1].intValue()).toArray(),
+                bigPoints.stream().mapToInt(e -> e.getRawComponents()[0].intValue()).toArray(),
+                bigPoints.stream().mapToInt(e -> e.getRawComponents()[1].intValue()).toArray(),
                 bigPoints.size());
         
         
@@ -743,16 +743,16 @@ public class DrawUtilityTest {
         }
         
         Polygon polygon = new Polygon(
-                points.stream().mapToInt(e -> e.getComponents()[0].intValue()).toArray(),
-                points.stream().mapToInt(e -> e.getComponents()[1].intValue()).toArray(),
+                points.stream().mapToInt(e -> e.getRawComponents()[0].intValue()).toArray(),
+                points.stream().mapToInt(e -> e.getRawComponents()[1].intValue()).toArray(),
                 points.size());
         Polygon intPolygon = new Polygon(
-                intPoints.stream().mapToInt(e -> e.getComponents()[0]).toArray(),
-                intPoints.stream().mapToInt(e -> e.getComponents()[1]).toArray(),
+                intPoints.stream().mapToInt(e -> e.getRawComponents()[0]).toArray(),
+                intPoints.stream().mapToInt(e -> e.getRawComponents()[1]).toArray(),
                 intPoints.size());
         Polygon bigPolygon = new Polygon(
-                bigPoints.stream().mapToInt(e -> e.getComponents()[0].intValue()).toArray(),
-                bigPoints.stream().mapToInt(e -> e.getComponents()[1].intValue()).toArray(),
+                bigPoints.stream().mapToInt(e -> e.getRawComponents()[0].intValue()).toArray(),
+                bigPoints.stream().mapToInt(e -> e.getRawComponents()[1].intValue()).toArray(),
                 bigPoints.size());
         
         

@@ -28,14 +28,6 @@ public abstract class IntComponent<I extends IntComponent<?>> extends BaseCompon
     private static final Logger logger = LoggerFactory.getLogger(IntComponent.class);
     
     
-    //Constants
-    
-    /**
-     * The precision to use in comparisons.
-     */
-    public static final Integer INT_PRECISION = 1;
-    
-    
     //Constructors
     
     /**
@@ -61,12 +53,12 @@ public abstract class IntComponent<I extends IntComponent<?>> extends BaseCompon
     //Getters
     
     /**
-     * Returns the components that define the Integer Component.
+     * Returns the raw components that define the Integer Component.
      *
-     * @return The components that define the Integer Component.
+     * @return The raw components that define the Integer Component.
      */
     @Override
-    public final Integer[] getComponents() {
+    public final Integer[] getRawComponents() {
         return components;
     }
     
@@ -74,6 +66,7 @@ public abstract class IntComponent<I extends IntComponent<?>> extends BaseCompon
      * Returns the primitive components that define the Integer Component.
      *
      * @return The primitive components that define the Integer Component.
+     * @see #getComponents()
      */
     public final int[] getPrimitiveComponents() {
         return Arrays.stream(getComponents()).mapToInt(e -> e).toArray();
@@ -87,16 +80,6 @@ public abstract class IntComponent<I extends IntComponent<?>> extends BaseCompon
     @Override
     public String getName() {
         return "Integer Component";
-    }
-    
-    /**
-     * Returns the precision to use in comparisons.
-     *
-     * @return The precision to use in comparisons.
-     */
-    @Override
-    public Integer getPrecision() {
-        return INT_PRECISION;
     }
     
 }

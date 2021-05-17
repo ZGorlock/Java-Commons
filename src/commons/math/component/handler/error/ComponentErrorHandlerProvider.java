@@ -9,6 +9,7 @@ package commons.math.component.handler.error;
 
 import commons.math.BoundUtility;
 import commons.math.component.ComponentInterface;
+import commons.math.component.matrix.MatrixInterface;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -68,7 +69,7 @@ public final class ComponentErrorHandlerProvider {
      */
     public static void assertDimensionalitySame(ComponentInterface<?, ?, ?> component1, ComponentInterface<?, ?, ?> component2) throws ArithmeticException {
         if (!component1.dimensionalityEqual(component2)) {
-            throw new ArithmeticException(component1.getErrorHandler().dimensionalityNotSameErrorMessage(component1, component2));
+            throw new ArithmeticException(errorHandler.dimensionalityNotSameErrorMessage(component1, component2));
         }
     }
     
@@ -81,7 +82,7 @@ public final class ComponentErrorHandlerProvider {
      */
     public static void assertDimensionalityEqual(ComponentInterface<?, ?, ?> component, int dimensionality) throws ArithmeticException {
         if (component.getDimensionality() != dimensionality) {
-            throw new ArithmeticException(component.getErrorHandler().dimensionalityNotEqualErrorMessage(component, dimensionality));
+            throw new ArithmeticException(errorHandler.dimensionalityNotEqualErrorMessage(component, dimensionality));
         }
     }
     
@@ -94,7 +95,22 @@ public final class ComponentErrorHandlerProvider {
      */
     public static void assertIndexInBounds(ComponentInterface<?, ?, ?> component, int index) throws IndexOutOfBoundsException {
         if (!BoundUtility.inBounds(index, 0, component.getLength(), true, false)) {
-            throw new IndexOutOfBoundsException(component.getErrorHandler().componentIndexOutOfBoundsErrorMessage(component, index));
+            throw new IndexOutOfBoundsException(errorHandler.componentIndexOutOfBoundsErrorMessage(component, index));
+        }
+    }
+    
+    /**
+     * Checks if a coordinate is within the bounds of a Matrix or not.
+     *
+     * @param component The Matrix.
+     * @param x         The x coordinate.
+     * @param y         The y coordinate.
+     * @throws IndexOutOfBoundsException When the Matrix does not contain a component at the specified coordinate.
+     */
+    public static void assertCoordinateInBounds(MatrixInterface<?, ?> component, int x, int y) throws IndexOutOfBoundsException {
+        if (!BoundUtility.inBounds(x, 0, component.getWidth(), true, false) ||
+                !BoundUtility.inBounds(y, 0, component.getHeight(), true, false)) {
+            throw new IndexOutOfBoundsException(errorHandler.componentCoordinateOutOfBoundsErrorMessage(component, x, y));
         }
     }
     

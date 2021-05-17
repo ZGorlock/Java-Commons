@@ -53,7 +53,7 @@ public class Vector3 extends Vector {
      * @see #Vector3(double, double, double)
      */
     public Vector3(Vector vector) {
-        this(vector.getX(), vector.getY(), vector.getZ());
+        this(vector.getRawX(), vector.getRawY(), vector.getRawZ());
     }
     
     /**
@@ -64,7 +64,7 @@ public class Vector3 extends Vector {
      * @see #Vector3(double, double, double)
      */
     public Vector3(Vector2 vector, double z) {
-        this(vector.getX(), vector.getY(), z);
+        this(vector.getRawX(), vector.getRawY(), z);
     }
     
     /**
@@ -74,6 +74,16 @@ public class Vector3 extends Vector {
      */
     public Vector3() {
         super(DIMENSIONALITY);
+    }
+    
+    /**
+     * The protected constructor for a 3D Vector with a dimensionality argument.
+     *
+     * @param dim The dimensionality argument. *Ignored for Vector3*
+     * @see #Vector3()
+     */
+    protected Vector3(int dim) {
+        this();
     }
     
     
@@ -156,12 +166,32 @@ public class Vector3 extends Vector {
     /**
      * Creates a new 3D Vector instance.
      *
-     * @param dim *Ignored for Vector3*
      * @return The new Vector.
      * @see #Vector3()
      */
-    public static Vector3 createInstance(int dim) {
+    public static Vector3 createInstance() {
         return new Vector3();
+    }
+    
+    /**
+     * Creates a new 3D Vector instance.
+     *
+     * @param dim *Ignored for Vector3*
+     * @return The new Vector.
+     * @see #createInstance()
+     */
+    public static Vector3 createInstance(int dim) {
+        return createInstance();
+    }
+    
+    /**
+     * Creates a 3D identity Vector.
+     *
+     * @return The identity Vector.
+     * @see VectorInterface#identity(int, Class)
+     */
+    public static Vector3 identity() {
+        return VectorInterface.identity(DIMENSIONALITY, Vector3.class);
     }
     
     /**
@@ -169,10 +199,20 @@ public class Vector3 extends Vector {
      *
      * @param dim *Ignored for Vector3*
      * @return The identity Vector.
-     * @see VectorInterface#identity(int, Class)
+     * @see #identity()
      */
     public static Vector3 identity(int dim) {
-        return VectorInterface.identity(DIMENSIONALITY, Vector3.class);
+        return identity();
+    }
+    
+    /**
+     * Creates a 3D origin Vector.
+     *
+     * @return The origin Vector.
+     * @see VectorInterface#origin(int, Class)
+     */
+    public static Vector3 origin() {
+        return VectorInterface.origin(DIMENSIONALITY, Vector3.class);
     }
     
     /**
@@ -180,10 +220,10 @@ public class Vector3 extends Vector {
      *
      * @param dim *Ignored for Vector3*
      * @return The origin Vector.
-     * @see VectorInterface#origin(int, Class)
+     * @see #origin()
      */
     public static Vector3 origin(int dim) {
-        return VectorInterface.origin(DIMENSIONALITY, Vector3.class);
+        return origin();
     }
     
     /**
@@ -197,9 +237,9 @@ public class Vector3 extends Vector {
         ComponentErrorHandlerProvider.assertDimensionalityEqual(vector1, DIMENSIONALITY);
         ComponentErrorHandlerProvider.assertDimensionalityEqual(vector2, DIMENSIONALITY);
         return new Vector3(
-                vector1.getComponents()[1] * vector2.getComponents()[2] - vector1.getComponents()[2] * vector2.getComponents()[1],
-                vector1.getComponents()[2] * vector2.getComponents()[0] - vector1.getComponents()[0] * vector2.getComponents()[2],
-                vector1.getComponents()[0] * vector2.getComponents()[1] - vector1.getComponents()[1] * vector2.getComponents()[0]
+                vector1.getRawComponents()[1] * vector2.getRawComponents()[2] - vector1.getRawComponents()[2] * vector2.getRawComponents()[1],
+                vector1.getRawComponents()[2] * vector2.getRawComponents()[0] - vector1.getRawComponents()[0] * vector2.getRawComponents()[2],
+                vector1.getRawComponents()[0] * vector2.getRawComponents()[1] - vector1.getRawComponents()[1] * vector2.getRawComponents()[0]
         );
     }
     

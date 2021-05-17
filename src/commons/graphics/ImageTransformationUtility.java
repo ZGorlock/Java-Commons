@@ -81,7 +81,7 @@ public class ImageTransformationUtility {
         final int filterColor = new Color(0, 255, 0).getRGB();
         
         BufferedImage maskImage = new BufferedImage(destWidth, destHeight, BufferedImage.TYPE_INT_RGB);
-        Vector maskCenter = Vector.averageVector(destBounds);
+        IntVector maskCenter = new IntVector(Vector.averageVector(destBounds));
         
         Graphics2D maskGraphics = maskImage.createGraphics();
         DrawUtility.setColor(maskGraphics, new Color(filterColor));
@@ -100,7 +100,7 @@ public class ImageTransformationUtility {
         
         Set<Integer> visited = new HashSet<>();
         Stack<Point> stack = new Stack<>();
-        stack.push(new Point(maskCenter.getX().intValue(), maskCenter.getY().intValue()));
+        stack.push(new Point(maskCenter.getX(), maskCenter.getY()));
         while (!stack.isEmpty()) {
             Point p = stack.pop();
             int x = (int) p.getX();
@@ -121,8 +121,8 @@ public class ImageTransformationUtility {
         
         visited.parallelStream().forEach(p -> {
             Vector homogeneousSourcePoint = projectiveMatrix.times(new Vector(p % maskWidth, p / maskWidth, 1.0));
-            int sX = BoundUtility.truncateNum(homogeneousSourcePoint.getX() / homogeneousSourcePoint.getZ(), 0, srcWidth - 1).intValue();
-            int sY = BoundUtility.truncateNum(homogeneousSourcePoint.getY() / homogeneousSourcePoint.getZ(), 0, srcHeight - 1).intValue();
+            int sX = BoundUtility.truncateNum(homogeneousSourcePoint.getRawX() / homogeneousSourcePoint.getRawZ(), 0, srcWidth - 1).intValue();
+            int sY = BoundUtility.truncateNum(homogeneousSourcePoint.getRawY() / homogeneousSourcePoint.getRawZ(), 0, srcHeight - 1).intValue();
             maskData[p] = srcData[sY * srcWidth + sX];
         });
         visited.clear();
@@ -142,28 +142,28 @@ public class ImageTransformationUtility {
      */
     public static Matrix calculateProjectiveMatrix(List<Vector> src, List<Vector> dest) {
         Matrix projectiveMatrixSrc = new Matrix3(
-                src.get(0).getX(), src.get(1).getX(), src.get(3).getX(),
-                src.get(0).getY(), src.get(1).getY(), src.get(3).getY(),
+                src.get(0).getRawX(), src.get(1).getRawX(), src.get(3).getRawX(),
+                src.get(0).getRawY(), src.get(1).getRawY(), src.get(3).getRawY(),
                 1.0, 1.0, 1.0);
-        Vector solutionSrc = new Vector(src.get(2).getX(), src.get(2).getY(), 1.0);
+        Vector solutionSrc = new Vector(src.get(2).getRawX(), src.get(2).getRawY(), 1.0);
         Vector coordinateSystemSrc = projectiveMatrixSrc.solveSystem(solutionSrc);
         Matrix coordinateMatrixSrc = new Matrix3(
-                coordinateSystemSrc.getX(), coordinateSystemSrc.getY(), coordinateSystemSrc.getZ(),
-                coordinateSystemSrc.getX(), coordinateSystemSrc.getY(), coordinateSystemSrc.getZ(),
-                coordinateSystemSrc.getX(), coordinateSystemSrc.getY(), coordinateSystemSrc.getZ()
+                coordinateSystemSrc.getRawX(), coordinateSystemSrc.getRawY(), coordinateSystemSrc.getRawZ(),
+                coordinateSystemSrc.getRawX(), coordinateSystemSrc.getRawY(), coordinateSystemSrc.getRawZ(),
+                coordinateSystemSrc.getRawX(), coordinateSystemSrc.getRawY(), coordinateSystemSrc.getRawZ()
         );
         projectiveMatrixSrc = projectiveMatrixSrc.scale(coordinateMatrixSrc);
         
         Matrix projectiveMatrixDest = new Matrix3(
-                dest.get(0).getX(), dest.get(1).getX(), dest.get(3).getX(),
-                dest.get(0).getY(), dest.get(1).getY(), dest.get(3).getY(),
+                dest.get(0).getRawX(), dest.get(1).getRawX(), dest.get(3).getRawX(),
+                dest.get(0).getRawY(), dest.get(1).getRawY(), dest.get(3).getRawY(),
                 1.0, 1.0, 1.0);
-        Vector solutionDest = new Vector(dest.get(2).getX(), dest.get(2).getY(), 1.0);
+        Vector solutionDest = new Vector(dest.get(2).getRawX(), dest.get(2).getRawY(), 1.0);
         Vector coordinateSystemDest = projectiveMatrixDest.solveSystem(solutionDest);
         Matrix coordinateMatrixDest = new Matrix3(
-                coordinateSystemDest.getX(), coordinateSystemDest.getY(), coordinateSystemDest.getZ(),
-                coordinateSystemDest.getX(), coordinateSystemDest.getY(), coordinateSystemDest.getZ(),
-                coordinateSystemDest.getX(), coordinateSystemDest.getY(), coordinateSystemDest.getZ()
+                coordinateSystemDest.getRawX(), coordinateSystemDest.getRawY(), coordinateSystemDest.getRawZ(),
+                coordinateSystemDest.getRawX(), coordinateSystemDest.getRawY(), coordinateSystemDest.getRawZ(),
+                coordinateSystemDest.getRawX(), coordinateSystemDest.getRawY(), coordinateSystemDest.getRawZ()
         );
         projectiveMatrixDest = projectiveMatrixDest.scale(coordinateMatrixDest);
         

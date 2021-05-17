@@ -53,7 +53,7 @@ public class Vector4 extends Vector {
      * @see #Vector4(double, double, double, double)
      */
     public Vector4(Vector vector) {
-        this(vector.getX(), vector.getY(), vector.getZ(), vector.getW());
+        this(vector.getRawX(), vector.getRawY(), vector.getRawZ(), vector.getRawW());
     }
     
     /**
@@ -64,7 +64,7 @@ public class Vector4 extends Vector {
      * @see #Vector4(double, double, double, double)
      */
     public Vector4(Vector3 vector, double w) {
-        this(vector.getX(), vector.getY(), vector.getZ(), w);
+        this(vector.getRawX(), vector.getRawY(), vector.getRawZ(), w);
     }
     
     /**
@@ -74,6 +74,16 @@ public class Vector4 extends Vector {
      */
     public Vector4() {
         super(DIMENSIONALITY);
+    }
+    
+    /**
+     * The protected constructor for a 4D Vector with a dimensionality argument.
+     *
+     * @param dim The dimensionality argument. *Ignored for Vector4*
+     * @see #Vector4()
+     */
+    protected Vector4(int dim) {
+        this();
     }
     
     
@@ -144,12 +154,32 @@ public class Vector4 extends Vector {
     /**
      * Creates a new 4D Vector instance.
      *
-     * @param dim *Ignored for Vector4*
      * @return The new Vector.
      * @see #Vector4()
      */
-    public static Vector4 createInstance(int dim) {
+    public static Vector4 createInstance() {
         return new Vector4();
+    }
+    
+    /**
+     * Creates a new 4D Vector instance.
+     *
+     * @param dim *Ignored for Vector4*
+     * @return The new Vector.
+     * @see #createInstance()
+     */
+    public static Vector4 createInstance(int dim) {
+        return createInstance();
+    }
+    
+    /**
+     * Creates a 4D identity Vector.
+     *
+     * @return The identity Vector.
+     * @see VectorInterface#identity(int, Class)
+     */
+    public static Vector4 identity() {
+        return VectorInterface.identity(DIMENSIONALITY, Vector4.class);
     }
     
     /**
@@ -157,10 +187,20 @@ public class Vector4 extends Vector {
      *
      * @param dim *Ignored for Vector4*
      * @return The identity Vector.
-     * @see VectorInterface#identity(int, Class)
+     * @see #identity()
      */
     public static Vector4 identity(int dim) {
-        return VectorInterface.identity(DIMENSIONALITY, Vector4.class);
+        return identity();
+    }
+    
+    /**
+     * Creates a 4D origin Vector.
+     *
+     * @return The origin Vector.
+     * @see VectorInterface#origin(int, Class)
+     */
+    public static Vector4 origin() {
+        return VectorInterface.origin(DIMENSIONALITY, Vector4.class);
     }
     
     /**
@@ -168,10 +208,10 @@ public class Vector4 extends Vector {
      *
      * @param dim *Ignored for Vector4*
      * @return The origin Vector.
-     * @see VectorInterface#origin(int, Class)
+     * @see #origin()
      */
     public static Vector4 origin(int dim) {
-        return VectorInterface.origin(DIMENSIONALITY, Vector4.class);
+        return origin();
     }
     
 }

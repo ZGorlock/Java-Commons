@@ -28,14 +28,6 @@ public abstract class Component<I extends Component<?>> extends BaseComponent<Do
     private static final Logger logger = LoggerFactory.getLogger(Component.class);
     
     
-    //Constants
-    
-    /**
-     * The precision to use in comparisons.
-     */
-    public static final Double STANDARD_PRECISION = 0.000000000001;
-    
-    
     //Constructors
     
     /**
@@ -61,12 +53,12 @@ public abstract class Component<I extends Component<?>> extends BaseComponent<Do
     //Getters
     
     /**
-     * Returns the components that define the Component.
+     * Returns the raw components that define the Component.
      *
-     * @return The components that define the Component.
+     * @return The raw components that define the Component.
      */
     @Override
-    public final Double[] getComponents() {
+    public final Double[] getRawComponents() {
         return components;
     }
     
@@ -74,6 +66,7 @@ public abstract class Component<I extends Component<?>> extends BaseComponent<Do
      * Returns the primitive components that define the Component.
      *
      * @return The primitive components that define the Component.
+     * @see #getComponents()
      */
     public final double[] getPrimitiveComponents() {
         return Arrays.stream(getComponents()).mapToDouble(e -> e).toArray();
@@ -87,16 +80,6 @@ public abstract class Component<I extends Component<?>> extends BaseComponent<Do
     @Override
     public String getName() {
         return "Component";
-    }
-    
-    /**
-     * Returns the precision to use in comparisons.
-     *
-     * @return The precision to use in comparisons.
-     */
-    @Override
-    public Double getPrecision() {
-        return STANDARD_PRECISION;
     }
     
 }
