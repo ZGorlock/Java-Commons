@@ -7,8 +7,10 @@
 
 package commons.math.component.handler.math;
 
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -85,10 +87,13 @@ public class ComponentMathHandlerInterfaceTest {
      * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
+     * @see ComponentMathHandlerInterface#DEFAULT_PRECISION
+     * @see ComponentMathHandlerInterface#DEFAULT_SIGNIFICANT_FIGURES
      */
-    @SuppressWarnings("EmptyMethod")
     @Test
     public void testConstants() throws Exception {
+        Assert.assertEquals(0.000000000001, ComponentMathHandlerInterface.DEFAULT_PRECISION);
+        Assert.assertEquals(12, ComponentMathHandlerInterface.DEFAULT_SIGNIFICANT_FIGURES);
     }
     
     /**
@@ -99,6 +104,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testZero() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "zero");
     }
     
     /**
@@ -109,6 +116,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testOne() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "one");
     }
     
     /**
@@ -119,6 +128,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testNegativeOne() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "negativeOne");
     }
     
     /**
@@ -129,6 +140,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testValueOf() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "valueOf", Number.class);
     }
     
     /**
@@ -139,6 +152,20 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testArray() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "array", int.class);
+    }
+    
+    /**
+     * JUnit test of arrayGenerator.
+     *
+     * @throws Exception When there is an exception.
+     * @see ComponentMathHandlerInterface#arrayGenerator()
+     */
+    @Test
+    public void testArrayGenerator() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "arrayGenerator");
     }
     
     /**
@@ -149,6 +176,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testAdd() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "add", Number.class, Number.class);
     }
     
     /**
@@ -159,6 +188,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testSubtract() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "subtract", Number.class, Number.class);
     }
     
     /**
@@ -169,6 +200,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testMultiply() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "multiply", Number.class, Number.class);
     }
     
     /**
@@ -179,6 +212,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testDivide() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "divide", Number.class, Number.class);
     }
     
     /**
@@ -189,6 +224,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testPower() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "power", Number.class, Number.class);
     }
     
     /**
@@ -199,6 +236,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testRoot() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "root", Number.class, Number.class);
     }
     
     /**
@@ -209,6 +248,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testSqrt() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "sqrt", Number.class);
     }
     
     /**
@@ -219,6 +260,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testReciprocal() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "reciprocal", Number.class);
     }
     
     /**
@@ -229,6 +272,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testAbs() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "abs", Number.class);
     }
     
     /**
@@ -239,6 +284,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testNegate() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "negate", Number.class);
     }
     
     /**
@@ -249,6 +296,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testRound() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "round", Number.class);
     }
     
     /**
@@ -259,6 +308,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testCompare() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "compare", Number.class, Number.class);
     }
     
     /**
@@ -269,6 +320,8 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testIsEqual() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "isEqual", Number.class, Number.class);
     }
     
     /**
@@ -279,6 +332,44 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testIsZero() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "isZero", Number.class);
+    }
+    
+    /**
+     * JUnit test of clean.
+     *
+     * @throws Exception When there is an exception.
+     * @see ComponentMathHandlerInterface#clean(Number)
+     */
+    @Test
+    public void testClean() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "clean", Number.class);
+    }
+    
+    /**
+     * JUnit test of getPrecision.
+     *
+     * @throws Exception When there is an exception.
+     * @see ComponentMathHandlerInterface#getPrecision()
+     */
+    @Test
+    public void testGetPrecision() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "getPrecision");
+    }
+    
+    /**
+     * JUnit test of getSignificantFigures.
+     *
+     * @throws Exception When there is an exception.
+     * @see ComponentMathHandlerInterface#getSignificantFigures()
+     */
+    @Test
+    public void testGetSignificantFigures() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentMathHandlerInterface.class, "getSignificantFigures");
     }
     
 }

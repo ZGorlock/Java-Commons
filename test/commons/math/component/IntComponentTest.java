@@ -7,9 +7,9 @@
 
 package commons.math.component;
 
-import java.util.List;
-
-import commons.test.TestUtils;
+import commons.math.component.handler.math.IntComponentMathHandler;
+import commons.math.component.matrix.IntMatrix;
+import commons.math.component.vector.IntVector;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -89,13 +89,10 @@ public class IntComponentTest {
      * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
-     * @see IntComponent#INT_PRECISION
-     * @see IntComponent#PRECISION
      */
+    @SuppressWarnings("EmptyMethod")
     @Test
     public void testConstants() throws Exception {
-        Assert.assertEquals(1, IntComponent.INT_PRECISION.intValue());
-        Assert.assertEquals(0.000000000001, IntComponent.PRECISION.doubleValue(), TestUtils.DELTA);
     }
     
     /**
@@ -104,238 +101,24 @@ public class IntComponentTest {
      * @throws Exception When there is an exception.
      * @see IntComponent#IntComponent()
      */
+    @SuppressWarnings("ConstantConditions")
     @Test
     public void testConstructors() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of toString.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#toString()
-     */
-    @Test
-    public void testToString() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of equals.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#equals(Object)
-     */
-    @Test
-    public void testEquals() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of dimensionalityEqual.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#dimensionalityEqual(ComponentInterface)
-     */
-    @Test
-    public void testDimensionalityEqual() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of lengthEqual.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#lengthEqual(ComponentInterface)
-     */
-    @Test
-    public void testLengthEqual() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of componentTypeEqual.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#componentTypeEqual(ComponentInterface)
-     */
-    @Test
-    public void testIntComponentTypeEqual() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of cloned.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#cloned()
-     */
-    @Test
-    public void testCloned() throws Exception {
-    }
-    
-    /**
-     * JUnit test of emptyCopy.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#emptyCopy()
-     */
-    @Test
-    public void testEmptyCopy() throws Exception {
-    }
-    
-    /**
-     * JUnit test of createNewInstance.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#createNewInstance(int)
-     */
-    @Test
-    public void testCreateNewInstance() throws Exception {
-    }
-    
-    /**
-     * JUnit test of reverse.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#reverse()
-     */
-    @Test
-    public void testReverse() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of distance.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#distance(IntComponent)
-     */
-    @Test
-    public void testDistance() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of midpoint.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#midpoint(IntComponent)
-     */
-    @Test
-    public void testMidpoint() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of average.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#average(List)
-     * @see IntComponent#average(IntComponent...)
-     */
-    @Test
-    public void testAverage() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of sum.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#sum()
-     */
-    @Test
-    public void testSum() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of squareSum.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#squareSum()
-     */
-    @Test
-    public void testSquareSum() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of plus.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#plus(IntComponent)
-     */
-    @Test
-    public void testPlus() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of minus.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#minus(IntComponent)
-     */
-    @Test
-    public void testMinus() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of times.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#times(IntComponent)
-     */
-    @Test
-    public void testTimes() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of scale.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#scale(Number)
-     */
-    @Test
-    public void testScale() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of dividedBy.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#dividedBy(IntComponent)
-     */
-    @Test
-    public void testDividedBy() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of round.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#round()
-     */
-    @Test
-    public void testRound() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of copy.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#copy(IntComponent)
-     */
-    @Test
-    public void testCopy() throws Exception {
-        //TODO
+        //Int Vector
+        IntComponent<?> c1 = new IntVector();
+        Assert.assertNotNull(c1);
+        Assert.assertTrue(c1 instanceof IntComponent);
+        Assert.assertEquals(Integer.class, c1.getType());
+        Assert.assertEquals(IntVector.class, c1.getComponentClass());
+        Assert.assertTrue(c1.getHandler() instanceof IntComponentMathHandler);
+        
+        //Int Matrix
+        IntComponent<?> c2 = new IntMatrix();
+        Assert.assertNotNull(c2);
+        Assert.assertTrue(c2 instanceof IntComponent);
+        Assert.assertEquals(Integer.class, c2.getType());
+        Assert.assertEquals(IntMatrix.class, c2.getComponentClass());
+        Assert.assertTrue(c2.getHandler() instanceof IntComponentMathHandler);
     }
     
     /**
@@ -344,155 +127,48 @@ public class IntComponentTest {
      * @throws Exception When there is an exception.
      * @see IntComponent#copyMeta(IntComponent)
      */
-    @SuppressWarnings("JavadocReference")
     @Test
     public void testCopyMeta() throws Exception {
-        //TODO
+        IntVector component1 = new IntVector(8, 6, 7, 2);
+        Assert.assertEquals(4, component1.getDimensionality());
+        Assert.assertArrayEquals(new Integer[] {8, 6, 7, 2}, component1.getRawComponents());
+        
+        IntVector component2 = new IntVector(9, 6, 1);
+        component1.copyMeta(component2);
+        Assert.assertEquals(3, component2.getDimensionality());
+        Assert.assertArrayEquals(new Integer[] {9, 6, 1}, component2.getRawComponents());
     }
     
     /**
-     * JUnit test of redim.
+     * JUnit test of getRawComponents.
      *
      * @throws Exception When there is an exception.
-     * @see IntComponent#redim(int)
+     * @see IntComponent#getRawComponents()
      */
     @Test
-    public void testRedim() throws Exception {
-        //TODO
+    public void testGetRawComponents() throws Exception {
+        IntComponent<?> component;
+        
+        //standard
+        component = new IntVector(8, 6, 7, 2);
+        Assert.assertArrayEquals(new Integer[] {8, 6, 7, 2}, component.getRawComponents());
+        Assert.assertArrayEquals(new Integer[] {8, 6, 7, 2}, component.getComponents());
     }
     
     /**
-     * JUnit test of dimensionalityToLength.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#dimensionalityToLength(int)
-     * @see IntComponent#dimensionalityToLength()
-     */
-    @Test
-    public void testDimensionalityToLength() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of lengthToDimensionality.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#lengthToDimensionality(int)
-     * @see IntComponent#lengthToDimensionality()
-     */
-    @Test
-    public void testLengthToDimensionality() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of calculateDimensionality.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#calculateDimensionality()
-     */
-    @Test
-    public void testCalculateDimensionality() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of getIntComponents.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#getComponents()
-     */
-    @Test
-    public void testGetIntComponents() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of getPrimitiveIntComponents.
+     * JUnit test of getPrimitiveComponents.
      *
      * @throws Exception When there is an exception.
      * @see IntComponent#getPrimitiveComponents()
      */
     @Test
-    public void testGetPrimitiveIntComponents() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of get.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#get(int)
-     */
-    @Test
-    public void testGet() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of getDimensionality.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#getDimensionality()
-     */
-    @Test
-    public void testGetDimensionality() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of getLength.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#getLength()
-     */
-    @Test
-    public void testGetLength() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of getIntComponentClass.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#getComponentClass()
-     */
-    @Test
-    public void testGetIntComponentClass() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of getType.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#getType()
-     */
-    @Test
-    public void testGetType() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of getHandler.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#getHandler()
-     */
-    @Test
-    public void testGetHandler() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of getErrorHandler.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#getErrorHandler()
-     */
-    @Test
-    public void testetErrorHandler() throws Exception {
-        //TODO
+    public void testGetPrimitiveComponents() throws Exception {
+        IntComponent<?> component;
+        
+        //standard
+        component = new IntVector(8, 6, 7, 2);
+        Assert.assertArrayEquals(new int[] {8, 6, 7, 2}, component.getPrimitiveComponents());
+        Assert.assertArrayEquals(new Integer[] {8, 6, 7, 2}, component.getComponents());
     }
     
     /**
@@ -503,51 +179,43 @@ public class IntComponentTest {
      */
     @Test
     public void testGetName() throws Exception {
-        //TODO
+        Assert.assertEquals("Integer Component", new TestComponent().getName());
     }
     
-    /**
-     * JUnit test of getNamePlural.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#getNamePlural()
-     */
-    @Test
-    public void testGetNamePlural() throws Exception {
-        //TODO
-    }
+    
+    //Inner Classes
     
     /**
-     * JUnit test of getPrecision.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#getPrecision()
+     * Defines a Test Component for Int Component unit tests.
      */
-    @Test
-    public void testGetPrecision() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of isResizeable.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#isResizeable()
-     */
-    @Test
-    public void testIsResizeable() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of copy.
-     *
-     * @throws Exception When there is an exception.
-     * @see IntComponent#copy(BaseComponent, BaseComponent)
-     */
-    @Test
-    public void testStaticCopy() throws Exception {
-        //TODO
+    private static class TestComponent extends IntComponent<TestComponent> {
+        
+        //Methods
+        
+        /* (non-Javadoc)
+         * @see ComponentInterface#cloned()
+         */
+        @Override
+        public TestComponent cloned() {
+            return null;
+        }
+        
+        /* (non-Javadoc)
+         * @see ComponentInterface#emptyCopy()
+         */
+        @Override
+        public TestComponent emptyCopy() {
+            return null;
+        }
+        
+        /* (non-Javadoc)
+         * @see ComponentInterface#createNewInstance(int)
+         */
+        @Override
+        public TestComponent createNewInstance(int dim) {
+            return null;
+        }
+        
     }
     
 }

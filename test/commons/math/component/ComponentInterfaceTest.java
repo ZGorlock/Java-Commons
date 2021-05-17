@@ -9,8 +9,10 @@ package commons.math.component;
 
 import java.util.List;
 
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -101,6 +103,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testToString() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "toString");
     }
     
     /**
@@ -111,6 +115,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testEquals() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "equals", Object.class);
     }
     
     /**
@@ -121,6 +127,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testDimensionalityEqual() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "dimensionalityEqual", ComponentInterface.class);
     }
     
     /**
@@ -131,6 +139,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testLengthEqual() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "lengthEqual", ComponentInterface.class);
     }
     
     /**
@@ -141,6 +151,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testComponentTypeEqual() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "componentTypeEqual", ComponentInterface.class);
     }
     
     /**
@@ -151,6 +163,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testCloned() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "cloned");
     }
     
     /**
@@ -161,6 +175,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testEmptyCopy() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "emptyCopy");
     }
     
     /**
@@ -171,6 +187,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testCreateNewInstance() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "createNewInstance", int.class);
     }
     
     /**
@@ -181,6 +199,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testReverse() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "reverse");
     }
     
     /**
@@ -191,6 +211,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testDistance() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "distance", ComponentInterface.class);
     }
     
     /**
@@ -201,6 +223,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testMidpoint() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "midpoint", ComponentInterface.class);
     }
     
     /**
@@ -212,6 +236,10 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testAverage() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "average", List.class);
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "average", ComponentInterface[].class);
     }
     
     /**
@@ -222,6 +250,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testSum() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "sum");
     }
     
     /**
@@ -232,6 +262,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testSquareSum() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "squareSum");
     }
     
     /**
@@ -242,6 +274,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testPlus() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "plus", ComponentInterface.class);
     }
     
     /**
@@ -252,6 +286,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testMinus() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "minus", ComponentInterface.class);
     }
     
     /**
@@ -262,6 +298,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testTimes() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "times", ComponentInterface.class);
     }
     
     /**
@@ -272,6 +310,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testScale() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "scale", Number.class);
     }
     
     /**
@@ -282,6 +322,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testDividedBy() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "dividedBy", ComponentInterface.class);
     }
     
     /**
@@ -292,6 +334,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testRound() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "round");
     }
     
     /**
@@ -302,17 +346,20 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testCopy() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "copy", ComponentInterface.class);
     }
     
     /**
      * JUnit test of copyMeta.
      *
      * @throws Exception When there is an exception.
-     * @see ComponentInterface#copyMeta(Component)
+     * @see ComponentInterface#copyMeta(ComponentInterface)
      */
-    @SuppressWarnings("JavadocReference")
     @Test
     public void testCopyMeta() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "copyMeta", ComponentInterface.class);
     }
     
     /**
@@ -323,6 +370,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testRedim() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "redim", int.class);
     }
     
     /**
@@ -334,6 +383,10 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testDimensionalityToLength() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "dimensionalityToLength", int.class);
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "dimensionalityToLength");
     }
     
     /**
@@ -345,6 +398,10 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testLengthToDimensionality() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "lengthToDimensionality", int.class);
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "lengthToDimensionality");
     }
     
     /**
@@ -355,16 +412,44 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testCalculateDimensionality() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "calculateDimensionality");
+    }
+    
+    /**
+     * JUnit test of getRawComponents.
+     *
+     * @throws Exception When there is an exception.
+     * @see ComponentInterface#getRawComponents()
+     */
+    @Test
+    public void testGetRawComponents() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "getRawComponents");
     }
     
     /**
      * JUnit test of getComponents.
      *
      * @throws Exception When there is an exception.
-     * @see ComponentInterface#getComponents()
+     * @see BaseComponent#getComponents()
      */
     @Test
     public void testGetComponents() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "getComponents");
+    }
+    
+    /**
+     * JUnit test of getRaw.
+     *
+     * @throws Exception When there is an exception.
+     * @see ComponentInterface#getRaw(int)
+     */
+    @Test
+    public void testGetRaw() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "getRaw", int.class);
     }
     
     /**
@@ -375,6 +460,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testGet() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "get", int.class);
     }
     
     /**
@@ -385,6 +472,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testGetDimensionality() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "getDimensionality");
     }
     
     /**
@@ -395,6 +484,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testGetLength() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "getLength");
     }
     
     /**
@@ -405,7 +496,12 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testGetComponentClass() throws Exception {
-        //TODO
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "getComponentClass");
+        
+        //default
+        Assert.assertEquals(ComponentInterface.class,
+                TestUtils.invokeInterfaceDefaultMethod(ComponentInterface.class, "getComponentClass"));
     }
     
     /**
@@ -416,7 +512,12 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testGetType() throws Exception {
-        //TODO
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "getType");
+        
+        //default
+        Assert.assertEquals(Number.class,
+                TestUtils.invokeInterfaceDefaultMethod(ComponentInterface.class, "getType"));
     }
     
     /**
@@ -427,6 +528,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testGetHandler() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "getHandler");
     }
     
     /**
@@ -436,7 +539,9 @@ public class ComponentInterfaceTest {
      * @see ComponentInterface#getErrorHandler()
      */
     @Test
-    public void testetErrorHandler() throws Exception {
+    public void testGetErrorHandler() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "getErrorHandler");
     }
     
     /**
@@ -447,6 +552,12 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testGetName() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "getName");
+        
+        //default
+        Assert.assertEquals("Component Interface",
+                TestUtils.invokeInterfaceDefaultMethod(ComponentInterface.class, "getName"));
     }
     
     /**
@@ -455,8 +566,15 @@ public class ComponentInterfaceTest {
      * @throws Exception When there is an exception.
      * @see ComponentInterface#getNamePlural()
      */
+    @SuppressWarnings({"rawtypes", "SuspiciousInvocationHandlerImplementation"})
     @Test
     public void testGetNamePlural() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "getNamePlural");
+        
+        //default
+        Assert.assertEquals("null" + 's',
+                TestUtils.invokeInterfaceDefaultMethod(ComponentInterface.class, "getNamePlural"));
     }
     
     /**
@@ -467,6 +585,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testGetPrecision() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "getPrecision");
     }
     
     /**
@@ -477,6 +597,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testIsResizeable() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "isResizeable");
     }
     
     /**
@@ -487,6 +609,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testSetComponents() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "setComponents", Number[].class);
     }
     
     /**
@@ -497,6 +621,8 @@ public class ComponentInterfaceTest {
      */
     @Test
     public void testSet() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentInterface.class, "set", int.class, Number.class);
     }
     
 }

@@ -8,6 +8,7 @@
 package commons.math.component.handler.error;
 
 import commons.math.component.ComponentInterface;
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -100,6 +101,8 @@ public class ComponentErrorHandlerInterfaceTest {
      */
     @Test
     public void testDimensionalityNotSameErrorMessage() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentErrorHandlerInterface.class, "dimensionalityNotSameErrorMessage", ComponentInterface.class, ComponentInterface.class);
     }
     
     /**
@@ -110,6 +113,8 @@ public class ComponentErrorHandlerInterfaceTest {
      */
     @Test
     public void testDimensionalityNotEqualErrorMessage() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentErrorHandlerInterface.class, "dimensionalityNotEqualErrorMessage", ComponentInterface.class, int.class);
     }
     
     /**
@@ -120,16 +125,20 @@ public class ComponentErrorHandlerInterfaceTest {
      */
     @Test
     public void testComponentTypeNotSameErrorMessage() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentErrorHandlerInterface.class, "componentTypeNotSameErrorMessage", ComponentInterface.class, ComponentInterface.class);
     }
     
     /**
      * JUnit test of componentTypeNotEqualErrorMessage.
      *
      * @throws Exception When there is an exception.
-     * @see ComponentErrorHandlerInterface#componentTypeNotEqualErrorMessage(ComponentInterface, Number)
+     * @see ComponentErrorHandlerInterface#componentTypeNotEqualErrorMessage(ComponentInterface, Class)
      */
     @Test
     public void testComponentTypeNotEqualErrorMessage() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentErrorHandlerInterface.class, "componentTypeNotEqualErrorMessage", ComponentInterface.class, Class.class);
     }
     
     /**
@@ -140,6 +149,8 @@ public class ComponentErrorHandlerInterfaceTest {
      */
     @Test
     public void testDimensionalityMinimumNotMetErrorMessage() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentErrorHandlerInterface.class, "dimensionalityMinimumNotMetErrorMessage", ComponentInterface.class, int.class);
     }
     
     /**
@@ -150,6 +161,8 @@ public class ComponentErrorHandlerInterfaceTest {
      */
     @Test
     public void testComponentLengthNotEqualErrorMessage() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentErrorHandlerInterface.class, "componentLengthNotEqualErrorMessage", Number[].class, int.class);
     }
     
     /**
@@ -160,6 +173,8 @@ public class ComponentErrorHandlerInterfaceTest {
      */
     @Test
     public void testComponentLengthNotSquareErrorMessage() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentErrorHandlerInterface.class, "componentLengthNotSquareErrorMessage", Number[].class);
     }
     
     /**
@@ -170,6 +185,8 @@ public class ComponentErrorHandlerInterfaceTest {
      */
     @Test
     public void testComponentIndexOutOfBoundsErrorMessage() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentErrorHandlerInterface.class, "componentIndexOutOfBoundsErrorMessage", ComponentInterface.class, int.class);
     }
     
     /**
@@ -180,6 +197,8 @@ public class ComponentErrorHandlerInterfaceTest {
      */
     @Test
     public void testComponentCoordinateOutOfBoundsErrorMessage() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentErrorHandlerInterface.class, "componentCoordinateOutOfBoundsErrorMessage", ComponentInterface.class, int.class, int.class);
     }
     
     /**
@@ -190,6 +209,8 @@ public class ComponentErrorHandlerInterfaceTest {
      */
     @Test
     public void testComponentRangeOutOfBoundsErrorMessage() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentErrorHandlerInterface.class, "componentRangeOutOfBoundsErrorMessage", ComponentInterface.class, int.class, int.class);
     }
     
     /**
@@ -200,6 +221,8 @@ public class ComponentErrorHandlerInterfaceTest {
      */
     @Test
     public void testComponentCoordinateRangeOutOfBoundsErrorMessage() throws Exception {
+        TestUtils.assertMethodExists(
+                ComponentErrorHandlerInterface.class, "componentCoordinateRangeOutOfBoundsErrorMessage", ComponentInterface.class, int.class, int.class, int.class, int.class);
     }
     
 }
