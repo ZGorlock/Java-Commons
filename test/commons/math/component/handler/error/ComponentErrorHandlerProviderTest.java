@@ -96,6 +96,7 @@ public class ComponentErrorHandlerProviderTest {
      * @throws Exception When there is an exception.
      * @see ComponentErrorHandlerProvider#errorHandler
      */
+    @SuppressWarnings("JavadocReference")
     @Test
     public void testConstants() throws Exception {
         //static

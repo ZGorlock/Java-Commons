@@ -250,7 +250,7 @@ public class RawComponentMathHandler implements ComponentMathHandlerInterface<Nu
      */
     @Override
     public Number round(Number a) {
-        return (Number) Math.round(a.doubleValue());
+        return Math.round(a.doubleValue());
     }
     
     /**
