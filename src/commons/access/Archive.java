@@ -715,7 +715,7 @@ public final class Archive {
         logger.trace("Creating diff {}: {} between: {} and: {}", diffType, diff.getAbsolutePath().replace("\\", "/"), source.getAbsolutePath().replace("\\", "/"), target.getAbsolutePath().replace("\\", "/"));
         
         File tmpDir = Filesystem.createTemporaryDirectory();
-        String tmpPath = Filesystem.generatePath("tmp", tmpDir.getName());
+        String tmpPath = Filesystem.generatePath(Filesystem.TMP_DIR.getName(), tmpDir.getName());
         if ((tmpDir.exists() && !Filesystem.clearDirectory(tmpDir)) || (!tmpDir.exists() && !Filesystem.createDirectory(tmpDir))) {
             logger.trace("Unable to create diff {}: {} could not create temporary directory", diffType, diff.getAbsolutePath().replace("\\", "/"));
             return false;

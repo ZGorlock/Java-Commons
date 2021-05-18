@@ -55,9 +55,28 @@ public final class Filesystem {
     //Constants
     
     /**
+     * The local temporary directory.
+     */
+    public static final File TMP_DIR = new File("tmp");
+    
+    /**
      * A regex pattern for a Windows file name that starts with a drive letter.
      */
     public static final Pattern WINDOWS_DRIVE_FILE_NAME_PATTERN = Pattern.compile("^[A-Z]:.*");
+    
+    
+    //Static Fields
+    
+    /**
+     * The list holding the temporary files and folders created during this session.
+     */
+    private static final List<File> tmpFiles = new ArrayList<>();
+    
+    //Delete the temporary files and folders created during this session
+    static {
+        Runtime.getRuntime().addShutdownHook(new Thread(() ->
+                tmpFiles.stream().filter(File::exists).forEach(Filesystem::delete)));
+    }
     
     
     //Functions
@@ -1861,9 +1880,9 @@ public final class Filesystem {
     }
     
     /**
-     * Returns a temporary directory.
+     * Returns a system temporary directory.
      *
-     * @return A temporary directory.
+     * @return A system temporary directory.
      */
     public static File getTempDirectory() {
         String path = FileUtils.getTempDirectoryPath();
@@ -2085,13 +2104,34 @@ public final class Filesystem {
      * Creates a temporary file and returns the created file.
      *
      * @param extension The extension of the temporary file.
+     * @param name      The requested name of the temporary file.
      * @return The created temporary file.
      */
-    public static File createTemporaryFile(String extension) {
-        File tmpFile = new File("tmp", UUID.randomUUID().toString() +
-                ((extension.isEmpty() || extension.startsWith(".")) ? "" : ".") + extension);
+    public static File createTemporaryFile(String extension, String name) {
+        File tmpFile;
+        int index = 0;
+        do {
+            tmpFile = new File(TMP_DIR,
+                    (((name == null) || name.isEmpty()) ? UUID.randomUUID().toString() : name) +
+                            ((index > 0) ? ("_" + index) : "") +
+                            ((extension.isEmpty() || extension.startsWith(".")) ? "" : ".") + extension);
+            index++;
+        } while (tmpFile.exists());
+        
         Filesystem.createFile(tmpFile);
+        tmpFiles.add(tmpFile);
         return tmpFile;
+    }
+    
+    /**
+     * Creates a temporary file and returns the created file.
+     *
+     * @param extension The extension of the temporary file.
+     * @return The created temporary file.
+     * @see #createTemporaryFile(String, String)
+     */
+    public static File createTemporaryFile(String extension) {
+        return createTemporaryFile(extension, null);
     }
     
     /**
@@ -2107,12 +2147,32 @@ public final class Filesystem {
     /**
      * Creates a temporary directory and returns the created directory.
      *
+     * @param name The requested name of the temporary directory.
      * @return The created temporary directory.
      */
-    public static File createTemporaryDirectory() {
-        File tmpDir = new File("tmp", UUID.randomUUID().toString());
+    public static File createTemporaryDirectory(String name) {
+        File tmpDir;
+        int index = 0;
+        do {
+            tmpDir = new File(TMP_DIR,
+                    (((name == null) || name.isEmpty()) ? UUID.randomUUID().toString() : name) +
+                            ((index > 0) ? ("_" + index) : ""));
+            index++;
+        } while (tmpDir.exists());
+        
         Filesystem.createDirectory(tmpDir);
+        tmpFiles.add(tmpDir);
         return tmpDir;
+    }
+    
+    /**
+     * Creates a temporary directory and returns the created directory.
+     *
+     * @return The created temporary directory.
+     * @see #createTemporaryDirectory(String)
+     */
+    public static File createTemporaryDirectory() {
+        return createTemporaryDirectory(null);
     }
     
     /**
@@ -2122,7 +2182,7 @@ public final class Filesystem {
      * @return The path length of a temporary file.
      */
     public static int getTemporaryFilePathLength(String extension) {
-        String tmpDirPath = generatePath("tmp", UUID.randomUUID().toString() +
+        String tmpDirPath = generatePath(TMP_DIR.getName(), UUID.randomUUID().toString() +
                 ((extension.isEmpty() || extension.startsWith(".")) ? "" : ".") + extension);
         return tmpDirPath.length();
     }
@@ -2143,7 +2203,7 @@ public final class Filesystem {
      * @return The path length of a temporary directory.
      */
     public static int getTemporaryDirectoryPathLength() {
-        String tmpDirPath = generatePath("tmp", UUID.randomUUID().toString());
+        String tmpDirPath = generatePath(TMP_DIR.getName(), UUID.randomUUID().toString());
         return tmpDirPath.length();
     }
     

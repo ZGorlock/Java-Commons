@@ -36,6 +36,7 @@ import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -57,35 +58,27 @@ public class FilesystemTest {
     private static final Logger logger = LoggerFactory.getLogger(FilesystemTest.class);
     
     
-    //Constants
-    
-    /**
-     * The temporary directory to use during testing.
-     */
-    private static final File tmpDir = new File("tmp");
-    
-    
     //Static Fields
     
     /**
      * An example file for Filesystem testing.
      */
-    private static final File testFile = new File(tmpDir, "test.txt");
+    private static final File testFile = new File(Filesystem.TMP_DIR, "test.txt");
     
     /**
      * An example file for Filesystem testing.
      */
-    private static final File test2File = new File(tmpDir, "test2.txt");
+    private static final File test2File = new File(Filesystem.TMP_DIR, "test2.txt");
     
     /**
      * An example directory for Filesystem testing.
      */
-    private static final File testDir = new File(tmpDir, "testDir");
+    private static final File testDir = new File(Filesystem.TMP_DIR, "testDir");
     
     /**
      * An example directory for Filesystem testing.
      */
-    private static final File test2Dir = new File(tmpDir, "test2Dir");
+    private static final File test2Dir = new File(Filesystem.TMP_DIR, "test2Dir");
     
     /**
      * An example directory for Filesystem testing.
@@ -173,8 +166,8 @@ public class FilesystemTest {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @BeforeClass
     public static void setupClass() throws Exception {
-        if (!tmpDir.exists()) {
-            tmpDir.mkdir();
+        if (!Filesystem.TMP_DIR.exists()) {
+            Filesystem.TMP_DIR.mkdir();
         }
     }
     
@@ -273,10 +266,13 @@ public class FilesystemTest {
      * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
+     * @see Filesystem#TMP_DIR
      * @see Filesystem#WINDOWS_DRIVE_FILE_NAME_PATTERN
      */
     @Test
     public void testConstants() throws Exception {
+        Assert.assertEquals(new File("tmp").getAbsolutePath(), Filesystem.TMP_DIR.getAbsolutePath());
+        
         //patterns
         Assert.assertEquals("^[A-Z]:.*", Filesystem.WINDOWS_DRIVE_FILE_NAME_PATTERN.pattern());
     }
@@ -13608,7 +13604,7 @@ public class FilesystemTest {
             listings.put(file, checksum);
         }
         
-        int prefixLength = (tmpDir.getName() + '/' + testDir.getName() + '/').length();
+        int prefixLength = (Filesystem.TMP_DIR.getName() + '/' + testDir.getName() + '/').length();
         Assert.assertTrue(listings.containsKey(StringUtility.lShear(testFile2.getPath().replace("\\", "/"), prefixLength)));
         Assert.assertNotEquals(0L, listings.get(StringUtility.lShear(testFile2.getPath().replace("\\", "/"), prefixLength)).longValue());
         Assert.assertTrue(listings.containsKey(StringUtility.lShear(internalFile.getPath().replace("\\", "/"), prefixLength)));
@@ -13742,7 +13738,7 @@ public class FilesystemTest {
             deletions.add(file);
         }
         
-        int prefixLength = (tmpDir.getName() + '/' + testDir.getName() + '/').length();
+        int prefixLength = (Filesystem.TMP_DIR.getName() + '/' + testDir.getName() + '/').length();
         Assert.assertTrue(modifications.contains(StringUtility.lShear(testFile2.getPath().replace("\\", "/"), prefixLength)));
         Assert.assertTrue(deletions.contains(StringUtility.lShear(oldInternalFilePath, prefixLength)));
         Assert.assertTrue(deletions.contains(StringUtility.lShear(oldInternalFile2Path, prefixLength)));
@@ -13844,66 +13840,157 @@ public class FilesystemTest {
      * JUnit test of createTemporaryFile.
      *
      * @throws Exception When there is an exception.
+     * @see Filesystem#createTemporaryFile(String, String)
      * @see Filesystem#createTemporaryFile(String)
+     * @see Filesystem#createTemporaryFile()
      */
+    @SuppressWarnings("UnusedAssignment")
     @Test
     public void testCreateTemporaryFile() throws Exception {
         File tmpFile;
+        List<File> filesystemTmpFiles;
         
         //standard
         tmpFile = Filesystem.createTemporaryFile();
+        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
         Assert.assertTrue(tmpFile.exists());
         Assert.assertTrue(tmpFile.isFile());
         Assert.assertFalse(tmpFile.getName().endsWith("."));
-        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(tmpDir.getAbsolutePath()));
+        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(Filesystem.TMP_DIR.getAbsolutePath()));
         Assert.assertTrue(tmpFile.delete());
         Assert.assertFalse(tmpFile.exists());
         
         //extension, empty
         tmpFile = Filesystem.createTemporaryFile("");
+        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
         Assert.assertTrue(tmpFile.exists());
         Assert.assertTrue(tmpFile.isFile());
         Assert.assertFalse(tmpFile.getName().endsWith("."));
-        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(tmpDir.getAbsolutePath()));
+        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(Filesystem.TMP_DIR.getAbsolutePath()));
         Assert.assertTrue(tmpFile.delete());
         Assert.assertFalse(tmpFile.exists());
         
         //extension, not empty
         tmpFile = Filesystem.createTemporaryFile(".file");
+        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
         Assert.assertTrue(tmpFile.exists());
         Assert.assertTrue(tmpFile.isFile());
         Assert.assertTrue(tmpFile.getName().endsWith(".file"));
         Assert.assertFalse(tmpFile.getName().endsWith("..file"));
-        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(tmpDir.getAbsolutePath()));
+        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(Filesystem.TMP_DIR.getAbsolutePath()));
         Assert.assertTrue(tmpFile.delete());
         Assert.assertFalse(tmpFile.exists());
         
         //extension, not empty, no dot
         tmpFile = Filesystem.createTemporaryFile("file");
+        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
         Assert.assertTrue(tmpFile.exists());
         Assert.assertTrue(tmpFile.isFile());
         Assert.assertTrue(tmpFile.getName().endsWith(".file"));
         Assert.assertFalse(tmpFile.getName().endsWith("..file"));
-        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(tmpDir.getAbsolutePath()));
+        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(Filesystem.TMP_DIR.getAbsolutePath()));
         Assert.assertTrue(tmpFile.delete());
         Assert.assertFalse(tmpFile.exists());
+        
+        //default extension
+        tmpFile = Filesystem.createTemporaryFile();
+        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
+        Assert.assertTrue(tmpFile.exists());
+        Assert.assertTrue(tmpFile.isFile());
+        Assert.assertFalse(tmpFile.getName().endsWith("."));
+        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(Filesystem.TMP_DIR.getAbsolutePath()));
+        Assert.assertTrue(tmpFile.delete());
+        Assert.assertFalse(tmpFile.exists());
+        
+        //request name
+        
+        tmpFile = Filesystem.createTemporaryFile(".file", "testFile");
+        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
+        Assert.assertTrue(tmpFile.exists());
+        
+        //request name, already exists 1
+        tmpFile = Filesystem.createTemporaryFile(".file", "testFile");
+        tmpFile = new File(Filesystem.TMP_DIR, "testFile_1.file");
+        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
+        Assert.assertTrue(tmpFile.exists());
+        Assert.assertTrue(new File(Filesystem.TMP_DIR, "testFile.file").exists());
+        
+        //request name, already exists 2
+        tmpFile = Filesystem.createTemporaryFile(".file", "testFile");
+        tmpFile = new File(Filesystem.TMP_DIR, "testFile_2.file");
+        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
+        Assert.assertTrue(tmpFile.exists());
+        Assert.assertTrue(new File(Filesystem.TMP_DIR, "testFile.file").exists());
+        Assert.assertTrue(new File(Filesystem.TMP_DIR, "testFile_1.file").exists());
+        
+        Assert.assertTrue(new File(Filesystem.TMP_DIR, "testFile.file").delete());
+        Assert.assertTrue(new File(Filesystem.TMP_DIR, "testFile_1.file").delete());
+        Assert.assertTrue(new File(Filesystem.TMP_DIR, "testFile_2.file").delete());
+        Assert.assertFalse(new File(Filesystem.TMP_DIR, "testFile.file").exists());
+        Assert.assertFalse(new File(Filesystem.TMP_DIR, "testFile_1.file").exists());
+        Assert.assertFalse(new File(Filesystem.TMP_DIR, "testFile_2.file").exists());
     }
     
     /**
      * JUnit test of createTemporaryDirectory.
      *
      * @throws Exception When there is an exception.
+     * @see Filesystem#createTemporaryDirectory(String)
      * @see Filesystem#createTemporaryDirectory()
      */
     @Test
     public void testCreateTemporaryDirectory() throws Exception {
+        File tmpDir;
+        List<File> filesystemTmpFiles;
+        
         //standard
-        File tmpDir = Filesystem.createTemporaryDirectory();
+        tmpDir = Filesystem.createTemporaryDirectory();
+        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpDir));
         Assert.assertTrue(tmpDir.exists());
         Assert.assertTrue(tmpDir.isDirectory());
-        Assert.assertTrue(tmpDir.getParentFile().getAbsolutePath().equalsIgnoreCase(FilesystemTest.tmpDir.getAbsolutePath()));
+        Assert.assertTrue(tmpDir.getParentFile().getAbsolutePath().equalsIgnoreCase(Filesystem.TMP_DIR.getAbsolutePath()));
         Assert.assertTrue(tmpDir.delete());
         Assert.assertFalse(tmpDir.exists());
+        
+        //request name
+        
+        tmpDir = Filesystem.createTemporaryDirectory("testDir");
+        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpDir));
+        Assert.assertTrue(tmpDir.exists());
+        
+        //request name, already exists 1
+        tmpDir = Filesystem.createTemporaryDirectory("testDir");
+        tmpDir = new File(Filesystem.TMP_DIR, "testDir_1");
+        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpDir));
+        Assert.assertTrue(tmpDir.exists());
+        Assert.assertTrue(new File(Filesystem.TMP_DIR, "testDir").exists());
+        
+        //request name, already exists 2
+        tmpDir = Filesystem.createTemporaryDirectory("testDir");
+        tmpDir = new File(Filesystem.TMP_DIR, "testDir_2");
+        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpDir));
+        Assert.assertTrue(tmpDir.exists());
+        Assert.assertTrue(new File(Filesystem.TMP_DIR, "testDir").exists());
+        Assert.assertTrue(new File(Filesystem.TMP_DIR, "testDir_1").exists());
+        
+        Assert.assertTrue(new File(Filesystem.TMP_DIR, "testDir").delete());
+        Assert.assertTrue(new File(Filesystem.TMP_DIR, "testDir_1").delete());
+        Assert.assertTrue(new File(Filesystem.TMP_DIR, "testDir_2").delete());
+        Assert.assertFalse(new File(Filesystem.TMP_DIR, "testDir").exists());
+        Assert.assertFalse(new File(Filesystem.TMP_DIR, "testDir_1").exists());
+        Assert.assertFalse(new File(Filesystem.TMP_DIR, "testDir_2").exists());
     }
     
     /**

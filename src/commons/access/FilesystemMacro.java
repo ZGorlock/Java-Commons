@@ -11,7 +11,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 import commons.string.StringUtility;
 import org.slf4j.Logger;
@@ -240,9 +239,8 @@ public final class FilesystemMacro {
     public static List<File> findJarsInDirectoryThatContainFolder(File directory, String folderName) {
         List<File> jarList = Filesystem.getFilesRecursively(directory, ".*\\.jar");
         List<File> found = new ArrayList<>();
-        File tmpDir = new File("tmp");
         for (File jar : jarList) {
-            File extractDir = new File(tmpDir, UUID.randomUUID().toString());
+            File extractDir = Filesystem.createTemporaryDirectory();
             Archive.extract(jar, extractDir);
             File finding = new File(extractDir, folderName);
             if (finding.exists()) {

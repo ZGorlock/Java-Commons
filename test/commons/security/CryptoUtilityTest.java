@@ -959,11 +959,10 @@ public class CryptoUtilityTest {
      */
     @Test
     public void testChecksum() throws Exception {
-        File dir = new File("tmp", "testDir");
+        File dir = Filesystem.createTemporaryDirectory("testDir");
         Assert.assertTrue(Filesystem.createDirectory(dir));
         File file = new File(dir, "testChecksumMD5.txt");
         File file2 = new File(dir, "testChecksumMD5x.txt");
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> Filesystem.deleteDirectory(dir)));
         
         String checksum;
         String checksum2;
@@ -998,8 +997,7 @@ public class CryptoUtilityTest {
      */
     @Test
     public void testChecksumMD5() throws Exception {
-        File file = new File("tmp", "testChecksumMD5.txt");
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> Filesystem.deleteFile(file)));
+        File file = Filesystem.createTemporaryFile("txt", "testChecksumMD5");
         
         Assert.assertTrue(Filesystem.writeStringToFile(file, message));
         
