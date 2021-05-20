@@ -90,7 +90,7 @@ public final class Filesystem {
      */
     public static boolean createFile(File file) {
         if (logFilesystem()) {
-            logger.trace("Filesystem: Creating file: {}", file.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Creating file: {}", StringUtility.fileString(file));
         }
         
         if (file.exists()) {
@@ -101,7 +101,7 @@ public final class Filesystem {
         File parent = file.getParentFile();
         if ((parent != null) && !parent.exists() && !createDirectory(parent)) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Could not create destination directory: {}", parent.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Could not create destination directory: {}", StringUtility.fileString(parent));
             }
             return false;
         }
@@ -114,7 +114,7 @@ public final class Filesystem {
         }
         
         if (logFilesystem()) {
-            logger.trace("Filesystem: Unable to create file: {}", file.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Unable to create file: {}", StringUtility.fileString(file));
         }
         return false;
     }
@@ -128,7 +128,7 @@ public final class Filesystem {
      */
     public static boolean createDirectory(File dir) {
         if (logFilesystem()) {
-            logger.trace("Filesystem: Creating directory: {}", dir.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Creating directory: {}", StringUtility.fileString(dir));
         }
         
         if (dir.exists()) {
@@ -140,7 +140,7 @@ public final class Filesystem {
         }
         
         if (logFilesystem()) {
-            logger.trace("Filesystem: Unable to create directory: {}", dir.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Unable to create directory: {}", StringUtility.fileString(dir));
         }
         return false;
     }
@@ -156,7 +156,7 @@ public final class Filesystem {
             return deleteDirectory(file);
         }
         if (logFilesystem()) {
-            logger.trace("Filesystem: Deleting file: {}", file.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Deleting file: {}", StringUtility.fileString(file));
         }
         
         if (!file.exists()) {
@@ -168,7 +168,7 @@ public final class Filesystem {
         }
         
         if (logFilesystem()) {
-            logger.trace("Filesystem: Unable to delete file: {}", file.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Unable to delete file: {}", StringUtility.fileString(file));
         }
         return false;
     }
@@ -184,7 +184,7 @@ public final class Filesystem {
             return deleteFile(dir);
         }
         if (logFilesystem()) {
-            logger.trace("Filesystem: Deleting directory: {}", dir.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Deleting directory: {}", StringUtility.fileString(dir));
         }
         
         if (!dir.exists()) {
@@ -196,7 +196,7 @@ public final class Filesystem {
             return true;
         } catch (IOException ignored) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to delete directory: {}", dir.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to delete directory: {}", StringUtility.fileString(dir));
             }
             return false;
         }
@@ -226,12 +226,12 @@ public final class Filesystem {
             return renameDirectory(fileSrc, fileDest);
         }
         if (logFilesystem()) {
-            logger.trace("Filesystem: Renaming file: {} to: {}", fileSrc.getPath().replace("\\", "/"), fileDest.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Renaming file: {} to: {}", StringUtility.fileString(fileSrc), StringUtility.fileString(fileDest));
         }
         
         if (!fileSrc.exists()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Source file does not exist: {}", fileSrc.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Source file does not exist: {}", StringUtility.fileString(fileSrc));
             }
             return false;
         }
@@ -240,7 +240,7 @@ public final class Filesystem {
         }
         if (fileDest.exists()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Destination file already exists: {}", fileDest.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Destination file already exists: {}", StringUtility.fileString(fileDest));
             }
             return false;
         }
@@ -250,7 +250,7 @@ public final class Filesystem {
         }
         
         if (logFilesystem()) {
-            logger.trace("Filesystem: Unable to rename file: {} to: {}", fileSrc.getPath().replace("\\", "/"), fileDest.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Unable to rename file: {} to: {}", StringUtility.fileString(fileSrc), StringUtility.fileString(fileDest));
         }
         return false;
     }
@@ -267,12 +267,12 @@ public final class Filesystem {
             return renameFile(dirSrc, dirDest);
         }
         if (logFilesystem()) {
-            logger.trace("Filesystem: Renaming directory: {} to: {}", dirSrc.getPath().replace("\\", "/"), dirDest.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Renaming directory: {} to: {}", StringUtility.fileString(dirSrc), StringUtility.fileString(dirDest));
         }
         
         if (!dirSrc.exists()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Source directory does not exist: {}", dirSrc.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Source directory does not exist: {}", StringUtility.fileString(dirSrc));
             }
             return false;
         }
@@ -281,7 +281,7 @@ public final class Filesystem {
         }
         if (dirDest.exists()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Destination directory already exists: {}", dirDest.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Destination directory already exists: {}", StringUtility.fileString(dirDest));
             }
             return false;
         }
@@ -291,7 +291,7 @@ public final class Filesystem {
         }
         
         if (logFilesystem()) {
-            logger.trace("Filesystem: Unable to rename directory: {} to: {}", dirSrc.getPath().replace("\\", "/"), dirDest.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Unable to rename directory: {} to: {}", StringUtility.fileString(dirSrc), StringUtility.fileString(dirDest));
         }
         return false;
     }
@@ -324,12 +324,12 @@ public final class Filesystem {
             return copyDirectory(fileSrc, fileDest, overwrite);
         }
         if (logFilesystem()) {
-            logger.trace("Filesystem: Copying file: {} to: {}", fileSrc.getPath().replace("\\", "/"), fileDest.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Copying file: {} to: {}", StringUtility.fileString(fileSrc), StringUtility.fileString(fileDest));
         }
         
         if (!fileSrc.exists()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Source file does not exist: {}", fileSrc.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Source file does not exist: {}", StringUtility.fileString(fileSrc));
             }
             return false;
         }
@@ -345,7 +345,7 @@ public final class Filesystem {
                         deleteFile(destFile);
                     } else {
                         if (logFilesystem()) {
-                            logger.trace("Filesystem: Destination file already exists: {}", destFile.getPath().replace("\\", "/"));
+                            logger.trace("Filesystem: Destination file already exists: {}", StringUtility.fileString(destFile));
                         }
                         return false;
                     }
@@ -357,7 +357,7 @@ public final class Filesystem {
                         delete(fileDest);
                     } else {
                         if (logFilesystem()) {
-                            logger.trace("Filesystem: Destination file already exists: {}", fileDest.getPath().replace("\\", "/"));
+                            logger.trace("Filesystem: Destination file already exists: {}", StringUtility.fileString(fileDest));
                         }
                         return false;
                     }
@@ -367,7 +367,7 @@ public final class Filesystem {
             return true;
         } catch (IOException ignored) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to copy file: {} to: {}", fileSrc.getPath().replace("\\", "/"), fileDest.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to copy file: {} to: {}", StringUtility.fileString(fileSrc), StringUtility.fileString(fileDest));
             }
             return false;
         }
@@ -402,12 +402,12 @@ public final class Filesystem {
             return copyFile(dirSrc, dirDest, overwrite);
         }
         if (logFilesystem()) {
-            logger.trace("Filesystem: Copying directory: {} to: {}", dirSrc.getPath().replace("\\", "/"), dirDest.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Copying directory: {} to: {}", StringUtility.fileString(dirSrc), StringUtility.fileString(dirDest));
         }
         
         if (!dirSrc.exists()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Source directory does not exist: {}", dirSrc.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Source directory does not exist: {}", StringUtility.fileString(dirSrc));
             }
             return false;
         }
@@ -422,7 +422,7 @@ public final class Filesystem {
                         deleteFile(dirDest);
                     } else {
                         if (logFilesystem()) {
-                            logger.trace("Filesystem: Destination directory is a file: {}", dirDest.getPath().replace("\\", "/"));
+                            logger.trace("Filesystem: Destination directory is a file: {}", StringUtility.fileString(dirDest));
                         }
                         return false;
                     }
@@ -430,7 +430,7 @@ public final class Filesystem {
                 if (!dirDest.exists()) {
                     if (!createDirectory(dirDest)) { //attempt to create destination directory if it doesn't exist
                         if (logFilesystem()) {
-                            logger.trace("Filesystem: Could not create destination directory: {}", dirDest.getPath().replace("\\", "/"));
+                            logger.trace("Filesystem: Could not create destination directory: {}", StringUtility.fileString(dirDest));
                         }
                         return false;
                     }
@@ -441,7 +441,7 @@ public final class Filesystem {
                         deleteDirectory(destDir);
                     } else {
                         if (logFilesystem()) {
-                            logger.trace("Filesystem: Destination directory already exists: {}", destDir.getPath().replace("\\", "/"));
+                            logger.trace("Filesystem: Destination directory already exists: {}", StringUtility.fileString(destDir));
                         }
                         return false;
                     }
@@ -453,7 +453,7 @@ public final class Filesystem {
                         delete(dirDest);
                     } else {
                         if (logFilesystem()) {
-                            logger.trace("Filesystem: Destination directory already exists: {}", dirDest.getPath().replace("\\", "/"));
+                            logger.trace("Filesystem: Destination directory already exists: {}", StringUtility.fileString(dirDest));
                         }
                         return false;
                     }
@@ -461,7 +461,7 @@ public final class Filesystem {
                 if (!dirDest.getParentFile().exists()) {
                     if (!createDirectory(dirDest.getParentFile())) { //attempt to create destination directory if it doesn't exist
                         if (logFilesystem()) {
-                            logger.trace("Filesystem: Could not create destination directory: {}", dirDest.getParentFile().getPath().replace("\\", "/"));
+                            logger.trace("Filesystem: Could not create destination directory: {}", StringUtility.fileString(dirDest.getParentFile()));
                         }
                         return false;
                     }
@@ -471,7 +471,7 @@ public final class Filesystem {
             return true;
         } catch (IOException ignored) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to copy directory: {} to: {}", dirSrc.getPath().replace("\\", "/"), dirDest.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to copy directory: {} to: {}", StringUtility.fileString(dirSrc), StringUtility.fileString(dirDest));
             }
             return false;
         }
@@ -543,7 +543,7 @@ public final class Filesystem {
             return moveDirectory(fileSrc, fileDest, overwrite);
         }
         if (logFilesystem()) {
-            logger.trace("Filesystem: Moving file: {} to: {}", fileSrc.getPath().replace("\\", "/"), fileDest.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Moving file: {} to: {}", StringUtility.fileString(fileSrc), StringUtility.fileString(fileDest));
         }
         
         if (!fileSrc.exists()) {
@@ -564,7 +564,7 @@ public final class Filesystem {
                         deleteFile(destFile);
                     } else {
                         if (logFilesystem()) {
-                            logger.trace("Filesystem: Destination file already exists: {}", destFile.getPath().replace("\\", "/"));
+                            logger.trace("Filesystem: Destination file already exists: {}", StringUtility.fileString(destFile));
                         }
                         return false;
                     }
@@ -576,7 +576,7 @@ public final class Filesystem {
                         delete(fileDest);
                     } else {
                         if (logFilesystem()) {
-                            logger.trace("Filesystem: Destination file already exists: {}", fileDest.getPath().replace("\\", "/"));
+                            logger.trace("Filesystem: Destination file already exists: {}", StringUtility.fileString(fileDest));
                         }
                         return false;
                     }
@@ -586,7 +586,7 @@ public final class Filesystem {
             return true;
         } catch (IOException ignored) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to move file: {} to: {}", fileSrc.getPath().replace("\\", "/"), fileDest.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to move file: {} to: {}", StringUtility.fileString(fileSrc), StringUtility.fileString(fileDest));
             }
             return false;
         }
@@ -621,12 +621,12 @@ public final class Filesystem {
             return moveFile(dirSrc, dirDest, overwrite);
         }
         if (logFilesystem()) {
-            logger.trace("Filesystem: Moving directory: {} to: {}", dirSrc.getPath().replace("\\", "/"), dirDest.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Moving directory: {} to: {}", StringUtility.fileString(dirSrc), StringUtility.fileString(dirDest));
         }
         
         if (!dirSrc.exists()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Source directory does not exist: {}", dirSrc.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Source directory does not exist: {}", StringUtility.fileString(dirSrc));
             }
             return false;
         }
@@ -641,7 +641,7 @@ public final class Filesystem {
                         deleteFile(dirDest);
                     } else {
                         if (logFilesystem()) {
-                            logger.trace("Filesystem: Destination directory is a file: {}", dirDest.getPath().replace("\\", "/"));
+                            logger.trace("Filesystem: Destination directory is a file: {}", StringUtility.fileString(dirDest));
                         }
                         return false;
                     }
@@ -652,7 +652,7 @@ public final class Filesystem {
                         deleteDirectory(destDir);
                     } else {
                         if (logFilesystem()) {
-                            logger.trace("Filesystem: Destination directory already exists: {}", destDir.getPath().replace("\\", "/"));
+                            logger.trace("Filesystem: Destination directory already exists: {}", StringUtility.fileString(destDir));
                         }
                         return false;
                     }
@@ -664,7 +664,7 @@ public final class Filesystem {
                         delete(dirDest);
                     } else {
                         if (logFilesystem()) {
-                            logger.trace("Filesystem: Destination directory already exists: {}", dirDest.getPath().replace("\\", "/"));
+                            logger.trace("Filesystem: Destination directory already exists: {}", StringUtility.fileString(dirDest));
                         }
                         return false;
                     }
@@ -672,7 +672,7 @@ public final class Filesystem {
                 if (!dirDest.getParentFile().exists()) {
                     if (!createDirectory(dirDest.getParentFile())) { //attempt to create destination directory if it doesn't exist
                         if (logFilesystem()) {
-                            logger.trace("Filesystem: Could not create destination directory: {}", dirDest.getParentFile().getPath().replace("\\", "/"));
+                            logger.trace("Filesystem: Could not create destination directory: {}", StringUtility.fileString(dirDest.getParentFile()));
                         }
                         return false;
                     }
@@ -682,7 +682,7 @@ public final class Filesystem {
             return true;
         } catch (IOException ignore) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to move directory: {} to: {}", dirSrc.getPath().replace("\\", "/"), dirDest.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to move directory: {} to: {}", StringUtility.fileString(dirSrc), StringUtility.fileString(dirDest));
             }
             return false;
         }
@@ -785,7 +785,7 @@ public final class Filesystem {
     public static boolean clearDirectory(File dir) {
         if (!dir.isDirectory()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Target directory does not exist: {}", dir.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Target directory does not exist: {}", StringUtility.fileString(dir));
             }
             return false;
         }
@@ -794,7 +794,7 @@ public final class Filesystem {
         List<File> entries = getFilesAndDirs(dir);
         
         if (logFilesystem()) {
-            logger.trace("Filesystem: Clearing directory: {}", dir.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Clearing directory: {}", StringUtility.fileString(dir));
         }
         
         for (File entry : entries) {
@@ -814,7 +814,7 @@ public final class Filesystem {
     public static List<File> listFiles(File directory, FileFilter filter) {
         if (!directory.isDirectory()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: The target directory is not a directory: {}", directory.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: The target directory is not a directory: {}", StringUtility.fileString(directory));
             }
             return new ArrayList<>();
         }
@@ -823,7 +823,7 @@ public final class Filesystem {
         
         if (files == null) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Error while listing files in directory: {}", directory.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Error while listing files in directory: {}", StringUtility.fileString(directory));
             }
             return new ArrayList<>();
         }
@@ -843,7 +843,7 @@ public final class Filesystem {
     public static List<File> getFilesRecursively(File directory, String regexFileFilter, String regexDirFilter) {
         if (!directory.isDirectory()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: The target directory is not a directory: {}", directory.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: The target directory is not a directory: {}", StringUtility.fileString(directory));
             }
             return new ArrayList<>();
         }
@@ -870,7 +870,7 @@ public final class Filesystem {
         
         if (list == null) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Error while recursively listing files in directory: {}", directory.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Error while recursively listing files in directory: {}", StringUtility.fileString(directory));
             }
             return returnList;
         }
@@ -921,7 +921,7 @@ public final class Filesystem {
     public static List<File> getDirsRecursively(File directory, String regexDirFilter) {
         if (!directory.isDirectory()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: The target directory is not a directory: {}", directory.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: The target directory is not a directory: {}", StringUtility.fileString(directory));
             }
             return new ArrayList<>();
         }
@@ -945,7 +945,7 @@ public final class Filesystem {
         
         if (list == null) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Error while recursively listing directories in directory: {}", directory.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Error while recursively listing directories in directory: {}", StringUtility.fileString(directory));
             }
             return returnList;
         }
@@ -983,7 +983,7 @@ public final class Filesystem {
     public static List<File> getFilesAndDirsRecursively(File directory, String regexFileFilter, String regexDirFilter) {
         if (!directory.isDirectory()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: The target directory is not a directory: {}", directory.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: The target directory is not a directory: {}", StringUtility.fileString(directory));
             }
             return new ArrayList<>();
         }
@@ -1010,7 +1010,7 @@ public final class Filesystem {
         
         if (list == null) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Error while recursively listing files and directories in directory: {}", directory.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Error while recursively listing files and directories in directory: {}", StringUtility.fileString(directory));
             }
             return new ArrayList<>();
         }
@@ -1155,10 +1155,10 @@ public final class Filesystem {
         if (!a.exists() || !b.exists()) {
             if (logFilesystem()) {
                 if (!a.exists()) {
-                    logger.trace("Filesystem: File does not exist: {}", a.getPath().replace("\\", "/"));
+                    logger.trace("Filesystem: File does not exist: {}", StringUtility.fileString(a));
                 }
                 if (!b.exists()) {
-                    logger.trace("Filesystem: File does not exist: {}", b.getPath().replace("\\", "/"));
+                    logger.trace("Filesystem: File does not exist: {}", StringUtility.fileString(b));
                 }
             }
             return false;
@@ -1168,7 +1168,7 @@ public final class Filesystem {
             return FileUtils.contentEquals(a, b);
         } catch (IOException ignored) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to compare files: {} and: {}", a.getPath().replace("\\", "/"), b.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to compare files: {} and: {}", StringUtility.fileString(a), StringUtility.fileString(b));
             }
             return false;
         }
@@ -1262,7 +1262,7 @@ public final class Filesystem {
             return !files.hasNext();
         } catch (IOException ignored) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to determine if directory is empty: {}", dir.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to determine if directory is empty: {}", StringUtility.fileString(dir));
             }
             return false;
         }
@@ -1293,10 +1293,10 @@ public final class Filesystem {
         if (!a.exists() || !b.exists()) {
             if (logFilesystem()) {
                 if (!a.exists()) {
-                    logger.trace("Filesystem: File does not exist: {}", a.getPath().replace("\\", "/"));
+                    logger.trace("Filesystem: File does not exist: {}", StringUtility.fileString(a));
                 }
                 if (!b.exists()) {
-                    logger.trace("Filesystem: File does not exist: {}", b.getPath().replace("\\", "/"));
+                    logger.trace("Filesystem: File does not exist: {}", StringUtility.fileString(b));
                 }
             }
             return 0;
@@ -1318,10 +1318,10 @@ public final class Filesystem {
         if (!a.exists() || !b.exists()) {
             if (logFilesystem()) {
                 if (!a.exists()) {
-                    logger.trace("Filesystem: File does not exist: {}", a.getPath().replace("\\", "/"));
+                    logger.trace("Filesystem: File does not exist: {}", StringUtility.fileString(a));
                 }
                 if (!b.exists()) {
-                    logger.trace("Filesystem: File does not exist: {}", b.getPath().replace("\\", "/"));
+                    logger.trace("Filesystem: File does not exist: {}", StringUtility.fileString(b));
                 }
             }
             return 0;
@@ -1473,17 +1473,17 @@ public final class Filesystem {
      */
     public static FileInputStream openInputStream(File file) {
         if (logFilesystem()) {
-            logger.trace("Filesystem: Opening input file stream to file: {}", file.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Opening input file stream to file: {}", StringUtility.fileString(file));
         }
         if (!file.exists()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: File does not exist: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: File does not exist: {}", StringUtility.fileString(file));
             }
             return null;
         }
         if (file.isDirectory()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to open input streams on directories: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to open input streams on directories: {}", StringUtility.fileString(file));
             }
             return null;
         }
@@ -1492,7 +1492,7 @@ public final class Filesystem {
             return FileUtils.openInputStream(file);
         } catch (IOException ignored) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to open input file stream to file: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to open input file stream to file: {}", StringUtility.fileString(file));
             }
             return null;
         }
@@ -1507,11 +1507,11 @@ public final class Filesystem {
      */
     public static FileOutputStream openOutputStream(File file, boolean append) {
         if (logFilesystem()) {
-            logger.trace("Filesystem: Opening {}output file stream to file: {}", (append ? "appending " : ""), file.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Opening {}output file stream to file: {}", (append ? "appending " : ""), StringUtility.fileString(file));
         }
         if (file.isDirectory()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to open output streams on directories: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to open output streams on directories: {}", StringUtility.fileString(file));
             }
             return null;
         }
@@ -1520,7 +1520,7 @@ public final class Filesystem {
             return FileUtils.openOutputStream(file, append);
         } catch (IOException ignored) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to open output file stream to file: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to open output file stream to file: {}", StringUtility.fileString(file));
             }
             return null;
         }
@@ -1545,17 +1545,17 @@ public final class Filesystem {
      */
     public static String readFileToString(File file) {
         if (logFilesystem()) {
-            logger.trace("Filesystem: Reading file to string: {}", file.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Reading file to string: {}", StringUtility.fileString(file));
         }
         if (!file.exists()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: File does not exist: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: File does not exist: {}", StringUtility.fileString(file));
             }
             return "";
         }
         if (file.isDirectory()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to read directories to strings: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to read directories to strings: {}", StringUtility.fileString(file));
             }
             return "";
         }
@@ -1564,7 +1564,7 @@ public final class Filesystem {
             return FileUtils.readFileToString(file, "UTF-8");
         } catch (IOException ignored) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to read file to string: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to read file to string: {}", StringUtility.fileString(file));
             }
             return "";
         }
@@ -1578,17 +1578,17 @@ public final class Filesystem {
      */
     public static byte[] readFileToByteArray(File file) {
         if (logFilesystem()) {
-            logger.trace("Filesystem: Reading file to byte array: {}", file.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Reading file to byte array: {}", StringUtility.fileString(file));
         }
         if (!file.exists()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: File does not exist: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: File does not exist: {}", StringUtility.fileString(file));
             }
             return new byte[0];
         }
         if (file.isDirectory()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to read directories to byte arrays: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to read directories to byte arrays: {}", StringUtility.fileString(file));
             }
             return new byte[0];
         }
@@ -1597,7 +1597,7 @@ public final class Filesystem {
             return FileUtils.readFileToByteArray(file);
         } catch (IOException ignored) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to read file to byte array: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to read file to byte array: {}", StringUtility.fileString(file));
             }
             return new byte[0];
         }
@@ -1611,17 +1611,17 @@ public final class Filesystem {
      */
     public static List<String> readLines(File file) {
         if (logFilesystem()) {
-            logger.trace("Filesystem: Reading lines from file: {}", file.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Reading lines from file: {}", StringUtility.fileString(file));
         }
         if (!file.exists()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: File does not exist: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: File does not exist: {}", StringUtility.fileString(file));
             }
             return new ArrayList<>();
         }
         if (file.isDirectory()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to read lines from directories: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to read lines from directories: {}", StringUtility.fileString(file));
             }
             return new ArrayList<>();
         }
@@ -1630,7 +1630,7 @@ public final class Filesystem {
             return FileUtils.readLines(file, "UTF-8");
         } catch (IOException ignored) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to read lines from file: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to read lines from file: {}", StringUtility.fileString(file));
             }
             return new ArrayList<>();
         }
@@ -1646,14 +1646,14 @@ public final class Filesystem {
      */
     public static boolean writeStringToFile(File file, String data, boolean append) {
         if (logFilesystem()) {
-            logger.trace("Filesystem: Writing string to file: {}", file.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Writing string to file: {}", StringUtility.fileString(file));
         }
         if (!file.exists()) {
             createFile(file);
         }
         if (file.isDirectory()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to write strings to directories: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to write strings to directories: {}", StringUtility.fileString(file));
             }
             return false;
         }
@@ -1663,7 +1663,7 @@ public final class Filesystem {
             return true;
         } catch (IOException ignored) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to write string to file: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to write string to file: {}", StringUtility.fileString(file));
             }
             return false;
         }
@@ -1691,14 +1691,14 @@ public final class Filesystem {
      */
     public static boolean writeByteArrayToFile(File file, byte[] data, boolean append) {
         if (logFilesystem()) {
-            logger.trace("Filesystem: Writing byte array to file: {}", file.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Writing byte array to file: {}", StringUtility.fileString(file));
         }
         if (!file.exists()) {
             createFile(file);
         }
         if (file.isDirectory()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to write byte arrays to directories: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to write byte arrays to directories: {}", StringUtility.fileString(file));
             }
             return false;
         }
@@ -1708,7 +1708,7 @@ public final class Filesystem {
             return true;
         } catch (IOException ignored) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to write byte array to file: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to write byte array to file: {}", StringUtility.fileString(file));
             }
             return false;
         }
@@ -1736,14 +1736,14 @@ public final class Filesystem {
      */
     public static boolean writeLines(File file, Collection<String> lines, boolean append) {
         if (logFilesystem()) {
-            logger.trace("Filesystem: Writing lines to file: {}", file.getPath().replace("\\", "/"));
+            logger.trace("Filesystem: Writing lines to file: {}", StringUtility.fileString(file));
         }
         if (!file.exists()) {
             createFile(file);
         }
         if (file.isDirectory()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to write lines to directories: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to write lines to directories: {}", StringUtility.fileString(file));
             }
             return false;
         }
@@ -1753,7 +1753,7 @@ public final class Filesystem {
             return true;
         } catch (IOException ignored) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to write lines to file: {}", file.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to write lines to file: {}", StringUtility.fileString(file));
             }
             return false;
         }
@@ -1915,13 +1915,13 @@ public final class Filesystem {
     public static boolean createSymbolicLink(File target, File link) {
         if (!target.exists()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Symbolic link target does not exist: {}", target.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Symbolic link target does not exist: {}", StringUtility.fileString(target));
             }
             return false;
         }
         if (link.exists()) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: File already exists: {}", link.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: File already exists: {}", StringUtility.fileString(link));
             }
             return false;
         }
@@ -1931,7 +1931,7 @@ public final class Filesystem {
             return true;
         } catch (Exception ignored) {
             if (logFilesystem()) {
-                logger.trace("Filesystem: Unable to create symbolic link from: {} to: {}", target.getPath().replace("\\", "/"), link.getPath().replace("\\", "/"));
+                logger.trace("Filesystem: Unable to create symbolic link from: {} to: {}", StringUtility.fileString(target), StringUtility.fileString(link));
             }
             return false;
         }

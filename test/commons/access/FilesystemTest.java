@@ -13604,16 +13604,16 @@ public class FilesystemTest {
             listings.put(file, checksum);
         }
         
-        int prefixLength = (Filesystem.TMP_DIR.getName() + '/' + testDir.getName() + '/').length();
-        Assert.assertTrue(listings.containsKey(StringUtility.lShear(testFile2.getPath().replace("\\", "/"), prefixLength)));
-        Assert.assertNotEquals(0L, listings.get(StringUtility.lShear(testFile2.getPath().replace("\\", "/"), prefixLength)).longValue());
-        Assert.assertTrue(listings.containsKey(StringUtility.lShear(internalFile.getPath().replace("\\", "/"), prefixLength)));
-        Assert.assertNotEquals(0L, listings.get(StringUtility.lShear(internalFile.getPath().replace("\\", "/"), prefixLength)).longValue());
-        Assert.assertTrue(listings.containsKey(StringUtility.lShear(internalFile2.getPath().replace("\\", "/"), prefixLength)));
-        Assert.assertNotEquals(0L, listings.get(StringUtility.lShear(internalFile2.getPath().replace("\\", "/"), prefixLength)).longValue());
-        Assert.assertTrue(listings.containsKey(StringUtility.lShear(testFile3.getPath().replace("\\", "/"), prefixLength)));
-        Assert.assertNotEquals(0L, listings.get(StringUtility.lShear(testFile3.getPath().replace("\\", "/"), prefixLength)).longValue());
-        Assert.assertFalse(listings.containsKey(StringUtility.lShear(nestedInternalFile.getPath().replace("\\", "/"), prefixLength)));
+        int prefixLength = (Filesystem.TMP_DIR.getAbsolutePath() + '/' + testDir.getName() + '/').length();
+        Assert.assertTrue(listings.containsKey(StringUtility.lShear(StringUtility.fileString(testFile2), prefixLength)));
+        Assert.assertNotEquals(0L, listings.get(StringUtility.lShear(StringUtility.fileString(testFile2), prefixLength)).longValue());
+        Assert.assertTrue(listings.containsKey(StringUtility.lShear(StringUtility.fileString(internalFile), prefixLength)));
+        Assert.assertNotEquals(0L, listings.get(StringUtility.lShear(StringUtility.fileString(internalFile), prefixLength)).longValue());
+        Assert.assertTrue(listings.containsKey(StringUtility.lShear(StringUtility.fileString(internalFile2), prefixLength)));
+        Assert.assertNotEquals(0L, listings.get(StringUtility.lShear(StringUtility.fileString(internalFile2), prefixLength)).longValue());
+        Assert.assertTrue(listings.containsKey(StringUtility.lShear(StringUtility.fileString(testFile3), prefixLength)));
+        Assert.assertNotEquals(0L, listings.get(StringUtility.lShear(StringUtility.fileString(testFile3), prefixLength)).longValue());
+        Assert.assertFalse(listings.containsKey(StringUtility.lShear(StringUtility.fileString(nestedInternalFile), prefixLength)));
         
         Assert.assertTrue(nestedInternalFile.delete());
         Assert.assertTrue(testFile3.delete());
@@ -13697,8 +13697,8 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.deleteFile(internalFile2));
         Assert.assertFalse(internalFile.exists());
         Assert.assertFalse(internalFile2.exists());
-        String oldInternalFilePath = internalFile.getPath().replace("\\", "/");
-        String oldInternalFile2Path = internalFile2.getPath().replace("\\", "/");
+        String oldInternalFilePath = StringUtility.fileString(internalFile);
+        String oldInternalFile2Path = StringUtility.fileString(internalFile2);
         
         internalFile = new File(testDir3, test2File.getName()); //addition
         internalFile2 = new File(testDir2, test2File.getName());
@@ -13738,12 +13738,12 @@ public class FilesystemTest {
             deletions.add(file);
         }
         
-        int prefixLength = (Filesystem.TMP_DIR.getName() + '/' + testDir.getName() + '/').length();
-        Assert.assertTrue(modifications.contains(StringUtility.lShear(testFile2.getPath().replace("\\", "/"), prefixLength)));
+        int prefixLength = (Filesystem.TMP_DIR.getAbsolutePath() + '/' + testDir.getName() + '/').length();
+        Assert.assertTrue(modifications.contains(StringUtility.lShear(StringUtility.fileString(testFile2), prefixLength)));
         Assert.assertTrue(deletions.contains(StringUtility.lShear(oldInternalFilePath, prefixLength)));
         Assert.assertTrue(deletions.contains(StringUtility.lShear(oldInternalFile2Path, prefixLength)));
-        Assert.assertTrue(additions.contains(StringUtility.lShear(internalFile.getPath().replace("\\", "/"), prefixLength)));
-        Assert.assertTrue(additions.contains(StringUtility.lShear(internalFile2.getPath().replace("\\", "/"), prefixLength)));
+        Assert.assertTrue(additions.contains(StringUtility.lShear(StringUtility.fileString(internalFile), prefixLength)));
+        Assert.assertTrue(additions.contains(StringUtility.lShear(StringUtility.fileString(internalFile2), prefixLength)));
         
         Assert.assertTrue(nestedInternalFile.delete());
         Assert.assertTrue(testFile3.delete());
@@ -13795,7 +13795,7 @@ public class FilesystemTest {
         Assert.assertTrue(testDir3.isDirectory());
         Assert.assertTrue(testDir2.isDirectory());
         Assert.assertTrue(testDir.isDirectory());
-        Assert.assertTrue(testFile3.getAbsolutePath().replace("\\", "/").endsWith(expectedPath));
+        Assert.assertTrue(StringUtility.fileString(testFile3).endsWith(expectedPath));
         Assert.assertTrue(testFile3.delete());
         Assert.assertTrue(testDir3.delete());
         Assert.assertTrue(testDir2.delete());

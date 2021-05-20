@@ -7,11 +7,13 @@
 
 package commons.string;
 
+import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import commons.access.Filesystem;
 import commons.console.Console;
 import commons.test.TestUtils;
 import org.junit.After;
@@ -1773,6 +1775,34 @@ public class StringUtilityTest {
         Assert.assertEquals("0", StringUtility.justifyQuantity(0, "\r\n"));
         Assert.assertEquals("-1 apples", StringUtility.justifyQuantity(-1, "apple"));
         Assert.assertEquals("-67 apples", StringUtility.justifyQuantity(-67, "apple"));
+    }
+    
+    /**
+     * JUnit test of getJustifiedPath.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#fileString(File)
+     */
+    @SuppressWarnings("ConstantConditions")
+    @Test
+    public void testGetJustifiedPath() throws Exception {
+        final String base = Filesystem.TMP_DIR.getAbsolutePath().replace("\\", "/") + '/';
+        final File testFile = new File(Filesystem.TMP_DIR, "test.txt");
+        final File testDir = new File(Filesystem.TMP_DIR, "testDir");
+        final File test2File2 = new File(testDir, "test2.txt");
+        final File test2Dir = new File(testDir, "testDir2");
+        final File test2Dir3 = new File(test2Dir, "test2Dir3");
+        
+        //standard
+        Assert.assertEquals(base + "test.txt", StringUtility.fileString(testFile));
+        Assert.assertEquals(base + "testDir", StringUtility.fileString(testDir));
+        Assert.assertEquals(base + "testDir/test2.txt", StringUtility.fileString(test2File2));
+        Assert.assertEquals(base + "testDir/testDir2", StringUtility.fileString(test2Dir));
+        Assert.assertEquals(base + "testDir/testDir2/test2Dir3", StringUtility.fileString(test2Dir3));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.fileString(null));
     }
     
     /**

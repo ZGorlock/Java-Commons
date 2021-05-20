@@ -7,6 +7,7 @@
 
 package commons.string;
 
+import java.io.File;
 import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.ArrayList;
@@ -1031,6 +1032,16 @@ public final class StringUtility {
         }
         
         return String.valueOf(quantity) + ' ' + unit + ((quantity != 1) ? "s" : "");
+    }
+    
+    /**
+     * Returns a string representing a file.
+     *
+     * @param file The file.
+     * @return The string representing the file.
+     */
+    public static String fileString(File file) {
+        return file.getAbsolutePath().replace("\\", "/");
     }
     
     /**

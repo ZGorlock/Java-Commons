@@ -166,25 +166,25 @@ public final class Archive {
         
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
-            logger.trace("Unable to extract resource: {} from archive: {} archive type is not supported", resource, archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to extract resource: {} from archive: {} archive type is not supported", resource, StringUtility.fileString(archive));
             return false;
         }
         
-        logger.trace("Extracting resource: {} from {}: {} to: {}", resource, type, archive.getAbsolutePath().replace("\\", "/"), outputDirectory.getAbsolutePath().replace("\\", "/"));
+        logger.trace("Extracting resource: {} from {}: {} to: {}", resource, type, StringUtility.fileString(archive), StringUtility.fileString(outputDirectory));
         
         if (!archive.exists()) {
-            logger.trace("Unable to extract resource: {} from {}: {} {} does not exist", resource, type, archive.getAbsolutePath().replace("\\", "/"), type);
+            logger.trace("Unable to extract resource: {} from {}: {} {} does not exist", resource, type, StringUtility.fileString(archive), type);
             return false;
         }
         
         if (!outputDirectory.exists() && !Filesystem.createDirectory(outputDirectory)) {
-            logger.trace("Unable to extract resource: {} from {}: {} could not create output directory: {}", resource, type, archive.getAbsolutePath().replace("\\", "/"), outputDirectory.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to extract resource: {} from {}: {} could not create output directory: {}", resource, type, StringUtility.fileString(archive), StringUtility.fileString(outputDirectory));
             return false;
         }
         
         File output = new File(outputDirectory, resourceName);
         if (!Filesystem.createDirectory(output.getParentFile())) {
-            logger.trace("Unable to extract resource: {} from {}: {} could not create output directory: {}", resource, type, archive.getAbsolutePath().replace("\\", "/"), output.getParentFile().getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to extract resource: {} from {}: {} could not create output directory: {}", resource, type, StringUtility.fileString(archive), StringUtility.fileString(output.getParentFile()));
             return false;
         }
         
@@ -198,7 +198,7 @@ public final class Archive {
                     return false;
             }
         } catch (Exception e) {
-            logger.trace("Unable to extract resource: {} from {}: {}", resource, type, archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to extract resource: {} from {}: {}", resource, type, StringUtility.fileString(archive));
             return false;
         }
     }
@@ -219,19 +219,19 @@ public final class Archive {
         
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
-            logger.trace("Unable to extract directory: {} from archive: {} archive type is not supported", directory, archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to extract directory: {} from archive: {} archive type is not supported", directory, StringUtility.fileString(archive));
             return false;
         }
         
-        logger.trace("Extracting directory: {} from {}: {} to: {}", directory, type, archive.getAbsolutePath().replace("\\", "/"), outputDirectory.getAbsolutePath().replace("\\", "/"));
+        logger.trace("Extracting directory: {} from {}: {} to: {}", directory, type, StringUtility.fileString(archive), StringUtility.fileString(outputDirectory));
         
         if (!archive.exists()) {
-            logger.trace("Unable to extract directory: {} from {}: {} {} does not exist", directory, type, archive.getAbsolutePath().replace("\\", "/"), type);
+            logger.trace("Unable to extract directory: {} from {}: {} {} does not exist", directory, type, StringUtility.fileString(archive), type);
             return false;
         }
         
         if (!outputDirectory.exists() && !Filesystem.createDirectory(outputDirectory)) {
-            logger.trace("Unable to extract directory: {} from {}: {} could not create output directory: {}", directory, type, archive.getAbsolutePath().replace("\\", "/"), outputDirectory.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to extract directory: {} from {}: {} could not create output directory: {}", directory, type, StringUtility.fileString(archive), StringUtility.fileString(outputDirectory));
             return false;
         }
         
@@ -245,7 +245,7 @@ public final class Archive {
                     return false;
             }
         } catch (Exception e) {
-            logger.trace("Unable to extract directory: {} from {}: {}", directory, type, archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to extract directory: {} from {}: {}", directory, type, StringUtility.fileString(archive));
             return false;
         }
     }
@@ -262,19 +262,19 @@ public final class Archive {
     public static boolean extract(File archive, File outputDirectory) {
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
-            logger.trace("Unable to extract archive: {} archive type is not supported", archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to extract archive: {} archive type is not supported", StringUtility.fileString(archive));
             return false;
         }
         
-        logger.trace("Extracting {}: {} to: {}", type, archive.getAbsolutePath().replace("\\", "/"), outputDirectory.getAbsolutePath().replace("\\", "/"));
+        logger.trace("Extracting {}: {} to: {}", type, StringUtility.fileString(archive), StringUtility.fileString(outputDirectory));
         
         if (!archive.exists()) {
-            logger.trace("Unable to extract {}: {} {} does not exist", type, archive.getAbsolutePath().replace("\\", "/"), type);
+            logger.trace("Unable to extract {}: {} {} does not exist", type, StringUtility.fileString(archive), type);
             return false;
         }
         
         if (!outputDirectory.exists() && !Filesystem.createDirectory(outputDirectory)) {
-            logger.trace("Unable to extract {}: {} could not create output directory: {}", type, archive.getAbsolutePath().replace("\\", "/"), outputDirectory.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to extract {}: {} could not create output directory: {}", type, StringUtility.fileString(archive), StringUtility.fileString(outputDirectory));
             return false;
         }
         
@@ -288,7 +288,7 @@ public final class Archive {
                     return false;
             }
         } catch (Exception e) {
-            logger.trace("Unable to extract {}: {}", type, archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to extract {}: {}", type, StringUtility.fileString(archive));
             return false;
         }
     }
@@ -306,14 +306,14 @@ public final class Archive {
     public static boolean compileFile(File archive, CompressionMethod method, File file) {
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
-            logger.trace("Unable to compile archive: {} from: {} archive type is not supported", archive.getAbsolutePath().replace("\\", "/"), file.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to compile archive: {} from: {} archive type is not supported", StringUtility.fileString(archive), StringUtility.fileString(file));
             return false;
         }
         
-        logger.trace("Compiling {}: {} from: {}", type, archive.getAbsolutePath().replace("\\", "/"), file.getAbsolutePath().replace("\\", "/"));
+        logger.trace("Compiling {}: {} from: {}", type, StringUtility.fileString(archive), StringUtility.fileString(file));
         
         if (!file.exists()) {
-            logger.trace("Unable to compile {}: {} file: {} does not exist", type, archive.getAbsolutePath().replace("\\", "/"), file.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to compile {}: {} file: {} does not exist", type, StringUtility.fileString(archive), StringUtility.fileString(file));
             return false;
         }
         
@@ -327,7 +327,7 @@ public final class Archive {
                     return false;
             }
         } catch (Exception e) {
-            logger.trace("Unable to compile {}: {}", type, archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to compile {}: {}", type, StringUtility.fileString(archive));
             return false;
         }
     }
@@ -357,15 +357,15 @@ public final class Archive {
     public static boolean compileFiles(File archive, CompressionMethod method, File... files) {
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
-            logger.trace("Unable to compile archive: {} from: {} archive type is not supported", archive.getAbsolutePath().replace("\\", "/"), Arrays.stream(files).map(File::getAbsolutePath).collect(Collectors.joining(", ", "[", "]")));
+            logger.trace("Unable to compile archive: {} from: {} archive type is not supported", StringUtility.fileString(archive), Arrays.stream(files).map(File::getAbsolutePath).collect(Collectors.joining(", ", "[", "]")));
             return false;
         }
         
-        logger.trace("Compiling {}: {} from: {}", type, archive.getAbsolutePath().replace("\\", "/"), Arrays.stream(files).map(File::getAbsolutePath).collect(Collectors.joining(", ", "[", "]")));
+        logger.trace("Compiling {}: {} from: {}", type, StringUtility.fileString(archive), Arrays.stream(files).map(File::getAbsolutePath).collect(Collectors.joining(", ", "[", "]")));
         
         for (File file : files) {
             if (!file.exists()) {
-                logger.trace("Unable to compile {}: {} file: {} does not exist", type, archive.getAbsolutePath().replace("\\", "/"), file.getAbsolutePath().replace("\\", "/"));
+                logger.trace("Unable to compile {}: {} file: {} does not exist", type, StringUtility.fileString(archive), StringUtility.fileString(file));
                 return false;
             }
         }
@@ -380,7 +380,7 @@ public final class Archive {
                     return false;
             }
         } catch (Exception e) {
-            logger.trace("Unable to compile {}: {}", type, archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to compile {}: {}", type, StringUtility.fileString(archive));
             return false;
         }
     }
@@ -411,21 +411,21 @@ public final class Archive {
     public static boolean compile(File archive, CompressionMethod method, File sourceDirectory, boolean includeDir) {
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
-            logger.trace("Unable to compile archive: {} from: {} archive type is not supported", archive.getAbsolutePath().replace("\\", "/"), sourceDirectory.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to compile archive: {} from: {} archive type is not supported", StringUtility.fileString(archive), StringUtility.fileString(sourceDirectory));
             return false;
         }
         
-        logger.trace("Compiling {}: {} from: {}", type, archive.getAbsolutePath().replace("\\", "/"), sourceDirectory.getAbsolutePath().replace("\\", "/"));
+        logger.trace("Compiling {}: {} from: {}", type, StringUtility.fileString(archive), StringUtility.fileString(sourceDirectory));
         
         if (!sourceDirectory.exists()) {
-            logger.trace("Unable to compile {}: {} source directory: {} does not exist", type, archive.getAbsolutePath().replace("\\", "/"), sourceDirectory.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to compile {}: {} source directory: {} does not exist", type, StringUtility.fileString(archive), StringUtility.fileString(sourceDirectory));
             return false;
         }
         
         if (includeDir) {
             File tmpDir = Filesystem.createTemporaryDirectory();
             if (!Filesystem.copyDirectory(sourceDirectory, tmpDir, true, true)) {
-                logger.trace("Unable to compile {}: {} could not copy source directory: {} to temporary directory", type, archive.getAbsolutePath().replace("\\", "/"), sourceDirectory.getAbsolutePath().replace("\\", "/"));
+                logger.trace("Unable to compile {}: {} could not copy source directory: {} to temporary directory", type, StringUtility.fileString(archive), StringUtility.fileString(sourceDirectory));
                 return false;
             }
             sourceDirectory = tmpDir;
@@ -441,7 +441,7 @@ public final class Archive {
                     return false;
             }
         } catch (Exception e) {
-            logger.trace("Unable to compile {}: {}", type, archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to compile {}: {}", type, StringUtility.fileString(archive));
             return false;
             
         } finally {
@@ -500,38 +500,38 @@ public final class Archive {
     public static boolean compress(File archive) {
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
-            logger.trace("Unable to compress archive: {} archive type is not supported", archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to compress archive: {} archive type is not supported", StringUtility.fileString(archive));
             return false;
         }
         
-        logger.trace("Compressing {}: {}", type, archive.getAbsolutePath().replace("\\", "/"));
+        logger.trace("Compressing {}: {}", type, StringUtility.fileString(archive));
         
         if (!archive.exists()) {
-            logger.trace("Unable to compress {}: {} {} does not exist", type, archive.getAbsolutePath().replace("\\", "/"), type);
+            logger.trace("Unable to compress {}: {} {} does not exist", type, StringUtility.fileString(archive), type);
             return false;
         }
         
         Boolean compressed = isCompressed(archive);
         if (compressed != null && compressed) {
-            logger.trace("{}: {} is already compressed", type, archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("{}: {} is already compressed", type, StringUtility.fileString(archive));
             return true;
         }
         
         File tmpDir = Filesystem.createTemporaryDirectory();
         if ((tmpDir.exists() && !Filesystem.clearDirectory(tmpDir)) || (!tmpDir.exists() && !Filesystem.createDirectory(tmpDir))) {
-            logger.trace("Unable to compress {}: {} could not create temporary directory", type, archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to compress {}: {} could not create temporary directory", type, StringUtility.fileString(archive));
             return false;
         }
         
         logger.trace("Extracting {}", type);
         if (!extract(archive, tmpDir)) {
-            logger.trace("Unable to compress {}: {} could not extract {}", type, archive.getAbsolutePath().replace("\\", "/"), type);
+            logger.trace("Unable to compress {}: {} could not extract {}", type, StringUtility.fileString(archive), type);
             return false;
         }
         
         File archiveBackup = new File(archive.getAbsolutePath().replace("." + type, "-bak." + type));
         if (!Filesystem.renameFile(archive, archiveBackup)) {
-            logger.trace("Unable to compress {}: {} could not create backup of {}", type, archive.getAbsolutePath().replace("\\", "/"), type);
+            logger.trace("Unable to compress {}: {} could not create backup of {}", type, StringUtility.fileString(archive), type);
             return false;
         }
         
@@ -556,38 +556,38 @@ public final class Archive {
     public static boolean decompress(File archive) {
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
-            logger.trace("Unable to decompress archive: {} archive type is not supported", archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to decompress archive: {} archive type is not supported", StringUtility.fileString(archive));
             return false;
         }
         
-        logger.trace("Decompressing {}: {}", type, archive.getAbsolutePath().replace("\\", "/"));
+        logger.trace("Decompressing {}: {}", type, StringUtility.fileString(archive));
         
         if (!archive.exists()) {
-            logger.trace("Unable to decompress {}: {} {} does not exist", type, archive.getAbsolutePath().replace("\\", "/"), type);
+            logger.trace("Unable to decompress {}: {} {} does not exist", type, StringUtility.fileString(archive), type);
             return false;
         }
         
         Boolean decompressed = isDecompressed(archive);
         if (decompressed == null || decompressed) {
-            logger.trace("{}: {} is already decompressed", type, archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("{}: {} is already decompressed", type, StringUtility.fileString(archive));
             return true;
         }
         
         File tmpDir = Filesystem.createTemporaryDirectory();
         if ((tmpDir.exists() && !Filesystem.clearDirectory(tmpDir)) || (!tmpDir.exists() && !Filesystem.createDirectory(tmpDir))) {
-            logger.trace("Unable to decompress {}: {} could not create temporary directory", type, archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to decompress {}: {} could not create temporary directory", type, StringUtility.fileString(archive));
             return false;
         }
         
         logger.trace("Extracting {}", type);
         if (!extract(archive, tmpDir)) {
-            logger.trace("Unable to decompress {}: {} could not extract {}", type, archive.getAbsolutePath().replace("\\", "/"), type);
+            logger.trace("Unable to decompress {}: {} could not extract {}", type, StringUtility.fileString(archive), type);
             return false;
         }
         
         File archiveBackup = new File(archive.getAbsolutePath().replace("." + type, "-bak." + type));
         if (!Filesystem.renameFile(archive, archiveBackup)) {
-            logger.trace("Unable to decompress {}: {} could not create backup of {}", type, archive.getAbsolutePath().replace("\\", "/"), type);
+            logger.trace("Unable to decompress {}: {} could not create backup of {}", type, StringUtility.fileString(archive), type);
             return false;
         }
         
@@ -696,61 +696,61 @@ public final class Archive {
         ArchiveType diffType = getArchiveType(diff);
         
         if (diffType == null) {
-            logger.trace("Unable to create diff archive: {} between: {} and: {} diff archive type is not supported", diff.getAbsolutePath().replace("\\", "/"), source.getAbsolutePath().replace("\\", "/"), target.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to create diff archive: {} between: {} and: {} diff archive type is not supported", StringUtility.fileString(diff), StringUtility.fileString(source), StringUtility.fileString(target));
             return false;
         }
         if (sourceType == null) {
-            logger.trace("Unable to create diff archive: {} between: {} and: {} source archive type is not supported", diff.getAbsolutePath().replace("\\", "/"), source.getAbsolutePath().replace("\\", "/"), target.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to create diff archive: {} between: {} and: {} source archive type is not supported", StringUtility.fileString(diff), StringUtility.fileString(source), StringUtility.fileString(target));
             return false;
         }
         if (targetType == null) {
-            logger.trace("Unable to create diff archive: {} between: {} and: {} target archive type is not supported", diff.getAbsolutePath().replace("\\", "/"), source.getAbsolutePath().replace("\\", "/"), target.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to create diff archive: {} between: {} and: {} target archive type is not supported", StringUtility.fileString(diff), StringUtility.fileString(source), StringUtility.fileString(target));
             return false;
         }
         if (!sourceType.equals(diffType) || !targetType.equals(diffType)) {
-            logger.trace("Unable to create diff archive: {} between: {} and: {} archive types do not match", diff.getAbsolutePath().replace("\\", "/"), source.getAbsolutePath().replace("\\", "/"), target.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to create diff archive: {} between: {} and: {} archive types do not match", StringUtility.fileString(diff), StringUtility.fileString(source), StringUtility.fileString(target));
             return false;
         }
         
-        logger.trace("Creating diff {}: {} between: {} and: {}", diffType, diff.getAbsolutePath().replace("\\", "/"), source.getAbsolutePath().replace("\\", "/"), target.getAbsolutePath().replace("\\", "/"));
+        logger.trace("Creating diff {}: {} between: {} and: {}", diffType, StringUtility.fileString(diff), StringUtility.fileString(source), StringUtility.fileString(target));
         
         File tmpDir = Filesystem.createTemporaryDirectory();
         String tmpPath = Filesystem.generatePath(Filesystem.TMP_DIR.getName(), tmpDir.getName());
         if ((tmpDir.exists() && !Filesystem.clearDirectory(tmpDir)) || (!tmpDir.exists() && !Filesystem.createDirectory(tmpDir))) {
-            logger.trace("Unable to create diff {}: {} could not create temporary directory", diffType, diff.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to create diff {}: {} could not create temporary directory", diffType, StringUtility.fileString(diff));
             return false;
         }
         
         File sourceTmpDir = new File(tmpDir, "source");
         String sourceTmpPath = Filesystem.generatePath(tmpPath, sourceTmpDir.getName());
         if (!Filesystem.createDirectory(sourceTmpDir)) {
-            logger.trace("Unable to create diff {}: {} could not create temporary directory for source {}", diffType, diff.getAbsolutePath().replace("\\", "/"), diffType);
+            logger.trace("Unable to create diff {}: {} could not create temporary directory for source {}", diffType, StringUtility.fileString(diff), diffType);
             return false;
         }
         
         File targetTmpDir = new File(tmpDir, "target");
         String targetTmpPath = Filesystem.generatePath(tmpPath, targetTmpDir.getName());
         if (!Filesystem.createDirectory(targetTmpDir)) {
-            logger.trace("Unable to create diff {}: {} could not create temporary directory for target {}", diffType, diff.getAbsolutePath().replace("\\", "/"), diffType);
+            logger.trace("Unable to create diff {}: {} could not create temporary directory for target {}", diffType, StringUtility.fileString(diff), diffType);
             return false;
         }
         
         File diffTmpDir = new File(tmpDir, "diff");
         String diffTmpPath = Filesystem.generatePath(tmpPath, diffTmpDir.getName());
         if ((diffTmpDir.exists() && !Filesystem.clearDirectory(diffTmpDir)) || (!diffTmpDir.exists() && !Filesystem.createDirectory(diffTmpDir))) {
-            logger.trace("Unable to create diff {}: {} could not create temporary directory for the {} diff", diffType, diff.getAbsolutePath().replace("\\", "/"), diffType);
+            logger.trace("Unable to create diff {}: {} could not create temporary directory for the {} diff", diffType, StringUtility.fileString(diff), diffType);
             return false;
         }
         
         logger.trace("Extracting source {}", sourceType);
         if (!extract(source, sourceTmpDir)) {
-            logger.trace("Unable to create diff {}: {} could not extract the source {}: {}", diffType, diff.getAbsolutePath().replace("\\", "/"), sourceType, source.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to create diff {}: {} could not extract the source {}: {}", diffType, StringUtility.fileString(diff), sourceType, StringUtility.fileString(source));
             return false;
         }
         
         logger.trace("Extracting target {}", targetType);
         if (!extract(target, targetTmpDir)) {
-            logger.trace("Unable to create diff {}: {} could not extract the target {}: {}", diffType, diff.getAbsolutePath().replace("\\", "/"), sourceType, source.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to create diff {}: {} could not extract the target {}: {}", diffType, StringUtility.fileString(diff), sourceType, StringUtility.fileString(source));
             return false;
         }
         
@@ -762,7 +762,7 @@ public final class Archive {
         for (File contentTarget : contentsTarget) {
             File original = null;
             for (File contentSource : contentsSource) {
-                if (contentSource.getPath().replace("\\", "/").replace(sourceTmpPath, "").equals(contentTarget.getPath().replace("\\", "/").replace(targetTmpPath, ""))) {
+                if (StringUtility.fileString(contentSource).replace(sourceTmpPath, "").equals(StringUtility.fileString(contentTarget).replace(targetTmpPath, ""))) {
                     original = contentSource;
                     break;
                 }
@@ -772,7 +772,7 @@ public final class Archive {
             
             //if the file is new or it has been modified since the initial version, add it to the diff
             if ((original == null) || (checksumB != checksumA)) {
-                String destPath = contentTarget.getPath().replace("\\", "/").replace(targetTmpPath, diffTmpPath);
+                String destPath = StringUtility.fileString(contentTarget).replace(targetTmpPath, diffTmpPath);
                 File dest = new File(destPath);
                 if (dest.isDirectory()) {
                     Filesystem.createDirectory(dest);
@@ -786,13 +786,13 @@ public final class Archive {
         for (File contentSource : contentsSource) {
             boolean exists = false;
             for (File contentTarget : contentsTarget) {
-                if (contentTarget.getPath().replace("\\", "/").replace(targetTmpPath, "").equals(contentSource.getPath().replace("\\", "/").replace(sourceTmpPath, ""))) {
+                if (StringUtility.fileString(contentTarget).replace(targetTmpPath, "").equals(StringUtility.fileString(contentSource).replace(sourceTmpPath, ""))) {
                     exists = true;
                     break;
                 }
             }
             if (!exists) {
-                String destPath = contentSource.getPath().replace("\\", "/").replace(sourceTmpPath, diffTmpPath) + '~';
+                String destPath = StringUtility.fileString(contentSource).replace(sourceTmpPath, diffTmpPath) + '~';
                 File dest = new File(destPath);
                 if (dest.isDirectory()) {
                     //if files within the destination have already been registered as deleted, delete the old folder and just mark the directory as deleted
@@ -963,7 +963,7 @@ public final class Archive {
                 in.closeEntry();
             }
             
-            logger.trace("Unable to extract resource: {} from zip: {} could not find resource: {}", resource, zip.getAbsolutePath().replace("\\", "/"), resource);
+            logger.trace("Unable to extract resource: {} from zip: {} could not find resource: {}", resource, StringUtility.fileString(zip), resource);
             return false;
         }
         
@@ -987,7 +987,7 @@ public final class Archive {
                         
                         if (zipEntry.isDirectory()) {
                             if (!Filesystem.createDirectory(output)) {
-                                logger.trace("Unable to extract zip: {} could not create output directory: {}", zip.getAbsolutePath().replace("\\", "/"), output.getAbsolutePath().replace("\\", "/"));
+                                logger.trace("Unable to extract zip: {} could not create output directory: {}", StringUtility.fileString(zip), StringUtility.fileString(output));
                                 return false;
                             }
                         } else {
@@ -1004,7 +1004,7 @@ public final class Archive {
             }
             
             if (!hit) {
-                logger.trace("Unable to extract directory: {} from zip: {} could not find directory: {}", directory, zip.getAbsolutePath().replace("\\", "/"), directory);
+                logger.trace("Unable to extract directory: {} from zip: {} could not find directory: {}", directory, StringUtility.fileString(zip), directory);
             }
             return hit;
         }
@@ -1025,14 +1025,14 @@ public final class Archive {
                 while (zipEntry != null) {
                     File output = new File(outputDirectory, zipEntry.getName());
                     if (!output.getParentFile().exists()) {
-                        logger.trace("Unable to extract zip: {} output directory: {} does not exist", zip.getAbsolutePath().replace("\\", "/"), output.getParentFile().getAbsolutePath().replace("\\", "/"));
+                        logger.trace("Unable to extract zip: {} output directory: {} does not exist", StringUtility.fileString(zip), StringUtility.fileString(output.getParentFile()));
                         return false;
                     }
                     
                     if (zipEntry.isDirectory()) {
                         directoryEntries.put(output, zipEntry);
                         if (!Filesystem.createDirectory(output)) {
-                            logger.trace("Unable to extract zip: {} could not create output directory: {}", zip.getAbsolutePath().replace("\\", "/"), output.getAbsolutePath().replace("\\", "/"));
+                            logger.trace("Unable to extract zip: {} could not create output directory: {}", StringUtility.fileString(zip), StringUtility.fileString(output));
                             return false;
                         }
                     } else {
@@ -1070,7 +1070,7 @@ public final class Archive {
                     return true;
                 }
                 if (file.isDirectory()) {
-                    logger.trace("Unable to compile zip: {} file: {} is a directory", zip.getAbsolutePath().replace("\\", "/"), file.getAbsolutePath().replace("\\", "/"));
+                    logger.trace("Unable to compile zip: {} file: {} is a directory", StringUtility.fileString(zip), StringUtility.fileString(file));
                     return false;
                 }
                 
@@ -1099,7 +1099,7 @@ public final class Archive {
                         continue;
                     }
                     if (file.isDirectory()) {
-                        logger.trace("Unable to compile zip: {} file: {} is a directory", zip.getAbsolutePath().replace("\\", "/"), file.getAbsolutePath().replace("\\", "/"));
+                        logger.trace("Unable to compile zip: {} file: {} is a directory", StringUtility.fileString(zip), StringUtility.fileString(file));
                         return false;
                     }
                     
@@ -1254,7 +1254,7 @@ public final class Archive {
                 
                 JarEntry jarEntry = jarFile.getJarEntry(resource);
                 if (jarEntry == null) {
-                    logger.trace("Unable to extract resource: {} from jar: {} could not find resource: {}", resource, jar.getAbsolutePath().replace("\\", "/"), resource);
+                    logger.trace("Unable to extract resource: {} from jar: {} could not find resource: {}", resource, StringUtility.fileString(jar), resource);
                     return false;
                 }
                 
@@ -1286,7 +1286,7 @@ public final class Archive {
                         
                         if (jarEntry.isDirectory()) {
                             if (!Filesystem.createDirectory(output)) {
-                                logger.trace("Unable to extract directory: {} from jar: {} could not create output directory: {}", directory, jar.getAbsolutePath().replace("\\", "/"), output.getAbsolutePath().replace("\\", "/"));
+                                logger.trace("Unable to extract directory: {} from jar: {} could not create output directory: {}", directory, StringUtility.fileString(jar), StringUtility.fileString(output));
                                 return false;
                             }
                         } else {
@@ -1299,7 +1299,7 @@ public final class Archive {
                 }
                 
                 if (!hit) {
-                    logger.trace("Unable to extract directory: {} from jar: {} could not find directory: {}", directory, jar.getAbsolutePath().replace("\\", "/"), directory);
+                    logger.trace("Unable to extract directory: {} from jar: {} could not find directory: {}", directory, StringUtility.fileString(jar), directory);
                 }
                 return hit;
             }
@@ -1323,14 +1323,14 @@ public final class Archive {
                     JarEntry jarEntry = entries.nextElement();
                     File output = new File(outputDirectory, jarEntry.getName());
                     if (!output.getParentFile().exists()) {
-                        logger.trace("Unable to extract jar: {} output directory: {} does not exist", jar.getAbsolutePath().replace("\\", "/"), output.getParentFile().getAbsolutePath().replace("\\", "/"));
+                        logger.trace("Unable to extract jar: {} output directory: {} does not exist", StringUtility.fileString(jar), StringUtility.fileString(output.getParentFile()));
                         return false;
                     }
                     
                     if (jarEntry.isDirectory()) {
                         directoryEntries.put(output, jarEntry);
                         if (!Filesystem.createDirectory(output)) {
-                            logger.trace("Unable to extract jar: {} could not create output directory: {}", jar.getAbsolutePath().replace("\\", "/"), output.getAbsolutePath().replace("\\", "/"));
+                            logger.trace("Unable to extract jar: {} could not create output directory: {}", StringUtility.fileString(jar), StringUtility.fileString(output));
                             return false;
                         }
                     } else {
@@ -1365,7 +1365,7 @@ public final class Archive {
                     return true;
                 }
                 if (file.isDirectory()) {
-                    logger.trace("Unable to compile jar: {} file: {} is a directory", jar.getAbsolutePath().replace("\\", "/"), file.getAbsolutePath().replace("\\", "/"));
+                    logger.trace("Unable to compile jar: {} file: {} is a directory", StringUtility.fileString(jar), StringUtility.fileString(file));
                     return false;
                 }
                 
@@ -1394,7 +1394,7 @@ public final class Archive {
                         continue;
                     }
                     if (file.isDirectory()) {
-                        logger.trace("Unable to compile jar: {} file: {} is a directory", jar.getAbsolutePath().replace("\\", "/"), file.getAbsolutePath().replace("\\", "/"));
+                        logger.trace("Unable to compile jar: {} file: {} is a directory", StringUtility.fileString(jar), StringUtility.fileString(file));
                         return false;
                     }
                     
