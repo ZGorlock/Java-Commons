@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see BigComponent
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BigComponent.class})
 public class BigComponentTest {
@@ -107,7 +107,6 @@ public class BigComponentTest {
      * @throws Exception When there is an exception.
      * @see BigComponent#BigComponent()
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testConstructors() throws Exception {
         //Big Vector

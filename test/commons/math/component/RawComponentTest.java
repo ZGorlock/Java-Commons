@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see RawComponent
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({RawComponent.class})
 public class RawComponentTest {
@@ -102,7 +102,6 @@ public class RawComponentTest {
      * @throws Exception When there is an exception.
      * @see RawComponent#RawComponent()
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testConstructors() throws Exception {
         //Raw Vector

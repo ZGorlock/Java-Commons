@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see MathUtility
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MathUtility.class})
 public class MathUtilityTest {

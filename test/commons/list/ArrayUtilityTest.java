@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ArrayUtility
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ArrayUtility.class})
 public class ArrayUtilityTest {
@@ -102,7 +102,6 @@ public class ArrayUtilityTest {
      * @throws Exception When there is an exception.
      * @see ArrayUtility#toArray(List, Class)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testToArray() throws Exception {
         //boolean
@@ -290,7 +289,6 @@ public class ArrayUtilityTest {
      * @throws Exception When there is an exception.
      * @see ArrayUtility#merge(Object[], Object[], Class)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testMerge() throws Exception {
         //boolean
@@ -355,7 +353,6 @@ public class ArrayUtilityTest {
      * @throws Exception When there is an exception.
      * @see ArrayUtility#split(Object[], int, Class)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testSplit() throws Exception {
         //boolean
@@ -431,7 +428,7 @@ public class ArrayUtilityTest {
      * @throws Exception When there is an exception.
      * @see ArrayUtility#anyNull(Object[])
      */
-    @SuppressWarnings({"ConstantConditions", "WrapperTypeMayBePrimitive"})
+    @SuppressWarnings("WrapperTypeMayBePrimitive")
     @Test
     public void testAnyNull() throws Exception {
         Boolean a = true;
@@ -506,7 +503,6 @@ public class ArrayUtilityTest {
      * @throws Exception When there is an exception.
      * @see ArrayUtility#removeDuplicates(Object[], Class)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testRemoveDuplicates() throws Exception {
         //boolean
@@ -556,7 +552,6 @@ public class ArrayUtilityTest {
      * @throws Exception When there is an exception.
      * @see ArrayUtility#selectRandom(Object[])
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testSelectRandom() throws Exception {
         //boolean
@@ -627,7 +622,6 @@ public class ArrayUtilityTest {
      * @throws Exception When there is an exception.
      * @see ArrayUtility#selectN(Object[], int, Class)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testSelectN() throws Exception {
         //boolean
@@ -894,7 +888,6 @@ public class ArrayUtilityTest {
      * @see ArrayUtility#sortByNumberOfOccurrences(Object[], boolean, Class)
      * @see ArrayUtility#sortByNumberOfOccurrences(Object[], Class)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testSortByNumberOfOccurrences() throws Exception {
         //boolean

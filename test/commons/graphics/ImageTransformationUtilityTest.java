@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ImageTransformationUtility
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ImageTransformationUtility.class})
 public class ImageTransformationUtilityTest {

@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see RawMatrix
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({RawMatrix.class})
 public class RawMatrixTest {
@@ -130,7 +130,6 @@ public class RawMatrixTest {
      * @see RawMatrix#RawMatrix(int)
      * @see RawMatrix#RawMatrix()
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testConstructors() throws Exception {
         //components
@@ -2604,7 +2603,6 @@ public class RawMatrixTest {
      * @throws Exception When there is an exception.
      * @see RawMatrix#copy(BaseComponent, BaseComponent)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testStaticCopy() throws Exception {
         RawMatrix copy;

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see CoordinateUtility
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CoordinateUtility.class})
 public class CoordinateUtilityTest {
@@ -1100,7 +1100,6 @@ public class CoordinateUtilityTest {
      * @see CoordinateUtility#convert(CoordinateUtility.CoordinateSystem, CoordinateUtility.CoordinateSystem, double, double, double)
      * @see CoordinateUtility#convert(CoordinateUtility.CoordinateSystem, CoordinateUtility.CoordinateSystem, double, double)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testConvert() throws Exception {
         PowerMockito.mockStatic(CoordinateUtility.class);

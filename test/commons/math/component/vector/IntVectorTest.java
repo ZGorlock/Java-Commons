@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see IntVector
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IntVector.class})
 public class IntVectorTest {
@@ -129,7 +129,6 @@ public class IntVectorTest {
      * @see IntVector#IntVector(int)
      * @see IntVector#IntVector()
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testConstructors() throws Exception {
         //components
@@ -2408,7 +2407,6 @@ public class IntVectorTest {
      * @throws Exception When there is an exception.
      * @see IntVector#copy(BaseComponent, BaseComponent)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testStaticCopy() throws Exception {
         IntVector copy;

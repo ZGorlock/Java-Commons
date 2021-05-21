@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see DrawUtility
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({DrawUtility.class, Graphics2D.class})
 public class DrawUtilityTest {
@@ -124,7 +124,6 @@ public class DrawUtilityTest {
      * @throws Exception When there is an exception.
      * @see DrawUtility#drawPoint(Graphics2D, VectorInterface)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testDrawPoint() throws Exception {
         //standard
@@ -155,7 +154,6 @@ public class DrawUtilityTest {
      * @throws Exception When there is an exception.
      * @see DrawUtility#drawLine(Graphics2D, VectorInterface, VectorInterface)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testDrawLine() throws Exception {
         //standard
@@ -195,7 +193,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#drawRect(Graphics2D, VectorInterface, VectorInterface)
      * @see DrawUtility#drawRect(Graphics2D, VectorInterface, int, int)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testDrawRect() throws Exception {
         //standard
@@ -245,7 +242,6 @@ public class DrawUtilityTest {
      * @throws Exception When there is an exception.
      * @see DrawUtility#drawCircle(Graphics2D, VectorInterface, int)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testDrawCircle() throws Exception {
         //standard
@@ -277,7 +273,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#drawOval(Graphics2D, VectorInterface, VectorInterface)
      * @see DrawUtility#drawOval(Graphics2D, VectorInterface, int, int)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testDrawOval() throws Exception {
         //standard
@@ -328,7 +323,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#drawPolygon(Graphics2D, Polygon)
      * @see DrawUtility#drawPolygon(Graphics2D, List)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testDrawPolygon() throws Exception {
         //standard
@@ -406,7 +400,6 @@ public class DrawUtilityTest {
      * @throws Exception When there is an exception.
      * @see DrawUtility#drawShape(Graphics2D, Shape)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testDrawShape() throws Exception {
         //standard
@@ -434,7 +427,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#drawArc(Graphics2D, VectorInterface, VectorInterface, double, double)
      * @see DrawUtility#drawArc(Graphics2D, VectorInterface, int, int, double, double)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testDrawArc() throws Exception {
         //standard
@@ -487,7 +479,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#draw3DRect(Graphics2D, VectorInterface, VectorInterface, boolean)
      * @see DrawUtility#draw3DRect(Graphics2D, VectorInterface, int, int, boolean)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testDraw3DRect() throws Exception {
         //standard
@@ -541,7 +532,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#drawRoundRect(Graphics2D, VectorInterface, VectorInterface, int, int)
      * @see DrawUtility#drawRoundRect(Graphics2D, VectorInterface, int, int, int, int)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testDrawRoundRect() throws Exception {
         //standard
@@ -592,7 +582,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#fillRect(Graphics2D, VectorInterface, VectorInterface)
      * @see DrawUtility#fillRect(Graphics2D, VectorInterface, int, int)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testFillRect() throws Exception {
         //standard
@@ -642,7 +631,6 @@ public class DrawUtilityTest {
      * @throws Exception When there is an exception.
      * @see DrawUtility#fillCircle(Graphics2D, VectorInterface, int)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testFillCircle() throws Exception {
         //standard
@@ -674,7 +662,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#fillOval(Graphics2D, VectorInterface, VectorInterface)
      * @see DrawUtility#fillOval(Graphics2D, VectorInterface, int, int)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testFillOval() throws Exception {
         //standard
@@ -725,7 +712,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#fillPolygon(Graphics2D, Polygon)
      * @see DrawUtility#fillPolygon(Graphics2D, List)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testFillPolygon() throws Exception {
         //standard
@@ -803,7 +789,6 @@ public class DrawUtilityTest {
      * @throws Exception When there is an exception.
      * @see DrawUtility#fillShape(Graphics2D, Shape)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testFillShape() throws Exception {
         //standard
@@ -831,7 +816,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#fillArc(Graphics2D, VectorInterface, VectorInterface, double, double)
      * @see DrawUtility#fillArc(Graphics2D, VectorInterface, int, int, double, double)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testFillArc() throws Exception {
         //standard
@@ -884,7 +868,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#fill3DRect(Graphics2D, VectorInterface, VectorInterface, boolean)
      * @see DrawUtility#fill3DRect(Graphics2D, VectorInterface, int, int, boolean)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testFill3DRect() throws Exception {
         //standard
@@ -938,7 +921,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#fillRoundRect(Graphics2D, VectorInterface, VectorInterface, int, int)
      * @see DrawUtility#fillRoundRect(Graphics2D, VectorInterface, int, int, int, int)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testFillRoundRect() throws Exception {
         //standard
@@ -993,7 +975,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#drawImage(Graphics2D, BufferedImage, VectorInterface)
      * @see DrawUtility#drawImage(Graphics2D, BufferedImage)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testDrawImage() throws Exception {
         BufferedImage image = Mockito.mock(BufferedImage.class);
@@ -1166,7 +1147,6 @@ public class DrawUtilityTest {
      * @throws Exception When there is an exception.
      * @see DrawUtility#drawString(Graphics2D, String, VectorInterface)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testDrawString() throws Exception {
         //standard
@@ -1201,7 +1181,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#copyArea(Graphics2D, VectorInterface, VectorInterface, VectorInterface)
      * @see DrawUtility#copyArea(Graphics2D, VectorInterface, int, int, VectorInterface)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testCopyArea() throws Exception {
         //standard
@@ -1264,7 +1243,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#clearArea(Graphics2D, VectorInterface, VectorInterface)
      * @see DrawUtility#clearArea(Graphics2D, VectorInterface, int, int)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testClearArea() throws Exception {
         //standard
@@ -1314,7 +1292,6 @@ public class DrawUtilityTest {
      * @throws Exception When there is an exception.
      * @see DrawUtility#setColor(Graphics2D, Color)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testSetColor() throws Exception {
         final Color color = new Color(192, 192, 192);
@@ -1341,7 +1318,6 @@ public class DrawUtilityTest {
      * @throws Exception When there is an exception.
      * @see DrawUtility#setBackground(Graphics2D, Color)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testSetBackground() throws Exception {
         final Color color = new Color(192, 192, 192);
@@ -1368,7 +1344,6 @@ public class DrawUtilityTest {
      * @throws Exception When there is an exception.
      * @see DrawUtility#setFont(Graphics2D, Font)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testSetFont() throws Exception {
         final Font font = Mockito.mock(Font.class);
@@ -1398,7 +1373,6 @@ public class DrawUtilityTest {
      * @see DrawUtility#setClip(Graphics2D, VectorInterface, VectorInterface)
      * @see DrawUtility#setClip(Graphics2D, VectorInterface, int, int)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testSetClip() throws Exception {
         //shape
@@ -1486,7 +1460,6 @@ public class DrawUtilityTest {
      * @throws Exception When there is an exception.
      * @see DrawUtility#getColor(Graphics2D)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testGetColor() throws Exception {
         //standard
@@ -1508,7 +1481,6 @@ public class DrawUtilityTest {
      * @throws Exception When there is an exception.
      * @see DrawUtility#getBackground(Graphics2D)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testGetBackground() throws Exception {
         //standard
@@ -1530,7 +1502,6 @@ public class DrawUtilityTest {
      * @throws Exception When there is an exception.
      * @see DrawUtility#getFont(Graphics2D)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testGetFont() throws Exception {
         //standard
@@ -1552,7 +1523,6 @@ public class DrawUtilityTest {
      * @throws Exception When there is an exception.
      * @see DrawUtility#getClip(Graphics2D)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testGetClip() throws Exception {
         //standard
@@ -1574,7 +1544,6 @@ public class DrawUtilityTest {
      * @throws Exception When there is an exception.
      * @see DrawUtility#dispose(Graphics2D)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testDispose() throws Exception {
         //standard

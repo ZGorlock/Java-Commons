@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see VectorInterface
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({VectorInterface.class})
 public class VectorInterfaceTest {
@@ -851,7 +851,6 @@ public class VectorInterfaceTest {
      * @throws Exception When there is an exception.
      * @see VectorInterface#createInstance(int, Class)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testCreateInstance() throws Exception {
         VectorInterface<?, ?> instance;

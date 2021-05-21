@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ProgressBarInputStream
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ProgressBarInputStream.class})
 public class ProgressBarInputStreamTest {

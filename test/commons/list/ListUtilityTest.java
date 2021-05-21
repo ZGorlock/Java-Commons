@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ListUtility
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ListUtility.class})
 public class ListUtilityTest {
@@ -368,7 +368,6 @@ public class ListUtilityTest {
      * @throws Exception When there is an exception.
      * @see ListUtility#split(List, int)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testSplit() throws Exception {
         //boolean
@@ -450,7 +449,6 @@ public class ListUtilityTest {
      * @see ListUtility#anyNull(List)
      * @see ListUtility#anyNull(Object...)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testAnyNull() throws Exception {
         Boolean a = true;
@@ -559,7 +557,6 @@ public class ListUtilityTest {
      * @throws Exception When there is an exception.
      * @see ListUtility#removeDuplicates(List)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testRemoveDuplicates() throws Exception {
         //boolean
@@ -613,7 +610,6 @@ public class ListUtilityTest {
      * @throws Exception When there is an exception.
      * @see ListUtility#selectRandom(List)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testSelectRandom() throws Exception {
         //boolean
@@ -684,7 +680,6 @@ public class ListUtilityTest {
      * @throws Exception When there is an exception.
      * @see ListUtility#selectN(List, int)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testSelectN() throws Exception {
         //boolean
@@ -951,7 +946,6 @@ public class ListUtilityTest {
      * @see ListUtility#sortByNumberOfOccurrences(List, boolean)
      * @see ListUtility#sortByNumberOfOccurrences(List)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testSortByNumberOfOccurrences() throws Exception {
         //boolean

@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ScreenSize
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ScreenSize.class})
 public class ScreenSizeTest {

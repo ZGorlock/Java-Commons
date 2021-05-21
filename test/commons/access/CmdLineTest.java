@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see CmdLine
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CmdLine.class})
 public class CmdLineTest {

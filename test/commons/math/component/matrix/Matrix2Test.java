@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see Matrix2
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Matrix2.class})
 public class Matrix2Test {
@@ -2041,7 +2041,6 @@ public class Matrix2Test {
      * @throws Exception When there is an exception.
      * @see Matrix2#copy(BaseComponent, BaseComponent)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testStaticCopy() throws Exception {
         Matrix copy;

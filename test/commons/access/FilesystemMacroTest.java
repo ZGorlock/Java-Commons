@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see FilesystemMacro
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({FilesystemMacro.class})
 public class FilesystemMacroTest {

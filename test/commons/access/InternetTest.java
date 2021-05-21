@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see Internet
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Internet.class, CommonsLogging.class})
 public class InternetTest {

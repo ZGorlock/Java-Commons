@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see Vector2
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Vector2.class})
 public class Vector2Test {
@@ -125,7 +125,6 @@ public class Vector2Test {
      * @see Vector2#Vector2(Vector)
      * @see Vector2#Vector2()
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testConstructors() throws Exception {
         //components

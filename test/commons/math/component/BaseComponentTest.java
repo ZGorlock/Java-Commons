@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see BaseComponent
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BaseComponent.class})
 public class BaseComponentTest {
@@ -140,7 +140,6 @@ public class BaseComponentTest {
      * @throws Exception When there is an exception.
      * @see BaseComponent#BaseComponent(Class, ComponentMathHandlerInterface)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testConstructors() throws Exception {
         //TestComponent
@@ -2180,7 +2179,6 @@ public class BaseComponentTest {
      * @throws Exception When there is an exception.
      * @see BaseComponent#copy(BaseComponent, BaseComponent)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testStaticCopy() throws Exception {
         TestComponent copy;

@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see BigMathUtility
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BigMathUtility.class})
 public class BigMathUtilityTest {

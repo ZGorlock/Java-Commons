@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see MatrixInterface
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MatrixInterface.class})
 public class MatrixInterfaceTest {
@@ -1462,7 +1462,6 @@ public class MatrixInterfaceTest {
      * @throws Exception When there is an exception.
      * @see MatrixInterface#createInstance(int, Class)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testCreateInstance() throws Exception {
         MatrixInterface<?, ?> instance;

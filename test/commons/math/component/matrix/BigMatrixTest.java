@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see BigMatrix
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BigMatrix.class})
 public class BigMatrixTest {
@@ -134,7 +134,6 @@ public class BigMatrixTest {
      * @see BigMatrix#BigMatrix(int)
      * @see BigMatrix#BigMatrix()
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testConstructors() throws Exception {
         //components
@@ -3129,7 +3128,6 @@ public class BigMatrixTest {
      * @throws Exception When there is an exception.
      * @see BigMatrix#copy(BaseComponent, BaseComponent)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testStaticCopy() throws Exception {
         BigMatrix copy;

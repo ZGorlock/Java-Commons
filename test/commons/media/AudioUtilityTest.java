@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see AudioUtility
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({AudioUtility.class})
 public class AudioUtilityTest {

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see DoubleComponentMathHandler
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({DoubleComponentMathHandler.class})
 public class DoubleComponentMathHandlerTest {
@@ -113,7 +113,6 @@ public class DoubleComponentMathHandlerTest {
      * @throws Exception When there is an exception.
      * @see DoubleComponentMathHandler#DoubleComponentMathHandler()
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testConstructors() throws Exception {
         DoubleComponentMathHandler sut = new DoubleComponentMathHandler();

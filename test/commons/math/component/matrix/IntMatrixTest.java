@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see IntMatrix
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IntMatrix.class})
 public class IntMatrixTest {
@@ -129,7 +129,6 @@ public class IntMatrixTest {
      * @see IntMatrix#IntMatrix(int)
      * @see IntMatrix#IntMatrix()
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testConstructors() throws Exception {
         //components
@@ -2537,7 +2536,6 @@ public class IntMatrixTest {
      * @throws Exception When there is an exception.
      * @see IntMatrix#copy(BaseComponent, BaseComponent)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testStaticCopy() throws Exception {
         IntMatrix copy;

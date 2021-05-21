@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see BigComponentMathHandler
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BigComponentMathHandler.class})
 public class BigComponentMathHandlerTest {
@@ -121,7 +121,6 @@ public class BigComponentMathHandlerTest {
      * @throws Exception When there is an exception.
      * @see BigComponentMathHandler#BigComponentMathHandler()
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testConstructors() throws Exception {
         BigComponentMathHandler sut = new BigComponentMathHandler();

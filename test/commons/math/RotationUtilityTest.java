@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see RotationUtility
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({RotationUtility.class})
 public class RotationUtilityTest {

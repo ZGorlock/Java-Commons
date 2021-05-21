@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see RawVector
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({RawVector.class})
 public class RawVectorTest {
@@ -129,7 +129,6 @@ public class RawVectorTest {
      * @see RawVector#RawVector(int)
      * @see RawVector#RawVector()
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testConstructors() throws Exception {
         //components
@@ -2502,7 +2501,6 @@ public class RawVectorTest {
      * @throws Exception When there is an exception.
      * @see RawVector#copy(BaseComponent, BaseComponent)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testStaticCopy() throws Exception {
         RawVector copy;

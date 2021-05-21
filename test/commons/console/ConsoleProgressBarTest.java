@@ -37,7 +37,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ConsoleProgressBar
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ConsoleProgressBar.class, System.class})
 public class ConsoleProgressBarTest {

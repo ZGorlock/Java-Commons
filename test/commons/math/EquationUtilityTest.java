@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see EquationUtility
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({EquationUtility.class})
 public class EquationUtilityTest {

@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see BigVector
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BigVector.class})
 public class BigVectorTest {
@@ -140,7 +140,6 @@ public class BigVectorTest {
      * @see BigVector#BigVector(int)
      * @see BigVector#BigVector()
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testConstructors() throws Exception {
         //components
@@ -3051,7 +3050,6 @@ public class BigVectorTest {
      * @throws Exception When there is an exception.
      * @see BigVector#copy(BaseComponent, BaseComponent)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testStaticCopy() throws Exception {
         BigVector copy;

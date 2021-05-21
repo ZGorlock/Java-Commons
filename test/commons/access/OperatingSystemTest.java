@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see OperatingSystem
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({OperatingSystem.class, System.class})
 public class OperatingSystemTest {

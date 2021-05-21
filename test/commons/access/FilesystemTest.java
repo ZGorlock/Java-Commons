@@ -45,7 +45,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see Filesystem
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Filesystem.class, FileUtils.class, CommonsLogging.class})
 public class FilesystemTest {
@@ -197,7 +197,6 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      */
-    @SuppressWarnings("ConstantConditions")
     @After
     public void cleanup() throws Exception {
         if ((nestedInternalFile2 != null) && nestedInternalFile2.exists()) {
@@ -13844,7 +13843,6 @@ public class FilesystemTest {
      * @see Filesystem#createTemporaryFile(String)
      * @see Filesystem#createTemporaryFile()
      */
-    @SuppressWarnings("UnusedAssignment")
     @Test
     public void testCreateTemporaryFile() throws Exception {
         File tmpFile;
@@ -13915,7 +13913,7 @@ public class FilesystemTest {
         Assert.assertTrue(tmpFile.exists());
         
         //request name, already exists 1
-        tmpFile = Filesystem.createTemporaryFile(".file", "testFile");
+        Filesystem.createTemporaryFile(".file", "testFile");
         tmpFile = new File(Filesystem.TMP_DIR, "testFile_1.file");
         filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
@@ -13923,7 +13921,7 @@ public class FilesystemTest {
         Assert.assertTrue(new File(Filesystem.TMP_DIR, "testFile.file").exists());
         
         //request name, already exists 2
-        tmpFile = Filesystem.createTemporaryFile(".file", "testFile");
+        Filesystem.createTemporaryFile(".file", "testFile");
         tmpFile = new File(Filesystem.TMP_DIR, "testFile_2.file");
         filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
@@ -13969,7 +13967,7 @@ public class FilesystemTest {
         Assert.assertTrue(tmpDir.exists());
         
         //request name, already exists 1
-        tmpDir = Filesystem.createTemporaryDirectory("testDir");
+        Filesystem.createTemporaryDirectory("testDir");
         tmpDir = new File(Filesystem.TMP_DIR, "testDir_1");
         filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpDir));
@@ -13977,7 +13975,7 @@ public class FilesystemTest {
         Assert.assertTrue(new File(Filesystem.TMP_DIR, "testDir").exists());
         
         //request name, already exists 2
-        tmpDir = Filesystem.createTemporaryDirectory("testDir");
+        Filesystem.createTemporaryDirectory("testDir");
         tmpDir = new File(Filesystem.TMP_DIR, "testDir_2");
         filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpDir));

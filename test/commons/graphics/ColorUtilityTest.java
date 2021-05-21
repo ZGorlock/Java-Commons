@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ColorUtility
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ColorUtility.class})
 public class ColorUtilityTest {

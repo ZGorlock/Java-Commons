@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see Speech
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Speech.class})
 public class SpeechTest {

@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see Component
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Component.class})
 public class ComponentTest {
@@ -104,7 +104,6 @@ public class ComponentTest {
      * @throws Exception When there is an exception.
      * @see Component#Component()
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testConstructors() throws Exception {
         //Vector

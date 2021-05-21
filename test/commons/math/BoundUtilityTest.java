@@ -24,7 +24,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see BoundUtility
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BoundUtility.class})
 public class BoundUtilityTest {

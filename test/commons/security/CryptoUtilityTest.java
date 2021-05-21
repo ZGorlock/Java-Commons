@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see CryptoUtility
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CryptoUtility.class})
 public class CryptoUtilityTest {

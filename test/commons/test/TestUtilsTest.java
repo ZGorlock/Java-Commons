@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see TestUtils
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TestUtils.class})
 public class TestUtilsTest {

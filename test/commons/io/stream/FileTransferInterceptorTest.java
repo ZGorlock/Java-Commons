@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see FileTransferInterceptor
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({FileTransferInterceptor.class})
 public class FileTransferInterceptorTest {

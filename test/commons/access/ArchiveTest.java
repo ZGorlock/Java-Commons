@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see Archive
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Archive.class})
 public class ArchiveTest {

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see MetadataUtility
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MetadataUtility.class})
 public class MetadataUtilityTest {
@@ -111,7 +111,6 @@ public class MetadataUtilityTest {
      * @see MetadataUtility#getMetadata(File, String)
      * @see MetadataUtility#getMetadata(File)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testGetMetadata() throws Exception {
         List<MetadataUtility.MetadataTag> metadata;

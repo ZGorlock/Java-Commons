@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see StringUtility
  */
-@SuppressWarnings({"RedundantSuppression", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({StringUtility.class})
 public class StringUtilityTest {
@@ -1783,7 +1783,6 @@ public class StringUtilityTest {
      * @throws Exception When there is an exception.
      * @see StringUtility#fileString(File)
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testGetJustifiedPath() throws Exception {
         final String base = Filesystem.TMP_DIR.getAbsolutePath().replace("\\", "/") + '/';
@@ -1811,7 +1810,6 @@ public class StringUtilityTest {
      * @throws Exception When there is an exception.
      * @see StringUtility#methodString(Class, String, Class[])
      */
-    @SuppressWarnings("ConstantConditions")
     @Test
     public void testMethodString() throws Exception {
         //valid
