@@ -14,9 +14,11 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
+import java.util.Objects;
 
 import commons.string.StringUtility;
 import org.junit.Assert;
+import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -207,6 +209,124 @@ public final class TestUtils {
             
         } catch (Exception ignored) {
         }
+    }
+    
+    /**
+     * Gets the value of a field from an object or class.
+     *
+     * @param clazz     The class.
+     * @param object    The object.
+     * @param fieldName The name of the field to get.
+     * @return The value of the field from the object or class, or null if it cannot be retrieved.
+     */
+    @SuppressWarnings("deprecation")
+    private static Object getField(Class<?> clazz, Object object, String fieldName) {
+        if (clazz.getSimpleName().contains("MockitoMock")) {
+            return Whitebox.getInternalState(((object == null) ? clazz : object), fieldName);
+        }
+        
+        try {
+            Field field = clazz.getDeclaredField(fieldName);
+            boolean isAccessible = field.isAccessible();
+            field.setAccessible(true);
+            Object value = field.get(object);
+            field.setAccessible(isAccessible);
+            return value;
+            
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            Class<?> superClazz = clazz.getSuperclass();
+            if (superClazz != null) {
+                return getField(superClazz, object, fieldName);
+            }
+            
+            logger.warn("Failed to get field: " + fieldName + " for class: " + clazz.getSimpleName());
+            return null;
+        }
+    }
+    
+    /**
+     * Gets the value of a field from a class.
+     *
+     * @param clazz     The class.
+     * @param fieldName The name of the field to get.
+     * @return The value of the field from the class, or null if it cannot be retrieved.
+     * @see #getField(Class, Object, String)
+     */
+    public static Object getField(Class<?> clazz, String fieldName) {
+        return getField(clazz, null, fieldName);
+    }
+    
+    /**
+     * Gets the value of a field from an object.
+     *
+     * @param object    The object.
+     * @param fieldName The name of the field to get.
+     * @return The value of the field from the object, or null if it cannot be retrieved.
+     * @see #getField(Class, Object, String)
+     */
+    public static Object getField(Object object, String fieldName) {
+        return getField(object.getClass(), object, fieldName);
+    }
+    
+    /**
+     * Sets a field of an object or class.
+     *
+     * @param clazz     The class.
+     * @param object    The object.
+     * @param fieldName The name of the field to set.
+     * @param value     The value to set.
+     * @return Whether the field of the object or class was successfully set or not.
+     */
+    @SuppressWarnings("deprecation")
+    private static boolean setField(Class<?> clazz, Object object, String fieldName, Object value) {
+        if (clazz.getSimpleName().contains("MockitoMock")) {
+            Whitebox.setInternalState(((object == null) ? clazz : object), fieldName, value);
+            return Objects.equals(getField(clazz, object, fieldName), value);
+        }
+        
+        try {
+            Field field = clazz.getDeclaredField(fieldName);
+            boolean isAccessible = field.isAccessible();
+            field.setAccessible(true);
+            field.set(object, value);
+            field.setAccessible(isAccessible);
+            return true;
+            
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            Class<?> superClazz = clazz.getSuperclass();
+            if (superClazz != null) {
+                return setField(superClazz, object, fieldName, value);
+            }
+            
+            logger.warn("Failed to set field: " + fieldName + " for class: " + clazz.getSimpleName());
+            return false;
+        }
+    }
+    
+    /**
+     * Sets a field of a class.
+     *
+     * @param clazz     The class.
+     * @param fieldName The name of the field to set.
+     * @param value     The value to set.
+     * @return Whether the field of the class was successfully set or not.
+     * @see #setField(Class, Object, String, Object)
+     */
+    public static boolean setField(Class<?> clazz, String fieldName, Object value) {
+        return setField(clazz, null, fieldName, value);
+    }
+    
+    /**
+     * Sets a field of an object.
+     *
+     * @param object    The object.
+     * @param fieldName The name of the field to set.
+     * @param value     The value to set.
+     * @return Whether the field of the object was successfully set or not.
+     * @see #setField(Class, Object, String, Object)
+     */
+    public static boolean setField(Object object, String fieldName, Object value) {
+        return setField(object.getClass(), object, fieldName, value);
     }
     
     /**

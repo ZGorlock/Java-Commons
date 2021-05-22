@@ -20,6 +20,7 @@ import javax.ws.rs.ext.WriterInterceptorContext;
 
 import commons.console.ConsoleProgressBar;
 import commons.string.StringUtility;
+import commons.test.TestUtils;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.ContentDisposition;
 import org.glassfish.jersey.media.multipart.MultiPart;
@@ -35,7 +36,6 @@ import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -138,7 +138,7 @@ public class FileTransferInterceptorTest {
         context.setInputStream(inputStream);
         Mockito.doAnswer(invocationOnMock -> {
             ProgressBarInputStream progressBarInputStream = invocationOnMock.getArgument(0);
-            ConsoleProgressBar progressBar = Whitebox.getInternalState(progressBarInputStream, "progressBar");
+            ConsoleProgressBar progressBar = (ConsoleProgressBar) TestUtils.getField(progressBarInputStream, "progressBar");
             Assert.assertEquals("test.txt", progressBar.getTitle());
             Assert.assertEquals(500, progressBar.getTotal());
             Assert.assertEquals("B", progressBar.getUnits());
@@ -232,7 +232,7 @@ public class FileTransferInterceptorTest {
         context.setOutputStream(outputStream);
         Mockito.doAnswer(invocationOnMock -> {
             ProgressBarOutputStream progressBarOutputStream = invocationOnMock.getArgument(0);
-            ConsoleProgressBar progressBar = Whitebox.getInternalState(progressBarOutputStream, "progressBar");
+            ConsoleProgressBar progressBar = (ConsoleProgressBar) TestUtils.getField(progressBarOutputStream, "progressBar");
             Assert.assertEquals("test.txt", progressBar.getTitle());
             Assert.assertEquals(660, progressBar.getTotal());
             Assert.assertEquals("B", progressBar.getUnits());
@@ -261,7 +261,7 @@ public class FileTransferInterceptorTest {
         context.setOutputStream(outputStream);
         Mockito.doAnswer(invocationOnMock -> {
             ProgressBarOutputStream progressBarOutputStream = invocationOnMock.getArgument(0);
-            ConsoleProgressBar progressBar = Whitebox.getInternalState(progressBarOutputStream, "progressBar");
+            ConsoleProgressBar progressBar = (ConsoleProgressBar) TestUtils.getField(progressBarOutputStream, "progressBar");
             Assert.assertEquals("test.txt", progressBar.getTitle());
             Assert.assertEquals(500, progressBar.getTotal());
             Assert.assertEquals("B", progressBar.getUnits());

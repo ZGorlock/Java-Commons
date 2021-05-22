@@ -34,7 +34,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1592,7 +1591,7 @@ public class Matrix2Test {
         
         //standard
         Assert.assertEquals(2, sut.getDimensionality());
-        Whitebox.setInternalState(sut, "dimensionality", 5);
+        TestUtils.setField(sut, "dimensionality", 5);
         Assert.assertEquals(5, sut.getDimensionality());
         sut.calculateDimensionality();
         Assert.assertEquals(2, sut.getDimensionality());

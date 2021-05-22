@@ -24,6 +24,7 @@ import java.util.regex.Pattern;
 
 import commons.log.CommonsLogging;
 import commons.string.StringUtility;
+import commons.test.TestUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -36,7 +37,6 @@ import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13850,7 +13850,7 @@ public class FilesystemTest {
         
         //standard
         tmpFile = Filesystem.createTemporaryFile();
-        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
         Assert.assertTrue(tmpFile.exists());
         Assert.assertTrue(tmpFile.isFile());
@@ -13861,7 +13861,7 @@ public class FilesystemTest {
         
         //extension, empty
         tmpFile = Filesystem.createTemporaryFile("");
-        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
         Assert.assertTrue(tmpFile.exists());
         Assert.assertTrue(tmpFile.isFile());
@@ -13872,7 +13872,7 @@ public class FilesystemTest {
         
         //extension, not empty
         tmpFile = Filesystem.createTemporaryFile(".file");
-        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
         Assert.assertTrue(tmpFile.exists());
         Assert.assertTrue(tmpFile.isFile());
@@ -13884,7 +13884,7 @@ public class FilesystemTest {
         
         //extension, not empty, no dot
         tmpFile = Filesystem.createTemporaryFile("file");
-        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
         Assert.assertTrue(tmpFile.exists());
         Assert.assertTrue(tmpFile.isFile());
@@ -13896,7 +13896,7 @@ public class FilesystemTest {
         
         //default extension
         tmpFile = Filesystem.createTemporaryFile();
-        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
         Assert.assertTrue(tmpFile.exists());
         Assert.assertTrue(tmpFile.isFile());
@@ -13908,14 +13908,14 @@ public class FilesystemTest {
         //request name
         
         tmpFile = Filesystem.createTemporaryFile(".file", "testFile");
-        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
         Assert.assertTrue(tmpFile.exists());
         
         //request name, already exists 1
         Filesystem.createTemporaryFile(".file", "testFile");
         tmpFile = new File(Filesystem.TMP_DIR, "testFile_1.file");
-        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
         Assert.assertTrue(tmpFile.exists());
         Assert.assertTrue(new File(Filesystem.TMP_DIR, "testFile.file").exists());
@@ -13923,7 +13923,7 @@ public class FilesystemTest {
         //request name, already exists 2
         Filesystem.createTemporaryFile(".file", "testFile");
         tmpFile = new File(Filesystem.TMP_DIR, "testFile_2.file");
-        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
         Assert.assertTrue(tmpFile.exists());
         Assert.assertTrue(new File(Filesystem.TMP_DIR, "testFile.file").exists());
@@ -13951,7 +13951,7 @@ public class FilesystemTest {
         
         //standard
         tmpDir = Filesystem.createTemporaryDirectory();
-        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpDir));
         Assert.assertTrue(tmpDir.exists());
         Assert.assertTrue(tmpDir.isDirectory());
@@ -13962,14 +13962,14 @@ public class FilesystemTest {
         //request name
         
         tmpDir = Filesystem.createTemporaryDirectory("testDir");
-        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpDir));
         Assert.assertTrue(tmpDir.exists());
         
         //request name, already exists 1
         Filesystem.createTemporaryDirectory("testDir");
         tmpDir = new File(Filesystem.TMP_DIR, "testDir_1");
-        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpDir));
         Assert.assertTrue(tmpDir.exists());
         Assert.assertTrue(new File(Filesystem.TMP_DIR, "testDir").exists());
@@ -13977,7 +13977,7 @@ public class FilesystemTest {
         //request name, already exists 2
         Filesystem.createTemporaryDirectory("testDir");
         tmpDir = new File(Filesystem.TMP_DIR, "testDir_2");
-        filesystemTmpFiles = Whitebox.getInternalState(Filesystem.class, "tmpFiles");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpDir));
         Assert.assertTrue(tmpDir.exists());
         Assert.assertTrue(new File(Filesystem.TMP_DIR, "testDir").exists());

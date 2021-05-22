@@ -7,6 +7,7 @@
 
 package commons.log;
 
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -16,7 +17,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -178,10 +178,10 @@ public class CommonsLoggingTest {
     public void testGetCommonsLogger() throws Exception {
         CommonsLogging.setCommonsLogger(commonsLogger);
         Assert.assertEquals(commonsLogger, CommonsLogging.getCommonsLogger());
-        Assert.assertEquals(commonsLogger, Whitebox.getInternalState(CommonsLogging.class, "commonsLogger"));
+        Assert.assertEquals(commonsLogger, TestUtils.getField(CommonsLogging.class, "commonsLogger"));
         CommonsLogging.setCommonsLogger(null);
         Assert.assertNull(CommonsLogging.getCommonsLogger());
-        Assert.assertNull(Whitebox.getInternalState(CommonsLogging.class, "commonsLogger"));
+        Assert.assertNull(TestUtils.getField(CommonsLogging.class, "commonsLogger"));
     }
     
     /**
@@ -194,10 +194,10 @@ public class CommonsLoggingTest {
     public void testSetCommonsLogger() throws Exception {
         CommonsLogging.setCommonsLogger(commonsLogger);
         Assert.assertEquals(commonsLogger, CommonsLogging.getCommonsLogger());
-        Assert.assertEquals(commonsLogger, Whitebox.getInternalState(CommonsLogging.class, "commonsLogger"));
+        Assert.assertEquals(commonsLogger, TestUtils.getField(CommonsLogging.class, "commonsLogger"));
         CommonsLogging.setCommonsLogger(null);
         Assert.assertNull(CommonsLogging.getCommonsLogger());
-        Assert.assertNull(Whitebox.getInternalState(CommonsLogging.class, "commonsLogger"));
+        Assert.assertNull(TestUtils.getField(CommonsLogging.class, "commonsLogger"));
     }
     
 }

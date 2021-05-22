@@ -23,7 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -100,7 +99,7 @@ public class ComponentErrorHandlerProviderTest {
     @Test
     public void testConstants() throws Exception {
         //static
-        Object errorHandler = Whitebox.getInternalState(ComponentErrorHandlerProvider.class, "errorHandler");
+        Object errorHandler = TestUtils.getField(ComponentErrorHandlerProvider.class, "errorHandler");
         Assert.assertNotNull(errorHandler);
         Assert.assertTrue(errorHandler instanceof ComponentErrorHandlerInterface);
     }
@@ -113,10 +112,10 @@ public class ComponentErrorHandlerProviderTest {
      */
     @Test
     public void testGetErrorHandler() throws Exception {
-        ComponentErrorHandlerInterface errorHandler = Whitebox.getInternalState(ComponentErrorHandlerProvider.class, "errorHandler");
+        ComponentErrorHandlerInterface errorHandler = (ComponentErrorHandlerInterface) TestUtils.getField(ComponentErrorHandlerProvider.class, "errorHandler");
         Assert.assertEquals(errorHandler, ComponentErrorHandlerProvider.getErrorHandler());
         ComponentErrorHandlerInterface newErrorHandler = new ComponentErrorHandler();
-        Whitebox.setInternalState(ComponentErrorHandlerProvider.class, "errorHandler", newErrorHandler);
+        TestUtils.setField(ComponentErrorHandlerProvider.class, "errorHandler", newErrorHandler);
         Assert.assertEquals(newErrorHandler, ComponentErrorHandlerProvider.getErrorHandler());
     }
     
@@ -130,7 +129,7 @@ public class ComponentErrorHandlerProviderTest {
     public void testSetErrorHandler() throws Exception {
         ComponentErrorHandlerInterface newErrorHandler = new ComponentErrorHandler();
         ComponentErrorHandlerProvider.setErrorHandler(newErrorHandler);
-        ComponentErrorHandlerInterface errorHandler = Whitebox.getInternalState(ComponentErrorHandlerProvider.class, "errorHandler");
+        ComponentErrorHandlerInterface errorHandler = (ComponentErrorHandlerInterface) TestUtils.getField(ComponentErrorHandlerProvider.class, "errorHandler");
         Assert.assertEquals(newErrorHandler, errorHandler);
     }
     

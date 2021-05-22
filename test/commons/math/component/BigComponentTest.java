@@ -15,6 +15,7 @@ import commons.math.MathUtility;
 import commons.math.component.handler.math.BigComponentMathHandler;
 import commons.math.component.matrix.BigMatrix;
 import commons.math.component.vector.BigVector;
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -24,7 +25,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -203,7 +203,7 @@ public class BigComponentTest {
     public void testGetMathContext() throws Exception {
         BigVector component = new BigVector(new BigDecimal("8.1018948065165015410948016"), new BigDecimal("6.689907845103061051849840560"), new BigDecimal("7.087487098020624098401951984149"), new BigDecimal("2.670084540981798465797874161453451313"));
         MathContext newMathContext = new MathContext(MathUtility.dice(6, 4), RoundingMode.DOWN);
-        Whitebox.setInternalState(component.getHandler(), "mathContext", newMathContext);
+        TestUtils.setField(component.getHandler(), "mathContext", newMathContext);
         Assert.assertEquals(newMathContext, component.getMathContext());
     }
     
@@ -218,7 +218,7 @@ public class BigComponentTest {
         BigVector component = new BigVector(new BigDecimal("8.1018948065165015410948016"), new BigDecimal("6.689907845103061051849840560"), new BigDecimal("7.087487098020624098401951984149"), new BigDecimal("2.670084540981798465797874161453451313"));
         MathContext newMathContext = new MathContext(MathUtility.dice(6, 4), RoundingMode.DOWN);
         component.setMathContext(newMathContext);
-        MathContext mathContext = Whitebox.getInternalState(component.getHandler(), "mathContext");
+        MathContext mathContext = (MathContext) TestUtils.getField(component.getHandler(), "mathContext");
         Assert.assertEquals(newMathContext, mathContext);
     }
     

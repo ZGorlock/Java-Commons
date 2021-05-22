@@ -36,7 +36,6 @@ import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -2444,7 +2443,7 @@ public class BigMatrixTest {
         
         //standard
         Assert.assertEquals(3, sut.getDimensionality());
-        Whitebox.setInternalState(sut, "dimensionality", 5);
+        TestUtils.setField(sut, "dimensionality", 5);
         Assert.assertEquals(5, sut.getDimensionality());
         sut.calculateDimensionality();
         Assert.assertEquals(3, sut.getDimensionality());
@@ -2452,7 +2451,7 @@ public class BigMatrixTest {
         //big
         sut = new BigMatrix(new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"));
         Assert.assertEquals(2, sut.getDimensionality());
-        Whitebox.setInternalState(sut, "dimensionality", 3);
+        TestUtils.setField(sut, "dimensionality", 3);
         Assert.assertEquals(3, sut.getDimensionality());
         sut.calculateDimensionality();
         Assert.assertEquals(2, sut.getDimensionality());
@@ -2744,7 +2743,7 @@ public class BigMatrixTest {
     public void testGetMathContext() throws Exception {
         BigMatrix component = new BigMatrix(new BigDecimal("8.1018948065165015410948016"), new BigDecimal("6.689907845103061051849840560"), new BigDecimal("7.087487098020624098401951984149"), new BigDecimal("2.670084540981798465797874161453451313"));
         MathContext newMathContext = new MathContext(MathUtility.dice(6, 4), RoundingMode.DOWN);
-        Whitebox.setInternalState(component.getHandler(), "mathContext", newMathContext);
+        TestUtils.setField(component.getHandler(), "mathContext", newMathContext);
         Assert.assertEquals(newMathContext, component.getMathContext());
     }
     
@@ -3118,7 +3117,7 @@ public class BigMatrixTest {
         BigMatrix component = new BigMatrix(new BigDecimal("8.1018948065165015410948016"), new BigDecimal("6.689907845103061051849840560"), new BigDecimal("7.087487098020624098401951984149"), new BigDecimal("2.670084540981798465797874161453451313"));
         MathContext newMathContext = new MathContext(MathUtility.dice(6, 4), RoundingMode.DOWN);
         component.setMathContext(newMathContext);
-        MathContext mathContext = Whitebox.getInternalState(component.getHandler(), "mathContext");
+        MathContext mathContext = (MathContext) TestUtils.getField(component.getHandler(), "mathContext");
         Assert.assertEquals(newMathContext, mathContext);
     }
     

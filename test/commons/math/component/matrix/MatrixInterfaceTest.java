@@ -24,7 +24,6 @@ import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1260,8 +1259,8 @@ public class MatrixInterfaceTest {
         //standard
         
         sut = Mockito.spy(RawMatrix.class);
-        Whitebox.setInternalState(sut, "components", new Number[] {1, 2, 3, 4, 5, 6, 7, 8, 9});
-        Whitebox.setInternalState(sut, "dimensionality", 3);
+        TestUtils.setField(sut, "components", new Number[] {1, 2, 3, 4, 5, 6, 7, 8, 9});
+        TestUtils.setField(sut, "dimensionality", 3);
         
         sut.getRaw(0, 0);
         Mockito.verify(sut).toIndex(ArgumentMatchers.eq(0), ArgumentMatchers.eq(0));
@@ -1308,8 +1307,8 @@ public class MatrixInterfaceTest {
         //standard
         
         sut = Mockito.spy(RawMatrix.class);
-        Whitebox.setInternalState(sut, "components", new Number[] {1, 2, 3, 4, 5, 6, 7, 8, 9});
-        Whitebox.setInternalState(sut, "dimensionality", 3);
+        TestUtils.setField(sut, "components", new Number[] {1, 2, 3, 4, 5, 6, 7, 8, 9});
+        TestUtils.setField(sut, "dimensionality", 3);
         
         sut.get(0, 0);
         Mockito.verify(sut).toIndex(ArgumentMatchers.eq(0), ArgumentMatchers.eq(0));
@@ -1422,8 +1421,8 @@ public class MatrixInterfaceTest {
         //standard
         
         sut = Mockito.spy(RawMatrix.class);
-        Whitebox.setInternalState(sut, "components", new Number[] {1, 2, 3, 4, 5, 6, 7, 8, 9});
-        Whitebox.setInternalState(sut, "dimensionality", 3);
+        TestUtils.setField(sut, "components", new Number[] {1, 2, 3, 4, 5, 6, 7, 8, 9});
+        TestUtils.setField(sut, "dimensionality", 3);
         
         sut.set(0, 0, 5);
         Mockito.verify(sut).toIndex(ArgumentMatchers.eq(0), ArgumentMatchers.eq(0));

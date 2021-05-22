@@ -24,10 +24,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -349,6 +351,242 @@ public class TestUtilsTest {
     }
     
     /**
+     * JUnit test of getField.
+     *
+     * @throws Exception When there is an exception.
+     * @see TestUtils#getField(Class, Object, String)
+     * @see TestUtils#getField(Class, String)
+     * @see TestUtils#getField(Object, String)
+     */
+    @Test
+    public void testGetField() throws Exception {
+        TestClass testClass = new TestClass();
+        TestSubClass subClass = new TestSubClass();
+        TestClass mockClass = Mockito.mock(TestClass.class);
+        
+        //standard
+        
+        for (int i = 0; i < 10; i++) {
+            if (i < 4) {
+                Assert.assertEquals(Whitebox.getInternalState(TestClass.class, "field" + i),
+                        TestUtils.getField(TestClass.class, "field" + i));
+            } else {
+                Assert.assertEquals(Whitebox.getInternalState(testClass, "field" + i),
+                        TestUtils.getField(testClass, "field" + i));
+            }
+        }
+        
+        //sub class
+        
+        for (int i = 0; i < 10; i++) {
+            if (i < 4) {
+                Assert.assertEquals(Whitebox.getInternalState(TestClass.class, "field" + i),
+                        TestUtils.getField(TestSubClass.class, "field" + i));
+            } else {
+                Assert.assertEquals(Whitebox.getInternalState(testClass, "field" + i),
+                        TestUtils.getField(subClass, "field" + i));
+            }
+        }
+        
+        //mock
+        
+        for (int i = 4; i < 10; i++) {
+            Whitebox.setInternalState(mockClass, "field" + i, TestUtils.getField(testClass, "field" + i));
+            Assert.assertEquals(Whitebox.getInternalState(testClass, "field" + i),
+                    TestUtils.getField(mockClass, "field" + i));
+        }
+        
+        //invalid
+        
+        Assert.assertNull(TestUtils.getField(TestClass.class, "missingField"));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Assert.assertNull(TestUtils.getField(TestClass.class, null)));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Assert.assertNull(TestUtils.getField(null, "field0")));
+        
+        Assert.assertNull(TestUtils.getField(TestSubClass.class, "missingField"));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Assert.assertNull(TestUtils.getField(TestSubClass.class, null)));
+        
+        Assert.assertNull(TestUtils.getField(testClass, "missingField"));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Assert.assertNull(TestUtils.getField((Object) null, "field5")));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Assert.assertNull(TestUtils.getField(testClass, null)));
+        
+        Assert.assertNull(TestUtils.getField(subClass, "missingField"));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Assert.assertNull(TestUtils.getField(subClass, null)));
+    }
+    
+    /**
+     * JUnit test of setField.
+     *
+     * @throws Exception When there is an exception.
+     * @see TestUtils#setField(Class, Object, String, Object)
+     * @see TestUtils#setField(Class, String, Object)
+     * @see TestUtils#setField(Object, String, Object)
+     */
+    @Test
+    public void testSetField() throws Exception {
+        TestClass testClass = new TestClass();
+        TestSubClass subClass = new TestSubClass();
+        TestClass mockClass = Mockito.mock(TestClass.class);
+        
+        //standard
+        
+        Assert.assertEquals(18, (int) Whitebox.getInternalState(TestClass.class, "field0"));
+        Assert.assertTrue(TestUtils.setField(TestClass.class, "field0", 7));
+        Assert.assertEquals(7, (int) Whitebox.getInternalState(TestClass.class, "field0"));
+        
+        Assert.assertEquals(6.4488121, Whitebox.getInternalState(TestClass.class, "field1"), TestUtils.DELTA);
+        Assert.assertTrue(TestUtils.setField(TestClass.class, "field1", 0.221548773));
+        Assert.assertEquals(0.221548773, Whitebox.getInternalState(TestClass.class, "field1"), TestUtils.DELTA);
+        
+        Assert.assertEquals("test", Whitebox.getInternalState(TestClass.class, "field2"));
+        Assert.assertTrue(TestUtils.setField(TestClass.class, "field2", "different"));
+        Assert.assertEquals("different", Whitebox.getInternalState(TestClass.class, "field2"));
+        
+        Assert.assertEquals(true, Whitebox.getInternalState(TestClass.class, "field3"));
+        Assert.assertTrue(TestUtils.setField(TestClass.class, "field3", false));
+        Assert.assertEquals(false, Whitebox.getInternalState(TestClass.class, "field3"));
+        
+        Assert.assertEquals("another test", Whitebox.getInternalState(testClass, "field4"));
+        Assert.assertTrue(TestUtils.setField(testClass, "field4", "an even other test"));
+        Assert.assertEquals("an even other test", Whitebox.getInternalState(testClass, "field4"));
+        
+        Assert.assertEquals(874561564112154L, (long) Whitebox.getInternalState(testClass, "field5"));
+        Assert.assertTrue(TestUtils.setField(testClass, "field5", 156423157842311L));
+        Assert.assertEquals(156423157842311L, (long) Whitebox.getInternalState(testClass, "field5"));
+        
+        Assert.assertEquals(-44, (int) Whitebox.getInternalState(testClass, "field6"));
+        Assert.assertTrue(TestUtils.setField(testClass, "field6", 1568));
+        Assert.assertEquals(1568, (int) Whitebox.getInternalState(testClass, "field6"));
+        
+        Assert.assertEquals(7.66f, Whitebox.getInternalState(testClass, "field7"), (float) TestUtils.DELTA);
+        Assert.assertTrue(TestUtils.setField(testClass, "field7", 3.46f));
+        Assert.assertEquals(3.46f, Whitebox.getInternalState(testClass, "field7"), (float) TestUtils.DELTA);
+        
+        Assert.assertEquals(true, Whitebox.getInternalState(testClass, "field8"));
+        Assert.assertTrue(TestUtils.setField(testClass, "field8", false));
+        Assert.assertEquals(false, Whitebox.getInternalState(testClass, "field8"));
+        
+        Assert.assertEquals("last test", Whitebox.getInternalState(testClass, "field9"));
+        Assert.assertTrue(TestUtils.setField(testClass, "field9", "the last test"));
+        Assert.assertEquals("the last test", Whitebox.getInternalState(testClass, "field9"));
+        
+        //sub class
+        
+        Assert.assertEquals(7, (int) Whitebox.getInternalState(TestSubClass.class, "field0"));
+        Assert.assertTrue(TestUtils.setField(TestSubClass.class, "field0", 10));
+        Assert.assertEquals(10, (int) Whitebox.getInternalState(TestSubClass.class, "field0"));
+        
+        Assert.assertEquals(0.221548773, Whitebox.getInternalState(TestSubClass.class, "field1"), TestUtils.DELTA);
+        Assert.assertTrue(TestUtils.setField(TestSubClass.class, "field1", 16.0156748941));
+        Assert.assertEquals(16.0156748941, Whitebox.getInternalState(TestSubClass.class, "field1"), TestUtils.DELTA);
+        
+        Assert.assertEquals("different", Whitebox.getInternalState(TestSubClass.class, "field2"));
+        Assert.assertTrue(TestUtils.setField(TestSubClass.class, "field2", "another different"));
+        Assert.assertEquals("another different", Whitebox.getInternalState(TestSubClass.class, "field2"));
+        
+        Assert.assertEquals(false, Whitebox.getInternalState(TestSubClass.class, "field3"));
+        Assert.assertTrue(TestUtils.setField(TestSubClass.class, "field3", true));
+        Assert.assertEquals(true, Whitebox.getInternalState(TestSubClass.class, "field3"));
+        
+        Assert.assertEquals("another test", Whitebox.getInternalState(subClass, "field4"));
+        Assert.assertTrue(TestUtils.setField(subClass, "field4", "an even other test"));
+        Assert.assertEquals("an even other test", Whitebox.getInternalState(subClass, "field4"));
+        
+        Assert.assertEquals(874561564112154L, (long) Whitebox.getInternalState(subClass, "field5"));
+        Assert.assertTrue(TestUtils.setField(subClass, "field5", 156423157842311L));
+        Assert.assertEquals(156423157842311L, (long) Whitebox.getInternalState(subClass, "field5"));
+        
+        Assert.assertEquals(-44, (int) Whitebox.getInternalState(subClass, "field6"));
+        Assert.assertTrue(TestUtils.setField(subClass, "field6", 1568));
+        Assert.assertEquals(1568, (int) Whitebox.getInternalState(subClass, "field6"));
+        
+        Assert.assertEquals(7.66f, Whitebox.getInternalState(subClass, "field7"), (float) TestUtils.DELTA);
+        Assert.assertTrue(TestUtils.setField(subClass, "field7", 3.46f));
+        Assert.assertEquals(3.46f, Whitebox.getInternalState(subClass, "field7"), (float) TestUtils.DELTA);
+        
+        Assert.assertEquals(true, Whitebox.getInternalState(subClass, "field8"));
+        Assert.assertTrue(TestUtils.setField(subClass, "field8", false));
+        Assert.assertEquals(false, Whitebox.getInternalState(subClass, "field8"));
+        
+        Assert.assertEquals("last test", Whitebox.getInternalState(subClass, "field9"));
+        Assert.assertTrue(TestUtils.setField(subClass, "field9", "the last test"));
+        Assert.assertEquals("the last test", Whitebox.getInternalState(subClass, "field9"));
+        
+        //mock
+        
+        Assert.assertEquals((String) null, Whitebox.getInternalState(mockClass, "field4"));
+        Assert.assertTrue(TestUtils.setField(mockClass, "field4", "an even other test"));
+        Assert.assertEquals("an even other test", Whitebox.getInternalState(mockClass, "field4"));
+        
+        Assert.assertEquals(0L, (long) Whitebox.getInternalState(mockClass, "field5"));
+        Assert.assertTrue(TestUtils.setField(mockClass, "field5", 156423157842311L));
+        Assert.assertEquals(156423157842311L, (long) Whitebox.getInternalState(mockClass, "field5"));
+        
+        Assert.assertEquals(0, (int) Whitebox.getInternalState(mockClass, "field6"));
+        Assert.assertTrue(TestUtils.setField(mockClass, "field6", 1568));
+        Assert.assertEquals(1568, (int) Whitebox.getInternalState(mockClass, "field6"));
+        
+        Assert.assertEquals(0.0f, Whitebox.getInternalState(mockClass, "field7"), (float) TestUtils.DELTA);
+        Assert.assertTrue(TestUtils.setField(mockClass, "field7", 3.46f));
+        Assert.assertEquals(3.46f, Whitebox.getInternalState(mockClass, "field7"), (float) TestUtils.DELTA);
+        
+        Assert.assertEquals(false, Whitebox.getInternalState(mockClass, "field8"));
+        Assert.assertTrue(TestUtils.setField(mockClass, "field8", true));
+        Assert.assertEquals(true, Whitebox.getInternalState(mockClass, "field8"));
+        
+        Assert.assertEquals((String) null, Whitebox.getInternalState(mockClass, "field9"));
+        Assert.assertTrue(TestUtils.setField(mockClass, "field9", "the last test"));
+        Assert.assertEquals("the last test", Whitebox.getInternalState(mockClass, "field9"));
+        
+        //invalid
+        
+        Assert.assertEquals(10, (int) Whitebox.getInternalState(TestClass.class, "field0"));
+        TestUtils.assertException(IllegalArgumentException.class, "Can not set static int field commons.test.TestUtilsTest$TestClass.field0 to java.lang.Boolean", () ->
+                TestUtils.setField(TestClass.class, "field0", false));
+        Assert.assertEquals(10, (int) Whitebox.getInternalState(TestClass.class, "field0"));
+        
+        Assert.assertEquals(true, Whitebox.getInternalState(TestClass.class, "field3"));
+        TestUtils.assertException(IllegalArgumentException.class, "Can not set static boolean field commons.test.TestUtilsTest$TestClass.field3 to java.lang.Integer", () ->
+                TestUtils.setField(TestClass.class, "field3", 103));
+        Assert.assertEquals(true, Whitebox.getInternalState(TestClass.class, "field3"));
+        
+        Assert.assertEquals("an even other test", Whitebox.getInternalState(testClass, "field4"));
+        TestUtils.assertException(IllegalArgumentException.class, "Can not set final java.lang.String field commons.test.TestUtilsTest$TestClass.field4 to java.math.BigDecimal", () ->
+                TestUtils.setField(testClass, "field4", BigDecimal.ZERO));
+        Assert.assertEquals("an even other test", Whitebox.getInternalState(testClass, "field4"));
+        
+        Assert.assertEquals(false, Whitebox.getInternalState(testClass, "field8"));
+        TestUtils.assertException(IllegalArgumentException.class, "Can not set final boolean field commons.test.TestUtilsTest$TestClass.field8 to null value", () ->
+                TestUtils.setField(testClass, "field8", null));
+        Assert.assertEquals(false, Whitebox.getInternalState(testClass, "field8"));
+        
+        Assert.assertFalse(TestUtils.setField(TestClass.class, "missingField", false));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Assert.assertFalse(TestUtils.setField(TestClass.class, null, 11)));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Assert.assertFalse(TestUtils.setField(null, "field0", 11)));
+        
+        Assert.assertFalse(TestUtils.setField(TestSubClass.class, "missingField", false));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Assert.assertFalse(TestUtils.setField(TestSubClass.class, null, 11)));
+        
+        Assert.assertFalse(TestUtils.setField(testClass, "missingField", false));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Assert.assertFalse(TestUtils.setField((Object) null, "field5", 11)));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Assert.assertFalse(TestUtils.setField(testClass, null, 11)));
+        
+        Assert.assertFalse(TestUtils.setField(subClass, "missingField", false));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Assert.assertFalse(TestUtils.setField(subClass, null, 11)));
+    }
+    
+    /**
      * JUnit test of invokeInterfaceDefaultMethod.
      *
      * @throws Exception When there is an exception.
@@ -395,6 +633,75 @@ public class TestUtilsTest {
     @Test
     public void testAssertWrapperAssertEquals() throws Exception {
         TestUtils.assertMethodExists(TestUtils.AssertWrapper.class, "assertEquals", String.class, Object.class, Object.class);
+    }
+    
+    
+    //Inner Classes
+    
+    /**
+     * A class for testing the getting and setting of fields.
+     */
+    private static class TestClass {
+        
+        //Fields
+        
+        /**
+         * A private static final field.
+         */
+        private static final int field0 = 18;
+        
+        /**
+         * A private static field.
+         */
+        private static double field1 = 6.4488121;
+        
+        /**
+         * A public static final field.
+         */
+        public static final String field2 = "test";
+        
+        /**
+         * A public static field.
+         */
+        public static boolean field3 = true;
+        
+        /**
+         * A private final field.
+         */
+        private final String field4 = "another test";
+        
+        /**
+         * A private field.
+         */
+        private long field5 = 874561564112154L;
+        
+        /**
+         * A public final field.
+         */
+        public final int field6 = -44;
+        
+        /**
+         * A private field.
+         */
+        public float field7 = 7.66f;
+        
+        /**
+         * A package private final field.
+         */
+        final boolean field8 = true;
+        
+        /**
+         * A package private final field.
+         */
+        String field9 = "last test";
+        
+    }
+    
+    /**
+     * A subclass for testing the getting and setting of fields.
+     */
+    private static class TestSubClass extends TestClass {
+        
     }
     
 }

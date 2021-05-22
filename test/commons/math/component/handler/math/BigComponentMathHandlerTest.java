@@ -23,7 +23,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -625,10 +624,10 @@ public class BigComponentMathHandlerTest {
      */
     @Test
     public void testGetMathContext() throws Exception {
-        MathContext mathContext = Whitebox.getInternalState(sut, "mathContext");
+        MathContext mathContext = (MathContext) TestUtils.getField(sut, "mathContext");
         Assert.assertEquals(mathContext, sut.getMathContext());
         MathContext newMathContext = new MathContext(0, RoundingMode.HALF_UP);
-        Whitebox.setInternalState(sut, "mathContext", newMathContext);
+        TestUtils.setField(sut, "mathContext", newMathContext);
         Assert.assertEquals(newMathContext, sut.getMathContext());
     }
     
@@ -642,7 +641,7 @@ public class BigComponentMathHandlerTest {
     public void testSetMathContext() throws Exception {
         MathContext newMathContext = new MathContext(0, RoundingMode.HALF_UP);
         sut.setMathContext(newMathContext);
-        MathContext mathContext = Whitebox.getInternalState(sut, "mathContext");
+        MathContext mathContext = (MathContext) TestUtils.getField(sut, "mathContext");
         Assert.assertEquals(newMathContext, mathContext);
     }
     
