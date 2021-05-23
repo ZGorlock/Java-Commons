@@ -9,7 +9,6 @@ package commons.access;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import commons.string.StringUtility;
@@ -41,16 +40,13 @@ public final class FilesystemMacro {
     public static boolean deleteEmptyDirectoriesInDirectory(File dir, boolean recursive) {
         boolean success = true;
         
-        Collection<File> cf;
-        cf = Filesystem.getDirs(dir);
-        
-        for (File f : cf) {
-            if (Filesystem.directoryIsEmpty(f)) {
-                success &= Filesystem.deleteDirectory(f);
+        for (File subDir : Filesystem.getDirs(dir)) {
+            if (Filesystem.directoryIsEmpty(subDir)) {
+                success &= Filesystem.deleteDirectory(subDir);
             } else if (recursive) {
-                success &= deleteEmptyDirectoriesInDirectory(f, true);
-                if (Filesystem.directoryIsEmpty(f)) {
-                    success &= Filesystem.deleteDirectory(f);
+                success &= deleteEmptyDirectoriesInDirectory(subDir, true);
+                if (Filesystem.directoryIsEmpty(subDir)) {
+                    success &= Filesystem.deleteDirectory(subDir);
                 }
             }
         }
@@ -77,12 +73,13 @@ public final class FilesystemMacro {
      */
     public static boolean deleteListOfFilesFromFile(File file) {
         boolean success = true;
-        List<String> fileList = Filesystem.readLines(file);
-        for (String listed : fileList) {
+        
+        for (String listed : Filesystem.readLines(file)) {
             if (!Filesystem.delete(new File(listed))) {
                 success = false;
             }
         }
+        
         return success;
     }
     
@@ -97,14 +94,11 @@ public final class FilesystemMacro {
     public static boolean deleteDirectoriesInDirectoryThatDoNotContainFileType(File dir, String fileType, boolean recursive) {
         boolean success = true;
         
-        Collection<File> cf;
-        cf = Filesystem.getDirs(dir);
-        
-        for (File f : cf) {
-            if (!directoryContainsFileType(f, fileType, recursive)) {
-                success &= Filesystem.deleteDirectory(f);
+        for (File subDir : Filesystem.getDirs(dir)) {
+            if (!directoryContainsFileType(subDir, fileType, recursive)) {
+                success &= Filesystem.deleteDirectory(subDir);
             } else if (recursive) {
-                success &= deleteDirectoriesInDirectoryThatDoNotContainFileType(f, fileType, true);
+                success &= deleteDirectoriesInDirectoryThatDoNotContainFileType(subDir, fileType, true);
             }
         }
         
@@ -132,22 +126,30 @@ public final class FilesystemMacro {
      * @return Whether a file of the specified file type exists in the directory or not.
      */
     public static boolean directoryContainsFileType(File dir, String fileType, boolean recursive) {
-        Collection<File> cf;
-        cf = Filesystem.getFilesAndDirs(dir);
-        
-        for (File f : cf) {
-            if (f.isDirectory() && recursive) {
-                if (directoryContainsFileType(f, fileType, true)) {
+        for (File file : Filesystem.getFilesAndDirs(dir)) {
+            if (file.isDirectory() && recursive) {
+                if (directoryContainsFileType(file, fileType, true)) {
                     return true;
                 }
             } else {
-                if (f.getName().endsWith(fileType)) {
+                if (file.getName().endsWith(fileType)) {
                     return true;
                 }
             }
         }
-        
         return false;
+    }
+    
+    /**
+     * Determines if a directory contains a file of a particular file type.
+     *
+     * @param dir      The directory to search.
+     * @param fileType The file type to look for.
+     * @return Whether a file of the specified file type exists in the directory or not.
+     * @see #directoryContainsFileType(File, String, boolean)
+     */
+    public static boolean directoryContainsFileType(File dir, String fileType) {
+        return directoryContainsFileType(dir, fileType, true);
     }
     
     /**
@@ -159,15 +161,16 @@ public final class FilesystemMacro {
      * @return Whether the operation was successful or not.
      */
     public static boolean prependLinesInFile(File file, String prefix, boolean check) {
-        List<String> fileLines = Filesystem.readLines(file);
-        List<String> newFileLines = new ArrayList<>();
-        for (String line : fileLines) {
+        List<String> newLines = new ArrayList<>();
+        
+        for (String line : Filesystem.readLines(file)) {
             if (!check || !line.startsWith(prefix)) {
                 line = prefix + line;
             }
-            newFileLines.add(line);
+            newLines.add(line);
         }
-        return Filesystem.writeLines(file, newFileLines);
+        
+        return Filesystem.writeLines(file, newLines);
     }
     
     /**
@@ -190,15 +193,16 @@ public final class FilesystemMacro {
      * @return Whether the operation was successful or not.
      */
     public static boolean unprependLinesInFile(File file, String prefix) {
-        List<String> fileLines = Filesystem.readLines(file);
-        List<String> newFileLines = new ArrayList<>();
-        for (String line : fileLines) {
+        List<String> newLines = new ArrayList<>();
+        
+        for (String line : Filesystem.readLines(file)) {
             if (line.startsWith(prefix)) {
                 line = StringUtility.lShear(line, prefix.length());
             }
-            newFileLines.add(line);
+            newLines.add(line);
         }
-        return Filesystem.writeLines(file, newFileLines);
+        
+        return Filesystem.writeLines(file, newLines);
     }
     
     /**
@@ -208,24 +212,26 @@ public final class FilesystemMacro {
      *
      * @param playlist   The playlist to read the list of songs from.
      * @param directory  The directory to copy the songs to.
-     * @param pathPrefix The pathPrefix of the location for music.
+     * @param pathPrefix The path prefix of the location for music.
      * @return Whether the operation was successful or not.
      */
     public static boolean copyPlaylistToDirectory(File playlist, File directory, String pathPrefix) {
         boolean success = true;
-        List<String> fileList = Filesystem.readLines(playlist);
-        for (String listed : fileList) {
-            File song = new File(listed);
+        
+        for (String playlistEntry : Filesystem.readLines(playlist)) {
+            File song = new File(playlistEntry.replace("\\", "/"));
             if (song.exists()) {
-                String outputDirectory = directory.getAbsolutePath();
-                if (!outputDirectory.endsWith("\\")) {
-                    outputDirectory = outputDirectory + '\\';
+                String outputDirectory = directory.getAbsolutePath().replace("\\", "/");
+                if (!outputDirectory.endsWith("/")) {
+                    outputDirectory = outputDirectory + '/';
                 }
                 
-                File output = new File(song.getAbsolutePath().replace(pathPrefix, outputDirectory));
+                File output = new File(song.getAbsolutePath().replace("\\", "/")
+                        .replace(pathPrefix, outputDirectory));
                 success &= Filesystem.copyFile(song, output, true);
             }
         }
+        
         return success;
     }
     
@@ -237,9 +243,9 @@ public final class FilesystemMacro {
      * @return A list of jars that contain the specified folder in their top level.
      */
     public static List<File> findJarsInDirectoryThatContainFolder(File directory, String folderName) {
-        List<File> jarList = Filesystem.getFilesRecursively(directory, ".*\\.jar");
         List<File> found = new ArrayList<>();
-        for (File jar : jarList) {
+        
+        for (File jar : Filesystem.getFilesRecursively(directory, ".*\\.jar")) {
             File extractDir = Filesystem.createTemporaryDirectory();
             Archive.extract(jar, extractDir);
             File finding = new File(extractDir, folderName);
@@ -248,6 +254,7 @@ public final class FilesystemMacro {
             }
             Filesystem.deleteDirectory(extractDir);
         }
+        
         return found;
     }
     
