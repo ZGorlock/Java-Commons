@@ -10,8 +10,8 @@ package commons.access;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import javax.ws.rs.NotSupportedException;
 
-import commons.string.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,32 +33,27 @@ public final class CmdLine {
     /**
      * Executes a command on the system command line.
      *
-     * @param cmd  The command to execute.
-     * @param wait Whether to wait for the execution to finish or not.
+     * @param cmd The command to execute.
      * @return The output.
-     * @see #buildProcess(String, boolean)
      */
-    public static String executeCmd(String cmd, boolean wait) {
+    public static String executeCmd(String cmd) {
         try {
-            ProcessBuilder builder = buildProcess(cmd, true);
+            ProcessBuilder builder = buildProcess(cmd);
+            StringBuilder response = new StringBuilder();
             
             Process process = builder.start();
-            BufferedReader r = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            
-            StringBuilder response = new StringBuilder();
-            String line;
-            while (true) {
-                line = r.readLine();
-                if (line == null) {
-                    break;
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                
+                String line;
+                while (true) {
+                    line = reader.readLine();
+                    if (line == null) {
+                        break;
+                    }
+                    response.append(line).append(System.lineSeparator());
                 }
-                response.append(line).append(System.lineSeparator());
             }
-            
-            if (wait) {
-                process.waitFor();
-            }
-            r.close();
+            process.waitFor();
             process.destroy();
             
             return response.toString();
@@ -72,26 +67,14 @@ public final class CmdLine {
     }
     
     /**
-     * Executes a command on the system command line.
+     * Executes a command on the system command line asynchronously.
      *
      * @param cmd The command to execute.
-     * @return The output.
-     * @see #executeCmd(String, boolean)
+     * @return The process running the command execution, or null if there was an error.
      */
-    public static String executeCmd(String cmd) {
-        return executeCmd(cmd, true);
-    }
-    
-    /**
-     * Executes a command on the system command line as a thread.
-     *
-     * @param cmd The command to execute.
-     * @return The process running the command execution.
-     * @see #buildProcess(String, boolean)
-     */
-    public static Process executeCmdAsThread(String cmd) {
+    public static Process executeCmdAsync(String cmd) {
         try {
-            ProcessBuilder builder = buildProcess(cmd, true);
+            ProcessBuilder builder = buildProcess(cmd);
             
             return builder.start();
             
@@ -105,11 +88,10 @@ public final class CmdLine {
      *
      * @param cmd              The command to build a process for.
      * @param useScriptCommand Whether or not to include the script command at the beginning ("cmd.exe /c", "bash -c", etc).
-     * @return The process that was built or null if it was not built.
-     * @throws Exception When there is an unknown operating system.
+     * @return The process that was built, or null if it was not built.
+     * @throws NotSupportedException When called from an unsupported operating system.
      */
-    @SuppressWarnings("DuplicateBranchesInSwitch")
-    public static ProcessBuilder buildProcess(String cmd, boolean useScriptCommand) throws Exception {
+    public static ProcessBuilder buildProcess(String cmd, boolean useScriptCommand) throws NotSupportedException {
         ProcessBuilder builder;
         if (useScriptCommand) {
             switch (OperatingSystem.getOperatingSystem()) {
@@ -120,14 +102,12 @@ public final class CmdLine {
                     builder = new ProcessBuilder("bash", "-c", cmd);
                     break;
                 case MACOS:
-                    builder = new ProcessBuilder(StringUtility.tokenizeArgs(cmd));
+                    builder = new ProcessBuilder("/usr/local/bin/nmap", cmd);
                     break;
                 case POSIX:
-                    builder = new ProcessBuilder(StringUtility.tokenizeArgs(cmd));
-                    break;
                 case OTHER:
                 default:
-                    throw new Exception("Operating system: " + System.getProperty("os.name").toUpperCase() + " is not supported!");
+                    throw new NotSupportedException("Operating system: " + System.getProperty("os.name").toUpperCase() + " is not supported!");
             }
         } else {
             builder = new ProcessBuilder(cmd);
@@ -135,6 +115,18 @@ public final class CmdLine {
         builder.redirectErrorStream(true);
         
         return builder;
+    }
+    
+    /**
+     * Builds a process from a command.
+     *
+     * @param cmd The command to build a process for.
+     * @return The process that was built, or null if it was not built.
+     * @throws NotSupportedException When there is an unknown operating system.
+     * @see #buildProcess(String, boolean)
+     */
+    public static ProcessBuilder buildProcess(String cmd) throws NotSupportedException {
+        return buildProcess(cmd, true);
     }
     
 }
