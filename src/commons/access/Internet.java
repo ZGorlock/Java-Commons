@@ -43,9 +43,22 @@ public final class Internet {
     //Constants
     
     /**
+     * The default host to use for checking for internet connectivity.
+     */
+    public static final String DEFAULT_TEST_HOST = "google.com";
+    
+    /**
      * The encoding for url strings.
      */
     public static final String URL_ENCODING = "UTF-8";
+    
+    
+    //Static Fields
+    
+    /**
+     * The host to use for checking for internet connectivity.
+     */
+    private static String testHost = DEFAULT_TEST_HOST;
     
     
     //Functions
@@ -57,7 +70,7 @@ public final class Internet {
      */
     public static boolean isOnline() {
         try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress("google.com", 80), 200);
+            socket.connect(new InetSocketAddress(testHost, 80), 200);
             return true;
         } catch (IOException e) {
             return false;
@@ -68,7 +81,7 @@ public final class Internet {
      * Encodes a string for use as a url.
      *
      * @param url The string to encode as a url.
-     * @return The encoded url or null if there was an error.
+     * @return The encoded url, or null if there was an error.
      */
     public static String encodeUrl(String url) {
         try {
@@ -83,7 +96,7 @@ public final class Internet {
      * Downloads an html from a url and returns the retrieved Document.
      *
      * @param url The url address to download the html from.
-     * @return The retrieved Document or null if there was an error.
+     * @return The retrieved Document, or null if there was an error.
      * @see Jsoup#connect(String)
      */
     public static Document getHtml(String url) {
@@ -101,6 +114,7 @@ public final class Internet {
                     .followRedirects(true)
                     .execute()
                     .parse();
+            
         } catch (IOException ignored) {
             logger.trace("Unable to download html from URL: " + url);
             return null;
@@ -113,7 +127,7 @@ public final class Internet {
      *
      * @param url      The url to the file to download.
      * @param download The file to download to.
-     * @return The downloaded file or null if there was an error.
+     * @return The downloaded file, or null if there was an error.
      * @see FileUtils#copyURLToFile(URL, File, int, int)
      */
     public static File downloadFile(String url, File download) {
@@ -129,7 +143,7 @@ public final class Internet {
             return download;
             
         } catch (IOException ignored) {
-            logger.trace("Unable to download html from URL: " + url);
+            logger.trace("Unable to download file from URL: " + url);
             return null;
         }
     }
@@ -139,7 +153,7 @@ public final class Internet {
      * This is a blocking operation and should be called from a thread.
      *
      * @param url The url to the file to download.
-     * @return The downloaded file or null if there was an error.
+     * @return The downloaded file, or null if there was an error.
      * @see #downloadFile(String, File)
      */
     public static File downloadFile(String url) {
