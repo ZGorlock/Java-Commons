@@ -164,6 +164,11 @@ public final class Archive {
         resource = resource.replaceAll("[\\\\/]", ARCHIVE_PATH_SEPARATOR);
         String resourceName = resource.contains(ARCHIVE_PATH_SEPARATOR) ? resource.substring(resource.lastIndexOf(ARCHIVE_PATH_SEPARATOR)) : resource;
         
+        if ((archive == null) || !archive.exists()) {
+            logger.trace("Unable to extract resource: {} from archive: {} archive does not exist", resource, ((archive == null) ? "null" : archive.getAbsolutePath().replace("\\", "/")));
+            return false;
+        }
+        
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
             logger.trace("Unable to extract resource: {} from archive: {} archive type is not supported", resource, StringUtility.fileString(archive));
@@ -217,6 +222,11 @@ public final class Archive {
         directory = directory.replaceAll("[\\\\/]", ARCHIVE_PATH_SEPARATOR);
         directory = directory.replaceAll(ARCHIVE_PATH_SEPARATOR + '$', "");
         
+        if ((archive == null) || !archive.exists()) {
+            logger.trace("Unable to extract directory: {} from archive: {} archive does not exist", directory, ((archive == null) ? "null" : archive.getAbsolutePath().replace("\\", "/")));
+            return false;
+        }
+        
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
             logger.trace("Unable to extract directory: {} from archive: {} archive type is not supported", directory, StringUtility.fileString(archive));
@@ -260,6 +270,11 @@ public final class Archive {
      * @see JarArchive#extract(File, File)
      */
     public static boolean extract(File archive, File outputDirectory) {
+        if ((archive == null) || !archive.exists()) {
+            logger.trace("Unable to extract archive: {} archive does not exist", ((archive == null) ? "null" : archive.getAbsolutePath().replace("\\", "/")));
+            return false;
+        }
+        
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
             logger.trace("Unable to extract archive: {} archive type is not supported", StringUtility.fileString(archive));
@@ -304,6 +319,11 @@ public final class Archive {
      * @see JarArchive#compileFile(File, CompressionMethod, File)
      */
     public static boolean compileFile(File archive, CompressionMethod method, File file) {
+        if (!file.exists()) {
+            logger.trace("Unable to compile archive: {} file: {} does not exist", archive.getAbsolutePath().replace("\\", "/"), file.getAbsolutePath().replace("\\", "/"));
+            return false;
+        }
+        
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
             logger.trace("Unable to compile archive: {} from: {} archive type is not supported", StringUtility.fileString(archive), StringUtility.fileString(file));
@@ -355,6 +375,13 @@ public final class Archive {
      * @see JarArchive#compileFiles(File, CompressionMethod, File...)
      */
     public static boolean compileFiles(File archive, CompressionMethod method, File... files) {
+        for (File file : files) {
+            if (!file.exists()) {
+                logger.trace("Unable to compile archive: {} file: {} does not exist", archive.getAbsolutePath().replace("\\", "/"), file.getAbsolutePath().replace("\\", "/"));
+                return false;
+            }
+        }
+        
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
             logger.trace("Unable to compile archive: {} from: {} archive type is not supported", StringUtility.fileString(archive), Arrays.stream(files).map(File::getAbsolutePath).collect(Collectors.joining(", ", "[", "]")));
@@ -409,6 +436,11 @@ public final class Archive {
      * @see JarArchive#compile(File, CompressionMethod, File)
      */
     public static boolean compile(File archive, CompressionMethod method, File sourceDirectory, boolean includeDir) {
+        if (!sourceDirectory.exists()) {
+            logger.trace("Unable to compile archive: {} source directory: {} does not exist", archive.getAbsolutePath().replace("\\", "/"), sourceDirectory.getAbsolutePath().replace("\\", "/"));
+            return false;
+        }
+        
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
             logger.trace("Unable to compile archive: {} from: {} archive type is not supported", StringUtility.fileString(archive), StringUtility.fileString(sourceDirectory));
@@ -498,6 +530,11 @@ public final class Archive {
      * @see JarArchive#compress(File)
      */
     public static boolean compress(File archive) {
+        if (!archive.exists()) {
+            logger.trace("Unable to compress archive: {} archive does not exist", archive.getAbsolutePath().replace("\\", "/"));
+            return false;
+        }
+        
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
             logger.trace("Unable to compress archive: {} archive type is not supported", StringUtility.fileString(archive));
@@ -554,6 +591,11 @@ public final class Archive {
      * @see JarArchive#decompress(File)
      */
     public static boolean decompress(File archive) {
+        if (!archive.exists()) {
+            logger.trace("Unable to decompress archive: {} archive does not exist", archive.getAbsolutePath().replace("\\", "/"));
+            return false;
+        }
+        
         ArchiveType type = getArchiveType(archive);
         if (type == null) {
             logger.trace("Unable to decompress archive: {} archive type is not supported", StringUtility.fileString(archive));
@@ -691,20 +733,30 @@ public final class Archive {
      * @see #compile(File, CompressionMethod, File)
      */
     public static boolean createDiffArchive(File source, File target, File diff, CompressionMethod method) {
+        if (!source.exists()) {
+            logger.trace("Unable to create diff archive: {} source archive: {} does not exist", StringUtility.fileString(diff), StringUtility.fileString(source));
+            return false;
+        }
+        
+        if (!target.exists()) {
+            logger.trace("Unable to create diff archive: {} target archive: {} does not exist", StringUtility.fileString(diff), StringUtility.fileString(target));
+            return false;
+        }
+        
         ArchiveType sourceType = getArchiveType(source);
         ArchiveType targetType = getArchiveType(target);
         ArchiveType diffType = getArchiveType(diff);
         
-        if (diffType == null) {
-            logger.trace("Unable to create diff archive: {} between: {} and: {} diff archive type is not supported", StringUtility.fileString(diff), StringUtility.fileString(source), StringUtility.fileString(target));
-            return false;
-        }
         if (sourceType == null) {
             logger.trace("Unable to create diff archive: {} between: {} and: {} source archive type is not supported", StringUtility.fileString(diff), StringUtility.fileString(source), StringUtility.fileString(target));
             return false;
         }
         if (targetType == null) {
             logger.trace("Unable to create diff archive: {} between: {} and: {} target archive type is not supported", StringUtility.fileString(diff), StringUtility.fileString(source), StringUtility.fileString(target));
+            return false;
+        }
+        if (diffType == null) {
+            logger.trace("Unable to create diff archive: {} between: {} and: {} diff archive type is not supported", StringUtility.fileString(diff), StringUtility.fileString(source), StringUtility.fileString(target));
             return false;
         }
         if (!sourceType.equals(diffType) || !targetType.equals(diffType)) {
@@ -715,28 +767,24 @@ public final class Archive {
         logger.trace("Creating diff {}: {} between: {} and: {}", diffType, StringUtility.fileString(diff), StringUtility.fileString(source), StringUtility.fileString(target));
         
         File tmpDir = Filesystem.createTemporaryDirectory();
-        String tmpPath = Filesystem.generatePath(Filesystem.TMP_DIR.getName(), tmpDir.getName());
         if ((tmpDir.exists() && !Filesystem.clearDirectory(tmpDir)) || (!tmpDir.exists() && !Filesystem.createDirectory(tmpDir))) {
             logger.trace("Unable to create diff {}: {} could not create temporary directory", diffType, StringUtility.fileString(diff));
             return false;
         }
         
         File sourceTmpDir = new File(tmpDir, "source");
-        String sourceTmpPath = Filesystem.generatePath(tmpPath, sourceTmpDir.getName());
         if (!Filesystem.createDirectory(sourceTmpDir)) {
             logger.trace("Unable to create diff {}: {} could not create temporary directory for source {}", diffType, StringUtility.fileString(diff), diffType);
             return false;
         }
         
         File targetTmpDir = new File(tmpDir, "target");
-        String targetTmpPath = Filesystem.generatePath(tmpPath, targetTmpDir.getName());
         if (!Filesystem.createDirectory(targetTmpDir)) {
             logger.trace("Unable to create diff {}: {} could not create temporary directory for target {}", diffType, StringUtility.fileString(diff), diffType);
             return false;
         }
         
         File diffTmpDir = new File(tmpDir, "diff");
-        String diffTmpPath = Filesystem.generatePath(tmpPath, diffTmpDir.getName());
         if ((diffTmpDir.exists() && !Filesystem.clearDirectory(diffTmpDir)) || (!diffTmpDir.exists() && !Filesystem.createDirectory(diffTmpDir))) {
             logger.trace("Unable to create diff {}: {} could not create temporary directory for the {} diff", diffType, StringUtility.fileString(diff), diffType);
             return false;
@@ -760,19 +808,15 @@ public final class Archive {
         
         // insertions/modifications
         for (File contentTarget : contentsTarget) {
-            File original = null;
-            for (File contentSource : contentsSource) {
-                if (StringUtility.fileString(contentSource).replace(sourceTmpPath, "").equals(StringUtility.fileString(contentTarget).replace(targetTmpPath, ""))) {
-                    original = contentSource;
-                    break;
-                }
-            }
+            String targetPath = contentTarget.getAbsolutePath().replace(targetTmpDir.getAbsolutePath(), "");
+            File original = contentsSource.stream().filter(e -> e.getAbsolutePath().replace(sourceTmpDir.getAbsolutePath(), "").equals(targetPath)).findFirst().orElse(null);
+            
             long checksumA = ((original == null) || original.isDirectory()) ? 0 : Filesystem.checksum(original);
             long checksumB = (contentTarget.isDirectory()) ? 0 : Filesystem.checksum(contentTarget);
             
             //if the file is new or it has been modified since the initial version, add it to the diff
             if ((original == null) || (checksumB != checksumA)) {
-                String destPath = StringUtility.fileString(contentTarget).replace(targetTmpPath, diffTmpPath);
+                String destPath = contentTarget.getAbsolutePath().replace(targetTmpDir.getAbsolutePath(), diffTmpDir.getAbsolutePath());
                 File dest = new File(destPath);
                 if (dest.isDirectory()) {
                     Filesystem.createDirectory(dest);
@@ -784,15 +828,11 @@ public final class Archive {
         
         //deletions
         for (File contentSource : contentsSource) {
-            boolean exists = false;
-            for (File contentTarget : contentsTarget) {
-                if (StringUtility.fileString(contentTarget).replace(targetTmpPath, "").equals(StringUtility.fileString(contentSource).replace(sourceTmpPath, ""))) {
-                    exists = true;
-                    break;
-                }
-            }
+            String sourcePath = contentSource.getAbsolutePath().replace(sourceTmpDir.getAbsolutePath(), "");
+            boolean exists = contentsTarget.stream().anyMatch(e -> e.getAbsolutePath().replace(targetTmpDir.getAbsolutePath(), "").equals(sourcePath));
+            
             if (!exists) {
-                String destPath = StringUtility.fileString(contentSource).replace(sourceTmpPath, diffTmpPath) + '~';
+                String destPath = contentSource.getAbsolutePath().replace(sourceTmpDir.getAbsolutePath(), diffTmpDir.getAbsolutePath()) + '~';
                 File dest = new File(destPath);
                 if (dest.isDirectory()) {
                     //if files within the destination have already been registered as deleted, delete the old folder and just mark the directory as deleted
@@ -801,8 +841,8 @@ public final class Archive {
                     if (trueDest.exists()) {
                         Filesystem.deleteDirectory(trueDest);
                     }
-                    
                     Filesystem.createDirectory(dest);
+                    
                 } else {
                     //if the files destination dir has already been marked as deleted then we don't need to specifically make the file as deleted
                     File trueDest = dest.getParentFile();
