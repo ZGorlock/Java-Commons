@@ -71,7 +71,7 @@ public final class Archive {
         //Constructors
         
         /**
-         * Constructs and Archive Type.
+         * Constructs an Archive Type.
          *
          * @param name The name of the Archive Type.
          */
