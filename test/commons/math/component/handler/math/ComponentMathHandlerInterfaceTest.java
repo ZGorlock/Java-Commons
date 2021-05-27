@@ -92,7 +92,7 @@ public class ComponentMathHandlerInterfaceTest {
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertEquals(0.000000000001, ComponentMathHandlerInterface.DEFAULT_PRECISION);
+        Assert.assertEquals(1E-12, ComponentMathHandlerInterface.DEFAULT_PRECISION);
         Assert.assertEquals(12, ComponentMathHandlerInterface.DEFAULT_SIGNIFICANT_FIGURES);
     }
     

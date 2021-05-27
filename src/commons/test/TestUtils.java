@@ -13,6 +13,7 @@ import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -36,9 +37,24 @@ public final class TestUtils {
     //Constants
     
     /**
+     * The delta to use when comparing the equality in unit tests.
+     */
+    public static final double DELTA = 1E-9;
+    
+    /**
+     * The delta to use when comparing the equality of floats in unit tests.
+     */
+    public static final float DELTA_FLOAT = 1E-3f;
+    
+    /**
      * The delta to use when comparing the equality of doubles in unit tests.
      */
-    public static final double DELTA = 0.000000001;
+    public static final double DELTA_DOUBLE = 1E-12;
+    
+    /**
+     * The delta to use when comparing the equality of Big Decimals in unit tests.
+     */
+    public static final BigDecimal DELTA_BIG = BigDecimal.valueOf(1E-36);
     
     
     //Functions

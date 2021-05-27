@@ -103,7 +103,7 @@ public class DoubleComponentMathHandlerTest {
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertEquals(0.000000000001, DoubleComponentMathHandler.PRECISION, TestUtils.DELTA);
+        Assert.assertEquals(1E-12, DoubleComponentMathHandler.PRECISION, TestUtils.DELTA);
         Assert.assertEquals(12, DoubleComponentMathHandler.SIGNIFICANT_FIGURES);
     }
     
@@ -520,7 +520,7 @@ public class DoubleComponentMathHandlerTest {
      */
     @Test
     public void testGetPrecision() throws Exception {
-        Assert.assertEquals(0.000000000001, sut.getPrecision(), TestUtils.DELTA);
+        Assert.assertEquals(1E-12, sut.getPrecision(), TestUtils.DELTA);
     }
     
     /**

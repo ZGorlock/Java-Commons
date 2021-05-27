@@ -108,7 +108,7 @@ public class BigComponentMathHandlerTest {
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertEquals(new BigDecimal("0.000000000000000000000000000000000001"), BigComponentMathHandler.PRECISION);
+        Assert.assertEquals(BigDecimal.valueOf(1E-36), BigComponentMathHandler.PRECISION);
         Assert.assertEquals(36, BigComponentMathHandler.SIGNIFICANT_FIGURES);
         Assert.assertEquals(BigMathUtility.DEFAULT_MATH_PRECISION, BigComponentMathHandler.DEFAULT_MATH_PRECISION);
         Assert.assertEquals(BigMathUtility.DEFAULT_ROUNDING_MODE, BigComponentMathHandler.DEFAULT_ROUNDING_MODE);
@@ -602,7 +602,7 @@ public class BigComponentMathHandlerTest {
      */
     @Test
     public void testGetPrecision() throws Exception {
-        Assert.assertEquals(new BigDecimal("0.000000000000000000000000000000000001"), sut.getPrecision());
+        Assert.assertEquals(BigDecimal.valueOf(1E-36), sut.getPrecision());
     }
     
     /**

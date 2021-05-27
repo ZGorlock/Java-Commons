@@ -1846,7 +1846,7 @@ public class Vector3Test {
     @Test
     public void testGetPrecision() throws Exception {
         sut = new Vector3();
-        Assert.assertEquals(0.000000000001, sut.getPrecision());
+        Assert.assertEquals(1E-12, sut.getPrecision());
     }
     
     /**

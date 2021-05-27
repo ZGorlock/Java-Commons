@@ -2954,7 +2954,7 @@ public class BigMatrixTest {
     @Test
     public void testGetPrecision() throws Exception {
         sut = new BigMatrix();
-        Assert.assertEquals(new BigDecimal("0.000000000000000000000000000000000001"), sut.getPrecision());
+        Assert.assertEquals(BigDecimal.valueOf(1E-36), sut.getPrecision());
     }
     
     /**

@@ -9,6 +9,8 @@ package commons.math.component.handler.math;
 
 import java.util.function.IntFunction;
 
+import commons.test.TestUtils;
+
 /**
  * Defines the contract for Component Math Handler classes.
  *
@@ -21,7 +23,7 @@ public interface ComponentMathHandlerInterface<T extends Number> {
     /**
      * The default precision to use in comparisons.
      */
-    Number DEFAULT_PRECISION = 0.000000000001;
+    Number DEFAULT_PRECISION = TestUtils.DELTA_DOUBLE;
     
     /**
      * The default number of significant figures of the precision.

@@ -2455,7 +2455,7 @@ public class MatrixTest {
     @Test
     public void testGetPrecision() throws Exception {
         sut = new Matrix();
-        Assert.assertEquals(0.000000000001, sut.getPrecision());
+        Assert.assertEquals(1E-12, sut.getPrecision());
     }
     
     /**

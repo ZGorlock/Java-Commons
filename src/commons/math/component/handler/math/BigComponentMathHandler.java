@@ -15,6 +15,7 @@ import java.util.function.IntFunction;
 import ch.obermuhlner.math.big.BigDecimalMath;
 import commons.math.BigMathUtility;
 import commons.math.MathUtility;
+import commons.test.TestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +37,7 @@ public class BigComponentMathHandler implements ComponentMathHandlerInterface<Bi
     /**
      * The precision to use in comparisons.
      */
-    public static final BigDecimal PRECISION = new BigDecimal("0.000000000000000000000000000000000001");
+    public static final BigDecimal PRECISION = TestUtils.DELTA_BIG;
     
     /**
      * The number of significant figures of the precision.

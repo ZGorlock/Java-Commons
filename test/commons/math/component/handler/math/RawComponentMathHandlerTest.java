@@ -103,7 +103,7 @@ public class RawComponentMathHandlerTest {
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertEquals(0.000000000001, RawComponentMathHandler.PRECISION);
+        Assert.assertEquals(1E-12, RawComponentMathHandler.PRECISION);
         Assert.assertEquals(12, RawComponentMathHandler.SIGNIFICANT_FIGURES);
     }
     
@@ -520,7 +520,7 @@ public class RawComponentMathHandlerTest {
      */
     @Test
     public void testGetPrecision() throws Exception {
-        Assert.assertEquals(0.000000000001, sut.getPrecision().doubleValue(), TestUtils.DELTA);
+        Assert.assertEquals(1E-12, sut.getPrecision().doubleValue(), TestUtils.DELTA);
     }
     
     /**

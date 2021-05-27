@@ -101,10 +101,16 @@ public class TestUtilsTest {
      *
      * @throws Exception When there is an exception.
      * @see TestUtils#DELTA
+     * @see TestUtils#DELTA_FLOAT
+     * @see TestUtils#DELTA_DOUBLE
+     * @see TestUtils#DELTA_BIG
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertEquals(0.000000001, TestUtils.DELTA, 0.000000001);
+        Assert.assertEquals(1E-9, TestUtils.DELTA, 1E-9);
+        Assert.assertEquals(1E-3f, TestUtils.DELTA_FLOAT, 1E-3f);
+        Assert.assertEquals(1E-12, TestUtils.DELTA_DOUBLE, 1E-12);
+        Assert.assertEquals(BigDecimal.valueOf(1E-36), TestUtils.DELTA_BIG);
     }
     
     /**
@@ -463,9 +469,9 @@ public class TestUtilsTest {
         Assert.assertTrue(TestUtils.setField(testClass, "field6", 1568));
         Assert.assertEquals(1568, (int) Whitebox.getInternalState(testClass, "field6"));
         
-        Assert.assertEquals(7.66f, Whitebox.getInternalState(testClass, "field7"), (float) TestUtils.DELTA);
+        Assert.assertEquals(7.66f, Whitebox.getInternalState(testClass, "field7"), TestUtils.DELTA_FLOAT);
         Assert.assertTrue(TestUtils.setField(testClass, "field7", 3.46f));
-        Assert.assertEquals(3.46f, Whitebox.getInternalState(testClass, "field7"), (float) TestUtils.DELTA);
+        Assert.assertEquals(3.46f, Whitebox.getInternalState(testClass, "field7"), TestUtils.DELTA_FLOAT);
         
         Assert.assertEquals(true, Whitebox.getInternalState(testClass, "field8"));
         Assert.assertTrue(TestUtils.setField(testClass, "field8", false));
@@ -505,9 +511,9 @@ public class TestUtilsTest {
         Assert.assertTrue(TestUtils.setField(subClass, "field6", 1568));
         Assert.assertEquals(1568, (int) Whitebox.getInternalState(subClass, "field6"));
         
-        Assert.assertEquals(7.66f, Whitebox.getInternalState(subClass, "field7"), (float) TestUtils.DELTA);
+        Assert.assertEquals(7.66f, Whitebox.getInternalState(subClass, "field7"), TestUtils.DELTA_FLOAT);
         Assert.assertTrue(TestUtils.setField(subClass, "field7", 3.46f));
-        Assert.assertEquals(3.46f, Whitebox.getInternalState(subClass, "field7"), (float) TestUtils.DELTA);
+        Assert.assertEquals(3.46f, Whitebox.getInternalState(subClass, "field7"), TestUtils.DELTA_FLOAT);
         
         Assert.assertEquals(true, Whitebox.getInternalState(subClass, "field8"));
         Assert.assertTrue(TestUtils.setField(subClass, "field8", false));
@@ -531,9 +537,9 @@ public class TestUtilsTest {
         Assert.assertTrue(TestUtils.setField(mockClass, "field6", 1568));
         Assert.assertEquals(1568, (int) Whitebox.getInternalState(mockClass, "field6"));
         
-        Assert.assertEquals(0.0f, Whitebox.getInternalState(mockClass, "field7"), (float) TestUtils.DELTA);
+        Assert.assertEquals(0.0f, Whitebox.getInternalState(mockClass, "field7"), TestUtils.DELTA_FLOAT);
         Assert.assertTrue(TestUtils.setField(mockClass, "field7", 3.46f));
-        Assert.assertEquals(3.46f, Whitebox.getInternalState(mockClass, "field7"), (float) TestUtils.DELTA);
+        Assert.assertEquals(3.46f, Whitebox.getInternalState(mockClass, "field7"), TestUtils.DELTA_FLOAT);
         
         Assert.assertEquals(false, Whitebox.getInternalState(mockClass, "field8"));
         Assert.assertTrue(TestUtils.setField(mockClass, "field8", true));

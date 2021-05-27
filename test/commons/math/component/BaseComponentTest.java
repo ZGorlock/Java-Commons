@@ -1935,49 +1935,49 @@ public class BaseComponentTest {
         //standard
         
         component = new TestComponent(5.501, 8.13, 2.67, -1.944, 8.5);
-        Assert.assertEquals(0.000000000001, component.getPrecision());
+        Assert.assertEquals(1E-12, component.getPrecision());
         
         component = new Vector(5.501, 8.13, 2.67, -1.944, 8.5);
-        Assert.assertEquals(0.000000000001, component.getPrecision());
+        Assert.assertEquals(1E-12, component.getPrecision());
         
         component = new BigVector(5.501, 8.13, 2.67, -1.944, 8.5);
-        Assert.assertEquals(new BigDecimal("0.000000000000000000000000000000000001"), component.getPrecision());
+        Assert.assertEquals(BigDecimal.valueOf(1E-36), component.getPrecision());
         
         component = new TestComponent(8.50000000000000000000000000000001, -1.943999999999999999999999999, 2.6699999999999999999999999999999999, 8.1300000000000000000000006, 5.500999999999999999999999999999);
-        Assert.assertEquals(0.000000000001, component.getPrecision());
+        Assert.assertEquals(1E-12, component.getPrecision());
         
         component = new IntVector(5, 8, 2, -1, 8);
         Assert.assertEquals(1, component.getPrecision());
         
         component = new TestComponent(5.501, 2.67, -1.944, 8.5);
-        Assert.assertEquals(0.000000000001, component.getPrecision());
+        Assert.assertEquals(1E-12, component.getPrecision());
         
         component = new Vector(5.501);
-        Assert.assertEquals(0.000000000001, component.getPrecision());
+        Assert.assertEquals(1E-12, component.getPrecision());
         
         component = new RawVector(5.501, 8.13, 2.67, -1.944, 8.5, 8.11);
-        Assert.assertEquals(0.000000000001, component.getPrecision());
+        Assert.assertEquals(1E-12, component.getPrecision());
         
         component = new TestComponent(8.50000000000000000000000000000001, -1.943999999999999999999999999);
-        Assert.assertEquals(0.000000000001, component.getPrecision());
+        Assert.assertEquals(1E-12, component.getPrecision());
         
         component = new IntVector(5, 8);
         Assert.assertEquals(1, component.getPrecision());
         
         component = new Matrix(5.501, 8.13, 2.67, -1.944, 8.5, 5.501, 8.13, 2.67, -1.944, 8.5, 5.501, 8.13, 2.67, -1.944, 8.5, 5.501, 8.13, 2.67, -1.944, 8.5, 5.501, 8.13, 2.67, -1.944, 8.5);
-        Assert.assertEquals(0.000000000001, component.getPrecision());
+        Assert.assertEquals(1E-12, component.getPrecision());
         
         component = new RawMatrix(5.501, 8.13, 2.67, -1.944, 8.5, 5.501, 8.13, 2.67, -1.944, 8.5, 5.501, 8.13, 2.67, -1.944, 8.5, 5.501, 8.13, 2.67, -1.944, 8.5, 5.501, 8.13, 2.67, -1.944, 8.5);
-        Assert.assertEquals(0.000000000001, component.getPrecision());
+        Assert.assertEquals(1E-12, component.getPrecision());
         
         component = new BigMatrix(5.501, 8.13, 2.67, -1.944, 8.5, 5.501, 8.13, 2.67, -1.944, 8.5, 5.501, 8.13, 2.67, -1.944, 8.5, 5.501, 8.13, 2.67, -1.944, 8.5, 5.501, 8.13, 2.67, -1.944, 8.5);
-        Assert.assertEquals(new BigDecimal("0.000000000000000000000000000000000001"), component.getPrecision());
+        Assert.assertEquals(BigDecimal.valueOf(1E-36), component.getPrecision());
         
         component = new Matrix(8.5, 5.501, 8.13, 2.67, -1.944, 8.5, 5.501, 8.13, 2.67, -1.944, 8.5, 5.501, 8.13, 2.67, -1.944, 8.5);
-        Assert.assertEquals(0.000000000001, component.getPrecision());
+        Assert.assertEquals(1E-12, component.getPrecision());
         
         component = new RawMatrix(5.501, 8.13, 2.67, -1.944);
-        Assert.assertEquals(0.000000000001, component.getPrecision());
+        Assert.assertEquals(1E-12, component.getPrecision());
         
         component = new IntMatrix(new int[] {6});
         Assert.assertEquals(1, component.getPrecision());
