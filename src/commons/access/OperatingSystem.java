@@ -7,6 +7,8 @@
 
 package commons.access;
 
+import java.lang.management.ManagementFactory;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +23,14 @@ public final class OperatingSystem {
      * The logger.
      */
     private static final Logger logger = LoggerFactory.getLogger(OperatingSystem.class);
+    
+    
+    //Constants
+    
+    /**
+     * Whether the JVM is running in debug mode or not.
+     */
+    private static final boolean DEBUGGING = ManagementFactory.getRuntimeMXBean().getInputArguments().toString().contains("jdwp");
     
     
     //Enums
@@ -204,6 +214,15 @@ public final class OperatingSystem {
      */
     public static long getUsedMemory() {
         return getTotalMemory() - getFreeMemory();
+    }
+    
+    /**
+     * Returns whether the JVM is running in debug mode or not.
+     *
+     * @return Whether the JVM is running in debug mode or not.
+     */
+    public static boolean isDebugging() {
+        return DEBUGGING;
     }
     
 }

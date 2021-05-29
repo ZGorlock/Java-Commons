@@ -129,10 +129,11 @@ public class OperatingSystemTest {
      * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
+     * @see OperatingSystem#DEBUGGING
      */
-    @SuppressWarnings("EmptyMethod")
     @Test
     public void testConstants() throws Exception {
+        Assert.assertNotNull(TestUtils.getField(OperatingSystem.class, "DEBUGGING"));
     }
     
     /**
@@ -580,6 +581,19 @@ public class OperatingSystemTest {
                 Assert.assertNotEquals(0, OperatingSystem.getUsedMemory()));
         
         Assert.assertTrue(OperatingSystem.getUsedMemory() <= OperatingSystem.getTotalMemory());
+    }
+    
+    /**
+     * JUnit test of isDebugging.
+     *
+     * @throws Exception When there is an exception.
+     * @see OperatingSystem#isDebugging()
+     */
+    @Test
+    public void testIsDebugging() throws Exception {
+        boolean isDebugging = (boolean) TestUtils.getField(OperatingSystem.class, "DEBUGGING");
+        Assert.assertEquals(isDebugging, OperatingSystem.isDebugging());
+        Assert.assertEquals(isDebugging, OperatingSystem.isDebugging());
     }
     
 }
