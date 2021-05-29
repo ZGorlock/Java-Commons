@@ -1,11 +1,11 @@
 /*
- * File:    Speech.java
- * Package: commons.io
+ * File:    SpeechSynthesizer.java
+ * Package: commons.io.speech
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.io;
+package commons.io.speech;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -39,14 +39,14 @@ import org.slf4j.LoggerFactory;
 /**
  * Implements MaryTTS for default system speech.
  */
-public final class Speech {
+public final class SpeechSynthesizer {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(Speech.class);
+    private static final Logger logger = LoggerFactory.getLogger(SpeechSynthesizer.class);
     
     
     //Constants
@@ -76,7 +76,7 @@ public final class Speech {
     /**
      * The singleton instance of the SystemSpeech class.
      */
-    private static Speech instance = null;
+    private static SpeechSynthesizer instance = null;
     
     /**
      * A flag indicating if an instance has been created or not.
@@ -122,7 +122,7 @@ public final class Speech {
     /**
      * The private constructor for SystemSpeech.
      */
-    private Speech() {
+    private SpeechSynthesizer() {
     }
     
     
@@ -259,9 +259,9 @@ public final class Speech {
      *
      * @return The singleton instance of the SystemSpeech class or null if an instance has been gotten before.
      */
-    public static Speech getInstance() {
+    public static SpeechSynthesizer getInstance() {
         if (instanced.compareAndSet(false, true)) {
-            instance = new Speech();
+            instance = new SpeechSynthesizer();
             return instance;
         }
         return null;

@@ -1,11 +1,11 @@
 /*
- * File:    SpeechTest.java
- * Package: commons.io
+ * File:    SpeechSynthesizerTest.java
+ * Package: commons.io.speech
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.io;
+package commons.io.speech;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of Speech.
+ * JUnit test of SpeechSynthesizer.
  *
- * @see Speech
+ * @see SpeechSynthesizer
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Speech.class})
-public class SpeechTest {
+@PrepareForTest({SpeechSynthesizer.class})
+public class SpeechSynthesizerTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(SpeechTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(SpeechSynthesizerTest.class);
     
     
     //Initialization
@@ -86,18 +86,18 @@ public class SpeechTest {
      * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#DEFAULT_QUIET_MODE
+     * @see SpeechSynthesizer#DEFAULT_QUIET_MODE
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertFalse(Speech.DEFAULT_QUIET_MODE);
+        Assert.assertFalse(SpeechSynthesizer.DEFAULT_QUIET_MODE);
     }
     
     /**
      * JUnit test of setup.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#setup()
+     * @see SpeechSynthesizer#setup()
      */
     @Test
     public void testSetup() throws Exception {
@@ -108,7 +108,7 @@ public class SpeechTest {
      * JUnit test of say.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#say(String)
+     * @see SpeechSynthesizer#say(String)
      */
     @Test
     public void testSay() throws Exception {
@@ -119,7 +119,7 @@ public class SpeechTest {
      * JUnit test of applySpeechEffects.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#applySpeechEffects()
+     * @see SpeechSynthesizer#applySpeechEffects()
      */
     @Test
     public void testApplySpeechEffects() throws Exception {
@@ -130,7 +130,7 @@ public class SpeechTest {
      * JUnit test of addSpeechEffect.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#addSpeechEffect(String, String)
+     * @see SpeechSynthesizer#addSpeechEffect(String, String)
      */
     @Test
     public void testAddSpeechEffect() throws Exception {
@@ -141,7 +141,7 @@ public class SpeechTest {
      * JUnit test of removeSpeechEffect.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#removeSpeechEffect(String)
+     * @see SpeechSynthesizer#removeSpeechEffect(String)
      */
     @Test
     public void testRemoveSpeechEffect() throws Exception {
@@ -152,7 +152,7 @@ public class SpeechTest {
      * JUnit test of clearSpeechEffects.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#clearSpeechEffects()
+     * @see SpeechSynthesizer#clearSpeechEffects()
      */
     @Test
     public void testClearSpeechEffects() throws Exception {
@@ -163,7 +163,7 @@ public class SpeechTest {
      * JUnit test of printAvailableVoices.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#printAvailableVoices()
+     * @see SpeechSynthesizer#printAvailableVoices()
      */
     @Test
     public void testPrintAvailableVoices() throws Exception {
@@ -174,7 +174,7 @@ public class SpeechTest {
      * JUnit test of printAvailableSpeechEffects.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#printAvailableSpeechEffects()
+     * @see SpeechSynthesizer#printAvailableSpeechEffects()
      */
     @Test
     public void testPrintAvailableSpeechEffects() throws Exception {
@@ -185,8 +185,8 @@ public class SpeechTest {
      * JUnit test of setVoiceName.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#setVoiceName(String, boolean)
-     * @see Speech#setVoiceName(String)
+     * @see SpeechSynthesizer#setVoiceName(String, boolean)
+     * @see SpeechSynthesizer#setVoiceName(String)
      */
     @Test
     public void testSetVoiceName() throws Exception {
@@ -197,7 +197,7 @@ public class SpeechTest {
      * JUnit test of getAvailableVoices.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#getAvailableVoices()
+     * @see SpeechSynthesizer#getAvailableVoices()
      */
     @Test
     public void testGetAvailableVoices() throws Exception {
@@ -208,7 +208,7 @@ public class SpeechTest {
      * JUnit test of hasVoice.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#hasVoice(String)
+     * @see SpeechSynthesizer#hasVoice(String)
      */
     @Test
     public void testHasVoice() throws Exception {
@@ -219,7 +219,7 @@ public class SpeechTest {
      * JUnit test of speaking.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#speaking()
+     * @see SpeechSynthesizer#speaking()
      */
     @Test
     public void testSpeaking() throws Exception {
@@ -230,7 +230,7 @@ public class SpeechTest {
      * JUnit test of waitUntilSpeaking.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#waitUntilSpeaking()
+     * @see SpeechSynthesizer#waitUntilSpeaking()
      */
     @Test
     public void testWaitUntilSpeaking() throws Exception {
@@ -241,7 +241,7 @@ public class SpeechTest {
      * JUnit test of waitUntilDoneSpeaking.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#waitUntilDoneSpeaking()
+     * @see SpeechSynthesizer#waitUntilDoneSpeaking()
      */
     @Test
     public void testWaitUntilDoneSpeaking() throws Exception {
@@ -252,7 +252,7 @@ public class SpeechTest {
      * JUnit test of getVoiceNames.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#getVoiceNames()
+     * @see SpeechSynthesizer#getVoiceNames()
      */
     @Test
     public void testGetVoiceNames() throws Exception {
@@ -263,7 +263,7 @@ public class SpeechTest {
      * JUnit test of getLetterPronunciations.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#getLetterPronunciations()
+     * @see SpeechSynthesizer#getLetterPronunciations()
      */
     @Test
     public void testGetLetterPronunciations() throws Exception {
@@ -274,7 +274,7 @@ public class SpeechTest {
      * JUnit test of quietMode.
      *
      * @throws Exception When there is an exception.
-     * @see Speech#quietMode()
+     * @see SpeechSynthesizer#quietMode()
      */
     @Test
     public void testQuietMode() throws Exception {
