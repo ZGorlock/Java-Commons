@@ -4,7 +4,7 @@
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  *
- * Contains common component resource classes.
+ * Contains common math component resource classes.
  */
 
 package commons.math.component;
