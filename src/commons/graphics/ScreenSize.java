@@ -85,7 +85,7 @@ public final class ScreenSize {
      */
     public static int DISPLAY_HEIGHT;
     
-    //Populates static fields
+    //Populate static fields
     static {
         GraphicsEnvironment graphicsEnvironment = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice graphicsDevice = graphicsEnvironment.getScreenDevices()[0];

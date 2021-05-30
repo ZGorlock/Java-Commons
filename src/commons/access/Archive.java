@@ -50,7 +50,7 @@ public final class Archive {
     //Enums
     
     /**
-     * An enumeration of supported archive types.
+     * An enumeration of supported Archive Types.
      */
     public enum ArchiveType {
         
@@ -95,7 +95,7 @@ public final class Archive {
     }
     
     /**
-     * An enumeration of compression methods for archives.
+     * An enumeration of Compression Methods for archives.
      */
     public enum CompressionMethod {
         
