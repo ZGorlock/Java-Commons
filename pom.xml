@@ -51,6 +51,9 @@
         <!-- INTERNET -->
         <jsoup.version>1.12.1</jsoup.version>
         
+        <!-- HOTKEYS -->
+        <jnativehook.version>2.1.0</jnativehook.version>
+        
         <!-- MEDIA -->
         <metadata-extractor.version>2.15.0</metadata-extractor.version>
         <vlcj.version>4.1.0</vlcj.version>
@@ -170,6 +173,13 @@
             <groupId>org.jsoup</groupId>
             <artifactId>jsoup</artifactId>
             <version>${jsoup.version}</version>
+        </dependency>
+        
+        <!-- HOTKEYS -->
+        <dependency>
+            <groupId>com.1stleg</groupId>
+            <artifactId>jnativehook</artifactId>
+            <version>${jnativehook.version}</version>
         </dependency>
         
         <!-- MEDIA -->
