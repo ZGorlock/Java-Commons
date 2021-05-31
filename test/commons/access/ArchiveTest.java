@@ -48,7 +48,7 @@ public class ArchiveTest {
     /**
      * The test resources directory for this class.
      */
-    private static final File testResources = new File("test-resources/commons/access/Archive");
+    private static final File testResources = Project.testResourcesDir(Archive.class);
     
     
     //Static Fields

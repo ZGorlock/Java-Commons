@@ -55,11 +55,6 @@ public final class Filesystem {
     //Constants
     
     /**
-     * The local temporary directory.
-     */
-    public static final File TMP_DIR = new File("tmp");
-    
-    /**
      * A regex pattern for a Windows file name that starts with a drive letter.
      */
     public static final Pattern WINDOWS_DRIVE_FILE_NAME_PATTERN = Pattern.compile("^[A-Z]:.*");
@@ -2111,7 +2106,7 @@ public final class Filesystem {
         File tmpFile;
         int index = 0;
         do {
-            tmpFile = new File(TMP_DIR,
+            tmpFile = new File(Project.TMP_DIR,
                     (((name == null) || name.isEmpty()) ? UUID.randomUUID().toString() : name) +
                             ((index > 0) ? ("_" + index) : "") +
                             ((extension.isEmpty() || extension.startsWith(".")) ? "" : ".") + extension);
@@ -2154,7 +2149,7 @@ public final class Filesystem {
         File tmpDir;
         int index = 0;
         do {
-            tmpDir = new File(TMP_DIR,
+            tmpDir = new File(Project.TMP_DIR,
                     (((name == null) || name.isEmpty()) ? UUID.randomUUID().toString() : name) +
                             ((index > 0) ? ("_" + index) : ""));
             index++;
@@ -2182,7 +2177,7 @@ public final class Filesystem {
      * @return The path length of a temporary file.
      */
     public static int getTemporaryFilePathLength(String extension) {
-        String tmpDirPath = generatePath(TMP_DIR.getName(), UUID.randomUUID().toString() +
+        String tmpDirPath = generatePath(Project.TMP_DIR.getName(), UUID.randomUUID().toString() +
                 ((extension.isEmpty() || extension.startsWith(".")) ? "" : ".") + extension);
         return tmpDirPath.length();
     }
@@ -2203,7 +2198,7 @@ public final class Filesystem {
      * @return The path length of a temporary directory.
      */
     public static int getTemporaryDirectoryPathLength() {
-        String tmpDirPath = generatePath(TMP_DIR.getName(), UUID.randomUUID().toString());
+        String tmpDirPath = generatePath(Project.TMP_DIR.getName(), UUID.randomUUID().toString());
         return tmpDirPath.length();
     }
     

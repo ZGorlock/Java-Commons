@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import commons.access.Filesystem;
+import commons.access.Project;
 import commons.console.Console;
 import commons.test.TestUtils;
 import org.junit.After;
@@ -1786,10 +1786,10 @@ public class StringUtilityTest {
      */
     @Test
     public void testGetFileString() throws Exception {
-        final String absoluteBase = Filesystem.TMP_DIR.getAbsolutePath().replace("\\", "/") + '/';
-        final String base = Filesystem.TMP_DIR.getPath().replace("\\", "/") + '/';
-        final File testFile = new File(Filesystem.TMP_DIR, "test.txt");
-        final File testDir = new File(Filesystem.TMP_DIR, "testDir");
+        final String absoluteBase = Project.TMP_DIR.getAbsolutePath().replace("\\", "/") + '/';
+        final String base = Project.TMP_DIR.getPath().replace("\\", "/") + '/';
+        final File testFile = new File(Project.TMP_DIR, "test.txt");
+        final File testDir = new File(Project.TMP_DIR, "testDir");
         final File test2File2 = new File(testDir, "test2.txt");
         final File test2Dir = new File(testDir, "testDir2");
         final File test2Dir3 = new File(test2Dir, "test2Dir3");

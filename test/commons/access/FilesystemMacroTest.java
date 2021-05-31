@@ -48,7 +48,7 @@ public class FilesystemMacroTest {
     /**
      * The test resources directory for this class.
      */
-    private static final File testResources = new File("test-resources/commons/access/FilesystemMacro");
+    private static final File testResources = Project.testResourcesDir(FilesystemMacro.class);
     
     
     //Initialization
@@ -145,9 +145,9 @@ public class FilesystemMacroTest {
         
         PowerMockito.spy(FilesystemMacro.class);
         PowerMockito.doReturn(true).when(FilesystemMacro.class, "deleteEmptyDirectoriesInDirectory", ArgumentMatchers.any(File.class), ArgumentMatchers.anyBoolean());
-        Assert.assertTrue(FilesystemMacro.deleteEmptyDirectoriesInDirectory(Filesystem.TMP_DIR));
+        Assert.assertTrue(FilesystemMacro.deleteEmptyDirectoriesInDirectory(Project.TMP_DIR));
         PowerMockito.verifyStatic(FilesystemMacro.class);
-        FilesystemMacro.deleteEmptyDirectoriesInDirectory(Filesystem.TMP_DIR, false);
+        FilesystemMacro.deleteEmptyDirectoriesInDirectory(Project.TMP_DIR, false);
     }
     
     /**
@@ -215,9 +215,9 @@ public class FilesystemMacroTest {
         
         PowerMockito.spy(FilesystemMacro.class);
         PowerMockito.doReturn(true).when(FilesystemMacro.class, "deleteDirectoriesInDirectoryThatDoNotContainFileType", ArgumentMatchers.any(File.class), ArgumentMatchers.anyString(), ArgumentMatchers.anyBoolean());
-        Assert.assertTrue(FilesystemMacro.deleteDirectoriesInDirectoryThatDoNotContainFileType(Filesystem.TMP_DIR, "txt"));
+        Assert.assertTrue(FilesystemMacro.deleteDirectoriesInDirectoryThatDoNotContainFileType(Project.TMP_DIR, "txt"));
         PowerMockito.verifyStatic(FilesystemMacro.class);
-        FilesystemMacro.deleteDirectoriesInDirectoryThatDoNotContainFileType(Filesystem.TMP_DIR, "txt", true);
+        FilesystemMacro.deleteDirectoriesInDirectoryThatDoNotContainFileType(Project.TMP_DIR, "txt", true);
     }
     
     /**
@@ -264,9 +264,9 @@ public class FilesystemMacroTest {
         
         PowerMockito.spy(FilesystemMacro.class);
         PowerMockito.doReturn(true).when(FilesystemMacro.class, "directoryContainsFileType", ArgumentMatchers.any(File.class), ArgumentMatchers.anyString(), ArgumentMatchers.anyBoolean());
-        Assert.assertTrue(FilesystemMacro.directoryContainsFileType(Filesystem.TMP_DIR, "txt"));
+        Assert.assertTrue(FilesystemMacro.directoryContainsFileType(Project.TMP_DIR, "txt"));
         PowerMockito.verifyStatic(FilesystemMacro.class);
-        FilesystemMacro.directoryContainsFileType(Filesystem.TMP_DIR, "txt", true);
+        FilesystemMacro.directoryContainsFileType(Project.TMP_DIR, "txt", true);
     }
     
     /**

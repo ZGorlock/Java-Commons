@@ -10,6 +10,7 @@ package commons.media;
 import java.io.File;
 import java.util.List;
 
+import commons.access.Project;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -46,7 +47,7 @@ public class MetadataUtilityTest {
     /**
      * The directory containing resources for this test class.
      */
-    private static final File testResources = new File("test-resources/commons/media/MetadataUtility");
+    private static final File testResources = Project.testResourcesDir(MetadataUtility.class);
     
     
     //Initialization
