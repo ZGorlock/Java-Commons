@@ -1037,11 +1037,24 @@ public final class StringUtility {
     /**
      * Returns a string representing a file.
      *
-     * @param file The file.
+     * @param file     The file.
+     * @param absolute Whether or not to use the absolute path.
      * @return The string representing the file.
      */
+    public static String fileString(File file, boolean absolute) {
+        String fileString = absolute ? file.getAbsolutePath() : file.getPath();
+        return fileString.replace("\\", "/");
+    }
+    
+    /**
+     * Returns a string representing a file.
+     *
+     * @param file The file.
+     * @return The string representing the file.
+     * @see #fileString(File, boolean)
+     */
     public static String fileString(File file) {
-        return file.getAbsolutePath().replace("\\", "/");
+        return fileString(file, true);
     }
     
     /**

@@ -1778,14 +1778,16 @@ public class StringUtilityTest {
     }
     
     /**
-     * JUnit test of getJustifiedPath.
+     * JUnit test of fileString.
      *
      * @throws Exception When there is an exception.
+     * @see StringUtility#fileString(File, boolean)
      * @see StringUtility#fileString(File)
      */
     @Test
-    public void testGetJustifiedPath() throws Exception {
-        final String base = Filesystem.TMP_DIR.getAbsolutePath().replace("\\", "/") + '/';
+    public void testGetFileString() throws Exception {
+        final String absoluteBase = Filesystem.TMP_DIR.getAbsolutePath().replace("\\", "/") + '/';
+        final String base = Filesystem.TMP_DIR.getPath().replace("\\", "/") + '/';
         final File testFile = new File(Filesystem.TMP_DIR, "test.txt");
         final File testDir = new File(Filesystem.TMP_DIR, "testDir");
         final File test2File2 = new File(testDir, "test2.txt");
@@ -1793,11 +1795,23 @@ public class StringUtilityTest {
         final File test2Dir3 = new File(test2Dir, "test2Dir3");
         
         //standard
-        Assert.assertEquals(base + "test.txt", StringUtility.fileString(testFile));
-        Assert.assertEquals(base + "testDir", StringUtility.fileString(testDir));
-        Assert.assertEquals(base + "testDir/test2.txt", StringUtility.fileString(test2File2));
-        Assert.assertEquals(base + "testDir/testDir2", StringUtility.fileString(test2Dir));
-        Assert.assertEquals(base + "testDir/testDir2/test2Dir3", StringUtility.fileString(test2Dir3));
+        Assert.assertEquals(absoluteBase + "test.txt", StringUtility.fileString(testFile, true));
+        Assert.assertEquals(absoluteBase + "testDir", StringUtility.fileString(testDir, true));
+        Assert.assertEquals(absoluteBase + "testDir/test2.txt", StringUtility.fileString(test2File2, true));
+        Assert.assertEquals(absoluteBase + "testDir/testDir2", StringUtility.fileString(test2Dir, true));
+        Assert.assertEquals(absoluteBase + "testDir/testDir2/test2Dir3", StringUtility.fileString(test2Dir3, true));
+        Assert.assertEquals(base + "test.txt", StringUtility.fileString(testFile, false));
+        Assert.assertEquals(base + "testDir", StringUtility.fileString(testDir, false));
+        Assert.assertEquals(base + "testDir/test2.txt", StringUtility.fileString(test2File2, false));
+        Assert.assertEquals(base + "testDir/testDir2", StringUtility.fileString(test2Dir, false));
+        Assert.assertEquals(base + "testDir/testDir2/test2Dir3", StringUtility.fileString(test2Dir3, false));
+        
+        //default absolute path
+        Assert.assertEquals(absoluteBase + "test.txt", StringUtility.fileString(testFile));
+        Assert.assertEquals(absoluteBase + "testDir", StringUtility.fileString(testDir));
+        Assert.assertEquals(absoluteBase + "testDir/test2.txt", StringUtility.fileString(test2File2));
+        Assert.assertEquals(absoluteBase + "testDir/testDir2", StringUtility.fileString(test2Dir));
+        Assert.assertEquals(absoluteBase + "testDir/testDir2/test2Dir3", StringUtility.fileString(test2Dir3));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
