@@ -7,6 +7,8 @@
 
 package commons.access;
 
+import java.io.File;
+
 import commons.io.speech.SpeechSynthesizer;
 import commons.io.speech.SpeechSynthesizerTest;
 import commons.math.component.handler.math.BigComponentMathHandler;
@@ -21,6 +23,9 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.internal.verification.VerificationModeFactory;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -33,7 +38,7 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Project.class})
+@PrepareForTest({Project.class, Filesystem.class})
 public class ProjectTest {
     
     //Logger
@@ -116,6 +121,47 @@ public class ProjectTest {
         Assert.assertEquals("resources", StringUtility.fileString(Project.RESOURCES_DIR, false));
         Assert.assertEquals("test-resources", StringUtility.fileString(Project.TEST_RESOURCES_DIR, false));
         Assert.assertEquals("tmp", StringUtility.fileString(Project.TMP_DIR, false));
+    }
+    
+    /**
+     * JUnit test of initializeProjectDirectories.
+     *
+     * @throws Exception When there is an exception.
+     * @see Project#initializeProjectDirectories()
+     */
+    @Test
+    public void testInitializeProjectDirectories() throws Exception {
+        PowerMockito.mockStatic(Filesystem.class);
+        
+        //standard
+        PowerMockito.when(Filesystem.class, "exists", ArgumentMatchers.any(File.class)).thenReturn(true);
+        Project.initializeProjectDirectories();
+        PowerMockito.verifyStatic(Filesystem.class, VerificationModeFactory.times(10));
+        Filesystem.exists(ArgumentMatchers.any(File.class));
+        PowerMockito.verifyStatic(Filesystem.class, VerificationModeFactory.times(1));
+        Filesystem.clearDirectory(ArgumentMatchers.eq(Project.TMP_DIR));
+        
+        //clean
+        PowerMockito.when(Filesystem.class, "exists", ArgumentMatchers.any(File.class)).thenReturn(false);
+        PowerMockito.when(Filesystem.class, "createDirectory", ArgumentMatchers.any(File.class)).thenReturn(true);
+        Project.initializeProjectDirectories();
+        PowerMockito.verifyStatic(Filesystem.class, VerificationModeFactory.times(20));
+        Filesystem.exists(ArgumentMatchers.any(File.class));
+        PowerMockito.verifyStatic(Filesystem.class, VerificationModeFactory.times(10));
+        Filesystem.createDirectory(ArgumentMatchers.any(File.class));
+        PowerMockito.verifyStatic(Filesystem.class, VerificationModeFactory.times(2));
+        Filesystem.clearDirectory(ArgumentMatchers.eq(Project.TMP_DIR));
+        
+        //failure
+        PowerMockito.when(Filesystem.class, "exists", ArgumentMatchers.any(File.class)).thenReturn(false);
+        PowerMockito.when(Filesystem.class, "createDirectory", ArgumentMatchers.any(File.class)).thenReturn(false);
+        Project.initializeProjectDirectories();
+        PowerMockito.verifyStatic(Filesystem.class, VerificationModeFactory.times(21));
+        Filesystem.exists(ArgumentMatchers.any(File.class));
+        PowerMockito.verifyStatic(Filesystem.class, VerificationModeFactory.times(11));
+        Filesystem.createDirectory(ArgumentMatchers.any(File.class));
+        PowerMockito.verifyStatic(Filesystem.class, VerificationModeFactory.noMoreInteractions());
+        Filesystem.clearDirectory(ArgumentMatchers.eq(Project.TMP_DIR));
     }
     
     /**

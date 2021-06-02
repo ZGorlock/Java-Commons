@@ -70,6 +70,24 @@ public final class Project {
     //Functions
     
     /**
+     * Ensures the project directories exist and creates them if needed.
+     *
+     * @return Whether the project directories are successfully initialized.
+     */
+    public static boolean initializeProjectDirectories() {
+        return ((Filesystem.exists(SOURCE_DIR) || Filesystem.createDirectory(SOURCE_DIR)) &&
+                (Filesystem.exists(TEST_DIR) || Filesystem.createDirectory(TEST_DIR)) &&
+                (Filesystem.exists(DATA_DIR) || Filesystem.createDirectory(DATA_DIR)) &&
+                (Filesystem.exists(OUTPUT_DIR) || Filesystem.createDirectory(OUTPUT_DIR)) &&
+                (Filesystem.exists(SOURCE_CLASSES_DIR) || Filesystem.createDirectory(SOURCE_CLASSES_DIR)) &&
+                (Filesystem.exists(TEST_CLASSES_DIR) || Filesystem.createDirectory(TEST_CLASSES_DIR)) &&
+                (Filesystem.exists(LOG_DIR) || Filesystem.createDirectory(LOG_DIR)) &&
+                (Filesystem.exists(RESOURCES_DIR) || Filesystem.createDirectory(RESOURCES_DIR)) &&
+                (Filesystem.exists(TEST_RESOURCES_DIR) || Filesystem.createDirectory(TEST_RESOURCES_DIR)) &&
+                (Filesystem.exists(TMP_DIR) || Filesystem.createDirectory(TMP_DIR)) && Filesystem.clearDirectory(TMP_DIR));
+    }
+    
+    /**
      * Returns the source directory for a particular class.
      *
      * @param clazz The class.
