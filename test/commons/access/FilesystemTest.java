@@ -10947,6 +10947,27 @@ public class FilesystemTest {
     }
     
     /**
+     * JUnit test of exists.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#exists(File)
+     */
+    @Test
+    public void testExists() throws Exception {
+        //exists
+        Assert.assertTrue(Filesystem.createFile(testFile));
+        Assert.assertTrue(Filesystem.createDirectory(testDir));
+        Assert.assertTrue(Filesystem.exists(testFile));
+        Assert.assertTrue(Filesystem.exists(testDir));
+        
+        //does not exist
+        Assert.assertTrue(Filesystem.deleteFile(testFile));
+        Assert.assertTrue(Filesystem.deleteDirectory(testDir));
+        Assert.assertFalse(Filesystem.exists(testFile));
+        Assert.assertFalse(Filesystem.exists(testDir));
+    }
+    
+    /**
      * JUnit test of contentEquals.
      *
      * @throws Exception When there is an exception.

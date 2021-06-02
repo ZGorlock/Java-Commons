@@ -1139,6 +1139,16 @@ public final class Filesystem {
     }
     
     /**
+     * Determines if a file or directory exists or not.
+     *
+     * @param file The file or directory.
+     * @return Whether the file or directory exists, or not.
+     */
+    public static boolean exists(File file) {
+        return file.exists();
+    }
+    
+    /**
      * Determines if the content of two files is equal.
      *
      * @param a The first file.
@@ -1767,7 +1777,7 @@ public final class Filesystem {
     }
     
     /**
-     * Safely replaces a file with another file.<br/>
+     * Safely replaces a file with another file.<br>
      * To be used when data preservation is critical and speed is not.
      *
      * @param originalFile The original file.
@@ -1827,7 +1837,7 @@ public final class Filesystem {
     }
     
     /**
-     * Safely rewrites a file.<br/>
+     * Safely rewrites a file.<br>
      * To be used when data preservation is critical and speed is not.
      *
      * @param file The file.
@@ -1862,7 +1872,7 @@ public final class Filesystem {
     }
     
     /**
-     * Safely rewrites a file.<br/>
+     * Safely rewrites a file.<br>
      * To be used when data preservation is critical and speed is not.
      *
      * @param file The file.
