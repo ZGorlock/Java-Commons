@@ -104,8 +104,8 @@ public class WaveRecording {
      *
      * @param file The file to produce the recording in.
      */
-    public WaveRecording(String file) {
-        wavFile = new File(file);
+    public WaveRecording(File file) {
+        wavFile = file;
     }
     
     

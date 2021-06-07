@@ -7,6 +7,8 @@
 
 package commons.io;
 
+import java.io.File;
+
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -107,7 +109,7 @@ public class WaveRecordingTest {
      * JUnit test of constructors.
      *
      * @throws Exception When there is an exception.
-     * @see WaveRecording#WaveRecording(String)
+     * @see WaveRecording#WaveRecording(File)
      */
     @Test
     public void testConstructors() throws Exception {
