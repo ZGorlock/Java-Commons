@@ -92,6 +92,28 @@ public class SystemInTest {
     }
     
     /**
+     * JUnit test of startScanner.
+     *
+     * @throws Exception When there is an exception.
+     * @see SystemIn#startScanner()
+     */
+    @Test
+    public void testStartScanner() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of interruptScanner.
+     *
+     * @throws Exception When there is an exception.
+     * @see SystemIn#interruptScanner()
+     */
+    @Test
+    public void testInterruptScanner() throws Exception {
+        //TODO
+    }
+    
+    /**
      * JUnit test of nextLine.
      *
      * @throws Exception When there is an exception.
@@ -124,64 +146,6 @@ public class SystemInTest {
      */
     @Test
     public void testGetBuffer() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of getOwner.
-     *
-     * @throws Exception When there is an exception.
-     * @see SystemIn#getOwner()
-     */
-    @Test
-    public void testGetOwner() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of owns.
-     *
-     * @throws Exception When there is an exception.
-     * @see SystemIn#owns(Class)
-     * @see SystemIn#owns(Object)
-     */
-    @Test
-    public void testOwns() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of own.
-     *
-     * @throws Exception When there is an exception.
-     * @see SystemIn#own(Class)
-     * @see SystemIn#own(Object)
-     */
-    @Test
-    public void testOwn() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of defaultOwn.
-     *
-     * @throws Exception When there is an exception.
-     * @see SystemIn#defaultOwn(Class)
-     * @see SystemIn#defaultOwn(Object)
-     */
-    @Test
-    public void testDefaultOwn() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of relinquish.
-     *
-     * @throws Exception When there is an exception.
-     * @see SystemIn#relinquish()
-     */
-    @Test
-    public void testRelinquish() throws Exception {
         //TODO
     }
     

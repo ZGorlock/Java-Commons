@@ -706,6 +706,7 @@ public class SpeechRecognizer {
             
             File trainingDirectory = Filesystem.createTemporaryDirectory();
             if (!prepareTrainingDirectory(trainingDirectory)) {
+                Filesystem.deleteDirectory(trainingDirectory);
                 return false;
             }
             
@@ -722,7 +723,7 @@ public class SpeechRecognizer {
                     !generateAcousticFeatureFiles(trainingDirectory) ||
                     !accumulateObservationCounts(trainingDirectory) ||
                     !createMllrTransformation(trainingDirectory)) {
-                SystemIn.relinquish();
+                SystemIn.relinquish(SpeechRecognizer.class);
                 Filesystem.deleteDirectory(trainingDirectory);
                 return false;
             }
@@ -730,7 +731,7 @@ public class SpeechRecognizer {
             File mllrMatrixFile = new File(trainingDirectory, "mllr_matrix");
             boolean trainingSuccess = Filesystem.copyFile(mllrMatrixFile, adaptionMatrixOutput, true);
             
-            SystemIn.relinquish();
+            SystemIn.relinquish(SpeechRecognizer.class);
             Filesystem.deleteDirectory(trainingDirectory);
             
             return trainingSuccess;
@@ -753,8 +754,6 @@ public class SpeechRecognizer {
             File defaultLanguageModelDir = new File(languageModelDir, SPHINX_LANGUAGE);
             if (!Filesystem.copyDirectory(defaultLanguageModelDir, trainingDirectory, true, true)) {
                 logger.warn("Unable to copy default model to training directory");
-                Filesystem.deleteDirectory(trainingDirectory);
-                SystemIn.relinquish();
                 return false;
             }
             

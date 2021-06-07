@@ -29,6 +29,7 @@ import commons.access.Filesystem;
 import commons.access.OperatingSystem;
 import commons.access.Project;
 import commons.io.HotKeyManager;
+import commons.io.SingletonInputHandler;
 import commons.io.SystemIn;
 import commons.io.WaveRecorder;
 import commons.math.BoundUtility;
@@ -58,7 +59,7 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({SpeechRecognizer.class, HotKeyManager.class, Filesystem.class, OperatingSystem.class, CmdLine.class, SystemIn.class})
+@PrepareForTest({SpeechRecognizer.class, HotKeyManager.class, Filesystem.class, OperatingSystem.class, CmdLine.class, SystemIn.class, SingletonInputHandler.class})
 public class SpeechRecognizerTest {
     
     //Logger
@@ -1279,7 +1280,8 @@ public class SpeechRecognizerTest {
         TestUtils.setField(SpeechRecognizer.SpeechTrainer.class, "instance", trainer);
         TestUtils.setField(SpeechRecognizer.SpeechTrainer.class, "isWindows", true);
         PowerMockito.mockStatic(SystemIn.class);
-        PowerMockito.doReturn(true).when(SystemIn.class, "own", ArgumentMatchers.eq(SpeechRecognizer.class));
+        PowerMockito.mockStatic(SingletonInputHandler.class);
+        PowerMockito.doReturn(true).when(SingletonInputHandler.class, "own", ArgumentMatchers.eq(SpeechRecognizer.class));
         
         File trainingDirectory = Filesystem.createTemporaryDirectory();
         testSpeechTrainerTrain(trainer, trainingDirectory);
@@ -1299,8 +1301,8 @@ public class SpeechRecognizerTest {
         Assert.assertTrue(Filesystem.deleteFile(adaptionMatrix));
         PowerMockito.verifyStatic(Filesystem.class, VerificationModeFactory.times(1));
         Filesystem.deleteDirectory(ArgumentMatchers.eq(trainingDirectory));
-        PowerMockito.verifyStatic(SystemIn.class, VerificationModeFactory.times(6));
-        SystemIn.relinquish();
+        PowerMockito.verifyStatic(SingletonInputHandler.class, VerificationModeFactory.times(6));
+        SingletonInputHandler.relinquish(ArgumentMatchers.eq(SpeechRecognizer.class));
     }
     
     /**
@@ -1359,9 +1361,9 @@ public class SpeechRecognizerTest {
         Assert.assertFalse(trainer.train(adaptionMatrix));
         Mockito.when(trainer.createMllrTransformation(ArgumentMatchers.any(File.class))).thenReturn(true);
         
-        PowerMockito.doReturn(false).when(SystemIn.class, "own", ArgumentMatchers.eq(SpeechRecognizer.class));
+        PowerMockito.doReturn(false).when(SingletonInputHandler.class, "own", ArgumentMatchers.eq(SpeechRecognizer.class));
         Assert.assertFalse(trainer.train(adaptionMatrix));
-        PowerMockito.doReturn(true).when(SystemIn.class, "own", ArgumentMatchers.eq(SpeechRecognizer.class));
+        PowerMockito.doReturn(true).when(SingletonInputHandler.class, "own", ArgumentMatchers.eq(SpeechRecognizer.class));
     }
     
     /**

@@ -11,7 +11,6 @@ import java.io.Console;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Scanner;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,7 +18,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Handles control over System.in.
  */
-public final class SystemIn {
+public final class SystemIn extends SingletonInputHandler {
     
     //Logger
     
@@ -32,27 +31,17 @@ public final class SystemIn {
     //Static Fields
     
     /**
-     * The current owner of the scanner.
-     */
-    private static String owner = "";
-    
-    /**
-     * The default owner of the scanner.
-     */
-    private static String defaultOwner = "";
-    
-    /**
-     * The final stream for the scanner.
+     * The stream for the scanner.
      */
     private static final InputStream systemIn = System.in;
     
     /**
-     * The final scanner for the stream.
+     * The scanner for the stream.
      */
     private static final Scanner in = new Scanner(systemIn);
     
     /**
-     * The final console input object.
+     * The console input object.
      */
     private static final Console console = System.console();
     
@@ -66,10 +55,19 @@ public final class SystemIn {
      */
     private static Thread scannerThread = null;
     
+    //Initialize the interrupt action
+    static {
+        interrupt = SystemIn::interruptScanner;
+    }
+    
+    
+    //Constructors
+    
     /**
-     * A flag indicating whether the scanner has been started or not.
+     * The private constructor for SystemIn.
      */
-    private static final AtomicBoolean started = new AtomicBoolean(false);
+    private SystemIn() {
+    }
     
     
     //Functions
@@ -113,8 +111,6 @@ public final class SystemIn {
      *
      * @param caller The calling class.
      * @return The next line of input.
-     * @see #startScanner()
-     * @see #getBuffer(Class)
      */
     @SuppressWarnings("BusyWait")
     public static synchronized String nextLine(Class<?> caller) {
@@ -172,7 +168,6 @@ public final class SystemIn {
      *
      * @param caller The calling class.
      * @return The input buffer.
-     * @see #startScanner()
      */
     public static synchronized String getBuffer(Class<?> caller) {
         if (!caller.getCanonicalName().equals(owner)) {
@@ -201,100 +196,6 @@ public final class SystemIn {
      */
     public static synchronized String getBuffer(Object caller) {
         return getBuffer(caller.getClass());
-    }
-    
-    /**
-     * Returns the owner of the scanner.
-     *
-     * @return The owner of the scanner.
-     */
-    public static synchronized String getOwner() {
-        return owner;
-    }
-    
-    /**
-     * Determines if an if a class is the owner of the scanner.
-     *
-     * @param owner The calling class.
-     * @return Whether the class is the owner of the scanner or not.
-     */
-    public static synchronized boolean owns(Class<?> owner) {
-        return SystemIn.owner.equals(owner.getCanonicalName());
-    }
-    
-    /**
-     * Determines if an if a class is the owner of the scanner.
-     *
-     * @param owner The calling object.
-     * @return Whether the class is the owner of the scanner or not.
-     * @see #owns(Class)
-     */
-    public static synchronized boolean owns(Object owner) {
-        return owns(owner.getClass());
-    }
-    
-    /**
-     * Sets the owner of the scanner.
-     *
-     * @param owner The new owner of the scanner.
-     * @return Whether the class acquired ownership of the scanner or not.
-     * @see #interruptScanner()
-     */
-    public static synchronized boolean own(Class<?> owner) {
-        if (SystemIn.owner.equals(defaultOwner) || owner.getCanonicalName().equals(defaultOwner)) {
-            interruptScanner();
-            SystemIn.owner = owner.getCanonicalName();
-            return true;
-        }
-        return false;
-    }
-    
-    /**
-     * Sets the owner of the scanner.
-     *
-     * @param owner The new owner of the scanner.
-     * @return Whether the class acquired ownership of the scanner or not.
-     * @see #own(Class)
-     */
-    public static synchronized boolean own(Object owner) {
-        return own(owner.getClass());
-    }
-    
-    /**
-     * Sets the default owner of the scanner.
-     *
-     * @param owner The default owner of the scanner.
-     * @return Whether default ownership was successfully acquired or not.
-     * @see #interruptScanner()
-     */
-    public static synchronized boolean defaultOwn(Class<?> owner) {
-        if (defaultOwner.isEmpty()) {
-            interruptScanner();
-            defaultOwner = owner.getCanonicalName();
-            return true;
-        }
-        return false;
-    }
-    
-    /**
-     * Sets the default owner of the scanner.
-     *
-     * @param owner The default owner of the scanner.
-     * @return Whether default ownership was successfully acquired or not.
-     * @see #defaultOwn(Class)
-     */
-    public static synchronized boolean defaultOwn(Object owner) {
-        return defaultOwn(owner.getClass());
-    }
-    
-    /**
-     * Relinquishes the ownership of the scanner to the default owner.
-     *
-     * @see #interruptScanner()
-     */
-    public static synchronized void relinquish() {
-        interruptScanner();
-        owner = defaultOwner;
     }
     
 }
