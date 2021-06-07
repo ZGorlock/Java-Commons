@@ -91,6 +91,11 @@ public class SpeechRecognizer {
     public static final String SPHINX_LANGUAGE_MODEL = "en-us.lm.bin";
     
     /**
+     * The Sphinx phonetic language model to use.
+     */
+    public static final String SPHINX_PHONETIC_LANGUAGE_MODEL = "en-us-phone.lm.bin";
+    
+    /**
      * The Sphinx transcription file to use for acoustic model adaption.
      */
     public static final File SPHINX_TRANSCRIPTION_FILE = new File(RESOURCE_DIRECTORY, "arctic20.transcription");
@@ -164,15 +169,15 @@ public class SpeechRecognizer {
     /**
      * The buffer holding PocketSphinx output if running in triggered or on-demand mode.
      */
-    protected AtomicReference<String> speechBuffer = new AtomicReference<>("");
+    protected AtomicReference<String> speechBuffer = null;
     
     /**
-     * A flag indicting whether Speech Recognition is active or not.
+     * A flag indicting whether the Speech Recognizer is active or not.
      */
     private AtomicBoolean active = new AtomicBoolean(false);
     
     /**
-     * The mode that PocketSphinx is running in.
+     * The mode that the Speech Recognizer is running in.
      */
     private RecognitionMode mode = null;
     
@@ -191,6 +196,11 @@ public class SpeechRecognizer {
      * The callback for handling capture speech in triggered mode.
      */
     private HotKeyManager.HotKeyCallback captureSpeechTriggerCallback = null;
+    
+    /**
+     * A flag indicating whether the Speech Recognizer is recording or not.
+     */
+    private AtomicBoolean recording = new AtomicBoolean(false);
     
     /**
      * The minimum length for speech recordings to be processed in triggered mode.
@@ -284,9 +294,6 @@ public class SpeechRecognizer {
         if (newMode == null) {
             return false;
         }
-        if (mode == newMode) {
-            return true;
-        }
         if (mode == null) {
             mode = RecognitionMode.OFF;
         }
@@ -297,10 +304,12 @@ public class SpeechRecognizer {
                 if ((pocketsphinx != null) && pocketsphinx.isAlive()) {
                     pocketsphinx.destroyForcibly();
                 }
+                pocketsphinx = null;
                 logger.debug("Continuous speech recognition terminated");
                 if (speechStream != null) {
                     try {
                         speechStream.close();
+                        speechStream = null;
                     } catch (IOException ignored) {
                     }
                 }
@@ -309,8 +318,17 @@ public class SpeechRecognizer {
                 if (HotKeyManager.hasHotkey(captureSpeechTrigger)) {
                     HotKeyManager.unregisterHotkey(captureSpeechTrigger);
                 }
+                if (isRecording()) {
+                    captureSpeechTrigger.release();
+                }
+                speechBuffer = null;
                 break;
             case ON_DEMAND:
+                if (isRecording()) {
+                    captureSpeechTrigger.release();
+                }
+                speechBuffer = null;
+                break;
             case OFF:
                 break;
         }
@@ -330,8 +348,11 @@ public class SpeechRecognizer {
                 break;
             case TRIGGERED:
                 HotKeyManager.registerHotkey(captureSpeechTrigger);
+                speechBuffer = new AtomicReference<>("");
                 break;
             case ON_DEMAND:
+                speechBuffer = new AtomicReference<>("");
+                break;
             case OFF:
                 break;
         }
@@ -346,7 +367,7 @@ public class SpeechRecognizer {
      * @return Whether Speech Recognition was successfully started or not.
      */
     public boolean start() {
-        if (!active.get() && initialize((mode != null) ? mode : DEFAULT_SPHINX_MODE)) {
+        if (!isActive() && initialize((mode != null) ? mode : DEFAULT_SPHINX_MODE)) {
             active.set(true);
             return true;
         }
@@ -359,8 +380,8 @@ public class SpeechRecognizer {
      * @return Whether Speech Recognition was successfully stopped or not.
      */
     public boolean stop() {
-        if (active.get() && initialize(RecognitionMode.OFF)) {
-            active.set(true);
+        if (isActive() && initialize(RecognitionMode.OFF)) {
+            active.set(false);
             return true;
         }
         return false;
@@ -441,7 +462,9 @@ public class SpeechRecognizer {
             }
         }
         
-        speechBuffer.set("");
+        if (speechBuffer != null) {
+            speechBuffer.set("");
+        }
     }
     
     /**
@@ -450,7 +473,7 @@ public class SpeechRecognizer {
      * @return Whether the speech recording has been started or not.
      */
     public boolean startRecording() {
-        if (mode == RecognitionMode.ON_DEMAND) {
+        if ((mode == RecognitionMode.ON_DEMAND) && !isRecording()) {
             captureSpeechTriggerCallback.hit();
             return true;
         }
@@ -460,14 +483,14 @@ public class SpeechRecognizer {
     /**
      * Finalizes the speech recording for on-demand mode.
      *
-     * @return The transcription of the speech that was recorded.
+     * @return Whether the speech recording has been finalized or not.
      */
-    public String finalizeRecording() {
-        if (mode == RecognitionMode.ON_DEMAND) {
+    public boolean finalizeRecording() {
+        if ((mode == RecognitionMode.ON_DEMAND) && isRecording()) {
             captureSpeechTriggerCallback.release();
-            return getSpeech();
+            return true;
         }
-        return null;
+        return false;
     }
     
     
@@ -485,16 +508,47 @@ public class SpeechRecognizer {
         return instance;
     }
     
+    /**
+     * Returns whether the Speech Recognizer is active or not.
+     *
+     * @return Whether the Speech Recognizer is active or not.
+     */
+    public boolean isActive() {
+        return active.get();
+    }
+    
+    /**
+     * Returns the mode that the Speech Recognizer is running in.
+     *
+     * @return The mode that the Speech Recognizer is running in.
+     */
+    public RecognitionMode getMode() {
+        return mode;
+    }
+    
+    /**
+     * Returns whether the Speech Recognizer is recording or not.
+     *
+     * @return Whether the Speech Recognizer is recording or not.
+     */
+    public boolean isRecording() {
+        return recording.get();
+    }
+    
     
     //Setters
     
     /**
-     * Switches the mode that PocketSphinx is running in.
+     * Switches the mode that the Speech Recognizer is running in.
      *
-     * @param mode The mode to switch to.
+     * @param mode The mode.
      */
-    public void setRecognitionMode(RecognitionMode mode) {
-        initialize(mode);
+    public void setMode(RecognitionMode mode) {
+        if (isActive()) {
+            initialize(mode);
+        } else {
+            this.mode = mode;
+        }
     }
     
     /**
@@ -503,7 +557,7 @@ public class SpeechRecognizer {
      * @param minimumRecordingLength The minimum length for speech recordings to be processed.
      */
     public void setMinimumRecordingLength(long minimumRecordingLength) {
-        this.minimumRecordingLength = minimumRecordingLength;
+        this.minimumRecordingLength = Math.max(minimumRecordingLength, 0);
     }
     
     /**
@@ -516,7 +570,7 @@ public class SpeechRecognizer {
      * @param meta    Whether the trigger includes the Meta key.
      */
     public void setCaptureSpeechTrigger(int keyCode, boolean control, boolean shift, boolean alt, boolean meta) {
-        if (HotKeyManager.hasHotkey(captureSpeechTrigger)) {
+        if ((captureSpeechTrigger != null) && HotKeyManager.hasHotkey(captureSpeechTrigger)) {
             HotKeyManager.unregisterHotkey(captureSpeechTrigger);
         }
         
@@ -549,7 +603,7 @@ public class SpeechRecognizer {
         /**
          * A flag indicating whether a recording is in progress or not.
          */
-        private AtomicBoolean recording = new AtomicBoolean(false);
+        private AtomicBoolean recording = SpeechRecognizer.this.recording;
         
         /**
          * The file that the recording will be written to.
@@ -570,13 +624,8 @@ public class SpeechRecognizer {
         @Override
         public void hit() {
             if (recording.compareAndSet(false, true)) {
-                File tmpDir = Project.TMP_DIR;
-                if (!tmpDir.exists()) {
-                    Filesystem.createDirectory(tmpDir);
-                }
-                
                 wavFile = Filesystem.createTemporaryFile(".wav");
-                wav = new WaveRecording(wavFile.getPath());
+                wav = new WaveRecording(wavFile);
                 if (!wav.start(RECORDING_SAMPLE_RATE, RECORDING_SAMPLE_SIZE_IN_BITS, RECORDING_CHANNELS, RECORDING_SIGNED, RECORDING_BIG_ENDIAN)) {
                     recording.set(false);
                 }
@@ -600,7 +649,9 @@ public class SpeechRecognizer {
                     if ((mode == RecognitionMode.ON_DEMAND) || (recordingLength >= minimumRecordingLength)) {
                         String decodeCmd = String.format(decodeRecordingCmd, wavFile.getAbsolutePath());
                         String speech = CmdLine.executeCmd(decodeCmd);
-                        speechBuffer.set(speech.trim());
+                        if (speechBuffer != null) {
+                            speechBuffer.set(speech.trim());
+                        }
                     }
                     Filesystem.deleteFile(wavFile);
                     
@@ -623,6 +674,11 @@ public class SpeechRecognizer {
          * A flag indicating whether the running operating system is Windows or not.
          */
         private static final boolean isWindows = OperatingSystem.isWindows();
+        
+        /**
+         * The singleton instance of the Speech Trainer.
+         */
+        private static SpeechTrainer instance = null;
         
         
         //Constructors
@@ -653,9 +709,14 @@ public class SpeechRecognizer {
                 return false;
             }
             
-            System.out.println(Console.color("You will now train the Speech Recognizer to better recognize your speech:", Console.ConsoleEffect.YELLOW));
+            System.out.println(Console.color("You will now train the Speech Recognizer to better recognize your voice:", Console.ConsoleEffect.YELLOW));
             System.out.println(Console.color("You will be asked to read several sentences", Console.ConsoleEffect.YELLOW));
             System.out.println(Console.color("Speak into the microphone as you normally would and make sure there is no background noise or music playing", Console.ConsoleEffect.YELLOW));
+            
+            if (!SystemIn.own(SpeechRecognizer.class)) {
+                logger.error("SpeechRecognizer could not acquire ownership of system input");
+                return false;
+            }
             
             if (!collectRecordings(trainingDirectory) ||
                     !generateAcousticFeatureFiles(trainingDirectory) ||
@@ -667,7 +728,7 @@ public class SpeechRecognizer {
             }
             
             File mllrMatrixFile = new File(trainingDirectory, "mllr_matrix");
-            boolean trainingSuccess = Filesystem.copyFile(mllrMatrixFile, adaptionMatrixOutput);
+            boolean trainingSuccess = Filesystem.copyFile(mllrMatrixFile, adaptionMatrixOutput, true);
             
             SystemIn.relinquish();
             Filesystem.deleteDirectory(trainingDirectory);
@@ -681,7 +742,7 @@ public class SpeechRecognizer {
          * @param trainingDirectory The training directory.
          * @return Whether the training directory was successfully prepared or not.
          */
-        private boolean prepareTrainingDirectory(File trainingDirectory) {
+        public boolean prepareTrainingDirectory(File trainingDirectory) {
             if ((trainingDirectory.exists() && !Filesystem.deleteDirectory(trainingDirectory)) || !Filesystem.createDirectory(trainingDirectory)) {
                 logger.warn("Unable to create training directory");
                 return false;
@@ -704,8 +765,8 @@ public class SpeechRecognizer {
             File sphinxBw = new File(SPHINX_DIRECTORY, "bw" + (isWindows ? ".exe" : ""));
             File sphinxMllr = new File(SPHINX_DIRECTORY, "mllr_solve" + (isWindows ? ".exe" : ""));
             File sphinxDict = new File(languageModelDir, SPHINX_DICTIONARY);
-            File sphinxLmBin = new File(languageModelDir, SPHINX_LANGUAGE + ".lm.bin");
-            File sphinxPhoneLmBin = new File(languageModelDir, SPHINX_LANGUAGE + "-phone.lm.bin");
+            File sphinxLmBin = new File(languageModelDir, SPHINX_LANGUAGE_MODEL);
+            File sphinxPhoneLmBin = new File(languageModelDir, SPHINX_PHONETIC_LANGUAGE_MODEL);
             
             boolean copyTrainingResources;
             if (isWindows) {
@@ -737,7 +798,7 @@ public class SpeechRecognizer {
          * @return Whether the user recordings were successfully collected or not.
          */
         @SuppressWarnings("StatementWithEmptyBody")
-        private boolean collectRecordings(File trainingDirectory) {
+        public boolean collectRecordings(File trainingDirectory) {
             List<String> transcriptions = Filesystem.readLines(SPHINX_TRANSCRIPTION_FILE);
             if (transcriptions.isEmpty()) {
                 logger.warn("Unable to train speech recognition with an empty transcription file");
@@ -745,11 +806,6 @@ public class SpeechRecognizer {
             }
             
             Pattern transcriptionPattern = Pattern.compile("<s>\\s(?<transcription>.*)\\s</s>\\s\\((?<fileId>.*)\\)");
-            
-            if (!SystemIn.own(SpeechRecognizer.class)) {
-                logger.error("SpeechRecognizer could not acquire ownership of system input");
-                return false;
-            }
             
             for (String transcription : transcriptions) {
                 Matcher transcriptionMatcher = transcriptionPattern.matcher(transcription);
@@ -760,7 +816,7 @@ public class SpeechRecognizer {
                 String phrase = transcriptionMatcher.group("transcription");
                 String fileId = transcriptionMatcher.group("fileId");
                 
-                WaveRecording recording = new WaveRecording(Filesystem.generatePath(trainingDirectory.getAbsolutePath(), fileId + ".wav"));
+                WaveRecording recording = new WaveRecording(new File(trainingDirectory, fileId + ".wav"));
                 
                 System.out.println(Console.color("Preview the sentence and press Enter to begin speaking, press Enter again to stop the recording", Console.ConsoleEffect.YELLOW));
                 System.out.print(phrase);
@@ -776,7 +832,6 @@ public class SpeechRecognizer {
                 System.out.println(Console.color("Recording complete", Console.ConsoleEffect.GREEN));
             }
             
-            Filesystem.copyDirectory(trainingDirectory, new File(trainingDirectory.getParentFile(), "backup"));
             return true;
         }
         
@@ -786,7 +841,7 @@ public class SpeechRecognizer {
          * @param trainingDirectory The training directory.
          * @return Whether the acoustic feature files were successfully generated or not.
          */
-        private boolean generateAcousticFeatureFiles(File trainingDirectory) {
+        public boolean generateAcousticFeatureFiles(File trainingDirectory) {
             File sphinxFe = new File(SPHINX_DIRECTORY, "sphinx_fe" + (isWindows ? ".exe" : ""));
             String featParams = Filesystem.generatePath(SPHINX_LANGUAGE, "feat.params");
             
@@ -815,7 +870,7 @@ public class SpeechRecognizer {
          * @param trainingDirectory The training directory.
          * @return Whether the observation counts were successfully accumulated or not.
          */
-        private boolean accumulateObservationCounts(File trainingDirectory) {
+        public boolean accumulateObservationCounts(File trainingDirectory) {
             File sphinxBw = new File(SPHINX_DIRECTORY, "bw" + (isWindows ? ".exe" : ""));
             String mdef = Filesystem.generatePath(SPHINX_LANGUAGE, "mdef");
             //String featureTransform = Filesystem.generatePath(SPHINX_LANGUAGE, "feature_transform");
@@ -849,7 +904,7 @@ public class SpeechRecognizer {
          * @param trainingDirectory The training directory.
          * @return Whether the mllr transformation were successfully created or not.
          */
-        private boolean createMllrTransformation(File trainingDirectory) {
+        public boolean createMllrTransformation(File trainingDirectory) {
             File sphinxMllr = new File(SPHINX_DIRECTORY, "mllr_solve" + (isWindows ? ".exe" : ""));
             File mllrMatrixFile = new File(trainingDirectory, "mllr_matrix");
             String means = Filesystem.generatePath(SPHINX_LANGUAGE, "means");
@@ -880,8 +935,10 @@ public class SpeechRecognizer {
          * @return Whether the acoustic model training was successful or not.
          */
         public static boolean performTraining(File adaptionMatrixOutput) {
-            SpeechTrainer trainer = new SpeechTrainer();
-            return trainer.train(adaptionMatrixOutput);
+            if (instance == null) {
+                instance = new SpeechTrainer();
+            }
+            return instance.train(adaptionMatrixOutput);
         }
         
     }
