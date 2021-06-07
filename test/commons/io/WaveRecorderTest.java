@@ -1,5 +1,5 @@
 /*
- * File:    WaveRecordingTest.java
+ * File:    WaveRecorderTest.java
  * Package: commons.io
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
@@ -22,21 +22,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of WaveRecording.
+ * JUnit test of WaveRecorder.
  *
- * @see WaveRecording
+ * @see WaveRecorder
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({WaveRecording.class})
-public class WaveRecordingTest {
+@PrepareForTest({WaveRecorder.class})
+public class WaveRecorderTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(WaveRecordingTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(WaveRecorderTest.class);
     
     
     //Initialization
@@ -88,28 +88,28 @@ public class WaveRecordingTest {
      * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
-     * @see WaveRecording#RECORDING_THREAD_STATUS_DELAY
-     * @see WaveRecording#DEFAULT_SAMPLE_RATE
-     * @see WaveRecording#DEFAULT_SAMPLE_SIZE_IN_BITS
-     * @see WaveRecording#DEFAULT_CHANNELS
-     * @see WaveRecording#DEFAULT_SIGNED
-     * @see WaveRecording#DEFAULT_BIG_ENDIAN
+     * @see WaveRecorder#RECORDING_THREAD_STATUS_DELAY
+     * @see WaveRecorder#DEFAULT_SAMPLE_RATE
+     * @see WaveRecorder#DEFAULT_SAMPLE_SIZE_IN_BITS
+     * @see WaveRecorder#DEFAULT_CHANNELS
+     * @see WaveRecorder#DEFAULT_SIGNED
+     * @see WaveRecorder#DEFAULT_BIG_ENDIAN
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertEquals(100, WaveRecording.RECORDING_THREAD_STATUS_DELAY);
-        Assert.assertEquals(44100, WaveRecording.DEFAULT_SAMPLE_RATE, 0.0000001);
-        Assert.assertEquals(16, WaveRecording.DEFAULT_SAMPLE_SIZE_IN_BITS);
-        Assert.assertEquals(2, WaveRecording.DEFAULT_CHANNELS);
-        Assert.assertTrue(WaveRecording.DEFAULT_SIGNED);
-        Assert.assertTrue(WaveRecording.DEFAULT_BIG_ENDIAN);
+        Assert.assertEquals(100, WaveRecorder.RECORDING_THREAD_STATUS_DELAY);
+        Assert.assertEquals(44100, WaveRecorder.DEFAULT_SAMPLE_RATE, 0.0000001);
+        Assert.assertEquals(16, WaveRecorder.DEFAULT_SAMPLE_SIZE_IN_BITS);
+        Assert.assertEquals(2, WaveRecorder.DEFAULT_CHANNELS);
+        Assert.assertTrue(WaveRecorder.DEFAULT_SIGNED);
+        Assert.assertTrue(WaveRecorder.DEFAULT_BIG_ENDIAN);
     }
     
     /**
      * JUnit test of constructors.
      *
      * @throws Exception When there is an exception.
-     * @see WaveRecording#WaveRecording(File)
+     * @see WaveRecorder#WaveRecorder(File)
      */
     @Test
     public void testConstructors() throws Exception {
@@ -120,8 +120,8 @@ public class WaveRecordingTest {
      * JUnit test of start.
      *
      * @throws Exception When there is an exception.
-     * @see WaveRecording#start(float, int, int, boolean, boolean)
-     * @see WaveRecording#start()
+     * @see WaveRecorder#start(float, int, int, boolean, boolean)
+     * @see WaveRecorder#start()
      */
     @Test
     public void testStart() throws Exception {
@@ -132,7 +132,7 @@ public class WaveRecordingTest {
      * JUnit test of stop.
      *
      * @throws Exception When there is an exception.
-     * @see WaveRecording#stop()
+     * @see WaveRecorder#stop()
      */
     @Test
     public void testStop() throws Exception {
@@ -143,7 +143,7 @@ public class WaveRecordingTest {
      * JUnit test of getLengthInMilliseconds.
      *
      * @throws Exception When there is an exception.
-     * @see WaveRecording#getLengthInMilliseconds()
+     * @see WaveRecorder#getLengthInMilliseconds()
      */
     @Test
     public void testGetLengthInMilliseconds() throws Exception {
@@ -154,7 +154,7 @@ public class WaveRecordingTest {
      * JUnit test of speechCaptureEnabled.
      *
      * @throws Exception When there is an exception.
-     * @see WaveRecording#speechCaptureEnabled()
+     * @see WaveRecorder#speechCaptureEnabled()
      */
     @Test
     public void testSpeechCaptureEnabled() throws Exception {

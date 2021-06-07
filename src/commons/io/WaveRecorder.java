@@ -1,5 +1,5 @@
 /*
- * File:    WaveRecording.java
+ * File:    WaveRecorder.java
  * Package: commons.io
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
@@ -21,16 +21,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Captures a WAV recording.
+ * Captures WAV recordings.
  */
-public class WaveRecording {
+public class WaveRecorder {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(WaveRecording.class);
+    private static final Logger logger = LoggerFactory.getLogger(WaveRecorder.class);
     
     
     //Constants
@@ -100,11 +100,11 @@ public class WaveRecording {
     //Constructors
     
     /**
-     * The constructor for a WaveRecording.
+     * The constructor for a Wave Recorder.
      *
      * @param file The file to produce the recording in.
      */
-    public WaveRecording(File file) {
+    public WaveRecorder(File file) {
         wavFile = file;
     }
     

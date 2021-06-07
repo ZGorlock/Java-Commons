@@ -24,7 +24,7 @@ import commons.access.Project;
 import commons.console.Console;
 import commons.io.HotKeyManager;
 import commons.io.SystemIn;
-import commons.io.WaveRecording;
+import commons.io.WaveRecorder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -613,7 +613,7 @@ public class SpeechRecognizer {
         /**
          * The object responsible for capturing the recording.
          */
-        private WaveRecording wav = null;
+        private WaveRecorder wav = null;
         
         
         //Methods
@@ -625,7 +625,7 @@ public class SpeechRecognizer {
         public void hit() {
             if (recording.compareAndSet(false, true)) {
                 wavFile = Filesystem.createTemporaryFile(".wav");
-                wav = new WaveRecording(wavFile);
+                wav = new WaveRecorder(wavFile);
                 if (!wav.start(RECORDING_SAMPLE_RATE, RECORDING_SAMPLE_SIZE_IN_BITS, RECORDING_CHANNELS, RECORDING_SIGNED, RECORDING_BIG_ENDIAN)) {
                     recording.set(false);
                 }
@@ -816,7 +816,7 @@ public class SpeechRecognizer {
                 String phrase = transcriptionMatcher.group("transcription");
                 String fileId = transcriptionMatcher.group("fileId");
                 
-                WaveRecording recording = new WaveRecording(new File(trainingDirectory, fileId + ".wav"));
+                WaveRecorder recording = new WaveRecorder(new File(trainingDirectory, fileId + ".wav"));
                 
                 System.out.println(Console.color("Preview the sentence and press Enter to begin speaking, press Enter again to stop the recording", Console.ConsoleEffect.YELLOW));
                 System.out.print(phrase);

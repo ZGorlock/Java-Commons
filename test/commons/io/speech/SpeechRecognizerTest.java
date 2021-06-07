@@ -30,7 +30,7 @@ import commons.access.OperatingSystem;
 import commons.access.Project;
 import commons.io.HotKeyManager;
 import commons.io.SystemIn;
-import commons.io.WaveRecording;
+import commons.io.WaveRecorder;
 import commons.math.BoundUtility;
 import commons.string.StringUtility;
 import commons.test.TestUtils;
@@ -1180,7 +1180,7 @@ public class SpeechRecognizerTest {
         Whitebox.invokeMethod(captureSpeechTriggerCallback, "hit");
         Assert.assertTrue(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Assert.assertTrue(((File) TestUtils.getField(captureSpeechTriggerCallback, "wavFile")).exists());
-        WaveRecording wav = (WaveRecording) TestUtils.getField(captureSpeechTriggerCallback, "wav");
+        WaveRecorder wav = (WaveRecorder) TestUtils.getField(captureSpeechTriggerCallback, "wav");
         Assert.assertNotNull(TestUtils.getField(captureSpeechTriggerCallback, "wav"));
         wav.stop();
         
@@ -1207,7 +1207,7 @@ public class SpeechRecognizerTest {
         Object captureSpeechTriggerCallback = TestUtils.getField(sut, "captureSpeechTriggerCallback");
         AtomicReference<String> speechBuffer = (AtomicReference<String>) TestUtils.getField(sut, "speechBuffer");
         File wavFile = Filesystem.createTemporaryFile(".wav", "speech-recorder-test");
-        WaveRecording wav = Mockito.mock(WaveRecording.class);
+        WaveRecorder wav = Mockito.mock(WaveRecorder.class);
         Mockito.when(wav.getLengthInMilliseconds()).thenReturn(SpeechRecognizer.DEFAULT_MINIMUM_RECORDING_LENGTH - 1);
         
         //release
@@ -1232,7 +1232,7 @@ public class SpeechRecognizerTest {
         //already released
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", wavFile);
-        TestUtils.setField(captureSpeechTriggerCallback, "wav", new WaveRecording(wavFile));
+        TestUtils.setField(captureSpeechTriggerCallback, "wav", new WaveRecorder(wavFile));
         Whitebox.invokeMethod(captureSpeechTriggerCallback, "release");
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Assert.assertNotNull(TestUtils.getField(captureSpeechTriggerCallback, "wavFile"));
