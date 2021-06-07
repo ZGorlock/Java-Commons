@@ -174,7 +174,7 @@ public final class HotKeyManager {
      *
      * @return Whether the setup was successful or not.
      */
-    public boolean setup() {
+    private boolean setup() {
         if (OperatingSystem.isDebugging()) {
             return false;
         }
@@ -234,6 +234,7 @@ public final class HotKeyManager {
                     } catch (NativeHookException ignored) {
                     }
                 }
+                return false;
             }
             return true;
             
@@ -302,7 +303,7 @@ public final class HotKeyManager {
         }
         
         hotKeys.parallelStream()
-                .filter(e -> e.isMatch(code))
+                .filter(e -> e.isMatch(code, false))
                 .forEach(HotKey::hit);
     }
     
@@ -320,7 +321,7 @@ public final class HotKeyManager {
         }
         
         hotKeys.parallelStream()
-                .filter(e -> e.isMatch(code))
+                .filter(e -> e.isMatch(code, true))
                 .forEach(HotKey::release);
     }
     
@@ -445,7 +446,7 @@ public final class HotKeyManager {
          * @param callback The callback to be alerted when the HotKey is pressed or released.
          */
         public HotKey(int code, boolean control, boolean shift, boolean alt, boolean meta, HotKeyCallback callback) {
-            this.code = code;
+            this.code = Math.max(code, NO_KEY);
             this.modifiers.put(ModifierKey.CONTROL, control);
             this.modifiers.put(ModifierKey.SHIFT, shift);
             this.modifiers.put(ModifierKey.ALT, alt);
@@ -514,14 +515,16 @@ public final class HotKeyManager {
         /**
          * Determines if a key code combined with the current special key states is a match for this HotKey.
          *
+         * @param keyCode      The key code.
+         * @param checkRelease A flag indicating whether to check the match of  a release instead of a hit.
          * @return Whether the key code combined with the current special key states is a match for this HotKey or not.
          */
-        public boolean isMatch(int keyCode) {
+        public boolean isMatch(int keyCode, boolean checkRelease) {
             return ((getCode() == code) || (getCode() == HotKey.NO_KEY)) &&
-                    (!hasModifier(ModifierKey.CONTROL) || modifierDown.get(ModifierKey.CONTROL).get()) &&
-                    (!hasModifier(ModifierKey.SHIFT) || modifierDown.get(ModifierKey.SHIFT).get()) &&
-                    (!hasModifier(ModifierKey.ALT) || modifierDown.get(ModifierKey.ALT).get()) &&
-                    (!hasModifier(ModifierKey.META) || modifierDown.get(ModifierKey.META).get());
+                    (!hasModifier(ModifierKey.CONTROL) || (modifierDown.get(ModifierKey.CONTROL).get() ^ checkRelease)) &&
+                    (!hasModifier(ModifierKey.SHIFT) || (modifierDown.get(ModifierKey.SHIFT).get() ^ checkRelease)) &&
+                    (!hasModifier(ModifierKey.ALT) || (modifierDown.get(ModifierKey.ALT).get() ^ checkRelease)) &&
+                    (!hasModifier(ModifierKey.META) || (modifierDown.get(ModifierKey.META).get() ^ checkRelease));
         }
         
         
