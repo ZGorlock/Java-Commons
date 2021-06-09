@@ -110,13 +110,14 @@ public final class SystemIn extends SingletonInputHandler {
      * Gets the next line of input from the scanner.
      *
      * @param caller The calling class.
-     * @return The next line of input.
+     * @return The next line of input, or an empty string if the caller is not the owner of the Input Handler.
      */
     @SuppressWarnings("BusyWait")
     public static synchronized String nextLine(Class<?> caller) {
         if (!caller.getCanonicalName().equals(owner)) {
             return "";
         }
+        
         startScanner();
         while (buffer == null) {
             try {
@@ -131,7 +132,7 @@ public final class SystemIn extends SingletonInputHandler {
      * Gets the next line of input from the scanner.
      *
      * @param caller The calling object.
-     * @return The next line of input.
+     * @return The next line of input, or an empty string if the caller is not the owner of the Input Handler.
      * @see #nextLine(Class)
      */
     public static synchronized String nextLine(Object caller) {
@@ -142,10 +143,14 @@ public final class SystemIn extends SingletonInputHandler {
      * Gets a password input from the console.
      *
      * @param caller The calling class.
-     * @return The password input.
+     * @return The password input, or an empty string if the caller is not the owner of the Input Handler.
      * @see Console#readPassword()
      */
     public static synchronized String getPassword(Class<?> caller) {
+        if (!caller.getCanonicalName().equals(owner)) {
+            return "";
+        }
+        
         if ((scannerThread != null) && scannerThread.isAlive()) {
             scannerThread.interrupt();
         }
@@ -156,7 +161,7 @@ public final class SystemIn extends SingletonInputHandler {
      * Gets a password input from the console.
      *
      * @param caller The calling object.
-     * @return The password input.
+     * @return The password input, or an empty string if the caller is not the owner of the Input Handler.
      * @see #getPassword(Class)
      */
     public static synchronized String getPassword(Object caller) {
@@ -167,12 +172,13 @@ public final class SystemIn extends SingletonInputHandler {
      * Returns the input buffer from the scanner.
      *
      * @param caller The calling class.
-     * @return The input buffer.
+     * @return The input buffer, or null if the caller is not the owner of the Input Handler.
      */
     public static synchronized String getBuffer(Class<?> caller) {
         if (!caller.getCanonicalName().equals(owner)) {
             return null;
         }
+        
         if (buffer != null) {
             String line = buffer;
             buffer = null;
@@ -191,7 +197,7 @@ public final class SystemIn extends SingletonInputHandler {
      * Returns the input buffer from the scanner.
      *
      * @param caller The calling object.
-     * @return The input buffer.
+     * @return The input buffer, or null if the caller is not the owner of the Input Handler.
      * @see #getBuffer(Class)
      */
     public static synchronized String getBuffer(Object caller) {
