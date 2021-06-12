@@ -610,11 +610,6 @@ public class SpeechRecognizer {
          */
         private File wavFile = null;
         
-        /**
-         * The object responsible for capturing the recording.
-         */
-        private WaveRecorder wav = null;
-        
         
         //Methods
         
@@ -624,10 +619,17 @@ public class SpeechRecognizer {
         @Override
         public void hit() {
             if (recording.compareAndSet(false, true)) {
-                wavFile = Filesystem.createTemporaryFile(".wav");
-                wav = new WaveRecorder(wavFile);
-                if (!wav.start(RECORDING_SAMPLE_RATE, RECORDING_SAMPLE_SIZE_IN_BITS, RECORDING_CHANNELS, RECORDING_SIGNED, RECORDING_BIG_ENDIAN)) {
+                if (!WaveRecorder.owns(SpeechRecognizer.SpeechRecorder.class) && !WaveRecorder.own(SpeechRecognizer.SpeechRecorder.class)) {
+                    logger.warn("The Speech Recognizer could not acquire ownership of the wave recorder");
                     recording.set(false);
+                    return;
+                }
+                
+                wavFile = Filesystem.createTemporaryFile(".wav");
+                if (!WaveRecorder.start(wavFile, RECORDING_SAMPLE_RATE, RECORDING_SAMPLE_SIZE_IN_BITS, RECORDING_CHANNELS, RECORDING_SIGNED, RECORDING_BIG_ENDIAN, SpeechRecognizer.SpeechRecorder.class)) {
+                    logger.warn("The Speech Recognizer could not start the wave recorder");
+                    recording.set(false);
+                    return;
                 }
                 logger.debug(((mode == RecognitionMode.TRIGGERED) ? "Triggered" : "On-demand") + " speech recognition started");
             }
@@ -639,24 +641,29 @@ public class SpeechRecognizer {
         @Override
         public void release() {
             if (recording.compareAndSet(true, false)) {
-                if (wav != null) {
-                    wav.stop();
-                    logger.debug(((mode == RecognitionMode.TRIGGERED) ? "Triggered" : "On-demand") + " speech recognition finished");
-                    
-                    long recordingLength = wav.getLengthInMilliseconds();
-                    
-                    wav = null;
-                    if ((mode == RecognitionMode.ON_DEMAND) || (recordingLength >= minimumRecordingLength)) {
-                        String decodeCmd = String.format(decodeRecordingCmd, wavFile.getAbsolutePath());
-                        String speech = CmdLine.executeCmd(decodeCmd);
-                        if (speechBuffer != null) {
-                            speechBuffer.set(speech.trim());
-                        }
-                    }
-                    Filesystem.deleteFile(wavFile);
-                    
-                    recording.set(false);
+                if (!WaveRecorder.owns(SpeechRecognizer.SpeechRecorder.class)) {
+                    logger.warn("The Speech Recognizer does not have ownership of the wave recorder");
+                    return;
                 }
+                
+                if (!WaveRecorder.stop(SpeechRecognizer.SpeechRecorder.class)) {
+                    logger.warn("The Speech Recognizer could not stop the wave recorder");
+                    WaveRecorder.relinquish(SpeechRecognizer.SpeechRecorder.class);
+                    return;
+                }
+                logger.debug(((mode == RecognitionMode.TRIGGERED) ? "Triggered" : "On-demand") + " speech recognition finished");
+                
+                long recordingLength = WaveRecorder.getLengthInMilliseconds(SpeechRecognizer.SpeechRecorder.class);
+                WaveRecorder.relinquish(SpeechRecognizer.SpeechRecorder.class);
+                
+                if ((mode == RecognitionMode.ON_DEMAND) || (recordingLength >= minimumRecordingLength)) {
+                    String decodeCmd = String.format(decodeRecordingCmd, wavFile.getAbsolutePath());
+                    String speech = CmdLine.executeCmd(decodeCmd);
+                    if (speechBuffer != null) {
+                        speechBuffer.set(speech.trim());
+                    }
+                }
+                Filesystem.deleteFile(wavFile);
             }
         }
         
@@ -714,16 +721,10 @@ public class SpeechRecognizer {
             System.out.println(Console.color("You will be asked to read several sentences", Console.ConsoleEffect.YELLOW));
             System.out.println(Console.color("Speak into the microphone as you normally would and make sure there is no background noise or music playing", Console.ConsoleEffect.YELLOW));
             
-            if (!SystemIn.own(SpeechRecognizer.class)) {
-                logger.error("SpeechRecognizer could not acquire ownership of system input");
-                return false;
-            }
-            
             if (!collectRecordings(trainingDirectory) ||
                     !generateAcousticFeatureFiles(trainingDirectory) ||
                     !accumulateObservationCounts(trainingDirectory) ||
                     !createMllrTransformation(trainingDirectory)) {
-                SystemIn.relinquish(SpeechRecognizer.class);
                 Filesystem.deleteDirectory(trainingDirectory);
                 return false;
             }
@@ -731,9 +732,7 @@ public class SpeechRecognizer {
             File mllrMatrixFile = new File(trainingDirectory, "mllr_matrix");
             boolean trainingSuccess = Filesystem.copyFile(mllrMatrixFile, adaptionMatrixOutput, true);
             
-            SystemIn.relinquish(SpeechRecognizer.class);
             Filesystem.deleteDirectory(trainingDirectory);
-            
             return trainingSuccess;
         }
         
@@ -798,9 +797,21 @@ public class SpeechRecognizer {
          */
         @SuppressWarnings("StatementWithEmptyBody")
         public boolean collectRecordings(File trainingDirectory) {
+            if (!SystemIn.owns(SpeechRecognizer.SpeechTrainer.class) && !SystemIn.own(SpeechRecognizer.SpeechTrainer.class)) {
+                logger.error("The Speech Trainer could not acquire ownership of the system input");
+                return false;
+            }
+            if (!WaveRecorder.owns(SpeechRecognizer.SpeechTrainer.class) && !WaveRecorder.own(SpeechRecognizer.SpeechTrainer.class)) {
+                logger.warn("The Speech Trainer could not acquire ownership of the wave recorder");
+                SystemIn.relinquish(SpeechRecognizer.SpeechTrainer.class);
+                return false;
+            }
+            
             List<String> transcriptions = Filesystem.readLines(SPHINX_TRANSCRIPTION_FILE);
             if (transcriptions.isEmpty()) {
                 logger.warn("Unable to train speech recognition with an empty transcription file");
+                SystemIn.relinquish(SpeechRecognizer.SpeechTrainer.class);
+                WaveRecorder.relinquish(SpeechRecognizer.SpeechTrainer.class);
                 return false;
             }
             
@@ -814,23 +825,24 @@ public class SpeechRecognizer {
                 
                 String phrase = transcriptionMatcher.group("transcription");
                 String fileId = transcriptionMatcher.group("fileId");
-                
-                WaveRecorder recording = new WaveRecorder(new File(trainingDirectory, fileId + ".wav"));
+                File recording = new File(trainingDirectory, fileId + ".wav");
                 
                 System.out.println(Console.color("Preview the sentence and press Enter to begin speaking, press Enter again to stop the recording", Console.ConsoleEffect.YELLOW));
                 System.out.print(phrase);
                 
-                while (SystemIn.nextLine(SpeechRecognizer.class) == null) {
+                while (SystemIn.nextLine(SpeechRecognizer.SpeechTrainer.class) == null) {
                 }
-                recording.start(RECORDING_SAMPLE_RATE, RECORDING_SAMPLE_SIZE_IN_BITS, RECORDING_CHANNELS, RECORDING_SIGNED, RECORDING_BIG_ENDIAN);
+                WaveRecorder.start(recording, RECORDING_SAMPLE_RATE, RECORDING_SAMPLE_SIZE_IN_BITS, RECORDING_CHANNELS, RECORDING_SIGNED, RECORDING_BIG_ENDIAN, SpeechRecognizer.SpeechTrainer.class);
                 System.out.print(Console.color("Recording...", Console.ConsoleEffect.GREEN));
                 
-                while (SystemIn.nextLine(SpeechRecognizer.class) == null) {
+                while (SystemIn.nextLine(SpeechRecognizer.SpeechTrainer.class) == null) {
                 }
-                recording.stop();
+                WaveRecorder.stop(SpeechRecognizer.SpeechTrainer.class);
                 System.out.println(Console.color("Recording complete", Console.ConsoleEffect.GREEN));
             }
             
+            SystemIn.relinquish(SpeechRecognizer.SpeechTrainer.class);
+            WaveRecorder.relinquish(SpeechRecognizer.SpeechTrainer.class);
             return true;
         }
         

@@ -8,6 +8,7 @@
 package commons.io;
 
 import java.io.File;
+import javax.sound.sampled.AudioFormat;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -98,7 +99,7 @@ public class WaveRecorderTest {
     @Test
     public void testConstants() throws Exception {
         Assert.assertEquals(100, WaveRecorder.RECORDING_THREAD_STATUS_DELAY);
-        Assert.assertEquals(44100, WaveRecorder.DEFAULT_SAMPLE_RATE, 0.0000001);
+        Assert.assertEquals(44100, WaveRecorder.DEFAULT_SAMPLE_RATE);
         Assert.assertEquals(16, WaveRecorder.DEFAULT_SAMPLE_SIZE_IN_BITS);
         Assert.assertEquals(2, WaveRecorder.DEFAULT_CHANNELS);
         Assert.assertTrue(WaveRecorder.DEFAULT_SIGNED);
@@ -106,22 +107,15 @@ public class WaveRecorderTest {
     }
     
     /**
-     * JUnit test of constructors.
-     *
-     * @throws Exception When there is an exception.
-     * @see WaveRecorder#WaveRecorder(File)
-     */
-    @Test
-    public void testConstructors() throws Exception {
-        //TODO
-    }
-    
-    /**
      * JUnit test of start.
      *
      * @throws Exception When there is an exception.
-     * @see WaveRecorder#start(float, int, int, boolean, boolean)
-     * @see WaveRecorder#start()
+     * @see WaveRecorder#start(File, AudioFormat, Class)
+     * @see WaveRecorder#start(File, AudioFormat, Object)
+     * @see WaveRecorder#start(File, int, int, int, boolean, boolean, Class)
+     * @see WaveRecorder#start(File, int, int, int, boolean, boolean, Object)
+     * @see WaveRecorder#start(File, Class)
+     * @see WaveRecorder#start(File, Object)
      */
     @Test
     public void testStart() throws Exception {
@@ -132,7 +126,8 @@ public class WaveRecorderTest {
      * JUnit test of stop.
      *
      * @throws Exception When there is an exception.
-     * @see WaveRecorder#stop()
+     * @see WaveRecorder#stop(Class)
+     * @see WaveRecorder#stop(Object)
      */
     @Test
     public void testStop() throws Exception {
@@ -143,7 +138,8 @@ public class WaveRecorderTest {
      * JUnit test of getLengthInMilliseconds.
      *
      * @throws Exception When there is an exception.
-     * @see WaveRecorder#getLengthInMilliseconds()
+     * @see WaveRecorder#getLengthInMilliseconds(Class)
+     * @see WaveRecorder#getLengthInMilliseconds(Object)
      */
     @Test
     public void testGetLengthInMilliseconds() throws Exception {

@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -29,7 +30,6 @@ import commons.access.Filesystem;
 import commons.access.OperatingSystem;
 import commons.access.Project;
 import commons.io.HotKeyManager;
-import commons.io.SingletonInputHandler;
 import commons.io.SystemIn;
 import commons.io.WaveRecorder;
 import commons.math.BoundUtility;
@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({SpeechRecognizer.class, HotKeyManager.class, Filesystem.class, OperatingSystem.class, CmdLine.class, SystemIn.class, SingletonInputHandler.class})
+@PrepareForTest({SpeechRecognizer.class, HotKeyManager.class, Filesystem.class, OperatingSystem.class, CmdLine.class, SystemIn.class, WaveRecorder.class})
 public class SpeechRecognizerTest {
     
     //Logger
@@ -1146,6 +1146,9 @@ public class SpeechRecognizerTest {
         sut.start();
         PowerMockito.mockStatic(CmdLine.class);
         PowerMockito.when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString()).thenReturn("release");
+        TestUtils.setField(TestUtils.getField(WaveRecorder.class, "instance"), "owner", "");
+        TestUtils.setField(TestUtils.getField(WaveRecorder.class, "instance"), "defaultOwner", "");
+        Assert.assertTrue(WaveRecorder.defaultOwn(SpeechRecognizerTest.class));
         
         Object captureSpeechTriggerCallback = TestUtils.getField(sut, "captureSpeechTriggerCallback");
         Assert.assertTrue(captureSpeechTriggerCallback instanceof HotKeyManager.HotKeyCallback);
@@ -1155,7 +1158,6 @@ public class SpeechRecognizerTest {
                 "release");
         Assert.assertEquals(TestUtils.getField(sut, "recording"), TestUtils.getField(captureSpeechTriggerCallback, "recording"));
         Assert.assertNull(TestUtils.getField(captureSpeechTriggerCallback, "wavFile"));
-        Assert.assertNull(TestUtils.getField(captureSpeechTriggerCallback, "wav"));
         
         testSpeechRecorderHit();
         testSpeechRecorderRelease();
@@ -1172,30 +1174,60 @@ public class SpeechRecognizerTest {
     private void testSpeechRecorderHit() throws Exception {
         Object captureSpeechTriggerCallback = TestUtils.getField(sut, "captureSpeechTriggerCallback");
         File wavFile = Filesystem.createTemporaryFile(".wav", "speech-recorder-test");
+        Class<?> speechRecorderClass = Class.forName("commons.io.speech.SpeechRecognizer$SpeechRecorder");
         
         //hit
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", null);
-        TestUtils.setField(captureSpeechTriggerCallback, "wav", null);
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Whitebox.invokeMethod(captureSpeechTriggerCallback, "hit");
         Assert.assertTrue(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Assert.assertTrue(((File) TestUtils.getField(captureSpeechTriggerCallback, "wavFile")).exists());
-        WaveRecorder wav = (WaveRecorder) TestUtils.getField(captureSpeechTriggerCallback, "wav");
-        Assert.assertNotNull(TestUtils.getField(captureSpeechTriggerCallback, "wav"));
-        wav.stop();
-        
+        Assert.assertTrue(WaveRecorder.stop(speechRecorderClass));
+        Assert.assertTrue(WaveRecorder.relinquish(speechRecorderClass));
         
         //already hit
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", null);
-        TestUtils.setField(captureSpeechTriggerCallback, "wav", null);
         Assert.assertTrue(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Whitebox.invokeMethod(captureSpeechTriggerCallback, "hit");
         Assert.assertTrue(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Assert.assertNull(TestUtils.getField(captureSpeechTriggerCallback, "wavFile"));
-        Assert.assertNull(TestUtils.getField(captureSpeechTriggerCallback, "wav"));
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
+        
+        //failure to own wave recorder
+        Assert.assertTrue(WaveRecorder.own(WaveRecorder.class)); //someone else owns
+        TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
+        TestUtils.setField(captureSpeechTriggerCallback, "wavFile", null);
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
+        Whitebox.invokeMethod(captureSpeechTriggerCallback, "hit");
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
+        Assert.assertNull(TestUtils.getField(captureSpeechTriggerCallback, "wavFile"));
+        Assert.assertTrue(WaveRecorder.relinquish(WaveRecorder.class));
+        
+        //already owns
+        Assert.assertTrue(WaveRecorder.own(speechRecorderClass)); //own
+        TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
+        TestUtils.setField(captureSpeechTriggerCallback, "wavFile", null);
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
+        Whitebox.invokeMethod(captureSpeechTriggerCallback, "hit");
+        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
+        Assert.assertTrue(((File) TestUtils.getField(captureSpeechTriggerCallback, "wavFile")).exists());
+        Assert.assertTrue(WaveRecorder.stop(speechRecorderClass));
+        Assert.assertTrue(WaveRecorder.relinquish(speechRecorderClass));
+        
+        //failed to start wave recorder
+        PowerMockito.mockStatic(WaveRecorder.class, Mockito.CALLS_REAL_METHODS);
+        PowerMockito.when(WaveRecorder.class, "owns", ArgumentMatchers.any(Class.class)).thenReturn(false);
+        PowerMockito.when(WaveRecorder.class, "own", ArgumentMatchers.any(Class.class)).thenReturn(true);
+        TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
+        TestUtils.setField(captureSpeechTriggerCallback, "wavFile", null);
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
+        Whitebox.invokeMethod(captureSpeechTriggerCallback, "hit");
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
+        Assert.assertNotNull(TestUtils.getField(captureSpeechTriggerCallback, "wavFile"));
+        PowerMockito.when(WaveRecorder.class, "owns", ArgumentMatchers.any(Class.class)).thenCallRealMethod();
+        PowerMockito.when(WaveRecorder.class, "own", ArgumentMatchers.any(Class.class)).thenCallRealMethod();
     }
     
     /**
@@ -1208,58 +1240,74 @@ public class SpeechRecognizerTest {
         Object captureSpeechTriggerCallback = TestUtils.getField(sut, "captureSpeechTriggerCallback");
         AtomicReference<String> speechBuffer = (AtomicReference<String>) TestUtils.getField(sut, "speechBuffer");
         File wavFile = Filesystem.createTemporaryFile(".wav", "speech-recorder-test");
-        WaveRecorder wav = Mockito.mock(WaveRecorder.class);
-        Mockito.when(wav.getLengthInMilliseconds()).thenReturn(SpeechRecognizer.DEFAULT_MINIMUM_RECORDING_LENGTH - 1);
+        Class<?> speechRecorderClass = Class.forName("commons.io.speech.SpeechRecognizer$SpeechRecorder");
+        PowerMockito.mockStatic(WaveRecorder.class, Mockito.CALLS_REAL_METHODS);
+        PowerMockito.when(WaveRecorder.class, "getLengthInMilliseconds", ArgumentMatchers.any(Class.class)).thenReturn(SpeechRecognizer.DEFAULT_MINIMUM_RECORDING_LENGTH + 1);
         
         //release
+        Assert.assertTrue(WaveRecorder.own(speechRecorderClass)); //own
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", wavFile);
-        TestUtils.setField(captureSpeechTriggerCallback, "wav", wav);
         Whitebox.invokeMethod(captureSpeechTriggerCallback, "release");
         Assert.assertEquals("release", speechBuffer.getAndSet(""));
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Assert.assertFalse(((File) TestUtils.getField(captureSpeechTriggerCallback, "wavFile")).exists());
-        Assert.assertNull(TestUtils.getField(captureSpeechTriggerCallback, "wav"));
         PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
         CmdLine.executeCmd(ArgumentMatchers.eq(((String) TestUtils.getField(sut, "decodeRecordingCmd"))
                 .replace("%s", ((File) TestUtils.getField(captureSpeechTriggerCallback, "wavFile")).getAbsolutePath())));
-        TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
-        TestUtils.setField(captureSpeechTriggerCallback, "wavFile", null);
-        TestUtils.setField(captureSpeechTriggerCallback, "wav", null);
-        Whitebox.invokeMethod(captureSpeechTriggerCallback, "release");
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.noMoreInteractions());
-        CmdLine.executeCmd(ArgumentMatchers.anyString());
         
         //already released
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", wavFile);
-        TestUtils.setField(captureSpeechTriggerCallback, "wav", new WaveRecorder(wavFile));
         Whitebox.invokeMethod(captureSpeechTriggerCallback, "release");
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Assert.assertNotNull(TestUtils.getField(captureSpeechTriggerCallback, "wavFile"));
-        Assert.assertNotNull(TestUtils.getField(captureSpeechTriggerCallback, "wav"));
         PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.noMoreInteractions());
         CmdLine.executeCmd(ArgumentMatchers.anyString());
         
         //minumum length not met
+        PowerMockito.when(WaveRecorder.class, "getLengthInMilliseconds", ArgumentMatchers.any(Class.class)).thenReturn(SpeechRecognizer.DEFAULT_MINIMUM_RECORDING_LENGTH - 1);
+        Assert.assertTrue(WaveRecorder.own(speechRecorderClass)); //own
+        sut.setMode(SpeechRecognizer.RecognitionMode.ON_DEMAND);
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", wavFile);
-        TestUtils.setField(captureSpeechTriggerCallback, "wav", wav);
         Whitebox.invokeMethod(captureSpeechTriggerCallback, "release");
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(2));
         CmdLine.executeCmd(ArgumentMatchers.eq(((String) TestUtils.getField(sut, "decodeRecordingCmd"))
                 .replace("%s", ((File) TestUtils.getField(captureSpeechTriggerCallback, "wavFile")).getAbsolutePath())));
+        Assert.assertTrue(WaveRecorder.own(speechRecorderClass)); //own
         sut.setMode(SpeechRecognizer.RecognitionMode.TRIGGERED);
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", wavFile);
-        TestUtils.setField(captureSpeechTriggerCallback, "wav", wav);
         Whitebox.invokeMethod(captureSpeechTriggerCallback, "release");
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.noMoreInteractions());
         CmdLine.executeCmd(ArgumentMatchers.anyString());
+        PowerMockito.when(WaveRecorder.class, "getLengthInMilliseconds", ArgumentMatchers.any(Class.class)).thenCallRealMethod();
         
-        Mockito.when(wav.getLengthInMilliseconds()).thenCallRealMethod();
+        //doesnt own
+        Assert.assertTrue(WaveRecorder.own(WaveRecorder.class)); //someone else owns
+        TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
+        TestUtils.setField(captureSpeechTriggerCallback, "wavFile", wavFile);
+        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
+        Whitebox.invokeMethod(captureSpeechTriggerCallback, "release");
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
+        Assert.assertFalse(((File) TestUtils.getField(captureSpeechTriggerCallback, "wavFile")).exists());
+        Assert.assertTrue(WaveRecorder.relinquish(WaveRecorder.class));
+        
+        //failed to stop wave recorder
+        PowerMockito.mockStatic(WaveRecorder.class, Mockito.CALLS_REAL_METHODS);
+        PowerMockito.when(WaveRecorder.class, "owns", ArgumentMatchers.any(Class.class)).thenReturn(true);
+        TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
+        TestUtils.setField(captureSpeechTriggerCallback, "wavFile", wavFile);
+        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
+        Whitebox.invokeMethod(captureSpeechTriggerCallback, "release");
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
+        Assert.assertNotNull(TestUtils.getField(captureSpeechTriggerCallback, "wavFile"));
+        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.noMoreInteractions());
+        CmdLine.executeCmd(ArgumentMatchers.anyString());
+        PowerMockito.when(WaveRecorder.class, "owns", ArgumentMatchers.any(Class.class)).thenCallRealMethod();
     }
     
     /**
@@ -1277,11 +1325,18 @@ public class SpeechRecognizerTest {
     @Test
     public void testSpeechTrainer() throws Exception {
         SpeechRecognizer.SpeechTrainer trainer = Mockito.mock(SpeechRecognizer.SpeechTrainer.class);
+        Class<?> speechTrainerClass = Class.forName("commons.io.speech.SpeechRecognizer$SpeechTrainer");
         TestUtils.setField(SpeechRecognizer.SpeechTrainer.class, "instance", trainer);
         TestUtils.setField(SpeechRecognizer.SpeechTrainer.class, "isWindows", true);
-        PowerMockito.mockStatic(SystemIn.class);
-        PowerMockito.mockStatic(SingletonInputHandler.class);
-        PowerMockito.doReturn(true).when(SingletonInputHandler.class, "own", ArgumentMatchers.eq(SpeechRecognizer.class));
+        PowerMockito.mockStatic(Filesystem.class, Mockito.CALLS_REAL_METHODS);
+        PowerMockito.mockStatic(SystemIn.class, Mockito.CALLS_REAL_METHODS);
+        PowerMockito.mockStatic(WaveRecorder.class, Mockito.CALLS_REAL_METHODS);
+        TestUtils.setField(TestUtils.getField(SystemIn.class, "instance"), "owner", "");
+        TestUtils.setField(TestUtils.getField(SystemIn.class, "instance"), "defaultOwner", "");
+        Assert.assertTrue(SystemIn.defaultOwn(SpeechRecognizerTest.class));
+        TestUtils.setField(TestUtils.getField(WaveRecorder.class, "instance"), "owner", "");
+        TestUtils.setField(TestUtils.getField(WaveRecorder.class, "instance"), "defaultOwner", "");
+        Assert.assertTrue(WaveRecorder.defaultOwn(SpeechRecognizerTest.class));
         
         File trainingDirectory = Filesystem.createTemporaryDirectory();
         testSpeechTrainerTrain(trainer, trainingDirectory);
@@ -1301,8 +1356,10 @@ public class SpeechRecognizerTest {
         Assert.assertTrue(Filesystem.deleteFile(adaptionMatrix));
         PowerMockito.verifyStatic(Filesystem.class, VerificationModeFactory.times(1));
         Filesystem.deleteDirectory(ArgumentMatchers.eq(trainingDirectory));
-        PowerMockito.verifyStatic(SingletonInputHandler.class, VerificationModeFactory.times(6));
-        SingletonInputHandler.relinquish(ArgumentMatchers.eq(SpeechRecognizer.class));
+        PowerMockito.verifyStatic(SystemIn.class, VerificationModeFactory.times(3));
+        SystemIn.relinquish(ArgumentMatchers.eq(speechTrainerClass));
+        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(2));
+        WaveRecorder.relinquish(ArgumentMatchers.eq(speechTrainerClass));
     }
     
     /**
@@ -1314,6 +1371,7 @@ public class SpeechRecognizerTest {
      */
     private void testSpeechTrainerTrain(SpeechRecognizer.SpeechTrainer trainer, File trainingDirectory) throws Exception {
         File adaptionMatrix = Filesystem.createTemporaryFile();
+        Class<?> speechTrainerClass = Class.forName("commons.io.speech.SpeechRecognizer$SpeechTrainer");
         
         //performTraining
         
@@ -1361,9 +1419,11 @@ public class SpeechRecognizerTest {
         Assert.assertFalse(trainer.train(adaptionMatrix));
         Mockito.when(trainer.createMllrTransformation(ArgumentMatchers.any(File.class))).thenReturn(true);
         
-        PowerMockito.doReturn(false).when(SingletonInputHandler.class, "own", ArgumentMatchers.eq(SpeechRecognizer.class));
+        PowerMockito.doReturn(false).when(SystemIn.class, "own", ArgumentMatchers.eq(speechTrainerClass));
+        PowerMockito.doReturn(false).when(WaveRecorder.class, "own", ArgumentMatchers.eq(speechTrainerClass));
         Assert.assertFalse(trainer.train(adaptionMatrix));
-        PowerMockito.doReturn(true).when(SingletonInputHandler.class, "own", ArgumentMatchers.eq(SpeechRecognizer.class));
+        PowerMockito.doReturn(true).when(SystemIn.class, "own", ArgumentMatchers.eq(speechTrainerClass));
+        PowerMockito.doReturn(true).when(WaveRecorder.class, "own", ArgumentMatchers.eq(speechTrainerClass));
     }
     
     /**
@@ -1439,17 +1499,72 @@ public class SpeechRecognizerTest {
      * @see SpeechRecognizer.SpeechTrainer#collectRecordings(File)
      */
     private void testSpeechTrainerCollectRecordings(SpeechRecognizer.SpeechTrainer trainer, File trainingDirectory) throws Exception {
-        PowerMockito.doReturn("").when(SystemIn.class, "nextLine", ArgumentMatchers.eq(SpeechRecognizer.class));
+        Class<?> speechTrainerClass = Class.forName("commons.io.speech.SpeechRecognizer$SpeechTrainer");
+        PowerMockito.when(SystemIn.class, "nextLine", ArgumentMatchers.eq(speechTrainerClass)).thenReturn("");
         Mockito.when(trainer.collectRecordings(ArgumentMatchers.any(File.class))).thenCallRealMethod();
+        PowerMockito.when(SystemIn.class, "owns", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
+        PowerMockito.when(SystemIn.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
+        PowerMockito.when(WaveRecorder.class, "owns", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
+        PowerMockito.when(WaveRecorder.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
         
         //standard
+        TestUtils.setField(TestUtils.getField(SystemIn.class, "instance"), "owner", speechTrainerClass.getCanonicalName());
+        TestUtils.setField(TestUtils.getField(WaveRecorder.class, "instance"), "owner", speechTrainerClass.getCanonicalName());
+        PowerMockito.when(SystemIn.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
+        PowerMockito.when(WaveRecorder.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
         Assert.assertTrue(trainer.collectRecordings(trainingDirectory));
         for (int i = 1; i <= 20; i++) {
             File recording = new File(trainingDirectory, "arctic_00" + StringUtility.padZero(i, 2) + ".wav");
             Assert.assertTrue(recording.exists());
         }
         PowerMockito.verifyStatic(SystemIn.class, VerificationModeFactory.times(40));
-        SystemIn.nextLine(SpeechRecognizer.class);
+        SystemIn.nextLine(speechTrainerClass);
+        PowerMockito.verifyStatic(SystemIn.class, VerificationModeFactory.times(1));
+        SystemIn.relinquish(ArgumentMatchers.eq(speechTrainerClass));
+        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(1));
+        WaveRecorder.relinquish(ArgumentMatchers.eq(speechTrainerClass));
+        PowerMockito.when(SystemIn.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
+        PowerMockito.when(WaveRecorder.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
+        
+        //fail to own system input
+        TestUtils.setField(TestUtils.getField(SystemIn.class, "instance"), "owner", "");
+        TestUtils.setField(TestUtils.getField(WaveRecorder.class, "instance"), "owner", "");
+        PowerMockito.when(SystemIn.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenReturn(false);
+        PowerMockito.when(WaveRecorder.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenReturn(false);
+        Assert.assertFalse(trainer.collectRecordings(trainingDirectory));
+        PowerMockito.verifyStatic(SystemIn.class, VerificationModeFactory.times(1));
+        SystemIn.relinquish(ArgumentMatchers.eq(speechTrainerClass));
+        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(1));
+        WaveRecorder.relinquish(ArgumentMatchers.eq(speechTrainerClass));
+        PowerMockito.when(SystemIn.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
+        PowerMockito.when(WaveRecorder.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
+        
+        //fail to own wave recorder
+        TestUtils.setField(TestUtils.getField(SystemIn.class, "instance"), "owner", speechTrainerClass.getCanonicalName());
+        TestUtils.setField(TestUtils.getField(WaveRecorder.class, "instance"), "owner", "");
+        PowerMockito.when(SystemIn.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenReturn(false);
+        PowerMockito.when(WaveRecorder.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenReturn(false);
+        Assert.assertFalse(trainer.collectRecordings(trainingDirectory));
+        PowerMockito.verifyStatic(SystemIn.class, VerificationModeFactory.times(2));
+        SystemIn.relinquish(ArgumentMatchers.any(Class.class));
+        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(1));
+        WaveRecorder.relinquish(ArgumentMatchers.any(Class.class));
+        PowerMockito.when(SystemIn.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
+        PowerMockito.when(WaveRecorder.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
+        
+        //failed to read transcriptions
+        TestUtils.setField(TestUtils.getField(SystemIn.class, "instance"), "owner", speechTrainerClass.getCanonicalName());
+        TestUtils.setField(TestUtils.getField(WaveRecorder.class, "instance"), "owner", speechTrainerClass.getCanonicalName());
+        PowerMockito.when(SystemIn.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenReturn(false);
+        PowerMockito.when(WaveRecorder.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenReturn(false);
+        PowerMockito.doReturn(new ArrayList<String>()).when(Filesystem.class, "readLines", ArgumentMatchers.any(File.class));
+        Assert.assertFalse(trainer.collectRecordings(trainingDirectory));
+        PowerMockito.verifyStatic(SystemIn.class, VerificationModeFactory.times(3));
+        SystemIn.relinquish(ArgumentMatchers.any(Class.class));
+        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(2));
+        WaveRecorder.relinquish(ArgumentMatchers.any(Class.class));
+        PowerMockito.when(SystemIn.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
+        PowerMockito.when(WaveRecorder.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
         
         //prepare
         for (File recording : Filesystem.getFiles(testResources, "arctic_00\\d{2}\\.wav")) {
