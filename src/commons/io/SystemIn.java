@@ -55,10 +55,10 @@ public final class SystemIn extends SingletonInputHandler {
      */
     private static Thread scannerThread = null;
     
-    //Initialize the interrupt action
-    static {
-        interrupt = SystemIn::interruptScanner;
-    }
+    /**
+     * The singleton instance of the Input Handler.
+     */
+    private static SingletonInputHandler instance = new SystemIn();
     
     
     //Constructors
@@ -67,6 +67,7 @@ public final class SystemIn extends SingletonInputHandler {
      * The private constructor for SystemIn.
      */
     private SystemIn() {
+        interrupt = SystemIn::interruptScanner;
     }
     
     
@@ -114,7 +115,7 @@ public final class SystemIn extends SingletonInputHandler {
      */
     @SuppressWarnings("BusyWait")
     public static synchronized String nextLine(Class<?> caller) {
-        if (!caller.getCanonicalName().equals(owner)) {
+        if (!owns(caller)) {
             return "";
         }
         
@@ -136,7 +137,7 @@ public final class SystemIn extends SingletonInputHandler {
      * @see #nextLine(Class)
      */
     public static synchronized String nextLine(Object caller) {
-        return nextLine(caller.getClass());
+        return nextLine((caller != null) ? caller.getClass() : null);
     }
     
     /**
@@ -147,7 +148,7 @@ public final class SystemIn extends SingletonInputHandler {
      * @see Console#readPassword()
      */
     public static synchronized String getPassword(Class<?> caller) {
-        if (!caller.getCanonicalName().equals(owner)) {
+        if (!owns(caller)) {
             return "";
         }
         
@@ -165,7 +166,7 @@ public final class SystemIn extends SingletonInputHandler {
      * @see #getPassword(Class)
      */
     public static synchronized String getPassword(Object caller) {
-        return getPassword(caller.getClass());
+        return getPassword((caller != null) ? caller.getClass() : null);
     }
     
     /**
@@ -175,19 +176,19 @@ public final class SystemIn extends SingletonInputHandler {
      * @return The input buffer, or null if the caller is not the owner of the Input Handler.
      */
     public static synchronized String getBuffer(Class<?> caller) {
-        if (!caller.getCanonicalName().equals(owner)) {
+        if (!owns(caller)) {
             return null;
         }
         
         if (buffer != null) {
             String line = buffer;
             buffer = null;
-            if (owner.equals(defaultOwner) && !scannerThread.isAlive()) {
+            if (instance.owner.equals(instance.defaultOwner) && !scannerThread.isAlive()) {
                 startScanner();
             }
             return line;
         }
-        if (owner.equals(defaultOwner) && ((scannerThread == null) || !scannerThread.isAlive())) {
+        if (instance.owner.equals(instance.defaultOwner) && ((scannerThread == null) || !scannerThread.isAlive())) {
             startScanner();
         }
         return null;
@@ -201,7 +202,95 @@ public final class SystemIn extends SingletonInputHandler {
      * @see #getBuffer(Class)
      */
     public static synchronized String getBuffer(Object caller) {
-        return getBuffer(caller.getClass());
+        return getBuffer((caller != null) ? caller.getClass() : null);
+    }
+    
+    /**
+     * Determines if a specified class is the owner of the Input Handler.
+     *
+     * @param owner The calling class.
+     * @return Whether the class is the owner of the Input Handler or not.
+     * @see SingletonInputHandler#isOwner(Class)
+     */
+    public static synchronized boolean owns(Class<?> owner) {
+        return instance.isOwner(owner);
+    }
+    
+    /**
+     * Determines if a specified class is the owner of the Input Handler.
+     *
+     * @param owner The calling object.
+     * @return Whether the class is the owner of the Input Handler or not.
+     * @see SingletonInputHandler#isOwner(Object)
+     */
+    public static synchronized boolean owns(Object owner) {
+        return instance.isOwner(owner);
+    }
+    
+    /**
+     * Claims ownership of the Input Handler.
+     *
+     * @param owner The new owner of the Input Handler.
+     * @return Whether the class acquired ownership of the Input Handler or not.
+     * @see SingletonInputHandler#claimOwnership(Class)
+     */
+    public static synchronized boolean own(Class<?> owner) {
+        return instance.claimOwnership(owner);
+    }
+    
+    /**
+     * Claims ownership of the Input Handler.
+     *
+     * @param owner The new owner of the Input Handler.
+     * @return Whether the class acquired ownership of the Input Handler or not.
+     * @see SingletonInputHandler#claimOwnership(Object)
+     */
+    public static synchronized boolean own(Object owner) {
+        return instance.claimOwnership(owner);
+    }
+    
+    /**
+     * Claims the default ownership of the Input Handler.
+     *
+     * @param owner The default owner of the Input Handler.
+     * @return Whether default ownership was successfully acquired or not.
+     * @see SingletonInputHandler#claimDefaultOwnership(Class)
+     */
+    public static synchronized boolean defaultOwn(Class<?> owner) {
+        return instance.claimDefaultOwnership(owner);
+    }
+    
+    /**
+     * Claims the default ownership of the Input Handler.
+     *
+     * @param owner The default owner of the Input Handler.
+     * @return Whether default ownership was successfully acquired or not.
+     * @see SingletonInputHandler#claimDefaultOwnership(Object)
+     */
+    public static synchronized boolean defaultOwn(Object owner) {
+        return instance.claimDefaultOwnership(owner);
+    }
+    
+    /**
+     * Relinquishes the ownership of the Input Handler to the default owner.
+     *
+     * @param owner The calling class.
+     * @return Whether the class relinquished ownership of the Input Handler or not.
+     * @see SingletonInputHandler#relinquishOwnership(Class)
+     */
+    public static synchronized boolean relinquish(Class<?> owner) {
+        return instance.relinquishOwnership(owner);
+    }
+    
+    /**
+     * Relinquishes the ownership of the Input Handler to the default owner.
+     *
+     * @param owner The calling object.
+     * @return Whether the class relinquished ownership of the Input Handler or not.
+     * @see SingletonInputHandler#relinquishOwnership(Object)
+     */
+    public static synchronized boolean relinquish(Object owner) {
+        return instance.relinquishOwnership(owner);
     }
     
 }

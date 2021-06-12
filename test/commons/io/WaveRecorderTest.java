@@ -161,4 +161,52 @@ public class WaveRecorderTest {
         //TODO
     }
     
+    /**
+     * JUnit test of owns.
+     *
+     * @throws Exception When there is an exception.
+     * @see WaveRecorder#owns(Class)
+     * @see WaveRecorder#owns(Object)
+     */
+    @Test
+    public void testOwns() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of own.
+     *
+     * @throws Exception When there is an exception.
+     * @see WaveRecorder#own(Class)
+     * @see WaveRecorder#own(Object)
+     */
+    @Test
+    public void testOwn() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of defaultOwn.
+     *
+     * @throws Exception When there is an exception.
+     * @see WaveRecorder#defaultOwn(Class)
+     * @see WaveRecorder#defaultOwn(Object)
+     */
+    @Test
+    public void testDefaultOwn() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of relinquish.
+     *
+     * @throws Exception When there is an exception.
+     * @see WaveRecorder#relinquish(Class)
+     * @see WaveRecorder#relinquish(Object)
+     */
+    @Test
+    public void testRelinquish() throws Exception {
+        //TODO
+    }
+    
 }

@@ -23,7 +23,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Captures WAV recordings.
  */
-public class WaveRecorder {
+public class WaveRecorder extends SingletonInputHandler {
     
     //Logger
     
@@ -73,6 +73,11 @@ public class WaveRecorder {
      */
     private static boolean recordingWarning = false;
     
+    /**
+     * The singleton instance of the Input Handler.
+     */
+    private static SingletonInputHandler instance = new WaveRecorder();
+    
     
     //Fields
     
@@ -106,6 +111,7 @@ public class WaveRecorder {
      */
     public WaveRecorder(File file) {
         wavFile = file;
+        interrupt = this::stop;
     }
     
     
@@ -238,6 +244,94 @@ public class WaveRecorder {
         AudioFormat format = new AudioFormat(DEFAULT_SAMPLE_RATE, DEFAULT_SAMPLE_SIZE_IN_BITS, DEFAULT_CHANNELS, DEFAULT_SIGNED, DEFAULT_BIG_ENDIAN);
         Info info = new Info(TargetDataLine.class, format);
         return AudioSystem.isLineSupported(info);
+    }
+    
+    /**
+     * Determines if a specified class is the owner of the Input Handler.
+     *
+     * @param owner The calling class.
+     * @return Whether the class is the owner of the Input Handler or not.
+     * @see SingletonInputHandler#isOwner(Class)
+     */
+    public static synchronized boolean owns(Class<?> owner) {
+        return instance.isOwner(owner);
+    }
+    
+    /**
+     * Determines if a specified class is the owner of the Input Handler.
+     *
+     * @param owner The calling object.
+     * @return Whether the class is the owner of the Input Handler or not.
+     * @see SingletonInputHandler#isOwner(Object)
+     */
+    public static synchronized boolean owns(Object owner) {
+        return instance.isOwner(owner);
+    }
+    
+    /**
+     * Claims ownership of the Input Handler.
+     *
+     * @param owner The new owner of the Input Handler.
+     * @return Whether the class acquired ownership of the Input Handler or not.
+     * @see SingletonInputHandler#claimOwnership(Class)
+     */
+    public static synchronized boolean own(Class<?> owner) {
+        return instance.claimOwnership(owner);
+    }
+    
+    /**
+     * Claims ownership of the Input Handler.
+     *
+     * @param owner The new owner of the Input Handler.
+     * @return Whether the class acquired ownership of the Input Handler or not.
+     * @see SingletonInputHandler#claimOwnership(Object)
+     */
+    public static synchronized boolean own(Object owner) {
+        return instance.claimOwnership(owner);
+    }
+    
+    /**
+     * Claims the default ownership of the Input Handler.
+     *
+     * @param owner The default owner of the Input Handler.
+     * @return Whether default ownership was successfully acquired or not.
+     * @see SingletonInputHandler#claimDefaultOwnership(Class)
+     */
+    public static synchronized boolean defaultOwn(Class<?> owner) {
+        return instance.claimDefaultOwnership(owner);
+    }
+    
+    /**
+     * Claims the default ownership of the Input Handler.
+     *
+     * @param owner The default owner of the Input Handler.
+     * @return Whether default ownership was successfully acquired or not.
+     * @see SingletonInputHandler#claimDefaultOwnership(Object)
+     */
+    public static synchronized boolean defaultOwn(Object owner) {
+        return instance.claimDefaultOwnership(owner);
+    }
+    
+    /**
+     * Relinquishes the ownership of the Input Handler to the default owner.
+     *
+     * @param owner The calling class.
+     * @return Whether the class relinquished ownership of the Input Handler or not.
+     * @see SingletonInputHandler#relinquishOwnership(Class)
+     */
+    public static synchronized boolean relinquish(Class<?> owner) {
+        return instance.relinquishOwnership(owner);
+    }
+    
+    /**
+     * Relinquishes the ownership of the Input Handler to the default owner.
+     *
+     * @param owner The calling object.
+     * @return Whether the class relinquished ownership of the Input Handler or not.
+     * @see SingletonInputHandler#relinquishOwnership(Object)
+     */
+    public static synchronized boolean relinquish(Object owner) {
+        return instance.relinquishOwnership(owner);
     }
     
 }

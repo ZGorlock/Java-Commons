@@ -23,26 +23,26 @@ public abstract class SingletonInputHandler {
     private static final Logger logger = LoggerFactory.getLogger(SingletonInputHandler.class);
     
     
-    //Static Fields
+    //Fields
     
     /**
      * The current owner of the Input Handler.
      */
-    protected static String owner = "";
+    protected String owner = "";
     
     /**
      * The default owner of the Input Handler.
      */
-    protected static String defaultOwner = "";
+    protected String defaultOwner = "";
     
     /**
      * The action to perform to interrupt the Input Handler.
      */
-    protected static Runnable interrupt = () -> {
+    protected Runnable interrupt = () -> {
     };
     
     
-    //Functions
+    //Methods
     
     /**
      * Determines if a specified class is the owner of the Input Handler.
@@ -50,8 +50,8 @@ public abstract class SingletonInputHandler {
      * @param owner The calling class.
      * @return Whether the class is the owner of the Input Handler or not.
      */
-    public static synchronized boolean owns(Class<?> owner) {
-        return SingletonInputHandler.owner.equals(owner.getCanonicalName());
+    protected synchronized boolean isOwner(Class<?> owner) {
+        return (owner != null) && this.owner.equals(owner.getCanonicalName());
     }
     
     /**
@@ -59,10 +59,10 @@ public abstract class SingletonInputHandler {
      *
      * @param owner The calling object.
      * @return Whether the class is the owner of the Input Handler or not.
-     * @see #owns(Class)
+     * @see #isOwner(Class)
      */
-    public static synchronized boolean owns(Object owner) {
-        return owns(owner.getClass());
+    protected synchronized boolean isOwner(Object owner) {
+        return isOwner((owner != null) ? owner.getClass() : null);
     }
     
     /**
@@ -71,11 +71,12 @@ public abstract class SingletonInputHandler {
      * @param owner The new owner of the Input Handler.
      * @return Whether the class acquired ownership of the Input Handler or not.
      */
-    public static synchronized boolean own(Class<?> owner) {
-        if (SingletonInputHandler.owner.equals(SingletonInputHandler.defaultOwner) ||
-                owner.getCanonicalName().equals(SingletonInputHandler.defaultOwner)) {
-            interrupt.run();
-            SingletonInputHandler.owner = owner.getCanonicalName();
+    protected synchronized boolean claimOwnership(Class<?> owner) {
+        if ((owner != null) &&
+                (this.owner.equals(this.defaultOwner) ||
+                        owner.getCanonicalName().equals(this.defaultOwner))) {
+            this.interrupt.run();
+            this.owner = owner.getCanonicalName();
             return true;
         }
         return false;
@@ -86,10 +87,10 @@ public abstract class SingletonInputHandler {
      *
      * @param owner The new owner of the Input Handler.
      * @return Whether the class acquired ownership of the Input Handler or not.
-     * @see #own(Class)
+     * @see #claimOwnership(Class)
      */
-    public static synchronized boolean own(Object owner) {
-        return own(owner.getClass());
+    protected synchronized boolean claimOwnership(Object owner) {
+        return claimOwnership((owner != null) ? owner.getClass() : null);
     }
     
     /**
@@ -98,11 +99,12 @@ public abstract class SingletonInputHandler {
      * @param owner The default owner of the Input Handler.
      * @return Whether default ownership was successfully acquired or not.
      */
-    public static synchronized boolean defaultOwn(Class<?> owner) {
-        if (SingletonInputHandler.defaultOwner.isEmpty()) {
-            interrupt.run();
-            SingletonInputHandler.defaultOwner = owner.getCanonicalName();
-            SingletonInputHandler.owner = SingletonInputHandler.defaultOwner;
+    protected synchronized boolean claimDefaultOwnership(Class<?> owner) {
+        if ((owner != null) &&
+                this.defaultOwner.isEmpty()) {
+            this.interrupt.run();
+            this.defaultOwner = owner.getCanonicalName();
+            this.owner = this.defaultOwner;
             return true;
         }
         return false;
@@ -113,10 +115,10 @@ public abstract class SingletonInputHandler {
      *
      * @param owner The default owner of the Input Handler.
      * @return Whether default ownership was successfully acquired or not.
-     * @see #defaultOwn(Class)
+     * @see #claimDefaultOwnership(Class)
      */
-    public static synchronized boolean defaultOwn(Object owner) {
-        return defaultOwn(owner.getClass());
+    protected synchronized boolean claimDefaultOwnership(Object owner) {
+        return claimDefaultOwnership((owner != null) ? owner.getClass() : null);
     }
     
     /**
@@ -125,11 +127,12 @@ public abstract class SingletonInputHandler {
      * @param owner The calling class.
      * @return Whether the class relinquished ownership of the Input Handler or not.
      */
-    public static synchronized boolean relinquish(Class<?> owner) {
-        if (owner.getCanonicalName().equals(SingletonInputHandler.owner) ||
-                (SingletonInputHandler.owner.equals(SingletonInputHandler.defaultOwner) && !SingletonInputHandler.owner.isEmpty())) {
-            interrupt.run();
-            SingletonInputHandler.owner = SingletonInputHandler.defaultOwner;
+    protected synchronized boolean relinquishOwnership(Class<?> owner) {
+        if ((owner != null) && (
+                owner.getCanonicalName().equals(this.owner) ||
+                        (this.owner.equals(this.defaultOwner) && !this.owner.isEmpty()))) {
+            this.interrupt.run();
+            this.owner = this.defaultOwner;
             return true;
         }
         return false;
@@ -140,10 +143,10 @@ public abstract class SingletonInputHandler {
      *
      * @param owner The calling object.
      * @return Whether the class relinquished ownership of the Input Handler or not.
-     * @see #relinquish(Class)
+     * @see #relinquishOwnership(Class)
      */
-    public static synchronized boolean relinquish(Object owner) {
-        return relinquish(owner.getClass());
+    protected synchronized boolean relinquishOwnership(Object owner) {
+        return relinquishOwnership((owner != null) ? owner.getClass() : null);
     }
     
 }

@@ -43,6 +43,11 @@ public class SingletonInputHandlerTest {
     //Fields
     
     /**
+     * The system under test.
+     */
+    private SingletonInputHandler sut;
+    
+    /**
      * A flag indicating whether the interrupt was activated or not.
      */
     private final AtomicBoolean interrupt = new AtomicBoolean(false);
@@ -78,7 +83,8 @@ public class SingletonInputHandlerTest {
     @SuppressWarnings("EmptyMethod")
     @Before
     public void setup() throws Exception {
-        TestUtils.setField(SingletonInputHandler.class, "interrupt", (Runnable) () -> interrupt.set(true));
+        sut = new InputHandler();
+        TestUtils.setField(sut, "interrupt", (Runnable) () -> interrupt.set(true));
     }
     
     /**
@@ -102,167 +108,192 @@ public class SingletonInputHandlerTest {
     @SuppressWarnings("EmptyMethod")
     @Test
     public void testConstants() throws Exception {
-        //static
-        Assert.assertEquals("", TestUtils.getField(SingletonInputHandler.class, "owner"));
-        Assert.assertEquals("", TestUtils.getField(SingletonInputHandler.class, "defaultOwner"));
     }
     
     /**
-     * JUnit test of owns.
+     * JUnit test of constructors.
      *
      * @throws Exception When there is an exception.
-     * @see SingletonInputHandler#owns(Class)
-     * @see SingletonInputHandler#owns(Object)
+     * @see SingletonInputHandler
      */
     @Test
-    public void testOwns() throws Exception {
+    public void testConstructors() throws Exception {
+        //default fields
+        Assert.assertEquals("", TestUtils.getField(sut, "owner"));
+        Assert.assertEquals("", TestUtils.getField(sut, "defaultOwner"));
+    }
+    
+    /**
+     * JUnit test of isOwner.
+     *
+     * @throws Exception When there is an exception.
+     * @see SingletonInputHandler#isOwner(Class)
+     * @see SingletonInputHandler#isOwner(Object)
+     */
+    @Test
+    public void testIsOwner() throws Exception {
         //default
-        Assert.assertFalse(SingletonInputHandler.owns(SingletonInputHandlerTest.class));
+        Assert.assertFalse(sut.isOwner(SingletonInputHandlerTest.class));
         
         //owns
-        TestUtils.setField(SingletonInputHandler.class, "owner", SingletonInputHandlerTest.class.getCanonicalName());
-        Assert.assertTrue(SingletonInputHandler.owns(SingletonInputHandlerTest.class));
-        Assert.assertTrue(SingletonInputHandler.owns(new SingletonInputHandlerTest()));
+        TestUtils.setField(sut, "owner", SingletonInputHandlerTest.class.getCanonicalName());
+        Assert.assertTrue(sut.isOwner(SingletonInputHandlerTest.class));
+        Assert.assertTrue(sut.isOwner(new SingletonInputHandlerTest()));
         
         //does not own
-        Assert.assertFalse(SingletonInputHandler.owns(SystemInTest.class));
+        Assert.assertFalse(sut.isOwner(SystemInTest.class));
         
-        //reset
-        TestUtils.setField(SingletonInputHandler.class, "owner", "");
-        TestUtils.setField(SingletonInputHandler.class, "defaultOwner", "");
+        //invalid
+        Assert.assertFalse(sut.isOwner(null));
+        Assert.assertFalse(sut.isOwner((Object) null));
     }
     
     /**
-     * JUnit test of own.
+     * JUnit test of claimOwnership.
      *
      * @throws Exception When there is an exception.
-     * @see SingletonInputHandler#own(Class)
-     * @see SingletonInputHandler#own(Object)
+     * @see SingletonInputHandler#claimOwnership(Class)
+     * @see SingletonInputHandler#claimOwnership(Object)
      */
     @Test
-    public void testOwn() throws Exception {
+    public void testClaimOwnership() throws Exception {
         //own
-        Assert.assertTrue(SingletonInputHandler.own(new SingletonInputHandlerTest()));
-        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(SingletonInputHandler.class, "owner"));
+        Assert.assertTrue(sut.claimOwnership(new SingletonInputHandlerTest()));
+        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(sut, "owner"));
         Assert.assertTrue(interrupt.getAndSet(false));
-        TestUtils.setField(SingletonInputHandler.class, "owner", "");
-        Assert.assertTrue(SingletonInputHandler.own(SingletonInputHandlerTest.class));
-        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(SingletonInputHandler.class, "owner"));
+        TestUtils.setField(sut, "owner", "");
+        Assert.assertTrue(sut.claimOwnership(SingletonInputHandlerTest.class));
+        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(sut, "owner"));
         Assert.assertTrue(interrupt.getAndSet(false));
         
         //already owns
-        Assert.assertFalse(SingletonInputHandler.own(SingletonInputHandlerTest.class));
-        Assert.assertFalse(SingletonInputHandler.own(new SingletonInputHandlerTest()));
+        Assert.assertFalse(sut.claimOwnership(SingletonInputHandlerTest.class));
+        Assert.assertFalse(sut.claimOwnership(new SingletonInputHandlerTest()));
         
         //not owner
-        Assert.assertFalse(SingletonInputHandler.own(SystemInTest.class));
-        Assert.assertFalse(SingletonInputHandler.own(new SystemInTest()));
-        TestUtils.setField(SingletonInputHandler.class, "owner", "");
+        Assert.assertFalse(sut.claimOwnership(SystemInTest.class));
+        Assert.assertFalse(sut.claimOwnership(new SystemInTest()));
+        TestUtils.setField(sut, "owner", "");
         
         //default own
-        Assert.assertTrue(SingletonInputHandler.own(SystemInTest.class));
+        Assert.assertTrue(sut.claimOwnership(SystemInTest.class));
         Assert.assertTrue(interrupt.getAndSet(false));
-        TestUtils.setField(SingletonInputHandler.class, "defaultOwner", SingletonInputHandler.class.getCanonicalName());
-        Assert.assertFalse(SingletonInputHandler.own(SingletonInputHandlerTest.class));
+        TestUtils.setField(sut, "defaultOwner", SingletonInputHandler.class.getCanonicalName());
+        Assert.assertFalse(sut.claimOwnership(SingletonInputHandlerTest.class));
+        TestUtils.setField(sut, "owner", "");
         
-        //reset
-        TestUtils.setField(SingletonInputHandler.class, "owner", "");
-        TestUtils.setField(SingletonInputHandler.class, "defaultOwner", "");
+        //invalid
+        Assert.assertFalse(sut.claimOwnership(null));
+        Assert.assertFalse(sut.claimOwnership((Object) null));
     }
     
     /**
-     * JUnit test of defaultOwn.
+     * JUnit test of claimDefaultOwnership.
      *
      * @throws Exception When there is an exception.
-     * @see SingletonInputHandler#defaultOwn(Class)
-     * @see SingletonInputHandler#defaultOwn(Object)
+     * @see SingletonInputHandler#claimDefaultOwnership(Class)
+     * @see SingletonInputHandler#claimDefaultOwnership(Object)
      */
     @Test
-    public void testDefaultOwn() throws Exception {
+    public void testClaimDefaultOwnership() throws Exception {
         //default own
-        Assert.assertTrue(SingletonInputHandler.defaultOwn(new SingletonInputHandlerTest()));
-        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(SingletonInputHandler.class, "defaultOwner"));
-        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(SingletonInputHandler.class, "owner"));
+        Assert.assertTrue(sut.claimDefaultOwnership(new SingletonInputHandlerTest()));
+        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(sut, "defaultOwner"));
+        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(sut, "owner"));
         Assert.assertTrue(interrupt.getAndSet(false));
-        TestUtils.setField(SingletonInputHandler.class, "defaultOwner", "");
-        Assert.assertTrue(SingletonInputHandler.defaultOwn(SingletonInputHandlerTest.class));
-        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(SingletonInputHandler.class, "defaultOwner"));
-        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(SingletonInputHandler.class, "owner"));
+        TestUtils.setField(sut, "defaultOwner", "");
+        Assert.assertTrue(sut.claimDefaultOwnership(SingletonInputHandlerTest.class));
+        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(sut, "defaultOwner"));
+        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(sut, "owner"));
         Assert.assertTrue(interrupt.getAndSet(false));
         
         //already default own
-        Assert.assertFalse(SingletonInputHandler.defaultOwn(SingletonInputHandlerTest.class));
-        Assert.assertFalse(SingletonInputHandler.defaultOwn(new SingletonInputHandlerTest()));
+        Assert.assertFalse(sut.claimDefaultOwnership(SingletonInputHandlerTest.class));
+        Assert.assertFalse(sut.claimDefaultOwnership(new SingletonInputHandlerTest()));
         
         //not default owner
-        Assert.assertFalse(SingletonInputHandler.defaultOwn(SystemInTest.class));
-        Assert.assertFalse(SingletonInputHandler.defaultOwn(new SystemInTest()));
-        TestUtils.setField(SingletonInputHandler.class, "defaultOwner", "");
-        TestUtils.setField(SingletonInputHandler.class, "owner", "");
+        Assert.assertFalse(sut.claimDefaultOwnership(SystemInTest.class));
+        Assert.assertFalse(sut.claimDefaultOwnership(new SystemInTest()));
+        TestUtils.setField(sut, "defaultOwner", "");
+        TestUtils.setField(sut, "owner", "");
         
         //own override
-        Assert.assertTrue(SingletonInputHandler.defaultOwn(SingletonInputHandlerTest.class));
+        Assert.assertTrue(sut.claimDefaultOwnership(SingletonInputHandlerTest.class));
         Assert.assertTrue(interrupt.getAndSet(false));
-        Assert.assertTrue(SingletonInputHandler.own(SystemInTest.class));
+        Assert.assertTrue(sut.claimOwnership(SystemInTest.class));
         Assert.assertTrue(interrupt.getAndSet(false));
-        Assert.assertTrue(SingletonInputHandler.own(SingletonInputHandlerTest.class));
+        Assert.assertTrue(sut.claimOwnership(SingletonInputHandlerTest.class));
         Assert.assertTrue(interrupt.getAndSet(false));
-        TestUtils.setField(SingletonInputHandler.class, "defaultOwner", "");
-        TestUtils.setField(SingletonInputHandler.class, "owner", "");
+        TestUtils.setField(sut, "defaultOwner", "");
+        TestUtils.setField(sut, "owner", "");
         
         //own default
-        Assert.assertTrue(SingletonInputHandler.defaultOwn(SingletonInputHandlerTest.class));
+        Assert.assertTrue(sut.claimDefaultOwnership(SingletonInputHandlerTest.class));
         Assert.assertTrue(interrupt.getAndSet(false));
-        Assert.assertTrue(SingletonInputHandler.own(SystemInTest.class));
+        Assert.assertTrue(sut.claimOwnership(SystemInTest.class));
         Assert.assertTrue(interrupt.getAndSet(false));
-        Assert.assertTrue(SingletonInputHandler.relinquish(SystemInTest.class));
+        Assert.assertTrue(sut.relinquishOwnership(SystemInTest.class));
         Assert.assertTrue(interrupt.getAndSet(false));
-        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(SingletonInputHandler.class, "owner"));
+        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(sut, "owner"));
+        TestUtils.setField(sut, "defaultOwner", "");
+        TestUtils.setField(sut, "owner", "");
         
-        //reset
-        TestUtils.setField(SingletonInputHandler.class, "owner", "");
-        TestUtils.setField(SingletonInputHandler.class, "defaultOwner", "");
+        //invalid
+        Assert.assertFalse(sut.claimDefaultOwnership(null));
+        Assert.assertFalse(sut.claimDefaultOwnership((Object) null));
     }
     
     /**
-     * JUnit test of relinquish.
+     * JUnit test of relinquishOwnership.
      *
      * @throws Exception When there is an exception.
-     * @see SingletonInputHandler#relinquish(Class)
-     * @see SingletonInputHandler#relinquish(Object)
+     * @see SingletonInputHandler#relinquishOwnership(Class)
+     * @see SingletonInputHandler#relinquishOwnership(Object)
      */
     @Test
-    public void testRelinquish() throws Exception {
+    public void testRelinquishOwnership() throws Exception {
         //not owned
-        Assert.assertFalse(SingletonInputHandler.relinquish(SingletonInputHandlerTest.class));
-        Assert.assertFalse(SingletonInputHandler.relinquish(new SingletonInputHandlerTest()));
+        Assert.assertFalse(sut.relinquishOwnership(SingletonInputHandlerTest.class));
+        Assert.assertFalse(sut.relinquishOwnership(new SingletonInputHandlerTest()));
         
         //owned
-        TestUtils.setField(SingletonInputHandler.class, "owner", SingletonInputHandlerTest.class.getCanonicalName());
-        Assert.assertTrue(SingletonInputHandler.relinquish(SingletonInputHandlerTest.class));
+        TestUtils.setField(sut, "owner", SingletonInputHandlerTest.class.getCanonicalName());
+        Assert.assertTrue(sut.relinquishOwnership(SingletonInputHandlerTest.class));
         Assert.assertTrue(interrupt.getAndSet(false));
-        TestUtils.setField(SingletonInputHandler.class, "owner", SingletonInputHandlerTest.class.getCanonicalName());
-        Assert.assertTrue(SingletonInputHandler.relinquish(new SingletonInputHandlerTest()));
+        TestUtils.setField(sut, "owner", SingletonInputHandlerTest.class.getCanonicalName());
+        Assert.assertTrue(sut.relinquishOwnership(new SingletonInputHandlerTest()));
         Assert.assertTrue(interrupt.getAndSet(false));
         
         //default owned
-        TestUtils.setField(SingletonInputHandler.class, "owner", SingletonInputHandlerTest.class.getCanonicalName());
-        TestUtils.setField(SingletonInputHandler.class, "defaultOwner", SingletonInputHandlerTest.class.getCanonicalName());
-        Assert.assertTrue(SingletonInputHandler.relinquish(SystemInTest.class));
+        TestUtils.setField(sut, "owner", SingletonInputHandlerTest.class.getCanonicalName());
+        TestUtils.setField(sut, "defaultOwner", SingletonInputHandlerTest.class.getCanonicalName());
+        Assert.assertTrue(sut.relinquishOwnership(SystemInTest.class));
         Assert.assertTrue(interrupt.getAndSet(false));
-        Assert.assertTrue(SingletonInputHandler.relinquish(new SystemInTest()));
+        Assert.assertTrue(sut.relinquishOwnership(new SystemInTest()));
         Assert.assertTrue(interrupt.getAndSet(false));
         
         //reset owner
-        TestUtils.setField(SingletonInputHandler.class, "defaultOwner", SingletonInputHandlerTest.class.getCanonicalName());
-        TestUtils.setField(SingletonInputHandler.class, "owner", SystemInTest.class.getCanonicalName());
-        Assert.assertTrue(SingletonInputHandler.relinquish(SystemInTest.class));
+        TestUtils.setField(sut, "defaultOwner", SingletonInputHandlerTest.class.getCanonicalName());
+        TestUtils.setField(sut, "owner", SystemInTest.class.getCanonicalName());
+        Assert.assertTrue(sut.relinquishOwnership(SystemInTest.class));
         Assert.assertTrue(interrupt.getAndSet(false));
-        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(SingletonInputHandler.class, "owner"));
+        Assert.assertEquals(SingletonInputHandlerTest.class.getCanonicalName(), TestUtils.getField(sut, "owner"));
+        TestUtils.setField(sut, "owner", SingletonInputHandlerTest.class.getCanonicalName());
+        TestUtils.setField(sut, "defaultOwner", SingletonInputHandlerTest.class.getCanonicalName());
         
-        //reset
-        TestUtils.setField(SingletonInputHandler.class, "owner", "");
-        TestUtils.setField(SingletonInputHandler.class, "defaultOwner", "");
+        //invalid
+        Assert.assertFalse(sut.relinquishOwnership(null));
+        Assert.assertFalse(sut.relinquishOwnership((Object) null));
+    }
+    
+    
+    //Inner Classes
+    
+    /**
+     * An implementation of the system under test.
+     */
+    private static class InputHandler extends SingletonInputHandler {
+        
     }
     
 }

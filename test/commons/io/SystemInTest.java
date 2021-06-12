@@ -149,4 +149,52 @@ public class SystemInTest {
         //TODO
     }
     
+    /**
+     * JUnit test of owns.
+     *
+     * @throws Exception When there is an exception.
+     * @see SystemIn#owns(Class)
+     * @see SystemIn#owns(Object)
+     */
+    @Test
+    public void testOwns() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of own.
+     *
+     * @throws Exception When there is an exception.
+     * @see SystemIn#own(Class)
+     * @see SystemIn#own(Object)
+     */
+    @Test
+    public void testOwn() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of defaultOwn.
+     *
+     * @throws Exception When there is an exception.
+     * @see SystemIn#defaultOwn(Class)
+     * @see SystemIn#defaultOwn(Object)
+     */
+    @Test
+    public void testDefaultOwn() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of relinquish.
+     *
+     * @throws Exception When there is an exception.
+     * @see SystemIn#relinquish(Class)
+     * @see SystemIn#relinquish(Object)
+     */
+    @Test
+    public void testRelinquish() throws Exception {
+        //TODO
+    }
+    
 }
