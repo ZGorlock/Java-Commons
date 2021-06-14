@@ -2106,25 +2106,59 @@ public final class Filesystem {
     }
     
     /**
-     * Creates a temporary file and returns the created file.
+     * Returns a temporary file.
      *
      * @param extension The extension of the temporary file.
      * @param name      The requested name of the temporary file.
-     * @return The created temporary file.
+     * @return The temporary file.
      */
-    public static File createTemporaryFile(String extension, String name) {
+    public static File getTemporaryFile(String extension, String name) {
         File tmpFile;
         int index = 0;
         do {
             tmpFile = new File(Project.TMP_DIR,
                     (((name == null) || name.isEmpty()) ? UUID.randomUUID().toString() : name) +
                             ((index > 0) ? ("_" + index) : "") +
-                            ((extension.isEmpty() || extension.startsWith(".")) ? "" : ".") + extension);
+                            ((extension == null) ? "" : ((extension.isEmpty() || extension.startsWith(".")) ? "" : ".") + extension));
             index++;
         } while (tmpFile.exists());
         
-        Filesystem.createFile(tmpFile);
         tmpFiles.add(tmpFile);
+        return tmpFile;
+    }
+    
+    /**
+     * Returns a temporary file.
+     *
+     * @param extension The extension of the temporary file.
+     * @return The temporary file.
+     * @see #getTemporaryFile(String, String)
+     */
+    public static File getTemporaryFile(String extension) {
+        return getTemporaryFile(extension, null);
+    }
+    
+    /**
+     * Returns a temporary file.
+     *
+     * @return The temporary file.
+     * @see #getTemporaryFile(String)
+     */
+    public static File getTemporaryFile() {
+        return getTemporaryFile(null);
+    }
+    
+    /**
+     * Creates a temporary file and returns the created file.
+     *
+     * @param extension The extension of the temporary file.
+     * @param name      The requested name of the temporary file.
+     * @return The created temporary file.
+     * @see #getTemporaryFile(String, String)
+     */
+    public static File createTemporaryFile(String extension, String name) {
+        File tmpFile = getTemporaryFile(extension, name);
+        Filesystem.createFile(tmpFile);
         return tmpFile;
     }
     
@@ -2146,16 +2180,16 @@ public final class Filesystem {
      * @see #createTemporaryFile(String)
      */
     public static File createTemporaryFile() {
-        return createTemporaryFile("");
+        return createTemporaryFile(null);
     }
     
     /**
-     * Creates a temporary directory and returns the created directory.
+     * Returns a temporary directory.
      *
      * @param name The requested name of the temporary directory.
-     * @return The created temporary directory.
+     * @return The temporary directory.
      */
-    public static File createTemporaryDirectory(String name) {
+    public static File getTemporaryDirectory(String name) {
         File tmpDir;
         int index = 0;
         do {
@@ -2165,8 +2199,30 @@ public final class Filesystem {
             index++;
         } while (tmpDir.exists());
         
-        Filesystem.createDirectory(tmpDir);
         tmpFiles.add(tmpDir);
+        return tmpDir;
+    }
+    
+    /**
+     * Returns a temporary directory.
+     *
+     * @return The temporary directory.
+     * @see #getTemporaryDirectory(String)
+     */
+    public static File getTemporaryDirectory() {
+        return getTemporaryDirectory(null);
+    }
+    
+    /**
+     * Creates a temporary directory and returns the created directory.
+     *
+     * @param name The requested name of the temporary directory.
+     * @return The created temporary directory.
+     * @see #getTemporaryDirectory(String)
+     */
+    public static File createTemporaryDirectory(String name) {
+        File tmpDir = getTemporaryDirectory(name);
+        Filesystem.createDirectory(tmpDir);
         return tmpDir;
     }
     

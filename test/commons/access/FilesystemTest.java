@@ -13854,6 +13854,68 @@ public class FilesystemTest {
     }
     
     /**
+     * JUnit test of getTemporaryFile.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#getTemporaryFile(String, String)
+     * @see Filesystem#getTemporaryFile(String)
+     * @see Filesystem#getTemporaryFile()
+     */
+    @Test
+    public void testGetTemporaryFile() throws Exception {
+        File tmpFile;
+        List<File> filesystemTmpFiles;
+        
+        //standard
+        tmpFile = Filesystem.getTemporaryFile();
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
+        Assert.assertFalse(tmpFile.exists());
+        Assert.assertFalse(tmpFile.getName().endsWith("."));
+        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(Project.TMP_DIR.getAbsolutePath()));
+        
+        //extension, empty
+        tmpFile = Filesystem.getTemporaryFile("");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
+        Assert.assertFalse(tmpFile.exists());
+        Assert.assertFalse(tmpFile.getName().endsWith("."));
+        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(Project.TMP_DIR.getAbsolutePath()));
+        
+        //extension, not empty
+        tmpFile = Filesystem.getTemporaryFile(".file");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
+        Assert.assertFalse(tmpFile.exists());
+        Assert.assertTrue(tmpFile.getName().endsWith(".file"));
+        Assert.assertFalse(tmpFile.getName().endsWith("..file"));
+        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(Project.TMP_DIR.getAbsolutePath()));
+        
+        //extension, not empty, no dot
+        tmpFile = Filesystem.getTemporaryFile("file");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
+        Assert.assertFalse(tmpFile.exists());
+        Assert.assertTrue(tmpFile.getName().endsWith(".file"));
+        Assert.assertFalse(tmpFile.getName().endsWith("..file"));
+        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(Project.TMP_DIR.getAbsolutePath()));
+        
+        //default extension
+        tmpFile = Filesystem.getTemporaryFile();
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
+        Assert.assertFalse(tmpFile.exists());
+        Assert.assertFalse(tmpFile.getName().endsWith("."));
+        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(Project.TMP_DIR.getAbsolutePath()));
+        
+        //request name
+        tmpFile = Filesystem.getTemporaryFile(".file", "testFile");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
+        Assert.assertFalse(tmpFile.exists());
+    }
+    
+    /**
      * JUnit test of createTemporaryFile.
      *
      * @throws Exception When there is an exception.
@@ -13924,7 +13986,6 @@ public class FilesystemTest {
         Assert.assertFalse(tmpFile.exists());
         
         //request name
-        
         tmpFile = Filesystem.createTemporaryFile(".file", "testFile");
         filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
@@ -13956,6 +14017,32 @@ public class FilesystemTest {
     }
     
     /**
+     * JUnit test of getTemporaryDirectory.
+     *
+     * @throws Exception When there is an exception.
+     * @see Filesystem#getTemporaryDirectory(String)
+     * @see Filesystem#getTemporaryDirectory()
+     */
+    @Test
+    public void testGetTemporaryDirectory() throws Exception {
+        File tmpDir;
+        List<File> filesystemTmpFiles;
+        
+        //standard
+        tmpDir = Filesystem.getTemporaryDirectory();
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpDir));
+        Assert.assertFalse(tmpDir.exists());
+        Assert.assertTrue(tmpDir.getParentFile().getAbsolutePath().equalsIgnoreCase(Project.TMP_DIR.getAbsolutePath()));
+        
+        //request name
+        tmpDir = Filesystem.getTemporaryDirectory("testDir");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpDir));
+        Assert.assertFalse(tmpDir.exists());
+    }
+    
+    /**
      * JUnit test of createTemporaryDirectory.
      *
      * @throws Exception When there is an exception.
@@ -13978,7 +14065,6 @@ public class FilesystemTest {
         Assert.assertFalse(tmpDir.exists());
         
         //request name
-        
         tmpDir = Filesystem.createTemporaryDirectory("testDir");
         filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
         Assert.assertTrue(filesystemTmpFiles.contains(tmpDir));
