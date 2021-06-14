@@ -48,7 +48,6 @@ import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -233,7 +232,7 @@ public class SpeechRecognizerTest {
         TestUtils.setField(sut, "killPocketSphinxCmd", "");
         TestUtils.setField(sut, "setup", new AtomicBoolean(false));
         TestUtils.setField(SpeechRecognizer.class, "instanced", new AtomicBoolean(false));
-        Assert.assertTrue(Whitebox.invokeMethod(sut, "setup"));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(sut, "setup"));
         Assert.assertFalse(((String) TestUtils.getField(sut, "runPocketSphinxCmd")).isEmpty());
         Assert.assertFalse(((String) TestUtils.getField(sut, "decodeRecordingCmd")).isEmpty());
         Assert.assertFalse(((String) TestUtils.getField(sut, "killPocketSphinxCmd")).isEmpty());
@@ -244,7 +243,7 @@ public class SpeechRecognizerTest {
         
         //already setup
         Assert.assertTrue(((AtomicBoolean) TestUtils.getField(sut, "setup")).get());
-        Assert.assertFalse(Whitebox.invokeMethod(sut, "setup"));
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(sut, "setup"));
         Assert.assertTrue(((AtomicBoolean) TestUtils.getField(sut, "setup")).get());
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(SpeechSynthesizer.class, "instanced")).get());
     }
@@ -266,7 +265,7 @@ public class SpeechRecognizerTest {
         TestUtils.setField(sut, "runPocketSphinxCmd", "");
         TestUtils.setField(sut, "decodeRecordingCmd", "");
         TestUtils.setField(sut, "killPocketSphinxCmd", "");
-        Whitebox.invokeMethod(sut, "initializeCommands");
+        TestUtils.invokeMethod(sut, "initializeCommands");
         Assert.assertEquals(
                 "cd \"" + SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath() + "\" && pocketsphinx_continuous.exe -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -logfn nul",
                 TestUtils.getField(sut, "runPocketSphinxCmd"));
@@ -282,7 +281,7 @@ public class SpeechRecognizerTest {
         TestUtils.setField(sut, "runPocketSphinxCmd", "");
         TestUtils.setField(sut, "decodeRecordingCmd", "");
         TestUtils.setField(sut, "killPocketSphinxCmd", "");
-        Whitebox.invokeMethod(sut, "initializeCommands");
+        TestUtils.invokeMethod(sut, "initializeCommands");
         Assert.assertEquals(
                 "cd \"" + SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath() + "\" && pocketsphinx_continuous.exe -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -mllr \"" + adaptionMatrix.getAbsolutePath() + "\" -logfn nul",
                 TestUtils.getField(sut, "runPocketSphinxCmd"));
@@ -299,7 +298,7 @@ public class SpeechRecognizerTest {
         TestUtils.setField(sut, "runPocketSphinxCmd", "");
         TestUtils.setField(sut, "decodeRecordingCmd", "");
         TestUtils.setField(sut, "killPocketSphinxCmd", "");
-        Whitebox.invokeMethod(sut, "initializeCommands");
+        TestUtils.invokeMethod(sut, "initializeCommands");
         Assert.assertEquals(
                 "cd \"" + SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath() + "\" && LD_LIBRARY_PATH=$(pwd) pocketsphinx_continuous -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict &> /dev/null",
                 TestUtils.getField(sut, "runPocketSphinxCmd"));
@@ -315,7 +314,7 @@ public class SpeechRecognizerTest {
         TestUtils.setField(sut, "runPocketSphinxCmd", "");
         TestUtils.setField(sut, "decodeRecordingCmd", "");
         TestUtils.setField(sut, "killPocketSphinxCmd", "");
-        Whitebox.invokeMethod(sut, "initializeCommands");
+        TestUtils.invokeMethod(sut, "initializeCommands");
         Assert.assertEquals(
                 "cd \"" + SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath() + "\" && LD_LIBRARY_PATH=$(pwd) pocketsphinx_continuous -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -mllr \"" + adaptionMatrix.getAbsolutePath() + "\" &> /dev/null",
                 TestUtils.getField(sut, "runPocketSphinxCmd"));
@@ -336,7 +335,7 @@ public class SpeechRecognizerTest {
     @SuppressWarnings("ConfusingArgumentToVarargsMethod")
     @Test
     public void testInitialize() throws Exception {
-        Whitebox.invokeMethod(sut, "setup");
+        TestUtils.invokeMethod(sut, "setup");
         TestUtils.setField(sut, "pocketsphinx", null);
         TestUtils.setField(sut, "speechStream", null);
         TestUtils.setField(sut, "speechBuffer", null);
@@ -346,7 +345,7 @@ public class SpeechRecognizerTest {
         
         //standard
         
-        Assert.assertTrue(Whitebox.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.CONTINUOUS));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.CONTINUOUS));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.CONTINUOUS, sut.getMode());
         Assert.assertNotNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNotNull(TestUtils.getField(sut, "speechStream"));
@@ -355,7 +354,7 @@ public class SpeechRecognizerTest {
         Mockito.verify(sut, VerificationModeFactory.times(1))
                 .clearSpeech();
         
-        Assert.assertTrue(Whitebox.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.TRIGGERED));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.TRIGGERED));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.TRIGGERED, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
@@ -366,7 +365,7 @@ public class SpeechRecognizerTest {
         
         TestUtils.setField(sut, "recording", new AtomicBoolean(false));
         TestUtils.setField(sut, "mode", SpeechRecognizer.RecognitionMode.TRIGGERED);
-        Assert.assertTrue(Whitebox.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.ON_DEMAND));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.ON_DEMAND));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
@@ -379,7 +378,7 @@ public class SpeechRecognizerTest {
         
         TestUtils.setField(sut, "recording", new AtomicBoolean(true));
         TestUtils.setField(sut, "mode", SpeechRecognizer.RecognitionMode.TRIGGERED);
-        Assert.assertTrue(Whitebox.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.OFF));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.OFF));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
@@ -390,7 +389,7 @@ public class SpeechRecognizerTest {
         Mockito.verify(captureSpeechTrigger, VerificationModeFactory.times(1))
                 .release();
         
-        Assert.assertTrue(Whitebox.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.ON_DEMAND));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.ON_DEMAND));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
@@ -401,7 +400,7 @@ public class SpeechRecognizerTest {
         
         TestUtils.setField(sut, "recording", new AtomicBoolean(false));
         TestUtils.setField(sut, "mode", SpeechRecognizer.RecognitionMode.ON_DEMAND);
-        Assert.assertTrue(Whitebox.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.CONTINUOUS));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.CONTINUOUS));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.CONTINUOUS, sut.getMode());
         Assert.assertNotNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNotNull(TestUtils.getField(sut, "speechStream"));
@@ -411,11 +410,11 @@ public class SpeechRecognizerTest {
                 .clearSpeech();
         Mockito.verify(captureSpeechTrigger, VerificationModeFactory.noMoreInteractions())
                 .release();
-        Assert.assertTrue(Whitebox.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.OFF));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.OFF));
         
         TestUtils.setField(sut, "recording", new AtomicBoolean(true));
         TestUtils.setField(sut, "mode", SpeechRecognizer.RecognitionMode.ON_DEMAND);
-        Assert.assertTrue(Whitebox.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.TRIGGERED));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.TRIGGERED));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.TRIGGERED, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
@@ -425,10 +424,10 @@ public class SpeechRecognizerTest {
                 .clearSpeech();
         Mockito.verify(captureSpeechTrigger, VerificationModeFactory.times(2))
                 .release();
-        Assert.assertTrue(Whitebox.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.OFF));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.OFF));
         
         Assert.assertTrue(TestUtils.setField(sut, "mode", null)); //default to OFF
-        Whitebox.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.ON_DEMAND); //same mode
+        TestUtils.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.ON_DEMAND); //same mode
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
@@ -437,7 +436,7 @@ public class SpeechRecognizerTest {
         Mockito.verify(sut, VerificationModeFactory.times(10))
                 .clearSpeech();
         
-        Assert.assertTrue(Whitebox.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.OFF));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.OFF));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
@@ -448,7 +447,7 @@ public class SpeechRecognizerTest {
         
         //invalid
         
-        Assert.assertFalse(Whitebox.invokeMethod(sut, "initialize", null));
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(sut, "initialize", (SpeechRecognizer.RecognitionMode) null));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
@@ -906,7 +905,7 @@ public class SpeechRecognizerTest {
     public void testSetMode() throws Exception {
         //active
         
-        Whitebox.invokeMethod(sut, "setup");
+        TestUtils.invokeMethod(sut, "setup");
         TestUtils.setField(sut, "pocketsphinx", null);
         TestUtils.setField(sut, "speechStream", null);
         TestUtils.setField(sut, "speechBuffer", null);
@@ -1025,7 +1024,7 @@ public class SpeechRecognizerTest {
      */
     @Test
     public void testSetCaptureSpeechTrigger() throws Exception {
-        Whitebox.invokeMethod(sut, "setup");
+        TestUtils.invokeMethod(sut, "setup");
         sut.setMode(SpeechRecognizer.RecognitionMode.OFF);
         HotKeyManager.HotKey captureSpeechTrigger = (HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger");
         Assert.assertEquals("[Ctrl]", captureSpeechTrigger.toString());
@@ -1141,7 +1140,7 @@ public class SpeechRecognizerTest {
      */
     @Test
     public void testSpeechRecorder() throws Exception {
-        Whitebox.invokeMethod(sut, "setup");
+        TestUtils.invokeMethod(sut, "setup");
         sut.setMode(SpeechRecognizer.RecognitionMode.ON_DEMAND);
         sut.start();
         PowerMockito.mockStatic(CmdLine.class);
@@ -1180,7 +1179,7 @@ public class SpeechRecognizerTest {
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", null);
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
-        Whitebox.invokeMethod(captureSpeechTriggerCallback, "hit");
+        TestUtils.invokeMethod(captureSpeechTriggerCallback, "hit");
         Assert.assertTrue(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Assert.assertTrue(((File) TestUtils.getField(captureSpeechTriggerCallback, "wavFile")).exists());
         Assert.assertTrue(WaveRecorder.stop(speechRecorderClass));
@@ -1190,7 +1189,7 @@ public class SpeechRecognizerTest {
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", null);
         Assert.assertTrue(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
-        Whitebox.invokeMethod(captureSpeechTriggerCallback, "hit");
+        TestUtils.invokeMethod(captureSpeechTriggerCallback, "hit");
         Assert.assertTrue(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Assert.assertNull(TestUtils.getField(captureSpeechTriggerCallback, "wavFile"));
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
@@ -1200,7 +1199,7 @@ public class SpeechRecognizerTest {
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", null);
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
-        Whitebox.invokeMethod(captureSpeechTriggerCallback, "hit");
+        TestUtils.invokeMethod(captureSpeechTriggerCallback, "hit");
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Assert.assertNull(TestUtils.getField(captureSpeechTriggerCallback, "wavFile"));
         Assert.assertTrue(WaveRecorder.relinquish(WaveRecorder.class));
@@ -1210,7 +1209,7 @@ public class SpeechRecognizerTest {
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", null);
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
-        Whitebox.invokeMethod(captureSpeechTriggerCallback, "hit");
+        TestUtils.invokeMethod(captureSpeechTriggerCallback, "hit");
         Assert.assertTrue(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Assert.assertTrue(((File) TestUtils.getField(captureSpeechTriggerCallback, "wavFile")).exists());
         Assert.assertTrue(WaveRecorder.stop(speechRecorderClass));
@@ -1223,7 +1222,7 @@ public class SpeechRecognizerTest {
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", null);
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
-        Whitebox.invokeMethod(captureSpeechTriggerCallback, "hit");
+        TestUtils.invokeMethod(captureSpeechTriggerCallback, "hit");
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Assert.assertNotNull(TestUtils.getField(captureSpeechTriggerCallback, "wavFile"));
         PowerMockito.when(WaveRecorder.class, "owns", ArgumentMatchers.any(Class.class)).thenCallRealMethod();
@@ -1248,7 +1247,7 @@ public class SpeechRecognizerTest {
         Assert.assertTrue(WaveRecorder.own(speechRecorderClass)); //own
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", wavFile);
-        Whitebox.invokeMethod(captureSpeechTriggerCallback, "release");
+        TestUtils.invokeMethod(captureSpeechTriggerCallback, "release");
         Assert.assertEquals("release", speechBuffer.getAndSet(""));
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Assert.assertFalse(((File) TestUtils.getField(captureSpeechTriggerCallback, "wavFile")).exists());
@@ -1259,7 +1258,7 @@ public class SpeechRecognizerTest {
         //already released
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", wavFile);
-        Whitebox.invokeMethod(captureSpeechTriggerCallback, "release");
+        TestUtils.invokeMethod(captureSpeechTriggerCallback, "release");
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Assert.assertNotNull(TestUtils.getField(captureSpeechTriggerCallback, "wavFile"));
         PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.noMoreInteractions());
@@ -1271,7 +1270,7 @@ public class SpeechRecognizerTest {
         sut.setMode(SpeechRecognizer.RecognitionMode.ON_DEMAND);
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", wavFile);
-        Whitebox.invokeMethod(captureSpeechTriggerCallback, "release");
+        TestUtils.invokeMethod(captureSpeechTriggerCallback, "release");
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(2));
         CmdLine.executeCmd(ArgumentMatchers.eq(((String) TestUtils.getField(sut, "decodeRecordingCmd"))
@@ -1280,7 +1279,7 @@ public class SpeechRecognizerTest {
         sut.setMode(SpeechRecognizer.RecognitionMode.TRIGGERED);
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", wavFile);
-        Whitebox.invokeMethod(captureSpeechTriggerCallback, "release");
+        TestUtils.invokeMethod(captureSpeechTriggerCallback, "release");
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.noMoreInteractions());
         CmdLine.executeCmd(ArgumentMatchers.anyString());
@@ -1291,7 +1290,7 @@ public class SpeechRecognizerTest {
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", wavFile);
         Assert.assertTrue(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
-        Whitebox.invokeMethod(captureSpeechTriggerCallback, "release");
+        TestUtils.invokeMethod(captureSpeechTriggerCallback, "release");
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Assert.assertFalse(((File) TestUtils.getField(captureSpeechTriggerCallback, "wavFile")).exists());
         Assert.assertTrue(WaveRecorder.relinquish(WaveRecorder.class));
@@ -1302,7 +1301,7 @@ public class SpeechRecognizerTest {
         TestUtils.setField(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
         TestUtils.setField(captureSpeechTriggerCallback, "wavFile", wavFile);
         Assert.assertTrue(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
-        Whitebox.invokeMethod(captureSpeechTriggerCallback, "release");
+        TestUtils.invokeMethod(captureSpeechTriggerCallback, "release");
         Assert.assertFalse(((AtomicBoolean) TestUtils.getField(captureSpeechTriggerCallback, "recording")).get());
         Assert.assertNotNull(TestUtils.getField(captureSpeechTriggerCallback, "wavFile"));
         PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.noMoreInteractions());

@@ -20,6 +20,7 @@ import java.util.Objects;
 import commons.string.StringUtility;
 import org.junit.Assert;
 import org.powermock.reflect.Whitebox;
+import org.powermock.reflect.exceptions.MethodInvocationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -343,6 +344,44 @@ public final class TestUtils {
      */
     public static boolean setField(Object object, String fieldName, Object value) {
         return setField(object.getClass(), object, fieldName, value);
+    }
+    
+    /**
+     * Invokes a method of an object.
+     *
+     * @param object     The object.
+     * @param methodName The name of the method.
+     * @param arguments  The arguments to the method.
+     * @return The result of the method invocation.
+     * @throws MethodInvocationException When there is an exception while invoking the method.
+     */
+    public static Object invokeMethod(Object object, String methodName, Object... arguments) throws MethodInvocationException {
+        try {
+            return Whitebox.invokeMethod(object, methodName, arguments);
+        } catch (Exception e) {
+            AssertWrapper.fail("Attempted to invoke the method " + StringUtility.methodString(object.getClass(), methodName, Arrays.stream(arguments).map(Object::getClass).toArray(Class<?>[]::new)) +
+                    " but an exception occurred");
+            throw new MethodInvocationException(e);
+        }
+    }
+    
+    /**
+     * Invokes a method of a class.
+     *
+     * @param clazz      The class.
+     * @param methodName The name of the method.
+     * @param arguments  The arguments to the method.
+     * @return The result of the method invocation.
+     * @throws MethodInvocationException When there is an exception while invoking the method.
+     */
+    public static Object invokeMethod(Class<?> clazz, String methodName, Object... arguments) throws MethodInvocationException {
+        try {
+            return Whitebox.invokeMethod(clazz, methodName, arguments);
+        } catch (Exception e) {
+            AssertWrapper.fail("Attempted to invoke the method " + StringUtility.methodString(clazz, methodName, Arrays.stream(arguments).map(Object::getClass).toArray(Class<?>[]::new)) +
+                    " but an exception occurred");
+            throw new MethodInvocationException(e);
+        }
     }
     
     /**

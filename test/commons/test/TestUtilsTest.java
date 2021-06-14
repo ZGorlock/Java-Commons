@@ -30,6 +30,7 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
+import org.powermock.reflect.exceptions.MethodInvocationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -372,8 +373,8 @@ public class TestUtilsTest {
         
         //standard
         
-        for (int i = 0; i < 10; i++) {
-            if (i < 4) {
+        for (int i = 0; i <= 11; i++) {
+            if (i < 6) {
                 Assert.assertEquals(Whitebox.getInternalState(TestClass.class, "field" + i),
                         TestUtils.getField(TestClass.class, "field" + i));
             } else {
@@ -384,8 +385,8 @@ public class TestUtilsTest {
         
         //sub class
         
-        for (int i = 0; i < 10; i++) {
-            if (i < 4) {
+        for (int i = 0; i <= 11; i++) {
+            if (i < 6) {
                 Assert.assertEquals(Whitebox.getInternalState(TestClass.class, "field" + i),
                         TestUtils.getField(TestSubClass.class, "field" + i));
             } else {
@@ -396,7 +397,7 @@ public class TestUtilsTest {
         
         //mock
         
-        for (int i = 4; i < 10; i++) {
+        for (int i = 6; i <= 11; i++) {
             Whitebox.setInternalState(mockClass, "field" + i, TestUtils.getField(testClass, "field" + i));
             Assert.assertEquals(Whitebox.getInternalState(testClass, "field" + i),
                     TestUtils.getField(mockClass, "field" + i));
@@ -437,7 +438,7 @@ public class TestUtilsTest {
     public void testSetField() throws Exception {
         TestClass testClass = new TestClass();
         TestSubClass subClass = new TestSubClass();
-        TestClass mockClass = Mockito.mock(TestClass.class);
+        TestClass mockClass = Mockito.mock(TestClass.class, Mockito.CALLS_REAL_METHODS);
         
         //standard
         
@@ -457,29 +458,37 @@ public class TestUtilsTest {
         Assert.assertTrue(TestUtils.setField(TestClass.class, "field3", false));
         Assert.assertEquals(false, Whitebox.getInternalState(TestClass.class, "field3"));
         
-        Assert.assertEquals("another test", Whitebox.getInternalState(testClass, "field4"));
-        Assert.assertTrue(TestUtils.setField(testClass, "field4", "an even other test"));
-        Assert.assertEquals("an even other test", Whitebox.getInternalState(testClass, "field4"));
+        Assert.assertEquals("tset", Whitebox.getInternalState(TestClass.class, "field4"));
+        Assert.assertTrue(TestUtils.setField(TestClass.class, "field4", "tset2"));
+        Assert.assertEquals("tset2", Whitebox.getInternalState(TestClass.class, "field4"));
         
-        Assert.assertEquals(874561564112154L, (long) Whitebox.getInternalState(testClass, "field5"));
-        Assert.assertTrue(TestUtils.setField(testClass, "field5", 156423157842311L));
-        Assert.assertEquals(156423157842311L, (long) Whitebox.getInternalState(testClass, "field5"));
+        Assert.assertEquals(4, (byte) Whitebox.getInternalState(TestClass.class, "field5"));
+        Assert.assertTrue(TestUtils.setField(TestClass.class, "field5", (byte) 3));
+        Assert.assertEquals(3, (byte) Whitebox.getInternalState(TestClass.class, "field5"));
         
-        Assert.assertEquals(-44, (int) Whitebox.getInternalState(testClass, "field6"));
-        Assert.assertTrue(TestUtils.setField(testClass, "field6", 1568));
-        Assert.assertEquals(1568, (int) Whitebox.getInternalState(testClass, "field6"));
+        Assert.assertEquals("another test", Whitebox.getInternalState(testClass, "field6"));
+        Assert.assertTrue(TestUtils.setField(testClass, "field6", "an even other test"));
+        Assert.assertEquals("an even other test", Whitebox.getInternalState(testClass, "field6"));
         
-        Assert.assertEquals(7.66f, Whitebox.getInternalState(testClass, "field7"), TestUtils.DELTA_FLOAT);
-        Assert.assertTrue(TestUtils.setField(testClass, "field7", 3.46f));
-        Assert.assertEquals(3.46f, Whitebox.getInternalState(testClass, "field7"), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(874561564112154L, (long) Whitebox.getInternalState(testClass, "field7"));
+        Assert.assertTrue(TestUtils.setField(testClass, "field7", 156423157842311L));
+        Assert.assertEquals(156423157842311L, (long) Whitebox.getInternalState(testClass, "field7"));
         
-        Assert.assertEquals(true, Whitebox.getInternalState(testClass, "field8"));
-        Assert.assertTrue(TestUtils.setField(testClass, "field8", false));
-        Assert.assertEquals(false, Whitebox.getInternalState(testClass, "field8"));
+        Assert.assertEquals(-44, (int) Whitebox.getInternalState(testClass, "field8"));
+        Assert.assertTrue(TestUtils.setField(testClass, "field8", 1568));
+        Assert.assertEquals(1568, (int) Whitebox.getInternalState(testClass, "field8"));
         
-        Assert.assertEquals("last test", Whitebox.getInternalState(testClass, "field9"));
-        Assert.assertTrue(TestUtils.setField(testClass, "field9", "the last test"));
-        Assert.assertEquals("the last test", Whitebox.getInternalState(testClass, "field9"));
+        Assert.assertEquals(7.66f, Whitebox.getInternalState(testClass, "field9"), TestUtils.DELTA_FLOAT);
+        Assert.assertTrue(TestUtils.setField(testClass, "field9", 3.46f));
+        Assert.assertEquals(3.46f, Whitebox.getInternalState(testClass, "field9"), TestUtils.DELTA_FLOAT);
+        
+        Assert.assertEquals(true, Whitebox.getInternalState(testClass, "field10"));
+        Assert.assertTrue(TestUtils.setField(testClass, "field10", false));
+        Assert.assertEquals(false, Whitebox.getInternalState(testClass, "field10"));
+        
+        Assert.assertEquals("last test", Whitebox.getInternalState(testClass, "field11"));
+        Assert.assertTrue(TestUtils.setField(testClass, "field11", "the last test"));
+        Assert.assertEquals("the last test", Whitebox.getInternalState(testClass, "field11"));
         
         //sub class
         
@@ -488,8 +497,8 @@ public class TestUtilsTest {
         Assert.assertEquals(10, (int) Whitebox.getInternalState(TestSubClass.class, "field0"));
         
         Assert.assertEquals(0.221548773, Whitebox.getInternalState(TestSubClass.class, "field1"), TestUtils.DELTA);
-        Assert.assertTrue(TestUtils.setField(TestSubClass.class, "field1", 16.0156748941));
-        Assert.assertEquals(16.0156748941, Whitebox.getInternalState(TestSubClass.class, "field1"), TestUtils.DELTA);
+        Assert.assertTrue(TestUtils.setField(TestSubClass.class, "field1", 6.4488121));
+        Assert.assertEquals(6.4488121, Whitebox.getInternalState(TestSubClass.class, "field1"), TestUtils.DELTA);
         
         Assert.assertEquals("different", Whitebox.getInternalState(TestSubClass.class, "field2"));
         Assert.assertTrue(TestUtils.setField(TestSubClass.class, "field2", "another different"));
@@ -499,55 +508,63 @@ public class TestUtilsTest {
         Assert.assertTrue(TestUtils.setField(TestSubClass.class, "field3", true));
         Assert.assertEquals(true, Whitebox.getInternalState(TestSubClass.class, "field3"));
         
-        Assert.assertEquals("another test", Whitebox.getInternalState(subClass, "field4"));
-        Assert.assertTrue(TestUtils.setField(subClass, "field4", "an even other test"));
-        Assert.assertEquals("an even other test", Whitebox.getInternalState(subClass, "field4"));
+        Assert.assertEquals("tset2", Whitebox.getInternalState(TestSubClass.class, "field4"));
+        Assert.assertTrue(TestUtils.setField(TestSubClass.class, "field4", "tset"));
+        Assert.assertEquals("tset", Whitebox.getInternalState(TestSubClass.class, "field4"));
         
-        Assert.assertEquals(874561564112154L, (long) Whitebox.getInternalState(subClass, "field5"));
-        Assert.assertTrue(TestUtils.setField(subClass, "field5", 156423157842311L));
-        Assert.assertEquals(156423157842311L, (long) Whitebox.getInternalState(subClass, "field5"));
+        Assert.assertEquals(3, (byte) Whitebox.getInternalState(TestSubClass.class, "field5"));
+        Assert.assertTrue(TestUtils.setField(TestSubClass.class, "field5", (byte) 4));
+        Assert.assertEquals(4, (byte) Whitebox.getInternalState(TestSubClass.class, "field5"));
         
-        Assert.assertEquals(-44, (int) Whitebox.getInternalState(subClass, "field6"));
-        Assert.assertTrue(TestUtils.setField(subClass, "field6", 1568));
-        Assert.assertEquals(1568, (int) Whitebox.getInternalState(subClass, "field6"));
+        Assert.assertEquals("another test", Whitebox.getInternalState(subClass, "field6"));
+        Assert.assertTrue(TestUtils.setField(subClass, "field6", "an even other test"));
+        Assert.assertEquals("an even other test", Whitebox.getInternalState(subClass, "field6"));
         
-        Assert.assertEquals(7.66f, Whitebox.getInternalState(subClass, "field7"), TestUtils.DELTA_FLOAT);
-        Assert.assertTrue(TestUtils.setField(subClass, "field7", 3.46f));
-        Assert.assertEquals(3.46f, Whitebox.getInternalState(subClass, "field7"), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(874561564112154L, (long) Whitebox.getInternalState(subClass, "field7"));
+        Assert.assertTrue(TestUtils.setField(subClass, "field7", 156423157842311L));
+        Assert.assertEquals(156423157842311L, (long) Whitebox.getInternalState(subClass, "field7"));
         
-        Assert.assertEquals(true, Whitebox.getInternalState(subClass, "field8"));
-        Assert.assertTrue(TestUtils.setField(subClass, "field8", false));
-        Assert.assertEquals(false, Whitebox.getInternalState(subClass, "field8"));
+        Assert.assertEquals(-44, (int) Whitebox.getInternalState(subClass, "field8"));
+        Assert.assertTrue(TestUtils.setField(subClass, "field8", 1568));
+        Assert.assertEquals(1568, (int) Whitebox.getInternalState(subClass, "field8"));
         
-        Assert.assertEquals("last test", Whitebox.getInternalState(subClass, "field9"));
-        Assert.assertTrue(TestUtils.setField(subClass, "field9", "the last test"));
-        Assert.assertEquals("the last test", Whitebox.getInternalState(subClass, "field9"));
+        Assert.assertEquals(7.66f, Whitebox.getInternalState(subClass, "field9"), TestUtils.DELTA_FLOAT);
+        Assert.assertTrue(TestUtils.setField(subClass, "field9", 3.46f));
+        Assert.assertEquals(3.46f, Whitebox.getInternalState(subClass, "field9"), TestUtils.DELTA_FLOAT);
+        
+        Assert.assertEquals(true, Whitebox.getInternalState(subClass, "field10"));
+        Assert.assertTrue(TestUtils.setField(subClass, "field10", false));
+        Assert.assertEquals(false, Whitebox.getInternalState(subClass, "field10"));
+        
+        Assert.assertEquals("last test", Whitebox.getInternalState(subClass, "field11"));
+        Assert.assertTrue(TestUtils.setField(subClass, "field11", "the last test"));
+        Assert.assertEquals("the last test", Whitebox.getInternalState(subClass, "field11"));
         
         //mock
         
-        Assert.assertEquals((String) null, Whitebox.getInternalState(mockClass, "field4"));
-        Assert.assertTrue(TestUtils.setField(mockClass, "field4", "an even other test"));
-        Assert.assertEquals("an even other test", Whitebox.getInternalState(mockClass, "field4"));
+        Assert.assertEquals((String) null, Whitebox.getInternalState(mockClass, "field6"));
+        Assert.assertTrue(TestUtils.setField(mockClass, "field6", "an even other test"));
+        Assert.assertEquals("an even other test", Whitebox.getInternalState(mockClass, "field6"));
         
-        Assert.assertEquals(0L, (long) Whitebox.getInternalState(mockClass, "field5"));
-        Assert.assertTrue(TestUtils.setField(mockClass, "field5", 156423157842311L));
-        Assert.assertEquals(156423157842311L, (long) Whitebox.getInternalState(mockClass, "field5"));
+        Assert.assertEquals(0L, (long) Whitebox.getInternalState(mockClass, "field7"));
+        Assert.assertTrue(TestUtils.setField(mockClass, "field7", 156423157842311L));
+        Assert.assertEquals(156423157842311L, (long) Whitebox.getInternalState(mockClass, "field7"));
         
-        Assert.assertEquals(0, (int) Whitebox.getInternalState(mockClass, "field6"));
-        Assert.assertTrue(TestUtils.setField(mockClass, "field6", 1568));
-        Assert.assertEquals(1568, (int) Whitebox.getInternalState(mockClass, "field6"));
+        Assert.assertEquals(0, (int) Whitebox.getInternalState(mockClass, "field8"));
+        Assert.assertTrue(TestUtils.setField(mockClass, "field8", 1568));
+        Assert.assertEquals(1568, (int) Whitebox.getInternalState(mockClass, "field8"));
         
-        Assert.assertEquals(0.0f, Whitebox.getInternalState(mockClass, "field7"), TestUtils.DELTA_FLOAT);
-        Assert.assertTrue(TestUtils.setField(mockClass, "field7", 3.46f));
-        Assert.assertEquals(3.46f, Whitebox.getInternalState(mockClass, "field7"), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(0.0f, Whitebox.getInternalState(mockClass, "field9"), TestUtils.DELTA_FLOAT);
+        Assert.assertTrue(TestUtils.setField(mockClass, "field9", 3.46f));
+        Assert.assertEquals(3.46f, Whitebox.getInternalState(mockClass, "field9"), TestUtils.DELTA_FLOAT);
         
-        Assert.assertEquals(false, Whitebox.getInternalState(mockClass, "field8"));
-        Assert.assertTrue(TestUtils.setField(mockClass, "field8", true));
-        Assert.assertEquals(true, Whitebox.getInternalState(mockClass, "field8"));
+        Assert.assertEquals(false, Whitebox.getInternalState(mockClass, "field10"));
+        Assert.assertTrue(TestUtils.setField(mockClass, "field10", true));
+        Assert.assertEquals(true, Whitebox.getInternalState(mockClass, "field10"));
         
-        Assert.assertEquals((String) null, Whitebox.getInternalState(mockClass, "field9"));
-        Assert.assertTrue(TestUtils.setField(mockClass, "field9", "the last test"));
-        Assert.assertEquals("the last test", Whitebox.getInternalState(mockClass, "field9"));
+        Assert.assertEquals((String) null, Whitebox.getInternalState(mockClass, "field11"));
+        Assert.assertTrue(TestUtils.setField(mockClass, "field11", "the last test"));
+        Assert.assertEquals("the last test", Whitebox.getInternalState(mockClass, "field11"));
         
         //invalid
         
@@ -561,15 +578,15 @@ public class TestUtilsTest {
                 TestUtils.setField(TestClass.class, "field3", 103));
         Assert.assertEquals(true, Whitebox.getInternalState(TestClass.class, "field3"));
         
-        Assert.assertEquals("an even other test", Whitebox.getInternalState(testClass, "field4"));
-        TestUtils.assertException(IllegalArgumentException.class, "Can not set final java.lang.String field commons.test.TestUtilsTest$TestClass.field4 to java.math.BigDecimal", () ->
-                TestUtils.setField(testClass, "field4", BigDecimal.ZERO));
-        Assert.assertEquals("an even other test", Whitebox.getInternalState(testClass, "field4"));
+        Assert.assertEquals("an even other test", Whitebox.getInternalState(testClass, "field6"));
+        TestUtils.assertException(IllegalArgumentException.class, "Can not set final java.lang.String field commons.test.TestUtilsTest$TestClass.field6 to java.math.BigDecimal", () ->
+                TestUtils.setField(testClass, "field6", BigDecimal.ZERO));
+        Assert.assertEquals("an even other test", Whitebox.getInternalState(testClass, "field6"));
         
-        Assert.assertEquals(false, Whitebox.getInternalState(testClass, "field8"));
-        TestUtils.assertException(IllegalArgumentException.class, "Can not set final boolean field commons.test.TestUtilsTest$TestClass.field8 to null value", () ->
-                TestUtils.setField(testClass, "field8", null));
-        Assert.assertEquals(false, Whitebox.getInternalState(testClass, "field8"));
+        Assert.assertEquals(false, Whitebox.getInternalState(testClass, "field10"));
+        TestUtils.assertException(IllegalArgumentException.class, "Can not set final boolean field commons.test.TestUtilsTest$TestClass.field10 to null value", () ->
+                TestUtils.setField(testClass, "field10", null));
+        Assert.assertEquals(false, Whitebox.getInternalState(testClass, "field10"));
         
         Assert.assertFalse(TestUtils.setField(TestClass.class, "missingField", false));
         TestUtils.assertException(NullPointerException.class, () ->
@@ -583,13 +600,109 @@ public class TestUtilsTest {
         
         Assert.assertFalse(TestUtils.setField(testClass, "missingField", false));
         TestUtils.assertException(NullPointerException.class, () ->
-                Assert.assertFalse(TestUtils.setField((Object) null, "field5", 11)));
+                Assert.assertFalse(TestUtils.setField((Object) null, "field7", 11)));
         TestUtils.assertException(NullPointerException.class, () ->
                 Assert.assertFalse(TestUtils.setField(testClass, null, 11)));
         
         Assert.assertFalse(TestUtils.setField(subClass, "missingField", false));
         TestUtils.assertException(NullPointerException.class, () ->
                 Assert.assertFalse(TestUtils.setField(subClass, null, 11)));
+    }
+    
+    /**
+     * JUnit test of invokeMethod.
+     *
+     * @throws Exception When there is an exception.
+     * @see TestUtils#invokeMethod(Class, String, Object...)
+     * @see TestUtils#invokeMethod(Object, String, Object...)
+     */
+    @Test
+    public void testInvokeMethod() throws Exception {
+        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        TestClass testClass = new TestClass();
+        TestSubClass subClass = new TestSubClass();
+        TestClass mockClass = Mockito.mock(TestClass.class, Mockito.CALLS_REAL_METHODS);
+        StringBuilder builder = new StringBuilder();
+        
+        //standard
+        
+        Assert.assertNull(TestUtils.invokeMethod(TestClass.class, "staticVoidMethod", builder));
+        Assert.assertEquals("static void method hit", builder.toString());
+        builder = new StringBuilder();
+        Assert.assertEquals(6.4488121, (double) TestUtils.invokeMethod(TestClass.class, "method1"), TestUtils.DELTA);
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(TestClass.class, "method3", "testing"));
+        Assert.assertEquals(4, (byte) TestUtils.invokeMethod(TestClass.class, "method5", false, 54, BigDecimal.ZERO));
+        Assert.assertNull(TestUtils.invokeMethod(testClass, "voidMethod", builder));
+        Assert.assertEquals("void method hit", builder.toString());
+        builder = new StringBuilder();
+        Assert.assertEquals(874561564112154L, (long) TestUtils.invokeMethod(testClass, "method7"));
+        Assert.assertEquals(-44, (int) TestUtils.invokeMethod(testClass, "method8", "testing"));
+        Assert.assertEquals(7.66f, (float) TestUtils.invokeMethod(testClass, "method9", -13), TestUtils.DELTA_FLOAT);
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(testClass, "method10"));
+        Assert.assertEquals("last test", TestUtils.invokeMethod(testClass, "method11", true, "testing", 19.41f, new char[] {'t', 'e', 's', 't'}));
+        
+        //subclass
+        
+        Assert.assertNull(TestUtils.invokeMethod(TestSubClass.class, "staticVoidMethod", builder));
+        Assert.assertEquals("static void method hit", builder.toString());
+        builder = new StringBuilder();
+        Assert.assertEquals(6.4488121, (double) TestUtils.invokeMethod(TestSubClass.class, "method1"), TestUtils.DELTA);
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(TestSubClass.class, "method3", "testing"));
+        Assert.assertEquals(4, (byte) TestUtils.invokeMethod(TestSubClass.class, "method5", false, 54, BigDecimal.ZERO));
+        Assert.assertNull(TestUtils.invokeMethod(subClass, "voidMethod", builder));
+        Assert.assertEquals("void method hit", builder.toString());
+        builder = new StringBuilder();
+        Assert.assertEquals(874561564112154L, (long) TestUtils.invokeMethod(subClass, "method7"));
+        Assert.assertEquals(-44, (int) TestUtils.invokeMethod(subClass, "method8", "testing"));
+        Assert.assertEquals(7.66f, (float) TestUtils.invokeMethod(subClass, "method9", -13), TestUtils.DELTA_FLOAT);
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(subClass, "method10"));
+        Assert.assertEquals("last test", TestUtils.invokeMethod(subClass, "method11", true, "testing", 19.41f, new char[] {'t', 'e', 's', 't'}));
+        
+        //mock
+        
+        Assert.assertNull(TestUtils.invokeMethod(mockClass, "voidMethod", builder));
+        Assert.assertEquals("void method hit", builder.toString());
+        builder = new StringBuilder();
+        Assert.assertEquals(0L, (long) TestUtils.invokeMethod(mockClass, "method7"));
+        Assert.assertEquals(-44, (int) TestUtils.invokeMethod(mockClass, "method8", "testing"));
+        Assert.assertEquals(0.0f, (float) TestUtils.invokeMethod(mockClass, "method9", -13), TestUtils.DELTA_FLOAT);
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(mockClass, "method10"));
+        Assert.assertNull(TestUtils.invokeMethod(mockClass, "method11", true, "testing", 19.41f, new char[] {'t', 'e', 's', 't'}));
+        
+        //invalid
+        
+        TestUtils.assertException(MethodInvocationException.class, "Attempted to invoke the method TestClass::method1(String) but an exception occurred", () ->
+                TestUtils.invokeMethod(TestClass.class, "method1", "invalid argument"));
+        TestUtils.assertException(NullPointerException.class, "", () ->
+                TestUtils.invokeMethod(TestClass.class, "method3", 76));
+        TestUtils.assertException(NullPointerException.class, "", () ->
+                TestUtils.invokeMethod(TestClass.class, "method3"));
+        
+        TestUtils.assertException(MethodInvocationException.class, "No method found with name 'missingMethod' with parameter types: [ <none> ] in class commons.test.TestUtilsTest$TestClass.", () ->
+                TestUtils.invokeMethod(TestClass.class, "missingMethod"));
+        TestUtils.assertException(NullPointerException.class, () ->
+                TestUtils.invokeMethod(TestClass.class, null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                TestUtils.invokeMethod(null, "method1"));
+        
+        TestUtils.assertException(MethodInvocationException.class, "No method found with name 'missingMethod' with parameter types: [ <none> ] in class commons.test.TestUtilsTest$TestClass.", () ->
+                TestUtils.invokeMethod(TestSubClass.class, "missingMethod"));
+        TestUtils.assertException(NullPointerException.class, () ->
+                TestUtils.invokeMethod(TestSubClass.class, null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                TestUtils.invokeMethod(null, "method1"));
+        
+        TestUtils.assertException(MethodInvocationException.class, "No method found with name 'missingMethod' with parameter types: [ <none> ] in class commons.test.TestUtilsTest$TestClass.", () ->
+                TestUtils.invokeMethod(testClass, "missingMethod"));
+        TestUtils.assertException(NullPointerException.class, () ->
+                TestUtils.invokeMethod(testClass, null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                TestUtils.invokeMethod(null, "method7"));
+        
+        TestUtils.assertException(MethodInvocationException.class, "No method found with name 'missingMethod' with parameter types: [ <none> ] in class commons.test.TestUtilsTest$TestClass.", () ->
+                TestUtils.invokeMethod(subClass, "missingMethod"));
+        TestUtils.assertException(NullPointerException.class, () ->
+                TestUtils.invokeMethod(subClass, null));
     }
     
     /**
@@ -672,34 +785,136 @@ public class TestUtilsTest {
         public static boolean field3 = true;
         
         /**
+         * A static final field.
+         */
+        static final String field4 = "tset";
+        
+        /**
+         * A static field.
+         */
+        static byte field5 = 4;
+        
+        /**
          * A private final field.
          */
-        private final String field4 = "another test";
+        private final String field6 = "another test";
         
         /**
          * A private field.
          */
-        private long field5 = 874561564112154L;
+        private long field7 = 874561564112154L;
         
         /**
          * A public final field.
          */
-        public final int field6 = -44;
+        public final int field8 = -44;
         
         /**
          * A private field.
          */
-        public float field7 = 7.66f;
+        public float field9 = 7.66f;
         
         /**
          * A package private final field.
          */
-        final boolean field8 = true;
+        final boolean field10 = true;
         
         /**
          * A package private final field.
          */
-        String field9 = "last test";
+        String field11 = "last test";
+        
+        
+        //Methods
+        
+        /**
+         * A void method.
+         */
+        public void voidMethod(StringBuilder builder) {
+            builder.append("void method hit");
+        }
+        
+        /**
+         * A private method.
+         *
+         * @return A private field.
+         */
+        private long method7() {
+            return field7;
+        }
+        
+        /**
+         * A public final method.
+         *
+         * @return A public final field.
+         */
+        public final int method8(String arg1) {
+            return field8;
+        }
+        
+        /**
+         * A public method.
+         *
+         * @return A public field.
+         */
+        public float method9(int arg1) {
+            return field9;
+        }
+        
+        /**
+         * A final method.
+         *
+         * @return A final field.
+         */
+        final boolean method10() {
+            return field10;
+        }
+        
+        /**
+         * A method.
+         *
+         * @return A field.
+         */
+        String method11(boolean arg1, String arg2, float arg3, char[] arg4) {
+            return field11;
+        }
+        
+        
+        //Static Methods
+        
+        /**
+         * A static void method.
+         */
+        public static void staticVoidMethod(StringBuilder builder) {
+            builder.append("static void method hit");
+        }
+        
+        /**
+         * A private static method.
+         *
+         * @return A private static field.
+         */
+        private static double method1() {
+            return field1;
+        }
+        
+        /**
+         * A public static method.
+         *
+         * @return A public static field.
+         */
+        public static boolean method3(String arg1) {
+            return field3;
+        }
+        
+        /**
+         * A static method.
+         *
+         * @return A static field.
+         */
+        static byte method5(boolean arg1, int arg2, BigDecimal arg3) {
+            return field5;
+        }
         
     }
     

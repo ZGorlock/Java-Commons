@@ -30,7 +30,6 @@ import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.Whitebox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -247,7 +246,7 @@ public class SpeechSynthesizerTest {
         TestUtils.setField(sut, "audioPlayer", null);
         TestUtils.setField(SpeechSynthesizer.class, "instanced", new AtomicBoolean(false));
         TestUtils.setField(SpeechSynthesizer.class, "loggingConfigured", new AtomicBoolean(false));
-        Assert.assertTrue(Whitebox.invokeMethod(sut, "setup"));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(sut, "setup"));
         Mockito.verify(sut, VerificationModeFactory.times(1))
                 .setVoice(SpeechSynthesizer.DEFAULT_VOICE);
         Mockito.verify(sut, VerificationModeFactory.times(1))
@@ -264,7 +263,7 @@ public class SpeechSynthesizerTest {
         Assert.assertNotNull(marytts);
         Assert.assertNotNull(audioPlayer);
         Assert.assertTrue(((AtomicBoolean) TestUtils.getField(sut, "setup")).get());
-        Assert.assertFalse(Whitebox.invokeMethod(sut, "setup"));
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(sut, "setup"));
         Mockito.verify(sut, VerificationModeFactory.times(1)) //still just one
                 .setVolume(SpeechSynthesizer.DEFAULT_VOLUME);
         Assert.assertEquals(marytts, TestUtils.getField(sut, "marytts"));
