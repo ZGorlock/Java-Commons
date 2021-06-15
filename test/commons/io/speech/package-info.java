@@ -4,7 +4,7 @@
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  *
- * Contains common speech input and output resource classes.
+ * Contains common speech resource classes.
  */
 
 package commons.io.speech;
