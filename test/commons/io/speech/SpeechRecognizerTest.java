@@ -29,9 +29,10 @@ import commons.access.CmdLine;
 import commons.access.Filesystem;
 import commons.access.OperatingSystem;
 import commons.access.Project;
-import commons.io.HotKeyManager;
 import commons.io.SystemIn;
 import commons.io.WaveRecorder;
+import commons.io.hotkey.HotKey;
+import commons.io.hotkey.HotKeyManager;
 import commons.math.BoundUtility;
 import commons.string.StringUtility;
 import commons.test.TestUtils;
@@ -58,7 +59,7 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({SpeechRecognizer.class, HotKeyManager.class, Filesystem.class, OperatingSystem.class, CmdLine.class, SystemIn.class, WaveRecorder.class})
+@PrepareForTest({SpeechRecognizer.class, HotKeyManager.class, HotKey.class, Filesystem.class, OperatingSystem.class, CmdLine.class, SystemIn.class, WaveRecorder.class})
 public class SpeechRecognizerTest {
     
     //Logger
@@ -339,8 +340,8 @@ public class SpeechRecognizerTest {
         TestUtils.setField(sut, "pocketsphinx", null);
         TestUtils.setField(sut, "speechStream", null);
         TestUtils.setField(sut, "speechBuffer", null);
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
-        HotKeyManager.HotKey captureSpeechTrigger = Mockito.mock(HotKeyManager.HotKey.class);
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        HotKey captureSpeechTrigger = Mockito.mock(HotKey.class);
         TestUtils.setField(sut, "captureSpeechTrigger", captureSpeechTrigger);
         
         //standard
@@ -349,7 +350,7 @@ public class SpeechRecognizerTest {
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.CONTINUOUS, sut.getMode());
         Assert.assertNotNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNotNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNull(TestUtils.getField(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(1))
                 .clearSpeech();
@@ -358,7 +359,7 @@ public class SpeechRecognizerTest {
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.TRIGGERED, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertTrue(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertTrue(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNotNull(TestUtils.getField(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(2))
                 .clearSpeech();
@@ -369,7 +370,7 @@ public class SpeechRecognizerTest {
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNotNull(TestUtils.getField(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(3))
                 .clearSpeech();
@@ -382,7 +383,7 @@ public class SpeechRecognizerTest {
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNull(TestUtils.getField(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(4))
                 .clearSpeech();
@@ -393,7 +394,7 @@ public class SpeechRecognizerTest {
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNotNull(TestUtils.getField(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(5))
                 .clearSpeech();
@@ -404,7 +405,7 @@ public class SpeechRecognizerTest {
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.CONTINUOUS, sut.getMode());
         Assert.assertNotNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNotNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNull(TestUtils.getField(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(6))
                 .clearSpeech();
@@ -418,7 +419,7 @@ public class SpeechRecognizerTest {
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.TRIGGERED, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertTrue(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertTrue(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNotNull(TestUtils.getField(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(8))
                 .clearSpeech();
@@ -431,7 +432,7 @@ public class SpeechRecognizerTest {
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNotNull(TestUtils.getField(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(10))
                 .clearSpeech();
@@ -440,7 +441,7 @@ public class SpeechRecognizerTest {
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNull(TestUtils.getField(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(11))
                 .clearSpeech();
@@ -451,7 +452,7 @@ public class SpeechRecognizerTest {
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNull(TestUtils.getField(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(11))
                 .clearSpeech();
@@ -737,9 +738,9 @@ public class SpeechRecognizerTest {
     @Test
     public void testStartRecording() throws Exception {
         sut.start();
-        HotKeyManager.HotKey captureSpeechTrigger = Mockito.mock(HotKeyManager.HotKey.class);
+        HotKey captureSpeechTrigger = Mockito.mock(HotKey.class);
         TestUtils.setField(sut, "captureSpeechTrigger", captureSpeechTrigger);
-        HotKeyManager.HotKeyCallback captureSpeechTriggerCallback = Mockito.mock(HotKeyManager.HotKeyCallback.class);
+        HotKey.HotKeyCallback captureSpeechTriggerCallback = Mockito.mock(HotKey.HotKeyCallback.class);
         TestUtils.setField(sut, "captureSpeechTriggerCallback", captureSpeechTriggerCallback);
         
         //standard
@@ -774,9 +775,9 @@ public class SpeechRecognizerTest {
     @Test
     public void testFinalizeRecording() throws Exception {
         sut.start();
-        HotKeyManager.HotKey captureSpeechTrigger = Mockito.mock(HotKeyManager.HotKey.class);
+        HotKey captureSpeechTrigger = Mockito.mock(HotKey.class);
         TestUtils.setField(sut, "captureSpeechTrigger", captureSpeechTrigger);
-        HotKeyManager.HotKeyCallback captureSpeechTriggerCallback = Mockito.mock(HotKeyManager.HotKeyCallback.class);
+        HotKey.HotKeyCallback captureSpeechTriggerCallback = Mockito.mock(HotKey.HotKeyCallback.class);
         TestUtils.setField(sut, "captureSpeechTriggerCallback", captureSpeechTriggerCallback);
         TestUtils.setField(sut, "recording", new AtomicBoolean(true));
         
@@ -915,28 +916,28 @@ public class SpeechRecognizerTest {
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.CONTINUOUS, sut.getMode());
         Assert.assertNotNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNotNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNull(TestUtils.getField(sut, "speechBuffer"));
         
         sut.setMode(SpeechRecognizer.RecognitionMode.TRIGGERED);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.TRIGGERED, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertTrue(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertTrue(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNotNull(TestUtils.getField(sut, "speechBuffer"));
         
         sut.setMode(SpeechRecognizer.RecognitionMode.ON_DEMAND);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNotNull(TestUtils.getField(sut, "speechBuffer"));
         
         sut.setMode(SpeechRecognizer.RecognitionMode.OFF);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNull(TestUtils.getField(sut, "speechBuffer"));
         
         //inactive
@@ -950,28 +951,28 @@ public class SpeechRecognizerTest {
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.CONTINUOUS, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNull(TestUtils.getField(sut, "speechBuffer"));
         
         sut.setMode(SpeechRecognizer.RecognitionMode.TRIGGERED);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.TRIGGERED, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNull(TestUtils.getField(sut, "speechBuffer"));
         
         sut.setMode(SpeechRecognizer.RecognitionMode.ON_DEMAND);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNull(TestUtils.getField(sut, "speechBuffer"));
         
         sut.setMode(SpeechRecognizer.RecognitionMode.OFF);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNull(TestUtils.getField(sut, "speechBuffer"));
         
         //invalid
@@ -985,7 +986,7 @@ public class SpeechRecognizerTest {
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
         Assert.assertNull(TestUtils.getField(sut, "pocketsphinx"));
         Assert.assertNull(TestUtils.getField(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey((HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
+        Assert.assertFalse(HotKeyManager.hasHotkey((HotKey) TestUtils.getField(sut, "captureSpeechTrigger")));
         Assert.assertNull(TestUtils.getField(sut, "speechBuffer"));
     }
     
@@ -1026,13 +1027,13 @@ public class SpeechRecognizerTest {
     public void testSetCaptureSpeechTrigger() throws Exception {
         TestUtils.invokeMethod(sut, "setup");
         sut.setMode(SpeechRecognizer.RecognitionMode.OFF);
-        HotKeyManager.HotKey captureSpeechTrigger = (HotKeyManager.HotKey) TestUtils.getField(sut, "captureSpeechTrigger");
+        HotKey captureSpeechTrigger = (HotKey) TestUtils.getField(sut, "captureSpeechTrigger");
         Assert.assertEquals("[Ctrl]", captureSpeechTrigger.toString());
         PowerMockito.mockStatic(HotKeyManager.class);
         
         //standard
         
-        PowerMockito.when(HotKeyManager.class, "hasHotkey", ArgumentMatchers.any(HotKeyManager.HotKey.class)).thenReturn(true);
+        PowerMockito.when(HotKeyManager.class, "hasHotkey", ArgumentMatchers.any(HotKey.class)).thenReturn(true);
         TestUtils.setField(sut, "captureSpeechTrigger", captureSpeechTrigger);
         sut.setCaptureSpeechTrigger(KeyEvent.VK_R, false, false, false, false);
         Assert.assertEquals("[R]", TestUtils.getField(sut, "captureSpeechTrigger").toString());
@@ -1048,14 +1049,14 @@ public class SpeechRecognizerTest {
         //previously null
         
         TestUtils.setField(sut, "captureSpeechTrigger", null);
-        sut.setCaptureSpeechTrigger(HotKeyManager.HotKey.NO_KEY, true, true, true, true);
+        sut.setCaptureSpeechTrigger(HotKey.NO_KEY, true, true, true, true);
         Assert.assertEquals("[Ctrl-Shift-Alt-Meta]", TestUtils.getField(sut, "captureSpeechTrigger").toString());
         PowerMockito.verifyStatic(HotKeyManager.class, VerificationModeFactory.times(2));
         HotKeyManager.unregisterHotkey(ArgumentMatchers.eq(captureSpeechTrigger));
         
         //unregistered
         
-        PowerMockito.when(HotKeyManager.class, "hasHotkey", ArgumentMatchers.any(HotKeyManager.HotKey.class)).thenReturn(false);
+        PowerMockito.when(HotKeyManager.class, "hasHotkey", ArgumentMatchers.any(HotKey.class)).thenReturn(false);
         sut.setCaptureSpeechTrigger(KeyEvent.VK_Z, false, true, false, false);
         Assert.assertEquals("[Shift-Z]", TestUtils.getField(sut, "captureSpeechTrigger").toString());
         PowerMockito.verifyStatic(HotKeyManager.class, VerificationModeFactory.times(2));
@@ -1069,11 +1070,11 @@ public class SpeechRecognizerTest {
         //register
         
         sut.setMode(SpeechRecognizer.RecognitionMode.TRIGGERED);
-        HotKeyManager.registerHotkey(ArgumentMatchers.any(HotKeyManager.HotKey.class));
+        HotKeyManager.registerHotkey(ArgumentMatchers.any(HotKey.class));
         sut.setCaptureSpeechTrigger(KeyEvent.VK_R, false, false, false, false);
         Assert.assertEquals("[R]", TestUtils.getField(sut, "captureSpeechTrigger").toString());
         PowerMockito.verifyStatic(HotKeyManager.class, VerificationModeFactory.times(1));
-        HotKeyManager.registerHotkey(ArgumentMatchers.any(HotKeyManager.HotKey.class));
+        HotKeyManager.registerHotkey(ArgumentMatchers.any(HotKey.class));
     }
     
     /**
@@ -1150,7 +1151,7 @@ public class SpeechRecognizerTest {
         Assert.assertTrue(WaveRecorder.defaultOwn(SpeechRecognizerTest.class));
         
         Object captureSpeechTriggerCallback = TestUtils.getField(sut, "captureSpeechTriggerCallback");
-        Assert.assertTrue(captureSpeechTriggerCallback instanceof HotKeyManager.HotKeyCallback);
+        Assert.assertTrue(captureSpeechTriggerCallback instanceof HotKey.HotKeyCallback);
         TestUtils.assertMethodExists(captureSpeechTriggerCallback.getClass(),
                 "hit");
         TestUtils.assertMethodExists(captureSpeechTriggerCallback.getClass(),

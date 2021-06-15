@@ -1,17 +1,14 @@
 /*
- * File:    HotKeyManagerTest.java
- * Package: commons.io
+ * File:    HotKeyTest.java
+ * Package: commons.io.hotkey
  * Author:  Zachary Gill
- * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.io;
+package commons.io.hotkey;
 
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import commons.test.TestUtils;
-import org.jnativehook.keyboard.NativeKeyEvent;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -25,21 +22,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of HotKeyManager.
+ * JUnit test of HotKey.
  *
- * @see HotKeyManager
+ * @see HotKey
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({HotKeyManager.class})
-public class HotKeyManagerTest {
+@PrepareForTest({HotKey.class})
+public class HotKeyTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(HotKeyManagerTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(HotKeyTest.class);
     
     
     //Initialization
@@ -91,25 +88,28 @@ public class HotKeyManagerTest {
      * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
+     * @see HotKey#NO_KEY
      */
-    @SuppressWarnings("EmptyMethod")
     @Test
     public void testConstants() throws Exception {
-        //static
-        Map<HotKeyManager.ModifierKey, AtomicBoolean> modifierDown = (Map<HotKeyManager.ModifierKey, AtomicBoolean>) TestUtils.getField(HotKeyManager.class, "modifierDown");
-        Assert.assertNotNull(modifierDown);
-        Assert.assertEquals(HotKeyManager.ModifierKey.values().length, modifierDown.size());
-        Assert.assertFalse(modifierDown.get(HotKeyManager.ModifierKey.CONTROL).get());
-        Assert.assertFalse(modifierDown.get(HotKeyManager.ModifierKey.SHIFT).get());
-        Assert.assertFalse(modifierDown.get(HotKeyManager.ModifierKey.ALT).get());
-        Assert.assertFalse(modifierDown.get(HotKeyManager.ModifierKey.META).get());
+        Assert.assertEquals(-1, HotKey.NO_KEY);
+    }
+    
+    /**
+     * JUnit test of constructors.
+     *
+     * @throws Exception When there is an exception.
+     */
+    @Test
+    public void testConstructors() throws Exception {
+        //TODO
     }
     
     /**
      * JUnit test of ModifierKey.
      *
      * @throws Exception When there is an exception.
-     * @see HotKeyManager.ModifierKey
+     * @see HotKey.ModifierKey
      */
     @Test
     public void testModifierKey() throws Exception {
@@ -117,46 +117,35 @@ public class HotKeyManagerTest {
     }
     
     /**
-     * JUnit test of setup.
+     * JUnit test of toString.
      *
      * @throws Exception When there is an exception.
-     * @see HotKeyManager#setup()
+     * @see HotKey#toString()
      */
     @Test
-    public void testSetup() throws Exception {
+    public void testToString() throws Exception {
         //TODO
     }
     
     /**
-     * JUnit test of register.
+     * JUnit test of activate.
      *
      * @throws Exception When there is an exception.
-     * @see HotKeyManager#register(HotKeyManager.HotKey)
+     * @see HotKey#activate()
      */
     @Test
-    public void testRegister() throws Exception {
+    public void testActivate() throws Exception {
         //TODO
     }
     
     /**
-     * JUnit test of unregister.
+     * JUnit test of deactivate.
      *
      * @throws Exception When there is an exception.
-     * @see HotKeyManager#unregister(HotKeyManager.HotKey)
+     * @see HotKey#deactivate()
      */
     @Test
-    public void testUnregister() throws Exception {
-        //TODO
-    }
-    
-    /**
-     * JUnit test of has.
-     *
-     * @throws Exception When there is an exception.
-     * @see HotKeyManager#has(HotKeyManager.HotKey)
-     */
-    @Test
-    public void testHas() throws Exception {
+    public void testDeactivate() throws Exception {
         //TODO
     }
     
@@ -164,7 +153,7 @@ public class HotKeyManagerTest {
      * JUnit test of hit.
      *
      * @throws Exception When there is an exception.
-     * @see HotKeyManager#hit(NativeKeyEvent)
+     * @see HotKey#hit()
      */
     @Test
     public void testHit() throws Exception {
@@ -175,7 +164,7 @@ public class HotKeyManagerTest {
      * JUnit test of release.
      *
      * @throws Exception When there is an exception.
-     * @see HotKeyManager#release(NativeKeyEvent)
+     * @see HotKey#release()
      */
     @Test
     public void testRelease() throws Exception {
@@ -183,57 +172,68 @@ public class HotKeyManagerTest {
     }
     
     /**
-     * JUnit test of getInstance.
+     * JUnit test of isMatch.
      *
      * @throws Exception When there is an exception.
-     * @see HotKeyManager#getInstance()
+     * @see HotKey#isMatch(int, Map, boolean)
      */
     @Test
-    public void testGetInstance() throws Exception {
+    public void testIsMatch() throws Exception {
         //TODO
     }
     
     /**
-     * JUnit test of registerHotkey.
+     * JUnit test of getCode.
      *
      * @throws Exception When there is an exception.
-     * @see HotKeyManager#registerHotkey(HotKeyManager.HotKey)
+     * @see HotKey#getCode()
      */
     @Test
-    public void testRegisterHotkey() throws Exception {
+    public void testGetCode() throws Exception {
         //TODO
     }
     
     /**
-     * JUnit test of unregisterHotkey.
+     * JUnit test of hasModifier.
      *
      * @throws Exception When there is an exception.
-     * @see HotKeyManager#unregisterHotkey(HotKeyManager.HotKey)
+     * @see HotKey#hasModifier(HotKey.ModifierKey)
      */
     @Test
-    public void testUnregisterHotkey() throws Exception {
+    public void testHasModifier() throws Exception {
         //TODO
     }
     
     /**
-     * JUnit test of hasHotkey.
+     * JUnit test of getCallback.
      *
      * @throws Exception When there is an exception.
-     * @see HotKeyManager#hasHotkey(HotKeyManager.HotKey)
+     * @see HotKey#getCallback()
      */
     @Test
-    public void testHasHotkey() throws Exception {
+    public void testGetCallback() throws Exception {
         //TODO
     }
     
     /**
-     * JUnit test of HotKey.
+     * JUnit test of isActive.
      *
      * @throws Exception When there is an exception.
-     * @see HotKeyManager.HotKey
+     * @see HotKey#isActive()
      */
     @Test
-    public void testHotKey() throws Exception {
+    public void testIsActive() throws Exception {
+        //TODO
+    }
+    
+    /**
+     * JUnit test of isHit.
+     *
+     * @throws Exception When there is an exception.
+     * @see HotKey#isHit()
+     */
+    @Test
+    public void testIsHit() throws Exception {
         //TODO
     }
     
@@ -241,13 +241,13 @@ public class HotKeyManagerTest {
      * JUnit test of HotKeyCallback.
      *
      * @throws Exception When there is an exception.
-     * @see HotKeyManager.HotKeyCallback
+     * @see HotKey.HotKeyCallback
      */
     @Test
     public void testHotKeyCallback() throws Exception {
-        TestUtils.assertMethodExists(HotKeyManager.HotKeyCallback.class,
+        TestUtils.assertMethodExists(HotKey.HotKeyCallback.class,
                 "hit");
-        TestUtils.assertMethodExists(HotKeyManager.HotKeyCallback.class,
+        TestUtils.assertMethodExists(HotKey.HotKeyCallback.class,
                 "release");
     }
     

@@ -22,9 +22,10 @@ import commons.access.Filesystem;
 import commons.access.OperatingSystem;
 import commons.access.Project;
 import commons.console.Console;
-import commons.io.HotKeyManager;
 import commons.io.SystemIn;
 import commons.io.WaveRecorder;
+import commons.io.hotkey.HotKey;
+import commons.io.hotkey.HotKeyManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -190,12 +191,12 @@ public class SpeechRecognizer {
      * The HotKey trigger for capturing speech in triggered mode.<br>
      * By default, speech is captured by pressing and holding Ctrl.
      */
-    private HotKeyManager.HotKey captureSpeechTrigger = null;
+    private HotKey captureSpeechTrigger = null;
     
     /**
      * The callback for handling capture speech in triggered mode.
      */
-    private HotKeyManager.HotKeyCallback captureSpeechTriggerCallback = null;
+    private HotKey.HotKeyCallback captureSpeechTriggerCallback = null;
     
     /**
      * A flag indicating whether the Speech Recognizer is recording or not.
@@ -250,7 +251,7 @@ public class SpeechRecognizer {
             initializeCommands();
             
             captureSpeechTriggerCallback = new SpeechRecorder();
-            captureSpeechTrigger = new HotKeyManager.HotKey(HotKeyManager.HotKey.NO_KEY, true, false, false, false, captureSpeechTriggerCallback);
+            captureSpeechTrigger = new HotKey(HotKey.NO_KEY, true, false, false, false, captureSpeechTriggerCallback);
             
             Runtime.getRuntime().addShutdownHook(new Thread(this::stop));
             return true;
@@ -574,7 +575,7 @@ public class SpeechRecognizer {
             HotKeyManager.unregisterHotkey(captureSpeechTrigger);
         }
         
-        captureSpeechTrigger = new HotKeyManager.HotKey(keyCode, control, shift, alt, meta, captureSpeechTriggerCallback);
+        captureSpeechTrigger = new HotKey(keyCode, control, shift, alt, meta, captureSpeechTriggerCallback);
         if (mode == RecognitionMode.TRIGGERED) {
             HotKeyManager.registerHotkey(captureSpeechTrigger);
         }
@@ -596,7 +597,7 @@ public class SpeechRecognizer {
     /**
      * Handles recording speech for PocketSphinx in triggered and on-demand mode.
      */
-    private class SpeechRecorder implements HotKeyManager.HotKeyCallback {
+    private class SpeechRecorder implements HotKey.HotKeyCallback {
         
         //Fields
         
