@@ -1509,6 +1509,7 @@ public class SpeechRecognizerTest {
         //standard
         TestUtils.setField(TestUtils.getField(SystemIn.class, "instance"), "owner", speechTrainerClass.getCanonicalName());
         TestUtils.setField(TestUtils.getField(WaveRecorder.class, "instance"), "owner", speechTrainerClass.getCanonicalName());
+        WaveRecorder.stop(speechTrainerClass);
         PowerMockito.when(SystemIn.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
         PowerMockito.when(WaveRecorder.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
         Assert.assertTrue(trainer.collectRecordings(trainingDirectory));

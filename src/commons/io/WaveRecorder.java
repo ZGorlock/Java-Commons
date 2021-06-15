@@ -120,8 +120,11 @@ public class WaveRecorder extends SingletonInputHandler {
      * @param caller The calling class.
      * @return Whether the recording was successfully started or not.
      */
-    private static boolean start(File output, AudioFormat format, Class<?> caller) {
+    public static boolean start(File output, AudioFormat format, Class<?> caller) {
         if (!owns(caller)) {
+            return false;
+        }
+        if ((output == null) || (format == null)) {
             return false;
         }
         stop(caller);
@@ -178,7 +181,7 @@ public class WaveRecorder extends SingletonInputHandler {
      * @return Whether the recording was successfully started or not.
      * @see #start(File, AudioFormat, Class)
      */
-    private static boolean start(File output, AudioFormat format, Object caller) {
+    public static boolean start(File output, AudioFormat format, Object caller) {
         return start(output, format, ((caller != null) ? caller.getClass() : null));
     }
     
@@ -323,11 +326,11 @@ public class WaveRecorder extends SingletonInputHandler {
     }
     
     /**
-     * Determines if speech capture is enabled on the system or not.
+     * Determines if recording is enabled on the system or not.
      *
-     * @return Whether speech capture is enabled on the system or not.
+     * @return Whether recording is enabled on the system or not.
      */
-    public static boolean speechCaptureEnabled() {
+    public static boolean recordingEnabled() {
         AudioFormat format = new AudioFormat(DEFAULT_SAMPLE_RATE, DEFAULT_SAMPLE_SIZE_IN_BITS, DEFAULT_CHANNELS, DEFAULT_SIGNED, DEFAULT_BIG_ENDIAN);
         Info info = new Info(TargetDataLine.class, format);
         return AudioSystem.isLineSupported(info);
