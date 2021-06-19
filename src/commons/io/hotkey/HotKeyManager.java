@@ -26,7 +26,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Manages global HotKeys.
  */
-public final class HotKeyManager {
+public class HotKeyManager {
     
     //Logger
     
@@ -111,7 +111,7 @@ public final class HotKeyManager {
             
             try {
                 logger.trace("Registering the native keyboard hook");
-                GlobalScreen.registerNativeHook();
+                GlobalScreenWrapper.registerNativeHook();
                 
                 logger.trace("Adding the global hotkey listener");
                 keyboardHook = new NativeKeyListener() {
@@ -129,33 +129,15 @@ public final class HotKeyManager {
                     public void nativeKeyTyped(NativeKeyEvent nativeKeyEvent) {
                     }
                 };
-                GlobalScreen.addNativeKeyListener(keyboardHook);
+                GlobalScreenWrapper.addNativeKeyListener(keyboardHook);
                 
-                Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-                    if (keyboardHook != null) {
-                        logger.trace("Removing the global hotkey hook");
-                        GlobalScreen.removeNativeKeyListener(keyboardHook);
-                    } else {
-                        logger.trace("The global hotkey hook was never added");
-                    }
-                    
-                    if (GlobalScreen.isNativeHookRegistered()) {
-                        logger.trace("Unregistering the native keyboard hook");
-                        try {
-                            GlobalScreen.unregisterNativeHook();
-                        } catch (NativeHookException ignored) {
-                            logger.warn("There was an error unregistering the native keyboard hook");
-                        }
-                    } else {
-                        logger.trace("The native keyboard hook was never registered");
-                    }
-                }));
+                Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
                 
-            } catch (NativeHookException e) {
+            } catch (Exception e) {
                 logger.error("There was an error setting the global hotkey listener; continuing with setup");
-                if (GlobalScreen.isNativeHookRegistered()) {
+                if (GlobalScreenWrapper.isNativeHookRegistered()) {
                     try {
-                        GlobalScreen.unregisterNativeHook();
+                        GlobalScreenWrapper.unregisterNativeHook();
                     } catch (NativeHookException ignored) {
                     }
                 }
@@ -165,6 +147,30 @@ public final class HotKeyManager {
             
         } else {
             return false;
+        }
+    }
+    
+    /**
+     * Shuts down the HotKey Manager.
+     */
+    private void shutdown() {
+        if (keyboardHook != null) {
+            logger.trace("Removing the global hotkey hook");
+            GlobalScreenWrapper.removeNativeKeyListener(keyboardHook);
+            keyboardHook = null;
+        } else {
+            logger.trace("The global hotkey hook was never added");
+        }
+        
+        if (GlobalScreenWrapper.isNativeHookRegistered()) {
+            logger.trace("Unregistering the native keyboard hook");
+            try {
+                GlobalScreenWrapper.unregisterNativeHook();
+            } catch (NativeHookException ignored) {
+                logger.warn("There was an error unregistering the native keyboard hook");
+            }
+        } else {
+            logger.trace("The native keyboard hook was never registered");
         }
     }
     
@@ -220,11 +226,14 @@ public final class HotKeyManager {
      * @param event The key hit event.
      */
     private void hit(NativeKeyEvent event) {
+        if (event == null) {
+            return;
+        }
         int code = event.getRawCode();
         
-        HotKey.ModifierKey modifierKeyReleased = HotKey.ModifierKey.getModifierKeyByName(NativeKeyEvent.getKeyText(event.getKeyCode()));
-        if (modifierKeyReleased != null) {
-            modifierDown.get(modifierKeyReleased).set(true);
+        HotKey.ModifierKey modifierKeyHit = HotKey.ModifierKey.getModifierKeyByName(NativeKeyEvent.getKeyText(event.getKeyCode()));
+        if (modifierKeyHit != null) {
+            modifierDown.get(modifierKeyHit).set(true);
         }
         
         hotKeys.parallelStream()
@@ -238,6 +247,9 @@ public final class HotKeyManager {
      * @param event The key release event.
      */
     private void release(NativeKeyEvent event) {
+        if (event == null) {
+            return;
+        }
         int code = event.getRawCode();
         
         HotKey.ModifierKey modifierKeyReleased = HotKey.ModifierKey.getModifierKeyByName(NativeKeyEvent.getKeyText(event.getKeyCode()));
@@ -311,6 +323,63 @@ public final class HotKeyManager {
             return hotKeyManager.has(hotKey);
         }
         return false;
+    }
+    
+    
+    //Inner Classes
+    
+    /**
+     * Wraps the Global Screen for the global key listener.
+     */
+    protected static final class GlobalScreenWrapper {
+        
+        //Functions
+        
+        /**
+         * Registers the native hook.
+         *
+         * @throws NativeHookException When there is an error with the native hook.
+         */
+        protected static void registerNativeHook() throws NativeHookException {
+            GlobalScreen.registerNativeHook();
+        }
+        
+        /**
+         * Unregisters the native hook.
+         *
+         * @throws NativeHookException When there is an error with the native hook.
+         */
+        protected static void unregisterNativeHook() throws NativeHookException {
+            GlobalScreen.unregisterNativeHook();
+        }
+        
+        /**
+         * Determines if the native hook is registered.
+         *
+         * @return Whether the native hook is registered or not.
+         */
+        protected static boolean isNativeHookRegistered() {
+            return GlobalScreen.isNativeHookRegistered();
+        }
+        
+        /**
+         * Adds a native key listener.
+         *
+         * @param keyListener The native key listener.
+         */
+        protected static void addNativeKeyListener(NativeKeyListener keyListener) {
+            GlobalScreen.addNativeKeyListener(keyListener);
+        }
+        
+        /**
+         * Removes a native key listener.
+         *
+         * @param keyListener The native key listener.
+         */
+        protected static void removeNativeKeyListener(NativeKeyListener keyListener) {
+            GlobalScreen.removeNativeKeyListener(keyListener);
+        }
+        
     }
     
 }

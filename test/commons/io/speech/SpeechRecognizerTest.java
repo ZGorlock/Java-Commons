@@ -135,6 +135,8 @@ public class SpeechRecognizerTest {
         TestUtils.setField(sut, "setup", new AtomicBoolean(false));
         TestUtils.setField(SpeechRecognizer.class, "instance", null);
         TestUtils.setField(SpeechRecognizer.class, "instanced", new AtomicBoolean(false));
+        
+        TestUtils.setField(HotKeyManager.getInstance(), "hotKeys", new ArrayList<>());
     }
     
     /**
