@@ -21,7 +21,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Defines a global HotKey.
  */
-public final class HotKey {
+public class HotKey {
     
     //Logger
     
@@ -116,7 +116,7 @@ public final class HotKey {
     /**
      * The virtual key code of the main key of the HotKey.
      */
-    private int code;
+    private final int code;
     
     /**
      * A map of flags indicating which Modifier Keys are components of the HotKey.
@@ -126,18 +126,18 @@ public final class HotKey {
     /**
      * The callback to alert when the HotKey is pressed or released.
      */
-    private HotKeyCallback callback;
+    private final HotKeyCallback callback;
     
     /**
      * Whether the HotKey is activated or not.<br>
      * The HotKey is active by default.
      */
-    private AtomicBoolean active = new AtomicBoolean(true);
+    private final AtomicBoolean active = new AtomicBoolean(true);
     
     /**
      * Whether the HotKey is currently hit or not.
      */
-    private AtomicBoolean hit = new AtomicBoolean(false);
+    private final AtomicBoolean hit = new AtomicBoolean(false);
     
     
     //Constructors
@@ -179,6 +179,27 @@ public final class HotKey {
         parts.add((code != NO_KEY) ? KeyEvent.getKeyText(code) : "");
         return parts.stream().filter(e -> !e.isEmpty())
                 .collect(Collectors.joining("-", "[", "]"));
+    }
+    
+    /**
+     * Determines if another HotKey is equal to this HotKey.
+     *
+     * @param o The other HotKey.
+     * @return Whether the two HotKeys are equal or not.
+     */
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof HotKey)) {
+            return false;
+        }
+        HotKey other = (HotKey) o;
+        
+        return (code == other.code) &&
+                (modifiers.get(ModifierKey.CONTROL) == other.modifiers.get(ModifierKey.CONTROL)) &&
+                (modifiers.get(ModifierKey.SHIFT) == other.modifiers.get(ModifierKey.SHIFT)) &&
+                (modifiers.get(ModifierKey.ALT) == other.modifiers.get(ModifierKey.ALT)) &&
+                (modifiers.get(ModifierKey.META) == other.modifiers.get(ModifierKey.META));
+        
     }
     
     /**
@@ -228,11 +249,13 @@ public final class HotKey {
      * @return Whether the key code combined with the current special key states is a match for this HotKey or not.
      */
     public boolean isMatch(int keyCode, Map<ModifierKey, AtomicBoolean> modifierDown, boolean checkRelease) {
-        return ((getCode() == keyCode) || (getCode() == NO_KEY)) &&
-                (!hasModifier(ModifierKey.CONTROL) || (modifierDown.get(ModifierKey.CONTROL).get() ^ checkRelease)) &&
+        boolean code = ((getCode() == keyCode) || (getCode() == NO_KEY));
+        boolean modifiers = (!hasModifier(ModifierKey.CONTROL) || (modifierDown.get(ModifierKey.CONTROL).get() ^ checkRelease)) &&
                 (!hasModifier(ModifierKey.SHIFT) || (modifierDown.get(ModifierKey.SHIFT).get() ^ checkRelease)) &&
                 (!hasModifier(ModifierKey.ALT) || (modifierDown.get(ModifierKey.ALT).get() ^ checkRelease)) &&
                 (!hasModifier(ModifierKey.META) || (modifierDown.get(ModifierKey.META).get() ^ checkRelease));
+        
+        return checkRelease ? (code || modifiers) : (code && modifiers);
     }
     
     
