@@ -74,6 +74,10 @@ public class ImageUtility {
      * @return The BufferedImage loaded from the file, or null if there was an error.
      */
     public static BufferedImage loadImage(File file) {
+        if (file == null) {
+            return null;
+        }
+        
         if (Filesystem.logFilesystem()) {
             logger.trace("Filesystem: Loading image file: {}", file.getAbsolutePath());
         }
@@ -102,6 +106,10 @@ public class ImageUtility {
      * @return Whether the image was successfully saved or not.
      */
     public static boolean saveImage(BufferedImage image, File file) {
+        if ((image == null) || (file == null)) {
+            return false;
+        }
+        
         if (Filesystem.logFilesystem()) {
             logger.trace("Filesystem: Saving image file: {}", file.getAbsolutePath());
         }
@@ -124,6 +132,10 @@ public class ImageUtility {
      * @return The pixel dimensions of the image file, or null if there is an error.
      */
     public static Dimension getDimensions(File image) {
+        if (image == null) {
+            return null;
+        }
+        
         Dimension result = null;
         Iterator<ImageReader> imageReaders = ImageIO.getImageReadersBySuffix(Filesystem.getFileType(image));
         if (imageReaders.hasNext()) {
@@ -176,7 +188,11 @@ public class ImageUtility {
      * @return The date the image was taken, or the 'last modified time' if that metadata is not present.
      */
     public static Date getDateTaken(File image) {
-        MetadataUtility.MetadataTag dateTaken = null;
+        if (image == null) {
+            return null;
+        }
+        
+        MetadataUtility.MetadataTag dateTaken;
         switch (Filesystem.getFileType(image).toLowerCase()) {
             case "jpg":
             case "jpeg":
@@ -197,6 +213,8 @@ public class ImageUtility {
                     dateTaken.value = dateTaken.value.substring(15);
                 }
                 break;
+            default:
+                return null;
         }
         
         if (dateTaken != null) {
@@ -210,6 +228,30 @@ public class ImageUtility {
     }
     
     /**
+     * Determines if the pixel data of two images is equal.
+     *
+     * @param image1 The first image.
+     * @param image2 The second image.
+     * @return Whether the pixel data of the two images is equal or not.
+     */
+    public static boolean pixelsEqual(BufferedImage image1, BufferedImage image2) {
+        if ((image1 == null) || (image2 == null) ||
+                (image1.getWidth() != image2.getWidth()) ||
+                (image1.getHeight() != image2.getHeight())) {
+            return false;
+        }
+        
+        for (int x = 0; x < image1.getWidth(); x++) {
+            for (int y = 0; y < image2.getHeight(); y++) {
+                if (image1.getRGB(x, y) != image2.getRGB(x, y)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
+    /**
      * Deletes the extra data in an image file, reducing the file size.
      *
      * @param image            The image file.
@@ -217,6 +259,10 @@ public class ImageUtility {
      * @return Whether the image file was successfully cleaned or not.
      */
     public static boolean cleanImageFile(File image, boolean preserveMetadata) {
+        if (image == null) {
+            return false;
+        }
+        
         if (Filesystem.logFilesystem()) {
             logger.trace("Filesystem: Cleaning image file: {}", image.getAbsolutePath());
         }
@@ -288,6 +334,10 @@ public class ImageUtility {
      * @return The cropped image.
      */
     public static BufferedImage cropImage(BufferedImage image, Rectangle rect) {
+        if ((image == null) || (rect == null)) {
+            return image;
+        }
+        
         rect.x = BoundUtility.truncateNum(rect.getX(), 0, image.getWidth() - 1).intValue();
         rect.y = BoundUtility.truncateNum(rect.getY(), 0, image.getHeight() - 1).intValue();
         rect.width = BoundUtility.truncateNum(rect.getWidth(), 1, image.getWidth() - rect.x).intValue();
@@ -312,6 +362,10 @@ public class ImageUtility {
      * @see #cropImage(BufferedImage, Rectangle)
      */
     public static BufferedImage cropImage(BufferedImage image, int offTheLeft, int offTheTop, int offTheRight, int offTheBottom) {
+        if (image == null) {
+            return null;
+        }
+        
         offTheLeft = BoundUtility.truncateNum(offTheLeft, 0, image.getWidth() - 1).intValue();
         offTheTop = BoundUtility.truncateNum(offTheTop, 0, image.getHeight() - 1).intValue();
         offTheRight = BoundUtility.truncateNum(offTheRight, 0, image.getWidth() - 1).intValue();
@@ -331,7 +385,7 @@ public class ImageUtility {
      * @return The scaled image.
      */
     public static BufferedImage scaleImage(BufferedImage image, double scale) {
-        if (!BoundUtility.inBounds(scale, 0.0, 1.0, false, false)) {
+        if ((image == null) || (scale == 1.0) || !BoundUtility.inBounds(scale, 0.0, Double.MAX_VALUE, false, false)) {
             return image;
         }
         
@@ -343,7 +397,7 @@ public class ImageUtility {
     }
     
     /**
-     * Scales an image to a maximum width or height.
+     * Scales an image to a maximum width or height, while preserving the aspect ratio.
      *
      * @param image     The image.
      * @param maxWidth  The maximum width of the final image.
@@ -352,7 +406,7 @@ public class ImageUtility {
      * @see #scaleImage(BufferedImage, double)
      */
     public static BufferedImage scaleImage(BufferedImage image, int maxWidth, int maxHeight) {
-        if ((image.getWidth() <= maxWidth) && (image.getHeight() <= maxHeight)) {
+        if ((image == null) || (image.getWidth() <= maxWidth) && (image.getHeight() <= maxHeight)) {
             return image;
         }
         
@@ -366,34 +420,41 @@ public class ImageUtility {
      * @return The image, or null if there is no image on the clipboard.
      */
     public static BufferedImage copyImageFromClipboard() {
-        BufferedImage clipboard = null;
-        Transferable transferable = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+        BufferedImage image = null;
+        
+        final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+        final Transferable transferable = clipboard.getContents(null);
         if (transferable != null && transferable.isDataFlavorSupported(DataFlavor.imageFlavor)) {
             
             try {
-                clipboard = (BufferedImage) transferable.getTransferData(DataFlavor.imageFlavor);
+                image = (BufferedImage) transferable.getTransferData(DataFlavor.imageFlavor);
                 
             } catch (Exception e) {
                 if (commons.access.Clipboard.logClipboard()) {
-                    logger.trace("Clipboard: Unable to retrieve image contents from the clipboard");
+                    logger.trace("Clipboard: Unable to retrieve image contents from the image");
                 }
                 return null;
             }
         }
         
         if (commons.access.Clipboard.logClipboard()) {
-            logger.trace("Clipboard: Retrieved image contents of the clipboard");
+            logger.trace("Clipboard: Retrieved image contents of the image");
         }
-        return clipboard;
+        return image;
     }
     
     /**
      * Copies an image to the clipboard.
      *
      * @param image The image.
+     * @return Whether the image was copied to the clipboard or not.
      */
-    public static void copyImageToClipboard(final BufferedImage image) {
-        Transferable transferableImage = new Transferable() {
+    public static boolean copyImageToClipboard(final BufferedImage image) {
+        if (image == null) {
+            return false;
+        }
+        
+        final Transferable transferableImage = new Transferable() {
             
             @Override
             public DataFlavor[] getTransferDataFlavors() {
@@ -420,17 +481,19 @@ public class ImageUtility {
         };
         
         try {
-            Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+            final Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
             clipboard.setContents(transferableImage, (clipboard1, contents) -> {
             });
             if (commons.access.Clipboard.logClipboard()) {
                 logger.trace("Clipboard: Published image contents to the clipboard");
             }
+            return true;
             
         } catch (Exception e) {
             if (commons.access.Clipboard.logClipboard()) {
                 logger.trace("Clipboard: Failed to publish image contents to the clipboard");
             }
+            return false;
         }
     }
     
