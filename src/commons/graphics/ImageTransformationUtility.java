@@ -47,20 +47,6 @@ public class ImageTransformationUtility {
      *
      * @param src        The source image.
      * @param srcBounds  The bounds from the source image of the quad to transform.
-     * @param dest       The destination image.
-     * @param destBounds The bounds from the destination image of the quad to place the result of the transformation.
-     */
-    public static void transformImage(BufferedImage src, List<Vector> srcBounds, BufferedImage dest, List<Vector> destBounds) {
-        Graphics2D destGraphics = dest.createGraphics();
-        transformImage(src, srcBounds, destGraphics, dest.getWidth(), dest.getHeight(), destBounds);
-        DrawUtility.dispose(destGraphics);
-    }
-    
-    /**
-     * Performs a quad to quad image transformation.
-     *
-     * @param src        The source image.
-     * @param srcBounds  The bounds from the source image of the quad to transform.
      * @param dest       The destination graphics.
      * @param destWidth  The width of the destination graphics.
      * @param destHeight The height of the destination graphics.
@@ -134,6 +120,26 @@ public class ImageTransformationUtility {
     }
     
     /**
+     * Performs a quad to quad image transformation.
+     *
+     * @param src        The source image.
+     * @param srcBounds  The bounds from the source image of the quad to transform.
+     * @param dest       The destination image.
+     * @param destBounds The bounds from the destination image of the quad to place the result of the transformation.
+     * @see #transformImage(BufferedImage, List, Graphics2D, int, int, List)
+     */
+    public static void transformImage(BufferedImage src, List<Vector> srcBounds, BufferedImage dest, List<Vector> destBounds) {
+        if ((src == null) || (srcBounds == null) || (dest == null) || (destBounds == null) ||
+                (srcBounds.size() != 4) || (destBounds.size() != 4)) {
+            return;
+        }
+        
+        Graphics2D destGraphics = dest.createGraphics();
+        transformImage(src, srcBounds, destGraphics, dest.getWidth(), dest.getHeight(), destBounds);
+        DrawUtility.dispose(destGraphics);
+    }
+    
+    /**
      * Calculates the projective matrix for a quad to quad image transformation.
      *
      * @param src  The bounds of the quad in the source.
@@ -141,6 +147,11 @@ public class ImageTransformationUtility {
      * @return The projective matrix.
      */
     public static Matrix calculateProjectiveMatrix(List<Vector> src, List<Vector> dest) {
+        if ((src == null) || (dest == null) ||
+                (src.size() != 4) || (dest.size() != 4)) {
+            return null;
+        }
+        
         Matrix projectiveMatrixSrc = new Matrix3(
                 src.get(0).getRawX(), src.get(1).getRawX(), src.get(3).getRawX(),
                 src.get(0).getRawY(), src.get(1).getRawY(), src.get(3).getRawY(),
