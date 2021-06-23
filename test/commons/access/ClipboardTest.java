@@ -122,11 +122,11 @@ public class ClipboardTest {
      */
     @Test
     public void testPutClipboard() throws Exception {
-        Clipboard.putClipboard("test");
+        Assert.assertTrue(Clipboard.putClipboard("test"));
         Assert.assertEquals("test", Clipboard.getClipboard());
         Assert.assertEquals("test", Clipboard.getClipboard());
         Assert.assertEquals("test", Clipboard.getClipboard());
-        Clipboard.putClipboard(null);
+        Assert.assertTrue(Clipboard.putClipboard(null));
         Assert.assertNull(Clipboard.getClipboard());
     }
     

@@ -7,13 +7,10 @@
 
 package commons.access;
 
-import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
-import java.awt.datatransfer.UnsupportedFlavorException;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 import commons.log.CommonsLogging;
 import commons.media.ImageUtility;
@@ -44,7 +41,7 @@ public final class Clipboard {
         String clipboard;
         try {
             clipboard = (String) Toolkit.getDefaultToolkit().getSystemClipboard().getData(DataFlavor.stringFlavor);
-        } catch (HeadlessException | UnsupportedFlavorException | IOException ignored) {
+        } catch (Exception ignored) {
             if (logClipboard()) {
                 logger.trace("Clipboard: Unable to retrieve contents from the clipboard");
             }
@@ -60,20 +57,29 @@ public final class Clipboard {
      * Publishes a string to the clipboard.
      *
      * @param content The new content of the clipboard.
+     * @return Whether the string was successfully published to the clipboard or not.
      */
-    public static void putClipboard(String content) {
+    public static boolean putClipboard(String content) {
         StringSelection selection = new StringSelection(content);
-        java.awt.datatransfer.Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-        clipboard.setContents(selection, selection);
+        try {
+            Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
+        } catch (Exception ignored) {
+            if (logClipboard()) {
+                logger.trace("Clipboard: Unable to publish contents to the clipboard");
+            }
+            return false;
+        }
         if (logClipboard()) {
             logger.trace("Clipboard: Published contents to the clipboard");
         }
+        return true;
     }
     
     /**
      * Returns the contents of the clipboard as an image.
      *
      * @return The contents of the clipboard, or null if there is no image on the clipboard.
+     * @see ImageUtility#copyImageFromClipboard()
      */
     public static BufferedImage getClipboardImage() {
         return ImageUtility.copyImageFromClipboard();
@@ -83,9 +89,11 @@ public final class Clipboard {
      * Publishes an image to the clipboard.
      *
      * @param content The new content of the clipboard.
+     * @return Whether the image was copied to the clipboard or not.
+     * @see ImageUtility#copyImageToClipboard(BufferedImage)
      */
-    public static void putClipboardImage(BufferedImage content) {
-        ImageUtility.copyImageToClipboard(content);
+    public static boolean putClipboardImage(BufferedImage content) {
+        return ImageUtility.copyImageToClipboard(content);
     }
     
     /**
