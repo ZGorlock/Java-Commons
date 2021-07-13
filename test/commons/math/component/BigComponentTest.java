@@ -11,6 +11,7 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
+import commons.math.BigMathUtility;
 import commons.math.MathUtility;
 import commons.math.component.handler.math.BigComponentMathHandler;
 import commons.math.component.matrix.BigMatrix;
@@ -135,19 +136,21 @@ public class BigComponentTest {
     @Test
     public void testCopyMeta() throws Exception {
         BigVector component1 = new BigVector(new BigDecimal("8.1018948065165015410948016"), new BigDecimal("6.689907845103061051849840560"), new BigDecimal("7.087487098020624098401951984149"), new BigDecimal("2.670084540981798465797874161453451313"));
-        MathContext newMathContext = new MathContext(MathUtility.dice(6, 4), RoundingMode.DOWN);
-        component1.setMathContext(newMathContext);
+        MathContext newMathContext = new MathContext(MathUtility.dice(6, 4), BigMathUtility.DEFAULT_ROUNDING_MODE);
+        component1.setMathPrecision(newMathContext.getPrecision());
         Assert.assertEquals(4, component1.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.1018948065165015410948016"), new BigDecimal("6.689907845103061051849840560"), new BigDecimal("7.087487098020624098401951984149"), new BigDecimal("2.670084540981798465797874161453451313")}, component1.getRawComponents());
-        Assert.assertEquals(newMathContext.getPrecision(), component1.getMathContext().getPrecision());
-        Assert.assertEquals(newMathContext.getRoundingMode(), component1.getMathContext().getRoundingMode());
+        MathContext component1MathContext = (MathContext) TestUtils.getField(component1.getHandler(), "mathContext");
+        Assert.assertEquals(newMathContext.getPrecision(), component1MathContext.getPrecision());
+        Assert.assertEquals(newMathContext.getRoundingMode(), component1MathContext.getRoundingMode());
         
         BigVector component2 = new BigVector(new BigDecimal("9.1048948183846435490480"), new BigDecimal("6.38408978971844641532021"), new BigDecimal("1.75449011520601216645401"));
         component1.copyMeta(component2);
         Assert.assertEquals(3, component2.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("9.1048948183846435490480"), new BigDecimal("6.38408978971844641532021"), new BigDecimal("1.75449011520601216645401")}, component2.getRawComponents());
-        Assert.assertEquals(newMathContext.getPrecision(), component2.getMathContext().getPrecision());
-        Assert.assertEquals(newMathContext.getRoundingMode(), component2.getMathContext().getRoundingMode());
+        MathContext component2MathContext = (MathContext) TestUtils.getField(component2.getHandler(), "mathContext");
+        Assert.assertEquals(newMathContext.getPrecision(), component2MathContext.getPrecision());
+        Assert.assertEquals(newMathContext.getRoundingMode(), component2MathContext.getRoundingMode());
     }
     
     /**
@@ -161,9 +164,9 @@ public class BigComponentTest {
         BigComponent<?> component;
         
         //standard
-        component = new BigVector(new BigDecimal("8.101894806516501541094801647908465405907848919842"), new BigDecimal("6.689907845103061051849840560549045160541801498419842"), new BigDecimal("7.087487098020624098401951984149804984146254697784084169804"), new BigDecimal("2.6700845409817984657978741614534513135049541654984904954516"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.101894806516501541094801647908465405907848919842"), new BigDecimal("6.689907845103061051849840560549045160541801498419842"), new BigDecimal("7.087487098020624098401951984149804984146254697784084169804"), new BigDecimal("2.6700845409817984657978741614534513135049541654984904954516")}, component.getRawComponents());
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.101894806516501541094801647908465406"), new BigDecimal("6.689907845103061051849840560549045161"), new BigDecimal("7.087487098020624098401951984149804984"), new BigDecimal("2.670084540981798465797874161453451314")}, component.getComponents());
+        component = new BigVector(new BigDecimal("8.10189480651650154101650154109480164790846540948016479084654059078489194801647908469842"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056054984056042"), new BigDecimal("7.087486240984019519841498049847098080206240920624098401951984149804984146254697784084169804"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350484540981798484904954516"));
+        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.10189480651650154101650154109480164790846540948016479084654059078489194801647908469842"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056054984056042"), new BigDecimal("7.087486240984019519841498049847098080206240920624098401951984149804984146254697784084169804"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350484540981798484904954516")}, component.getRawComponents());
+        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.1018948065165015410165015410948016479084654094801647908465405908"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056"), new BigDecimal("7.0874862409840195198414980498470980802062409206240984019519841498"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350485")}, component.getComponents());
     }
     
     /**
@@ -177,9 +180,9 @@ public class BigComponentTest {
         BigComponent<?> component;
         
         //standard
-        component = new BigVector(new BigDecimal("8.101894806516501541094801647908465405907848919842"), new BigDecimal("6.689907845103061051849840560549045160541801498419842"), new BigDecimal("7.087487098020624098401951984149804984146254697784084169804"), new BigDecimal("2.6700845409817984657978741614534513135049541654984904954516"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.101894806516501541094801647908465406"), new BigDecimal("6.689907845103061051849840560549045161"), new BigDecimal("7.087487098020624098401951984149804984"), new BigDecimal("2.670084540981798465797874161453451314")}, component.getPrimitiveComponents());
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.101894806516501541094801647908465406"), new BigDecimal("6.689907845103061051849840560549045161"), new BigDecimal("7.087487098020624098401951984149804984"), new BigDecimal("2.670084540981798465797874161453451314")}, component.getComponents());
+        component = new BigVector(new BigDecimal("8.10189480651650154101650154109480164790846540948016479084654059078489194801647908469842"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056054984056042"), new BigDecimal("7.087486240984019519841498049847098080206240920624098401951984149804984146254697784084169804"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350484540981798484904954516"));
+        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.1018948065165015410165015410948016479084654094801647908465405908"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056"), new BigDecimal("7.0874862409840195198414980498470980802062409206240984019519841498"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350485")}, component.getPrimitiveComponents());
+        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.1018948065165015410165015410948016479084654094801647908465405908"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056"), new BigDecimal("7.0874862409840195198414980498470980802062409206240984019519841498"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350485")}, component.getComponents());
     }
     
     /**
@@ -194,32 +197,32 @@ public class BigComponentTest {
     }
     
     /**
-     * JUnit test of getMathContext.
+     * JUnit test of getMathPrecision.
      *
      * @throws Exception When there is an exception.
-     * @see BigComponent#getMathContext()
+     * @see BigComponent#getMathPrecision()
      */
     @Test
-    public void testGetMathContext() throws Exception {
+    public void testGetMathPrecision() throws Exception {
         BigVector component = new BigVector(new BigDecimal("8.1018948065165015410948016"), new BigDecimal("6.689907845103061051849840560"), new BigDecimal("7.087487098020624098401951984149"), new BigDecimal("2.670084540981798465797874161453451313"));
         MathContext newMathContext = new MathContext(MathUtility.dice(6, 4), RoundingMode.DOWN);
         TestUtils.setField(component.getHandler(), "mathContext", newMathContext);
-        Assert.assertEquals(newMathContext, component.getMathContext());
+        Assert.assertEquals(newMathContext.getPrecision(), component.getMathPrecision());
     }
     
     /**
-     * JUnit test of setMathContext.
+     * JUnit test of setMathPrecision.
      *
      * @throws Exception When there is an exception.
-     * @see BigComponent#setMathContext(MathContext)
+     * @see BigComponent#setMathPrecision(int)
      */
     @Test
-    public void testSetMathContext() throws Exception {
+    public void testSetMathPrecision() throws Exception {
         BigVector component = new BigVector(new BigDecimal("8.1018948065165015410948016"), new BigDecimal("6.689907845103061051849840560"), new BigDecimal("7.087487098020624098401951984149"), new BigDecimal("2.670084540981798465797874161453451313"));
         MathContext newMathContext = new MathContext(MathUtility.dice(6, 4), RoundingMode.DOWN);
-        component.setMathContext(newMathContext);
+        component.setMathPrecision(newMathContext.getPrecision());
         MathContext mathContext = (MathContext) TestUtils.getField(component.getHandler(), "mathContext");
-        Assert.assertEquals(newMathContext, mathContext);
+        Assert.assertEquals(newMathContext.getPrecision(), mathContext.getPrecision());
     }
     
     

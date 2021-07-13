@@ -34,7 +34,7 @@ public class DoubleComponentMathHandler implements ComponentMathHandlerInterface
     public static final Double PRECISION = DEFAULT_PRECISION.doubleValue();
     
     /**
-     * The number of significant figures of the precision.
+     * The number of significant figures of the precision used for comparisons.
      */
     public static final int SIGNIFICANT_FIGURES = DEFAULT_SIGNIFICANT_FIGURES;
     
@@ -286,7 +286,7 @@ public class DoubleComponentMathHandler implements ComponentMathHandlerInterface
      */
     @Override
     public boolean isZero(Double a) {
-        return clean(a) == 0.0;
+        return clean(a) == zero().doubleValue();
     }
     
     /**
@@ -304,18 +304,18 @@ public class DoubleComponentMathHandler implements ComponentMathHandlerInterface
     //Getters
     
     /**
-     * Returns the precision of the Component Math Handler.
+     * Returns the comparison precision of the Component Math Handler.
      *
-     * @return The precision of the Component Math Handler.
+     * @return The comparison precision of the Component Math Handler.
      */
     public Double getPrecision() {
         return PRECISION;
     }
     
     /**
-     * Returns the significant figures of the Component Math Handler.
+     * Returns the significant figures used for comparisons of the Component Math Handler.
      *
-     * @return The significant figures of the Component Math Handler.
+     * @return The significant figures used for comparisons of the Component Math Handler.
      */
     public int getSignificantFigures() {
         return SIGNIFICANT_FIGURES;

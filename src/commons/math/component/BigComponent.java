@@ -8,7 +8,6 @@
 package commons.math.component;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 import commons.math.component.handler.math.BigComponentMathHandler;
 import org.slf4j.Logger;
@@ -48,7 +47,7 @@ public abstract class BigComponent<I extends BigComponent<?>> extends BaseCompon
      */
     @Override
     public void copyMeta(I to) {
-        to.setMathContext(new MathContext(getMathContext().getPrecision(), getMathContext().getRoundingMode()));
+        to.setMathPrecision(getMathPrecision());
     }
     
     
@@ -85,26 +84,26 @@ public abstract class BigComponent<I extends BigComponent<?>> extends BaseCompon
     }
     
     /**
-     * Returns the Math Context used when doing Big Component math.
+     * Returns the math precision used when doing Big Component math.
      *
-     * @return The Math Context used when doing Big Component math.
+     * @return The math precision used when doing Big Component math.
      */
     @Override
-    public final MathContext getMathContext() {
-        return ((BigComponentMathHandler) getHandler()).getMathContext();
+    public final int getMathPrecision() {
+        return ((BigComponentMathHandler) getHandler()).getMathPrecision();
     }
     
     
     //Setters
     
     /**
-     * Sets the Math Context used when doing Big Component math.
+     * Sets the math precision used when doing Big Component math.
      *
-     * @param mathContext The Math Context used when doing Big Component math.
+     * @param mathPrecision The math precision used when doing Big Component math.
      */
     @Override
-    public final void setMathContext(MathContext mathContext) {
-        ((BigComponentMathHandler) this.getHandler()).setMathContext(mathContext);
+    public final void setMathPrecision(int mathPrecision) {
+        ((BigComponentMathHandler) getHandler()).setMathPrecision(mathPrecision);
     }
     
 }

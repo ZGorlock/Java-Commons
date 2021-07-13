@@ -87,7 +87,7 @@ public class BigVector extends BigComponent<BigVector> implements VectorInterfac
      */
     public BigVector(BigVector vector) {
         this(vector.getRawComponents());
-        setMathContext(vector.getMathContext());
+        setMathPrecision(vector.getMathPrecision());
     }
     
     /**
@@ -113,7 +113,7 @@ public class BigVector extends BigComponent<BigVector> implements VectorInterfac
                 vector.getRawComponents(),
                 components, BigDecimal.class)
         );
-        setMathContext(vector.getMathContext());
+        setMathPrecision(vector.getMathPrecision());
     }
     
     /**

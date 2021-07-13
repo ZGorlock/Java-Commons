@@ -8,7 +8,6 @@
 package commons.math.component;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 import java.util.Arrays;
 
 import commons.math.component.vector.BigVector;
@@ -183,27 +182,27 @@ public class BigComponentInterfaceTest {
     }
     
     /**
-     * JUnit test of getMathContext.
+     * JUnit test of getMathPrecision.
      *
      * @throws Exception When there is an exception.
-     * @see BigComponentInterface#getMathContext()
+     * @see BigComponentInterface#getMathPrecision()
      */
     @Test
-    public void testGetMathContext() throws Exception {
+    public void testGetMathPrecision() throws Exception {
         TestUtils.assertMethodExists(
-                BigComponentInterface.class, "getMathContext");
+                BigComponentInterface.class, "getMathPrecision");
     }
     
     /**
-     * JUnit test of setMathContext.
+     * JUnit test of setMathPrecision.
      *
      * @throws Exception When there is an exception.
-     * @see BigComponentInterface#setMathContext(MathContext)
+     * @see BigComponentInterface#setMathPrecision(int)
      */
     @Test
-    public void testSetMathContext() throws Exception {
+    public void testSetMathPrecision() throws Exception {
         TestUtils.assertMethodExists(
-                BigComponentInterface.class, "setMathContext", MathContext.class);
+                BigComponentInterface.class, "setMathPrecision", int.class);
     }
     
 }

@@ -458,6 +458,7 @@ public class IntComponentMathHandlerTest {
      */
     @Test
     public void testIsEqual() throws Exception {
+        //standard
         Assert.assertFalse(sut.isEqual(5, 3));
         Assert.assertTrue(sut.isEqual(3, 3));
         Assert.assertFalse(sut.isEqual(6, 7));

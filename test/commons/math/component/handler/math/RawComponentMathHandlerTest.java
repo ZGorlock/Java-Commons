@@ -466,6 +466,7 @@ public class RawComponentMathHandlerTest {
      */
     @Test
     public void testIsEqual() throws Exception {
+        //standard
         Assert.assertFalse(sut.isEqual(5.1, 3.993));
         Assert.assertTrue(sut.isEqual(3.993, 3.993));
         Assert.assertFalse(sut.isEqual(6.0, 7.0));
@@ -474,6 +475,14 @@ public class RawComponentMathHandlerTest {
         Assert.assertFalse(sut.isEqual(0.50000001, 0.49999999));
         Assert.assertFalse(sut.isEqual(5.0, 1.0));
         Assert.assertFalse(sut.isEqual(5.0, 0.0));
+        
+        //edge case
+        Assert.assertFalse(sut.isEqual(1.0, 1.000000000001));
+        Assert.assertTrue(sut.isEqual(1.0, 0.999999999999));
+        Assert.assertTrue(sut.isEqual(1.0, 1.0000000000001));
+        Assert.assertTrue(sut.isEqual(1.0, 0.9999999999999));
+        Assert.assertFalse(sut.isEqual(1.0, 1.000000000002));
+        Assert.assertFalse(sut.isEqual(1.0, 0.999999999998));
     }
     
     /**

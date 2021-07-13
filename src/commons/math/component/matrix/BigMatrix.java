@@ -93,7 +93,7 @@ public class BigMatrix extends BigComponent<BigMatrix> implements MatrixInterfac
      */
     public BigMatrix(BigMatrix matrix) {
         this(matrix.getRawComponents());
-        setMathContext(matrix.getMathContext());
+        setMathPrecision(matrix.getMathPrecision());
     }
     
     /**

@@ -205,7 +205,7 @@ public class IntVectorTest {
      * @see IntVector#vectorString()
      */
     @Test
-    public void testIntVectorString() throws Exception {
+    public void testVectorString() throws Exception {
         //standard
         
         sut = new IntVector(new int[] {1});

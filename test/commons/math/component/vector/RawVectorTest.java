@@ -205,7 +205,7 @@ public class RawVectorTest {
      * @see RawVector#vectorString()
      */
     @Test
-    public void testRawVectorString() throws Exception {
+    public void testVectorString() throws Exception {
         //standard
         
         sut = new RawVector(1.0);

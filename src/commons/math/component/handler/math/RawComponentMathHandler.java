@@ -274,7 +274,7 @@ public class RawComponentMathHandler implements ComponentMathHandlerInterface<Nu
      */
     @Override
     public boolean isEqual(Number a, Number b) {
-        return (compare(abs(subtract(b, a)), PRECISION) < 0);
+        return (compare(abs(subtract(b, a)), PRECISION) <= 0);
     }
     
     /**
@@ -313,9 +313,9 @@ public class RawComponentMathHandler implements ComponentMathHandlerInterface<Nu
     }
     
     /**
-     * Returns the significant figures of the Component Math Handler.
+     * Returns the significant figures used for comparisons of the Component Math Handler.
      *
-     * @return The significant figures of the Component Math Handler.
+     * @return The significant figures used for comparisons of the Component Math Handler.
      */
     public int getSignificantFigures() {
         return SIGNIFICANT_FIGURES;

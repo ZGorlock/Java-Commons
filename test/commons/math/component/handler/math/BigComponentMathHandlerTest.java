@@ -383,6 +383,8 @@ public class BigComponentMathHandlerTest {
         //big
         Assert.assertEquals(new BigDecimal("786013.743768254270833882303879116136981964490156798758108407658146822"),
                 sut.root(new BigDecimal("485613128980565211.60898418142984980484918454928718798489728798"), new BigDecimal("3")));
+        Assert.assertEquals(new BigDecimal("15466433495295412499023611679537033631383377069071860256091919717954555618746195215761497736288772707382375752568911674707134443470866066103504779855486983583751316437950986008868049165095774057300631205677165355804916360902067252274690819222348061110476389209016437182982924353393295210298843002027977692102025727209864091478462962487401528904611880600824686359234237451443768697535106664024704138935506678165219668487717463368314786245112249351123975878934532980032897390671120033970530220117657359293732955044382945381806819082172887283570647280164673608220650603081142737309275105223241985180845148006045131342931929585828584139272435283956277543290281355912251531204849162399808618704370190691160030264806149893642218242519864921893234957568111856037015983761438303.8797086075973767519068093447977901303826693684151996747933700452"),
+                sut.root(new BigDecimal("0.0000000578"), new BigDecimal("-.00941")));
     }
     
     /**
@@ -543,9 +545,23 @@ public class BigComponentMathHandlerTest {
         Assert.assertFalse(sut.isEqual(BigDecimal.valueOf(5.0), BigDecimal.valueOf(1.0)));
         Assert.assertFalse(sut.isEqual(BigDecimal.valueOf(5.0), BigDecimal.valueOf(0.0)));
         
+        //edge case
+        Assert.assertTrue(sut.isEqual(new BigDecimal("1.0"), new BigDecimal("1.000000000000000000000000000000000001")));
+        Assert.assertTrue(sut.isEqual(new BigDecimal("1.0"), new BigDecimal("0.999999999999999999999999999999999999")));
+        Assert.assertFalse(sut.isEqual(new BigDecimal("1.0"), new BigDecimal("1.00000000000000000000000000000000001")));
+        Assert.assertFalse(sut.isEqual(new BigDecimal("1.0"), new BigDecimal("0.99999999999999999999999999999999999")));
+        Assert.assertFalse(sut.isEqual(new BigDecimal("1.0"), new BigDecimal("1.00000000000000000000000000000000002")));
+        Assert.assertFalse(sut.isEqual(new BigDecimal("1.0"), new BigDecimal("0.99999999999999999999999999999999998")));
+        
         //big
         Assert.assertFalse(
                 sut.isEqual(new BigDecimal("485613128980565211.60898418142984980484918454928718798489728798"), new BigDecimal("321649848421554654.968048401554249841415490849874298789170848971870987")));
+        Assert.assertFalse(
+                sut.isEqual(new BigDecimal("1"), new BigDecimal("1.00000000000000000000000000000000001")));
+        Assert.assertTrue(
+                sut.isEqual(new BigDecimal("1"), new BigDecimal("1.000000000000000000000000000000000001")));
+        Assert.assertFalse(
+                sut.isEqual(new BigDecimal("1"), new BigDecimal("1.000000000000000000000000000000000002")));
     }
     
     /**
@@ -580,18 +596,29 @@ public class BigComponentMathHandlerTest {
     @Test
     public void testClean() throws Exception {
         //standard
-        Assert.assertEquals(new BigDecimal("5.1"), sut.clean(new BigDecimal("5.100000000000000000000000000000000000000000000000001")));
-        Assert.assertEquals(new BigDecimal("3.994"), sut.clean(new BigDecimal("3.9939999999999999999999999999999999999999999999996")));
-        Assert.assertEquals(new BigDecimal("6"), sut.clean(new BigDecimal("6.00000000000000000000000000000000000000000000000001123")));
-        Assert.assertEquals(new BigDecimal("-6"), sut.clean(new BigDecimal("-6.000000000000000000000000000000000000000000000000009711")));
-        Assert.assertEquals(new BigDecimal("0.50000002"), sut.clean(new BigDecimal("0.50000001999999999999999999999999999999999999999999999999")));
-        Assert.assertEquals(new BigDecimal("0.5"), sut.clean(new BigDecimal("0.49999999999999999999999999999999999999999999999999999999")));
-        Assert.assertEquals(new BigDecimal("1"), sut.clean(new BigDecimal("1.000000000000000000000000000000000000000000000000000000001")));
-        Assert.assertEquals(new BigDecimal("0"), sut.clean(new BigDecimal("0.000000000000000000000000000000000000000000000000000001")));
+        Assert.assertEquals(new BigDecimal("5.1"), sut.clean(new BigDecimal("5.10000000000000000000000000000000000000000000000000000000000000001")));
+        Assert.assertEquals(new BigDecimal("3.994"), sut.clean(new BigDecimal("3.99399999999999999999999999999999999999999999999999999999999999996")));
+        Assert.assertEquals(new BigDecimal("6"), sut.clean(new BigDecimal("6.00000000000000000000000000000000000000000000000000000000000000001123")));
+        Assert.assertEquals(new BigDecimal("-6.0000000000000000000000000000000000000000000000000000000000000001"), sut.clean(new BigDecimal("-6.00000000000000000000000000000000000000000000000000000000000000009711")));
+        Assert.assertEquals(new BigDecimal("0.50000002"), sut.clean(new BigDecimal("0.5000000199999999999999999999999999999999999999999999999999999999999")));
+        Assert.assertEquals(new BigDecimal("0.5"), sut.clean(new BigDecimal("0.499999999999999999999999999999999999999999999999999999999999999999999")));
+        Assert.assertEquals(new BigDecimal("1"), sut.clean(new BigDecimal("1.00000000000000000000000000000000000000000000000000000000000000000000001")));
+        Assert.assertEquals(new BigDecimal("0"), sut.clean(new BigDecimal("0.00000000000000000000000000000000000000000000000000000000000000000001")));
         
         //big
-        Assert.assertEquals(new BigDecimal("485613128980565211.608984181429849804849184549287187985"),
-                sut.clean(new BigDecimal("485613128980565211.60898418142984980484918454928718798489728798")));
+        Assert.assertEquals(new BigDecimal("485613128980565211.6089841454928718798489728798142989287187984897498048491489749805"),
+                sut.clean(new BigDecimal("485613128980565211.608984145492871879848972879814298928718798489749804849148974980484918454928718454928718798489728798")));
+        
+        //custom precision
+        sut.setMathPrecision(1);
+        Assert.assertEquals(new BigDecimal("5.1"), sut.clean(new BigDecimal("5.10000000000000000000000000000000000000000000000000000000000000001")));
+        Assert.assertEquals(new BigDecimal("4"), sut.clean(new BigDecimal("3.99399999999999999999999999999999999999999999999999999999999999996")));
+        Assert.assertEquals(new BigDecimal("6"), sut.clean(new BigDecimal("6.00000000000000000000000000000000000000000000000000000000000000001123")));
+        Assert.assertEquals(new BigDecimal("-6"), sut.clean(new BigDecimal("-6.00000000000000000000000000000000000000000000000000000000000000009711")));
+        Assert.assertEquals(new BigDecimal("0.5"), sut.clean(new BigDecimal("0.5000000199999999999999999999999999999999999999999999999999999999999")));
+        Assert.assertEquals(new BigDecimal("0.5"), sut.clean(new BigDecimal("0.499999999999999999999999999999999999999999999999999999999999999999999")));
+        Assert.assertEquals(new BigDecimal("1"), sut.clean(new BigDecimal("1.00000000000000000000000000000000000000000000000000000000000000000000001")));
+        Assert.assertEquals(new BigDecimal("0"), sut.clean(new BigDecimal("0.00000000000000000000000000000000000000000000000000000000000000000001")));
     }
     
     /**
@@ -617,32 +644,33 @@ public class BigComponentMathHandlerTest {
     }
     
     /**
-     * JUnit test of getMathContext.
+     * JUnit test of getMathPrecision.
      *
      * @throws Exception When there is an exception.
-     * @see BigComponentMathHandler#getMathContext()
+     * @see BigComponentMathHandler#getMathPrecision()
      */
     @Test
-    public void testGetMathContext() throws Exception {
+    public void testGetMathPrecision() throws Exception {
         MathContext mathContext = (MathContext) TestUtils.getField(sut, "mathContext");
-        Assert.assertEquals(mathContext, sut.getMathContext());
+        Assert.assertEquals(64, sut.getMathPrecision());
         MathContext newMathContext = new MathContext(0, RoundingMode.HALF_UP);
         TestUtils.setField(sut, "mathContext", newMathContext);
-        Assert.assertEquals(newMathContext, sut.getMathContext());
+        Assert.assertEquals(0, sut.getMathPrecision());
     }
     
     /**
-     * JUnit test of setMathContext.
+     * JUnit test of setMathPrecision.
      *
      * @throws Exception When there is an exception.
-     * @see BigComponentMathHandler#setMathContext(MathContext)
+     * @see BigComponentMathHandler#setMathPrecision(int)
      */
     @Test
-    public void testSetMathContext() throws Exception {
-        MathContext newMathContext = new MathContext(0, RoundingMode.HALF_UP);
-        sut.setMathContext(newMathContext);
+    public void testSetMathPrecision() throws Exception {
         MathContext mathContext = (MathContext) TestUtils.getField(sut, "mathContext");
-        Assert.assertEquals(newMathContext, mathContext);
+        Assert.assertEquals(64, mathContext.getPrecision());
+        sut.setMathPrecision(128);
+        mathContext = (MathContext) TestUtils.getField(sut, "mathContext");
+        Assert.assertEquals(128, mathContext.getPrecision());
     }
     
 }

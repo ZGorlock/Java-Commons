@@ -33,7 +33,7 @@ public class IntComponentMathHandler implements ComponentMathHandlerInterface<In
     public static final Integer PRECISION = 1;
     
     /**
-     * The number of significant figures of the precision.
+     * The number of significant figures of the precision used for comparisons.
      */
     public static final int SIGNIFICANT_FIGURES = 0;
     
@@ -303,18 +303,18 @@ public class IntComponentMathHandler implements ComponentMathHandlerInterface<In
     //Getters
     
     /**
-     * Returns the precision of the Component Math Handler.
+     * Returns the comparison precision of the Component Math Handler.
      *
-     * @return The precision of the Component Math Handler.
+     * @return The comparison precision of the Component Math Handler.
      */
     public Integer getPrecision() {
         return PRECISION;
     }
     
     /**
-     * Returns the significant figures of the Component Math Handler.
+     * Returns the significant figures used for comparisons of the Component Math Handler.
      *
-     * @return The significant figures of the Component Math Handler.
+     * @return The significant figures used for comparisons of the Component Math Handler.
      */
     public int getSignificantFigures() {
         return SIGNIFICANT_FIGURES;

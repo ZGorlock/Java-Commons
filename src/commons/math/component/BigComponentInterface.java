@@ -8,7 +8,6 @@
 package commons.math.component;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 /**
  * Defines an additional contract for Big Component classes.
@@ -67,20 +66,20 @@ public interface BigComponentInterface<I extends BigComponent<?>> extends Compon
     //Getters
     
     /**
-     * Returns the Math Context used when doing Big Component math.
+     * Returns the math precision used when doing Big Component math.
      *
-     * @return The Math Context used when doing Big Component math.
+     * @return The math precision used when doing Big Component math.
      */
-    MathContext getMathContext();
+    int getMathPrecision();
     
     
     //Setters
     
     /**
-     * Sets the Math Context used when doing Big Component math.
+     * Sets the math precision used when doing Big Component math.
      *
-     * @param mathContext The Math Context used when doing BigDecimal math.
+     * @param mathPrecision The math precision used when doing Big Component math.
      */
-    void setMathContext(MathContext mathContext);
+    void setMathPrecision(int mathPrecision);
     
 }
