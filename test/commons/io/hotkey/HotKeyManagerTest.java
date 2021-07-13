@@ -144,10 +144,10 @@ public class HotKeyManagerTest {
         Map<HotKey.ModifierKey, AtomicBoolean> modifierDown = (Map<HotKey.ModifierKey, AtomicBoolean>) TestUtils.getField(HotKeyManager.class, "modifierDown");
         Assert.assertNotNull(modifierDown);
         Assert.assertEquals(HotKey.ModifierKey.values().length, modifierDown.size());
-        Assert.assertFalse(modifierDown.get(HotKey.ModifierKey.CONTROL).get());
-        Assert.assertFalse(modifierDown.get(HotKey.ModifierKey.SHIFT).get());
-        Assert.assertFalse(modifierDown.get(HotKey.ModifierKey.ALT).get());
-        Assert.assertFalse(modifierDown.get(HotKey.ModifierKey.META).get());
+        Assert.assertTrue(modifierDown.containsKey(HotKey.ModifierKey.CONTROL));
+        Assert.assertTrue(modifierDown.containsKey(HotKey.ModifierKey.SHIFT));
+        Assert.assertTrue(modifierDown.containsKey(HotKey.ModifierKey.ALT));
+        Assert.assertTrue(modifierDown.containsKey(HotKey.ModifierKey.META));
     }
     
     /**
