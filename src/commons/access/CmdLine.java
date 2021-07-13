@@ -10,7 +10,6 @@ package commons.access;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import javax.ws.rs.NotSupportedException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -89,9 +88,9 @@ public final class CmdLine {
      * @param cmd              The command to build a process for.
      * @param useScriptCommand Whether or not to include the script command at the beginning ("cmd.exe /c", "bash -c", etc).
      * @return The process that was built, or null if it was not built.
-     * @throws NotSupportedException When called from an unsupported operating system.
+     * @throws RuntimeException When called from an unsupported operating system.
      */
-    public static ProcessBuilder buildProcess(String cmd, boolean useScriptCommand) throws NotSupportedException {
+    public static ProcessBuilder buildProcess(String cmd, boolean useScriptCommand) throws RuntimeException {
         ProcessBuilder builder;
         if (useScriptCommand) {
             switch (OperatingSystem.getOperatingSystem()) {
@@ -107,7 +106,7 @@ public final class CmdLine {
                 case POSIX:
                 case OTHER:
                 default:
-                    throw new NotSupportedException("Operating system: " + System.getProperty("os.name").toUpperCase() + " is not supported!");
+                    throw new RuntimeException("Operating system: " + System.getProperty("os.name").toUpperCase() + " is not supported!");
             }
         } else {
             builder = new ProcessBuilder(cmd);
@@ -122,10 +121,10 @@ public final class CmdLine {
      *
      * @param cmd The command to build a process for.
      * @return The process that was built, or null if it was not built.
-     * @throws NotSupportedException When there is an unknown operating system.
+     * @throws RuntimeException When there is an unknown operating system.
      * @see #buildProcess(String, boolean)
      */
-    public static ProcessBuilder buildProcess(String cmd) throws NotSupportedException {
+    public static ProcessBuilder buildProcess(String cmd) throws RuntimeException {
         return buildProcess(cmd, true);
     }
     

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.PriorityQueue;
 import java.util.Queue;
-import javax.ws.rs.NotSupportedException;
 
 import commons.string.StringUtility;
 import commons.test.TestUtils;
@@ -321,13 +320,13 @@ public class CmdLineTest {
         operatingSystem.add(OperatingSystem.OS.POSIX);
         String saveOs = System.getProperty("os.name");
         System.setProperty("os.name", "Posix");
-        TestUtils.assertException(NotSupportedException.class, "Operating system: POSIX is not supported!", () ->
+        TestUtils.assertException(RuntimeException.class, "Operating system: POSIX is not supported!", () ->
                 CmdLine.buildProcess("ls -l", true));
         
         operatingSystem.clear();
         operatingSystem.add(OperatingSystem.OS.OTHER);
         System.setProperty("os.name", "OtherOS");
-        TestUtils.assertException(NotSupportedException.class, "Operating system: OTHEROS is not supported!", () ->
+        TestUtils.assertException(RuntimeException.class, "Operating system: OTHEROS is not supported!", () ->
                 CmdLine.buildProcess("ls -l", true));
         
         operatingSystem.clear();
