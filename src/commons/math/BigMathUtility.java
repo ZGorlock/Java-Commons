@@ -385,7 +385,7 @@ public final class BigMathUtility {
      * @see BigDecimalMath#root(BigDecimal, BigDecimal, MathContext)
      */
     public static BigDecimal root(BigDecimal n1, BigDecimal n2, int precision) throws ArithmeticException {
-        MathContext context = new MathContext(PrecisionMode.MAX_PRECISION.getPrecision(), DEFAULT_ROUNDING_MODE);
+        MathContext context = new MathContext(PrecisionMode.MATH_PRECISION.getPrecision(), DEFAULT_ROUNDING_MODE);
         BigDecimal result = BigDecimalMath.root(n1, n2, context);
         if (precision == PrecisionMode.DEFAULT_PRECISION.getPrecision()) {
             return result.setScale(DEFAULT_MATH_PRECISION, DEFAULT_ROUNDING_MODE).stripTrailingZeros();
@@ -1797,10 +1797,10 @@ public final class BigMathUtility {
      * @see BigDecimalMath#round(BigDecimal, MathContext)
      */
     public static BigDecimal round(BigDecimal n, int precision) {
-        MathContext context = new MathContext(PrecisionMode.MAX_PRECISION.getPrecision(), DEFAULT_ROUNDING_MODE);
+        MathContext context = new MathContext(n.precision(), DEFAULT_ROUNDING_MODE);
         BigDecimal result = BigDecimalMath.round(n, context);
         if (precision == PrecisionMode.DEFAULT_PRECISION.getPrecision()) {
-            return result.setScale(DEFAULT_MATH_PRECISION, DEFAULT_ROUNDING_MODE).stripTrailingZeros();
+            return result.setScale(0, DEFAULT_ROUNDING_MODE);
         } else {
             return result.setScale(precision, DEFAULT_ROUNDING_MODE);
         }
@@ -1837,10 +1837,10 @@ public final class BigMathUtility {
      * @return The absolute value of the number.
      */
     public static BigDecimal abs(BigDecimal n, int precision) {
-        MathContext context = new MathContext(PrecisionMode.MAX_PRECISION.getPrecision(), DEFAULT_ROUNDING_MODE);
+        MathContext context = new MathContext(n.precision(), DEFAULT_ROUNDING_MODE);
         BigDecimal result = n.abs(context);
         if (precision == PrecisionMode.DEFAULT_PRECISION.getPrecision()) {
-            return result.setScale(DEFAULT_MATH_PRECISION, DEFAULT_ROUNDING_MODE).stripTrailingZeros();
+            return result;
         } else {
             return result.setScale(precision, DEFAULT_ROUNDING_MODE);
         }
@@ -1877,10 +1877,10 @@ public final class BigMathUtility {
      * @return The negated value of the number.
      */
     public static BigDecimal negate(BigDecimal n, int precision) {
-        MathContext context = new MathContext(PrecisionMode.MAX_PRECISION.getPrecision(), DEFAULT_ROUNDING_MODE);
+        MathContext context = new MathContext(n.precision(), DEFAULT_ROUNDING_MODE);
         BigDecimal result = n.negate(context);
         if (precision == PrecisionMode.DEFAULT_PRECISION.getPrecision()) {
-            return result.setScale(DEFAULT_MATH_PRECISION, DEFAULT_ROUNDING_MODE).stripTrailingZeros();
+            return result;
         } else {
             return result.setScale(precision, DEFAULT_ROUNDING_MODE);
         }
