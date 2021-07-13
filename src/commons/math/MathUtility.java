@@ -118,37 +118,37 @@ public class MathUtility {
     /**
      * Rounds a decimal number with a certain precision.
      *
-     * @param value     The number.
-     * @param precision The maximum number of decimal places of the result.
+     * @param value         The number.
+     * @param decimalPlaces The maximum number of decimal places of the result.
      * @return The rounded number.
      */
-    public static double roundWithPrecision(double value, int precision) {
-        double inversePrecision = Math.pow(10.0, precision);
-        return (double) Math.round(value * inversePrecision) / inversePrecision;
+    public static double roundWithPrecision(double value, int decimalPlaces) {
+        double decimalInverse = Math.pow(10.0, decimalPlaces);
+        return (double) Math.round(value * decimalInverse) / decimalInverse;
     }
     
     /**
      * Rounds a Big Decimal number with a certain precision.
      *
-     * @param value        The number.
-     * @param precision    The maximum number of decimal places of the result.
-     * @param roundingMode The rounding mode to use when rounding the result.
+     * @param value         The number.
+     * @param decimalPlaces The maximum number of decimal places of the result.
+     * @param roundingMode  The rounding mode to use when rounding the result.
      * @return The rounded number.
      */
-    public static BigDecimal roundWithPrecision(BigDecimal value, int precision, RoundingMode roundingMode) {
-        return new BigDecimal(value.setScale(precision, roundingMode).stripTrailingZeros().toPlainString());
+    public static BigDecimal roundWithPrecision(BigDecimal value, int decimalPlaces, RoundingMode roundingMode) {
+        return new BigDecimal(value.setScale(decimalPlaces, roundingMode).stripTrailingZeros().toPlainString());
     }
     
     /**
      * Rounds a Big Decimal number with a certain precision.
      *
-     * @param value     The number.
-     * @param precision The maximum number of decimal places of the result.
+     * @param value         The number.
+     * @param decimalPlaces The maximum number of decimal places of the result.
      * @return The rounded number.
      * @see #roundWithPrecision(BigDecimal, int, RoundingMode)
      */
-    public static BigDecimal roundWithPrecision(BigDecimal value, int precision) {
-        return roundWithPrecision(value, precision, RoundingMode.HALF_UP);
+    public static BigDecimal roundWithPrecision(BigDecimal value, int decimalPlaces) {
+        return roundWithPrecision(value, decimalPlaces, RoundingMode.HALF_UP);
     }
     
     /**
