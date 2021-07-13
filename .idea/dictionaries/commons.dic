@@ -1,7 +1,16 @@
+acos
+acosh
+acot
+acoth
 adjoint
 adjugate
 affero
+asin
+asinh
+atan
+atanh
 cmudict
+coth
 delim
 depuncted
 detokenize
@@ -17,8 +26,10 @@ pkcs
 redim
 relicensing
 shadsa
+sinh
 sublicenses
 sublicensing
+tanh
 unmute
 unmutes
 unmuting

@@ -653,25 +653,25 @@ public final class EquationUtility {
             Number result;
             switch (operation) {
                 case POWER:
-                    result = NumberStringUtility.numberValueOf(BigMathUtility.power(n1, n2));
+                    result = NumberStringUtility.numberValueOf(StringMathUtility.power(n1, n2));
                     break;
                 case ROOT:
-                    result = NumberStringUtility.numberValueOf(BigMathUtility.root(n1, n2));
+                    result = NumberStringUtility.numberValueOf(StringMathUtility.root(n1, n2));
                     break;
                 case MULTIPLY:
-                    result = NumberStringUtility.numberValueOf(BigMathUtility.multiply(n1, n2));
+                    result = NumberStringUtility.numberValueOf(StringMathUtility.multiply(n1, n2));
                     break;
                 case DIVIDE:
-                    result = NumberStringUtility.numberValueOf(BigMathUtility.divide(n1, n2));
+                    result = NumberStringUtility.numberValueOf(StringMathUtility.divide(n1, n2));
                     break;
                 case MODULUS:
-                    result = NumberStringUtility.numberValueOf(BigMathUtility.mod(n1, n2));
+                    result = NumberStringUtility.numberValueOf(StringMathUtility.mod(n1, n2));
                     break;
                 case ADD:
-                    result = NumberStringUtility.numberValueOf(BigMathUtility.add(n1, n2));
+                    result = NumberStringUtility.numberValueOf(StringMathUtility.add(n1, n2));
                     break;
                 case SUBTRACT:
-                    result = NumberStringUtility.numberValueOf(BigMathUtility.subtract(n1, n2));
+                    result = NumberStringUtility.numberValueOf(StringMathUtility.subtract(n1, n2));
                     break;
                 default:
                     result = null;
