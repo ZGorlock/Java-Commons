@@ -206,6 +206,42 @@ public final class FilesystemMacro {
     }
     
     /**
+     * Replaces all instances of a string in a file.
+     *
+     * @param file    The file to replace in.
+     * @param search  The string to search for.
+     * @param replace The string to replace with.
+     * @return Whether the operation was successful or not.
+     */
+    public static boolean replaceInFile(File file, String search, String replace) {
+        List<String> newLines = new ArrayList<>();
+        
+        for (String line : Filesystem.readLines(file)) {
+            newLines.add(line.replace(search, replace));
+        }
+        
+        return Filesystem.writeLines(file, newLines);
+    }
+    
+    /**
+     * Replaces all instances of a regex pattern in a file.
+     *
+     * @param file        The file to replace in.
+     * @param regexSearch The regex pattern to search for.
+     * @param replace     The string to replace with.
+     * @return Whether the operation was successful or not.
+     */
+    public static boolean regexReplaceInFile(File file, String regexSearch, String replace) {
+        List<String> newLines = new ArrayList<>();
+        
+        for (String line : Filesystem.readLines(file)) {
+            newLines.add(line.replaceAll(regexSearch, replace));
+        }
+        
+        return Filesystem.writeLines(file, newLines);
+    }
+    
+    /**
      * Macro to copy all the songs listed in a playlist to a specified directory.
      * The songs listed in the playlist are expected to be in the form: "pathPrefix\artist\song.*".
      * The songs will be copied to the directory in the form: "directory\artist\song.*".

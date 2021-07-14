@@ -353,6 +353,68 @@ public class FilesystemMacroTest {
     }
     
     /**
+     * JUnit test of replaceInFile.
+     *
+     * @throws Exception When there is an exception.
+     * @see FilesystemMacro#replaceInFile(File, String, String)
+     */
+    @Test
+    public void testReplaceInFile() throws Exception {
+        File testResource = new File(testResources, "replaceInFile.zip");
+        File testDir = Filesystem.createTemporaryDirectory("replaceInFile");
+        File file = new File(testDir, "f.txt");
+        
+        //check
+        
+        Filesystem.deleteDirectory(testDir);
+        Archive.extract(testResource, testDir);
+        Assert.assertEquals(1, Filesystem.getFilesAndDirsRecursively(testDir).size());
+        Assert.assertArrayEquals(new String[] {
+                        "test1", "test2", "test3", "tester", "another test",
+                        "test file", "file test", "", "test4", "last test", "",
+                        "test3 another testing test3 for the tester"},
+                Filesystem.readLines(file).toArray());
+        Assert.assertTrue(FilesystemMacro.replaceInFile(file, "test", "string"));
+        Assert.assertArrayEquals(new String[] {
+                        "string1", "string2", "string3", "stringer", "another string",
+                        "string file", "file string", "", "string4", "last string", "",
+                        "string3 another stringing string3 for the stringer"},
+                Filesystem.readLines(file).toArray());
+        Filesystem.deleteDirectory(testDir);
+    }
+    
+    /**
+     * JUnit test of regexReplaceInFile.
+     *
+     * @throws Exception When there is an exception.
+     * @see FilesystemMacro#regexReplaceInFile(File, String, String)
+     */
+    @Test
+    public void testRegexReplaceInFile() throws Exception {
+        File testResource = new File(testResources, "regexReplaceInFile.zip");
+        File testDir = Filesystem.createTemporaryDirectory("regexReplaceInFile");
+        File file = new File(testDir, "f.txt");
+        
+        //check
+        
+        Filesystem.deleteDirectory(testDir);
+        Archive.extract(testResource, testDir);
+        Assert.assertEquals(1, Filesystem.getFilesAndDirsRecursively(testDir).size());
+        Assert.assertArrayEquals(new String[] {
+                        "test1", "test2", "test3", "tester", "another test",
+                        "test file", "file test", "", "test4", "last test", "",
+                        "test3 another testing test3 for the tester"},
+                Filesystem.readLines(file).toArray());
+        Assert.assertTrue(FilesystemMacro.regexReplaceInFile(file, "test\\d+", "string"));
+        Assert.assertArrayEquals(new String[] {
+                        "string", "string", "string", "tester", "another test",
+                        "test file", "file test", "", "string", "last test", "",
+                        "string another testing string for the tester"},
+                Filesystem.readLines(file).toArray());
+        Filesystem.deleteDirectory(testDir);
+    }
+    
+    /**
      * JUnit test of copyPlaylistToDirectory.
      *
      * @throws Exception When there is an exception.
