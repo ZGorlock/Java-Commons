@@ -245,6 +245,7 @@ public final class FilesystemMacro {
      * Macro to copy all the songs listed in a playlist to a specified directory.
      * The songs listed in the playlist are expected to be in the form: "pathPrefix\artist\song.*".
      * The songs will be copied to the directory in the form: "directory\artist\song.*".
+     * A new playlist will be created in the directory as well.
      *
      * @param playlist   The playlist to read the list of songs from.
      * @param directory  The directory to copy the songs to.
@@ -253,7 +254,9 @@ public final class FilesystemMacro {
      */
     public static boolean copyPlaylistToDirectory(File playlist, File directory, String pathPrefix) {
         boolean success = true;
+        pathPrefix = pathPrefix.replace("\\", "/");
         
+        List<String> newPlaylist = new ArrayList<>();
         for (String playlistEntry : Filesystem.readLines(playlist)) {
             File song = new File(playlistEntry.replace("\\", "/"));
             if (song.exists()) {
@@ -265,9 +268,11 @@ public final class FilesystemMacro {
                 File output = new File(song.getAbsolutePath().replace("\\", "/")
                         .replace(pathPrefix, outputDirectory));
                 success &= Filesystem.copyFile(song, output, true);
+                newPlaylist.add(output.getAbsolutePath().replace("\\", "/").replace(outputDirectory, ""));
             }
         }
         
+        Filesystem.writeLines(new File(directory, playlist.getName()), newPlaylist);
         return success;
     }
     

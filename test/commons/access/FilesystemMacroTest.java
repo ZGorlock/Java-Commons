@@ -434,11 +434,15 @@ public class FilesystemMacroTest {
         File outputDir = new File(testDir, "output");
         Assert.assertTrue(Filesystem.isEmpty(outputDir));
         Assert.assertTrue(FilesystemMacro.copyPlaylistToDirectory(playlist, outputDir, (testDir.getAbsolutePath().replace("\\", "/") + "/source")));
-        Assert.assertEquals(342, Filesystem.getFilesAndDirsRecursively(testDir).size());
+        Assert.assertEquals(343, Filesystem.getFilesAndDirsRecursively(testDir).size());
         Assert.assertFalse(Filesystem.isEmpty(outputDir));
-        Assert.assertEquals(65, Filesystem.getFilesAndDirsRecursively(outputDir).size());
-        Assert.assertEquals(44, originalPlaylist.size());
-        originalPlaylist.stream().map(e -> new File(outputDir.getAbsolutePath() + e.replace("source", "")))
+        Assert.assertEquals(66, Filesystem.getFilesAndDirsRecursively(outputDir).size());
+        Assert.assertEquals(46, originalPlaylist.size());
+        File outputPlaylist = new File(outputDir, playlist.getName());
+        List<String> newPlaylist = Filesystem.readLines(outputPlaylist);
+        Assert.assertTrue(outputPlaylist.exists());
+        Assert.assertEquals(44, newPlaylist.size());
+        newPlaylist.stream().map(e -> new File(outputDir.getAbsolutePath() + '/' + e))
                 .forEach(e -> Assert.assertTrue(e.exists()));
         Filesystem.deleteDirectory(testDir);
     }
