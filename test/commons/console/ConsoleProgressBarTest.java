@@ -142,6 +142,7 @@ public class ConsoleProgressBarTest {
         Assert.assertTrue(ConsoleProgressBar.DEFAULT_SHOW_RATIO);
         Assert.assertTrue(ConsoleProgressBar.DEFAULT_SHOW_SPEED);
         Assert.assertTrue(ConsoleProgressBar.DEFAULT_SHOW_TIME_REMAINING);
+        Assert.assertEquals(Console.ConsoleEffect.BLACK.apply(" "), ConsoleProgressBar.ENDCAP);
     }
     
     /**
@@ -322,20 +323,20 @@ public class ConsoleProgressBarTest {
         
         TestUtils.setField(progressBar, "update", false);
         expected = "";
-        Assert.assertEquals(('\r' + expected + StringUtility.spaces(0)), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
         
         //standard
         
         TestUtils.setField(progressBar, "update", true);
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + StringUtility.spaces(0)), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
         
         //no update
         
         Mockito.when(progressBar.getPercentageString()).thenReturn(" 52%");
         TestUtils.setField(progressBar, "update", false);
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + StringUtility.spaces(0)), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
         Mockito.when(progressBar.getPercentageString()).thenReturn(" 51%");
         
         //partial
@@ -343,42 +344,42 @@ public class ConsoleProgressBarTest {
         progressBar.setShowPercentage(false);
         TestUtils.setField(progressBar, "update", true);
         expected = "[==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + StringUtility.spaces(5)), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(4) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowPercentage(true);
         
         progressBar.setShowBar(false);
         TestUtils.setField(progressBar, "update", true);
         expected = " 51%  5100B/10000B at 5.2B/s - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + StringUtility.spaces(18)), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(17) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowBar(true);
         
         progressBar.setShowRatio(false);
         TestUtils.setField(progressBar, "update", true);
         expected = " 51% [==========>         ] at 5.2B/s - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + StringUtility.spaces(0)), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowRatio(true);
         
         progressBar.setShowSpeed(false);
         TestUtils.setField(progressBar, "update", true);
         expected = " 51% [==========>         ]  5100B/10000B - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + StringUtility.spaces(0)), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowSpeed(true);
         
         progressBar.setShowTimeRemaining(false);
         TestUtils.setField(progressBar, "update", true);
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s";
-        Assert.assertEquals(('\r' + expected + StringUtility.spaces(6)), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(5) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowTimeRemaining(true);
         
         TestUtils.setField(progressBar, "update", true);
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + StringUtility.spaces(0)), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
         
         progressBar.setShowSpeed(false);
         progressBar.setShowTimeRemaining(false);
         TestUtils.setField(progressBar, "update", true);
         expected = " 51% [==========>         ]  5100B/10000B";
-        Assert.assertEquals(('\r' + expected + StringUtility.spaces(26)), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(25) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowSpeed(true);
         progressBar.setShowTimeRemaining(true);
         
@@ -388,7 +389,7 @@ public class ConsoleProgressBarTest {
         progressBar.setShowTimeRemaining(false);
         TestUtils.setField(progressBar, "update", true);
         expected = " 51%";
-        Assert.assertEquals(('\r' + expected + StringUtility.spaces(37)), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(36) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowBar(true);
         progressBar.setShowRatio(true);
         progressBar.setShowSpeed(true);
@@ -399,14 +400,14 @@ public class ConsoleProgressBarTest {
         progressBar.setShowTimeRemaining(false);
         TestUtils.setField(progressBar, "update", true);
         expected = "[==========>         ]  5100B/10000B";
-        Assert.assertEquals(('\r' + expected + StringUtility.spaces(0)), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowPercentage(true);
         progressBar.setShowSpeed(true);
         progressBar.setShowTimeRemaining(true);
         
         TestUtils.setField(progressBar, "update", true);
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + StringUtility.spaces(0)), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
     }
     
     /**
@@ -646,10 +647,11 @@ public class ConsoleProgressBarTest {
                 .stream()
                 .filter(e -> !e.isEmpty() && !StringUtility.isWhitespace(e))
                 .map(StringUtility::removeConsoleEscapeCharacters)
+                .map(StringUtility::rTrim)
                 .collect(Collectors.toList());
         Assert.assertEquals(22, lines.size());
-        Assert.assertEquals("Test Bar: ", lines.get(0));
-        Assert.assertEquals("  0% [>                   ]     0B/10000B - ETA: --:--:--", lines.get(1).replaceAll("\\s*$", ""));
+        Assert.assertEquals("Test Bar:", lines.get(0));
+        Assert.assertEquals("  0% [>                   ]     0B/10000B - ETA: --:--:--", lines.get(1));
         Assert.assertEquals("  5% [=>                  ]   512B/10000B - ETA: 00:00:0", StringUtility.rShear(lines.get(2), 1));
         Assert.assertEquals(" 10% [==>                 ]  1024B/10000B - ETA: 00:00:0", StringUtility.rShear(lines.get(3), 1));
         Assert.assertEquals(" 15% [===>                ]  1536B/10000B - ETA: 00:00:0", StringUtility.rShear(lines.get(4), 1));
@@ -711,7 +713,7 @@ public class ConsoleProgressBarTest {
         System.setOut(new PrintStream(out));
         TestUtils.setField(progressBar, "update", true);
         progressBar.print();
-        Assert.assertEquals(progressBar.getPrintable(), out.toString());
+        Assert.assertEquals(progressBar.getPrintable().replace(" ", " "), out.toString());
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).getPrintable();
         Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
         System.setOut(saveOut);
@@ -722,7 +724,7 @@ public class ConsoleProgressBarTest {
         System.setOut(new PrintStream(out));
         TestUtils.setField(progressBar, "update", false);
         progressBar.print();
-        Assert.assertEquals(progressBar.getPrintable(), out.toString());
+        Assert.assertEquals(progressBar.getPrintable().replace(" ", " "), out.toString());
         Mockito.verify(progressBar, VerificationModeFactory.times(4)).getPrintable();
         Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
         System.setOut(saveOut);
@@ -1391,8 +1393,9 @@ public class ConsoleProgressBarTest {
         Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete",
-                StringUtility.trim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll("\\s+", " "))
+                StringUtility.trim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll("\\s+", " ").replaceAll(" ", ""))
         );
+        Assert.assertFalse(out.toString().contains(" "));
         System.setOut(saveOut);
         
         //print time
@@ -1416,8 +1419,9 @@ public class ConsoleProgressBarTest {
         Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete (16h 0m 53s)",
-                StringUtility.trim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll("\\s+", " "))
+                StringUtility.trim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll("\\s+", " ").replaceAll(" ", ""))
         );
+        Assert.assertFalse(out.toString().contains(" "));
         Mockito.when(progressBar.getTotalDuration()).thenCallRealMethod();
         System.setOut(saveOut);
         
@@ -1438,8 +1442,9 @@ public class ConsoleProgressBarTest {
         Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete - Press any key to continue...",
-                StringUtility.trim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll("\\s+", " "))
+                StringUtility.trim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll("\\s+", " ").replaceAll(" ", ""))
         );
+        Assert.assertFalse(out.toString().contains(" "));
         System.setOut(saveOut);
         
         //print time and additional info
@@ -1463,8 +1468,9 @@ public class ConsoleProgressBarTest {
         Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete (16h 0m 53s) - Press any key to continue...",
-                StringUtility.trim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll("\\s+", " "))
+                StringUtility.trim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll("\\s+", " ").replaceAll(" ", ""))
         );
+        Assert.assertFalse(out.toString().contains(" "));
         Mockito.when(progressBar.getTotalDuration()).thenCallRealMethod();
         System.setOut(saveOut);
         
