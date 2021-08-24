@@ -49,7 +49,7 @@
         <big-math.version>2.1.0</big-math.version>
         
         <!-- INTERNET -->
-        <jsoup.version>1.12.1</jsoup.version>
+        <jsoup.version>1.14.2</jsoup.version>
         
         <!-- HOTKEYS -->
         <jnativehook.version>2.1.0</jnativehook.version>
