@@ -347,6 +347,23 @@ public final class TestUtils {
     }
     
     /**
+     * Gets an enum from a class.
+     *
+     * @param clazz    The class.
+     * @param enumName The name of the enum.
+     * @return The enum from the class, or null if it cannot be retrieved.
+     */
+    public static Class<?> getEnum(Class<?> clazz, String enumName) {
+        String enumPath = clazz.getName() + '$' + enumName;
+        try {
+            return Class.forName(enumPath);
+        } catch (Exception e) {
+            logger.warn("Failed to get enum: " + enumName + " for class: " + clazz.getSimpleName());
+            return null;
+        }
+    }
+    
+    /**
      * Invokes a method of an object.
      *
      * @param object     The object.

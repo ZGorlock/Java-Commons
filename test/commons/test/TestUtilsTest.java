@@ -610,6 +610,56 @@ public class TestUtilsTest {
     }
     
     /**
+     * JUnit test of getEnum.
+     *
+     * @throws Exception When there is an exception.
+     * @see TestUtils#getEnum(Class, String)
+     */
+    @Test
+    public void testGetEnum() throws Exception {
+        Class<?> retrievedEnum;
+        Object[] enumValues;
+        
+        //standard
+        
+        retrievedEnum = TestUtils.getEnum(TestClass.class, "Enum0");
+        Assert.assertNotNull(retrievedEnum);
+        enumValues = retrievedEnum.getEnumConstants();
+        Assert.assertEquals(3, enumValues.length);
+        Assert.assertEquals("PUBLIC_VALUE_1", enumValues[0].toString());
+        Assert.assertEquals("PUBLIC_VALUE_2", enumValues[1].toString());
+        Assert.assertEquals("PUBLIC_VALUE_3", enumValues[2].toString());
+        
+        retrievedEnum = TestUtils.getEnum(TestClass.class, "Enum1");
+        Assert.assertNotNull(retrievedEnum);
+        enumValues = retrievedEnum.getEnumConstants();
+        Assert.assertEquals(3, enumValues.length);
+        Assert.assertEquals("PRIVATE_VALUE_1", enumValues[0].toString());
+        Assert.assertEquals("PRIVATE_VALUE_2", enumValues[1].toString());
+        Assert.assertEquals("PRIVATE_VALUE_3", enumValues[2].toString());
+        
+        //invalid
+        
+        TestUtils.assertNoException(() ->
+                TestUtils.getEnum(TestClass.class, "MissingEnum"));
+        retrievedEnum = TestUtils.getEnum(TestClass.class, "MissingEnum");
+        Assert.assertNull(retrievedEnum);
+        
+        TestUtils.assertNoException(() ->
+                TestUtils.getEnum(TestClass.class, ""));
+        retrievedEnum = TestUtils.getEnum(TestClass.class, "");
+        Assert.assertNull(retrievedEnum);
+        
+        TestUtils.assertNoException(() ->
+                TestUtils.getEnum(TestClass.class, null));
+        retrievedEnum = TestUtils.getEnum(TestClass.class, null);
+        Assert.assertNull(retrievedEnum);
+        
+        TestUtils.assertException(NullPointerException.class, () ->
+                TestUtils.getEnum(null, "Enum0"));
+    }
+    
+    /**
      * JUnit test of invokeMethod.
      *
      * @throws Exception When there is an exception.
@@ -761,6 +811,32 @@ public class TestUtilsTest {
      * A class for testing the getting and setting of fields.
      */
     private static class TestClass {
+        
+        //Enums
+        
+        /**
+         * A private enum.
+         */
+        private enum Enum0 {
+            
+            //Values
+            
+            PUBLIC_VALUE_1,
+            PUBLIC_VALUE_2,
+            PUBLIC_VALUE_3
+        }
+        
+        /**
+         * A public enum.
+         */
+        public enum Enum1 {
+            
+            //Values
+            
+            PRIVATE_VALUE_1,
+            PRIVATE_VALUE_2,
+            PRIVATE_VALUE_3
+        }
         
         //Fields
         
