@@ -736,10 +736,6 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("Negative 23 Hours 59 Minutes 59 Seconds 999 Milliseconds", DateTimeUtility.durationToDurationString(-86399999L));
         Assert.assertEquals("Negative 1 Day", DateTimeUtility.durationToDurationString(-86400000L));
         
-        //empty
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(0L));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-0L));
-        
         //abbreviation on
         Assert.assertEquals("12 Hours 16 Minutes 3 Seconds 191 Milliseconds", DateTimeUtility.durationToDurationString(44163191L, true));
         Assert.assertEquals("11 Days 11 Hours 25 Minutes 42 Seconds 231 Milliseconds", DateTimeUtility.durationToDurationString(991542231L, true));
@@ -775,8 +771,8 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("Negative 1 Hour", DateTimeUtility.durationToDurationString(-3600000L, true));
         Assert.assertEquals("Negative 23 Hours 59 Minutes 59 Seconds 999 Milliseconds", DateTimeUtility.durationToDurationString(-86399999L, true));
         Assert.assertEquals("Negative 1 Day", DateTimeUtility.durationToDurationString(-86400000L, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(0L, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-0L, true));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(0L, true));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(-0L, true));
         
         //abbreviation off
         Assert.assertEquals("12 Hours 16 Minutes 3 Seconds 191 Milliseconds", DateTimeUtility.durationToDurationString(44163191L, false));
@@ -813,8 +809,8 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("Negative 1 Hour 0 Minutes 0 Seconds 0 Milliseconds", DateTimeUtility.durationToDurationString(-3600000L, false));
         Assert.assertEquals("Negative 23 Hours 59 Minutes 59 Seconds 999 Milliseconds", DateTimeUtility.durationToDurationString(-86399999L, false));
         Assert.assertEquals("Negative 1 Day 0 Hours 0 Minutes 0 Seconds 0 Milliseconds", DateTimeUtility.durationToDurationString(-86400000L, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(0L, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-0L, false));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(0L, false));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(-0L, false));
         
         //abbreviation on, show milliseconds on
         Assert.assertEquals("12 Hours 16 Minutes 3 Seconds 191 Milliseconds", DateTimeUtility.durationToDurationString(44163191L, true, true));
@@ -851,8 +847,8 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("Negative 1 Hour", DateTimeUtility.durationToDurationString(-3600000L, true, true));
         Assert.assertEquals("Negative 23 Hours 59 Minutes 59 Seconds 999 Milliseconds", DateTimeUtility.durationToDurationString(-86399999L, true, true));
         Assert.assertEquals("Negative 1 Day", DateTimeUtility.durationToDurationString(-86400000L, true, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(0L, true, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-0L, true, true));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(0L, true, true));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(-0L, true, true));
         
         //abbreviation on, show milliseconds off
         Assert.assertEquals("12 Hours 16 Minutes 3 Seconds", DateTimeUtility.durationToDurationString(44163191L, true, false));
@@ -860,10 +856,10 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(1542231L, true, false));
         Assert.assertEquals("25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(1542200L, true, false));
         Assert.assertEquals("9 Minutes 2 Seconds", DateTimeUtility.durationToDurationString(542877L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(1L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(10L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(100L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(999L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(1L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(10L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(100L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(999L, true, false));
         Assert.assertEquals("1 Second", DateTimeUtility.durationToDurationString(1000L, true, false));
         Assert.assertEquals("10 Seconds", DateTimeUtility.durationToDurationString(10000L, true, false));
         Assert.assertEquals("59 Seconds", DateTimeUtility.durationToDurationString(59999L, true, false));
@@ -877,10 +873,10 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("Negative 25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(-1542231L, true, false));
         Assert.assertEquals("Negative 25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(-1542200L, true, false));
         Assert.assertEquals("Negative 9 Minutes 2 Seconds", DateTimeUtility.durationToDurationString(-542877L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-1L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-10L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-100L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-999L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-1L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-10L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-100L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-999L, true, false));
         Assert.assertEquals("Negative 1 Second", DateTimeUtility.durationToDurationString(-1000L, true, false));
         Assert.assertEquals("Negative 10 Seconds", DateTimeUtility.durationToDurationString(-10000L, true, false));
         Assert.assertEquals("Negative 59 Seconds", DateTimeUtility.durationToDurationString(-59999L, true, false));
@@ -889,8 +885,8 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("Negative 1 Hour", DateTimeUtility.durationToDurationString(-3600000L, true, false));
         Assert.assertEquals("Negative 23 Hours 59 Minutes 59 Seconds", DateTimeUtility.durationToDurationString(-86399999L, true, false));
         Assert.assertEquals("Negative 1 Day", DateTimeUtility.durationToDurationString(-86400000L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(0L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-0L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(0L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-0L, true, false));
         
         //abbreviation off, show milliseconds on
         Assert.assertEquals("12 Hours 16 Minutes 3 Seconds 191 Milliseconds", DateTimeUtility.durationToDurationString(44163191L, false, true));
@@ -927,8 +923,8 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("Negative 1 Hour 0 Minutes 0 Seconds 0 Milliseconds", DateTimeUtility.durationToDurationString(-3600000L, false, true));
         Assert.assertEquals("Negative 23 Hours 59 Minutes 59 Seconds 999 Milliseconds", DateTimeUtility.durationToDurationString(-86399999L, false, true));
         Assert.assertEquals("Negative 1 Day 0 Hours 0 Minutes 0 Seconds 0 Milliseconds", DateTimeUtility.durationToDurationString(-86400000L, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(0L, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-0L, false, true));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(0L, false, true));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(-0L, false, true));
         
         //abbreviation off, show milliseconds off
         Assert.assertEquals("12 Hours 16 Minutes 3 Seconds", DateTimeUtility.durationToDurationString(44163191L, false, false));
@@ -936,10 +932,10 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(1542231L, false, false));
         Assert.assertEquals("25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(1542200L, false, false));
         Assert.assertEquals("9 Minutes 2 Seconds", DateTimeUtility.durationToDurationString(542877L, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(1L, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(10L, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(100L, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(999L, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(1L, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(10L, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(100L, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(999L, false, false));
         Assert.assertEquals("1 Second", DateTimeUtility.durationToDurationString(1000L, false, false));
         Assert.assertEquals("10 Seconds", DateTimeUtility.durationToDurationString(10000L, false, false));
         Assert.assertEquals("59 Seconds", DateTimeUtility.durationToDurationString(59999L, false, false));
@@ -953,10 +949,10 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("Negative 25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(-1542231L, false, false));
         Assert.assertEquals("Negative 25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(-1542200L, false, false));
         Assert.assertEquals("Negative 9 Minutes 2 Seconds", DateTimeUtility.durationToDurationString(-542877L, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-1L, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-10L, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-100L, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-999L, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-1L, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-10L, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-100L, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-999L, false, false));
         Assert.assertEquals("Negative 1 Second", DateTimeUtility.durationToDurationString(-1000L, false, false));
         Assert.assertEquals("Negative 10 Seconds", DateTimeUtility.durationToDurationString(-10000L, false, false));
         Assert.assertEquals("Negative 59 Seconds", DateTimeUtility.durationToDurationString(-59999L, false, false));
@@ -965,8 +961,8 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("Negative 1 Hour 0 Minutes 0 Seconds", DateTimeUtility.durationToDurationString(-3600000L, false, false));
         Assert.assertEquals("Negative 23 Hours 59 Minutes 59 Seconds", DateTimeUtility.durationToDurationString(-86399999L, false, false));
         Assert.assertEquals("Negative 1 Day 0 Hours 0 Minutes 0 Seconds", DateTimeUtility.durationToDurationString(-86400000L, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(0L, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-0L, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(0L, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-0L, false, false));
         
         //abbreviation on, show milliseconds on, abbreviate units on
         Assert.assertEquals("12h 16m 3s 191ms", DateTimeUtility.durationToDurationString(44163191L, true, true, true));
@@ -1003,8 +999,8 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("- 1h", DateTimeUtility.durationToDurationString(-3600000L, true, true, true));
         Assert.assertEquals("- 23h 59m 59s 999ms", DateTimeUtility.durationToDurationString(-86399999L, true, true, true));
         Assert.assertEquals("- 1d", DateTimeUtility.durationToDurationString(-86400000L, true, true, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(0L, true, true, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-0L, true, true, true));
+        Assert.assertEquals("0ms", DateTimeUtility.durationToDurationString(0L, true, true, true));
+        Assert.assertEquals("0ms", DateTimeUtility.durationToDurationString(-0L, true, true, true));
         
         //abbreviation on, show milliseconds on, abbreviate units off
         Assert.assertEquals("12 Hours 16 Minutes 3 Seconds 191 Milliseconds", DateTimeUtility.durationToDurationString(44163191L, true, true, false));
@@ -1041,8 +1037,8 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("Negative 1 Hour", DateTimeUtility.durationToDurationString(-3600000L, true, true, false));
         Assert.assertEquals("Negative 23 Hours 59 Minutes 59 Seconds 999 Milliseconds", DateTimeUtility.durationToDurationString(-86399999L, true, true, false));
         Assert.assertEquals("Negative 1 Day", DateTimeUtility.durationToDurationString(-86400000L, true, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(0L, true, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-0L, true, true, false));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(0L, true, true, false));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(-0L, true, true, false));
         
         //abbreviation on, show milliseconds off, abbreviate units on
         Assert.assertEquals("12h 16m 3s", DateTimeUtility.durationToDurationString(44163191L, true, false, true));
@@ -1050,10 +1046,10 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("25m 42s", DateTimeUtility.durationToDurationString(1542231L, true, false, true));
         Assert.assertEquals("25m 42s", DateTimeUtility.durationToDurationString(1542200L, true, false, true));
         Assert.assertEquals("9m 2s", DateTimeUtility.durationToDurationString(542877L, true, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(1L, true, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(10L, true, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(100L, true, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(999L, true, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(1L, true, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(10L, true, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(100L, true, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(999L, true, false, true));
         Assert.assertEquals("1s", DateTimeUtility.durationToDurationString(1000L, true, false, true));
         Assert.assertEquals("10s", DateTimeUtility.durationToDurationString(10000L, true, false, true));
         Assert.assertEquals("59s", DateTimeUtility.durationToDurationString(59999L, true, false, true));
@@ -1067,10 +1063,10 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("- 25m 42s", DateTimeUtility.durationToDurationString(-1542231L, true, false, true));
         Assert.assertEquals("- 25m 42s", DateTimeUtility.durationToDurationString(-1542200L, true, false, true));
         Assert.assertEquals("- 9m 2s", DateTimeUtility.durationToDurationString(-542877L, true, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-1L, true, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-10L, true, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-100L, true, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-999L, true, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(-1L, true, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(-10L, true, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(-100L, true, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(-999L, true, false, true));
         Assert.assertEquals("- 1s", DateTimeUtility.durationToDurationString(-1000L, true, false, true));
         Assert.assertEquals("- 10s", DateTimeUtility.durationToDurationString(-10000L, true, false, true));
         Assert.assertEquals("- 59s", DateTimeUtility.durationToDurationString(-59999L, true, false, true));
@@ -1079,8 +1075,8 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("- 1h", DateTimeUtility.durationToDurationString(-3600000L, true, false, true));
         Assert.assertEquals("- 23h 59m 59s", DateTimeUtility.durationToDurationString(-86399999L, true, false, true));
         Assert.assertEquals("- 1d", DateTimeUtility.durationToDurationString(-86400000L, true, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(0L, true, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-0L, true, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(0L, true, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(-0L, true, false, true));
         
         //abbreviation on, show milliseconds off, abbreviate units off
         Assert.assertEquals("12 Hours 16 Minutes 3 Seconds", DateTimeUtility.durationToDurationString(44163191L, true, false));
@@ -1088,10 +1084,10 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(1542231L, true, false));
         Assert.assertEquals("25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(1542200L, true, false));
         Assert.assertEquals("9 Minutes 2 Seconds", DateTimeUtility.durationToDurationString(542877L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(1L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(10L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(100L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(999L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(1L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(10L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(100L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(999L, true, false));
         Assert.assertEquals("1 Second", DateTimeUtility.durationToDurationString(1000L, true, false));
         Assert.assertEquals("10 Seconds", DateTimeUtility.durationToDurationString(10000L, true, false));
         Assert.assertEquals("59 Seconds", DateTimeUtility.durationToDurationString(59999L, true, false));
@@ -1105,10 +1101,10 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("Negative 25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(-1542231L, true, false));
         Assert.assertEquals("Negative 25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(-1542200L, true, false));
         Assert.assertEquals("Negative 9 Minutes 2 Seconds", DateTimeUtility.durationToDurationString(-542877L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-1L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-10L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-100L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-999L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-1L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-10L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-100L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-999L, true, false));
         Assert.assertEquals("Negative 1 Second", DateTimeUtility.durationToDurationString(-1000L, true, false));
         Assert.assertEquals("Negative 10 Seconds", DateTimeUtility.durationToDurationString(-10000L, true, false));
         Assert.assertEquals("Negative 59 Seconds", DateTimeUtility.durationToDurationString(-59999L, true, false));
@@ -1117,8 +1113,8 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("Negative 1 Hour", DateTimeUtility.durationToDurationString(-3600000L, true, false));
         Assert.assertEquals("Negative 23 Hours 59 Minutes 59 Seconds", DateTimeUtility.durationToDurationString(-86399999L, true, false));
         Assert.assertEquals("Negative 1 Day", DateTimeUtility.durationToDurationString(-86400000L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(0L, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-0L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(0L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-0L, true, false));
         
         //abbreviation off, show milliseconds on, abbreviate units on
         Assert.assertEquals("12h 16m 3s 191ms", DateTimeUtility.durationToDurationString(44163191L, false, true, true));
@@ -1155,8 +1151,8 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("- 1h 0m 0s 0ms", DateTimeUtility.durationToDurationString(-3600000L, false, true, true));
         Assert.assertEquals("- 23h 59m 59s 999ms", DateTimeUtility.durationToDurationString(-86399999L, false, true, true));
         Assert.assertEquals("- 1d 0h 0m 0s 0ms", DateTimeUtility.durationToDurationString(-86400000L, false, true, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(0L, false, true, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-0L, false, true, true));
+        Assert.assertEquals("0ms", DateTimeUtility.durationToDurationString(0L, false, true, true));
+        Assert.assertEquals("0ms", DateTimeUtility.durationToDurationString(-0L, false, true, true));
         
         //abbreviation off, show milliseconds on, abbreviate units off
         Assert.assertEquals("12 Hours 16 Minutes 3 Seconds 191 Milliseconds", DateTimeUtility.durationToDurationString(44163191L, false, true, false));
@@ -1193,8 +1189,8 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("Negative 1 Hour 0 Minutes 0 Seconds 0 Milliseconds", DateTimeUtility.durationToDurationString(-3600000L, false, true, false));
         Assert.assertEquals("Negative 23 Hours 59 Minutes 59 Seconds 999 Milliseconds", DateTimeUtility.durationToDurationString(-86399999L, false, true, false));
         Assert.assertEquals("Negative 1 Day 0 Hours 0 Minutes 0 Seconds 0 Milliseconds", DateTimeUtility.durationToDurationString(-86400000L, false, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(0L, false, true, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-0L, false, true, false));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(0L, false, true, false));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(-0L, false, true, false));
         
         //abbreviation off, show milliseconds off, abbreviate units on
         Assert.assertEquals("12h 16m 3s", DateTimeUtility.durationToDurationString(44163191L, false, false, true));
@@ -1202,10 +1198,10 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("25m 42s", DateTimeUtility.durationToDurationString(1542231L, false, false, true));
         Assert.assertEquals("25m 42s", DateTimeUtility.durationToDurationString(1542200L, false, false, true));
         Assert.assertEquals("9m 2s", DateTimeUtility.durationToDurationString(542877L, false, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(1L, false, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(10L, false, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(100L, false, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(999L, false, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(1L, false, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(10L, false, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(100L, false, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(999L, false, false, true));
         Assert.assertEquals("1s", DateTimeUtility.durationToDurationString(1000L, false, false, true));
         Assert.assertEquals("10s", DateTimeUtility.durationToDurationString(10000L, false, false, true));
         Assert.assertEquals("59s", DateTimeUtility.durationToDurationString(59999L, false, false, true));
@@ -1219,10 +1215,10 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("- 25m 42s", DateTimeUtility.durationToDurationString(-1542231L, false, false, true));
         Assert.assertEquals("- 25m 42s", DateTimeUtility.durationToDurationString(-1542200L, false, false, true));
         Assert.assertEquals("- 9m 2s", DateTimeUtility.durationToDurationString(-542877L, false, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-1L, false, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-10L, false, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-100L, false, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-999L, false, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(-1L, false, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(-10L, false, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(-100L, false, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(-999L, false, false, true));
         Assert.assertEquals("- 1s", DateTimeUtility.durationToDurationString(-1000L, false, false, true));
         Assert.assertEquals("- 10s", DateTimeUtility.durationToDurationString(-10000L, false, false, true));
         Assert.assertEquals("- 59s", DateTimeUtility.durationToDurationString(-59999L, false, false, true));
@@ -1231,8 +1227,8 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("- 1h 0m 0s", DateTimeUtility.durationToDurationString(-3600000L, false, false, true));
         Assert.assertEquals("- 23h 59m 59s", DateTimeUtility.durationToDurationString(-86399999L, false, false, true));
         Assert.assertEquals("- 1d 0h 0m 0s", DateTimeUtility.durationToDurationString(-86400000L, false, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(0L, false, false, true));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-0L, false, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(0L, false, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(-0L, false, false, true));
         
         //abbreviation off, show milliseconds off, abbreviate units off
         Assert.assertEquals("12 Hours 16 Minutes 3 Seconds", DateTimeUtility.durationToDurationString(44163191L, false, false, false));
@@ -1240,10 +1236,10 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(1542231L, false, false, false));
         Assert.assertEquals("25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(1542200L, false, false, false));
         Assert.assertEquals("9 Minutes 2 Seconds", DateTimeUtility.durationToDurationString(542877L, false, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(1L, false, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(10L, false, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(100L, false, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(999L, false, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(1L, false, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(10L, false, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(100L, false, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(999L, false, false, false));
         Assert.assertEquals("1 Second", DateTimeUtility.durationToDurationString(1000L, false, false, false));
         Assert.assertEquals("10 Seconds", DateTimeUtility.durationToDurationString(10000L, false, false, false));
         Assert.assertEquals("59 Seconds", DateTimeUtility.durationToDurationString(59999L, false, false, false));
@@ -1257,10 +1253,10 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("Negative 25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(-1542231L, false, false, false));
         Assert.assertEquals("Negative 25 Minutes 42 Seconds", DateTimeUtility.durationToDurationString(-1542200L, false, false, false));
         Assert.assertEquals("Negative 9 Minutes 2 Seconds", DateTimeUtility.durationToDurationString(-542877L, false, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-1L, false, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-10L, false, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-100L, false, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-999L, false, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-1L, false, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-10L, false, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-100L, false, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-999L, false, false, false));
         Assert.assertEquals("Negative 1 Second", DateTimeUtility.durationToDurationString(-1000L, false, false, false));
         Assert.assertEquals("Negative 10 Seconds", DateTimeUtility.durationToDurationString(-10000L, false, false, false));
         Assert.assertEquals("Negative 59 Seconds", DateTimeUtility.durationToDurationString(-59999L, false, false, false));
@@ -1269,8 +1265,70 @@ public class DateTimeUtilityTest {
         Assert.assertEquals("Negative 1 Hour 0 Minutes 0 Seconds", DateTimeUtility.durationToDurationString(-3600000L, false, false, false));
         Assert.assertEquals("Negative 23 Hours 59 Minutes 59 Seconds", DateTimeUtility.durationToDurationString(-86399999L, false, false, false));
         Assert.assertEquals("Negative 1 Day 0 Hours 0 Minutes 0 Seconds", DateTimeUtility.durationToDurationString(-86400000L, false, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(0L, false, false, false));
-        Assert.assertEquals("", DateTimeUtility.durationToDurationString(-0L, false, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(0L, false, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-0L, false, false, false));
+        
+        //empty
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(0L));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(-0L));
+        Assert.assertEquals("18 Milliseconds", DateTimeUtility.durationToDurationString(18L));
+        Assert.assertEquals("Negative 18 Milliseconds", DateTimeUtility.durationToDurationString(-18L));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(0L, true));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(-0L, true));
+        Assert.assertEquals("18 Milliseconds", DateTimeUtility.durationToDurationString(18L, true));
+        Assert.assertEquals("Negative 18 Milliseconds", DateTimeUtility.durationToDurationString(-18L, true));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(0L, false));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(-0L, false));
+        Assert.assertEquals("18 Milliseconds", DateTimeUtility.durationToDurationString(18L, false));
+        Assert.assertEquals("Negative 18 Milliseconds", DateTimeUtility.durationToDurationString(-18L, false));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(0L, true, true));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(-0L, true, true));
+        Assert.assertEquals("18 Milliseconds", DateTimeUtility.durationToDurationString(18L, true, true));
+        Assert.assertEquals("Negative 18 Milliseconds", DateTimeUtility.durationToDurationString(-18L, true, true));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(0L, false, true));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(-0L, false, true));
+        Assert.assertEquals("18 Milliseconds", DateTimeUtility.durationToDurationString(18L, false, true));
+        Assert.assertEquals("Negative 18 Milliseconds", DateTimeUtility.durationToDurationString(-18L, false, true));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(0L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-0L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(18L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-18L, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(0L, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-0L, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(18L, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-18L, false, false));
+        Assert.assertEquals("0ms", DateTimeUtility.durationToDurationString(0L, true, true, true));
+        Assert.assertEquals("0ms", DateTimeUtility.durationToDurationString(-0L, true, true, true));
+        Assert.assertEquals("18ms", DateTimeUtility.durationToDurationString(18L, true, true, true));
+        Assert.assertEquals("- 18ms", DateTimeUtility.durationToDurationString(-18L, true, true, true));
+        Assert.assertEquals("0ms", DateTimeUtility.durationToDurationString(0L, false, true, true));
+        Assert.assertEquals("0ms", DateTimeUtility.durationToDurationString(-0L, false, true, true));
+        Assert.assertEquals("18ms", DateTimeUtility.durationToDurationString(18L, false, true, true));
+        Assert.assertEquals("- 18ms", DateTimeUtility.durationToDurationString(-18L, false, true, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(0L, true, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(-0L, true, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(18L, true, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(-18L, true, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(0L, false, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(-0L, false, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(18L, false, false, true));
+        Assert.assertEquals("0s", DateTimeUtility.durationToDurationString(-18L, false, false, true));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(0L, true, true, false));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(-0L, true, true, false));
+        Assert.assertEquals("18 Milliseconds", DateTimeUtility.durationToDurationString(18L, true, true, false));
+        Assert.assertEquals("Negative 18 Milliseconds", DateTimeUtility.durationToDurationString(-18L, true, true, false));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(0L, false, true, false));
+        Assert.assertEquals("0 Milliseconds", DateTimeUtility.durationToDurationString(-0L, false, true, false));
+        Assert.assertEquals("18 Milliseconds", DateTimeUtility.durationToDurationString(18L, false, true, false));
+        Assert.assertEquals("Negative 18 Milliseconds", DateTimeUtility.durationToDurationString(-18L, false, true, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(0L, true, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-0L, true, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(18L, true, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-18L, true, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(0L, false, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-0L, false, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(18L, false, false, false));
+        Assert.assertEquals("0 Seconds", DateTimeUtility.durationToDurationString(-18L, false, false, false));
     }
     
     /**
