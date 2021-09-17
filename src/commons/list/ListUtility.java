@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import commons.math.BoundUtility;
@@ -58,7 +59,7 @@ public final class ListUtility {
     }
     
     /**
-     * Creates a sub list from the list.
+     * Creates a sub list from a list.
      *
      * @param list The list.
      * @param from The index to start the sub list at.
@@ -76,7 +77,7 @@ public final class ListUtility {
     }
     
     /**
-     * Creates a sub list from the list.
+     * Creates a sub list from a list.
      *
      * @param list The list.
      * @param from The index to start the sub list at.
@@ -127,13 +128,27 @@ public final class ListUtility {
     }
     
     /**
+     * Reverses a list.
+     *
+     * @param list The list.
+     * @param <T>  The type of the list.
+     * @return The reversed list.
+     */
+    public static <T> List<T> reverse(List<T> list) {
+        List<T> reversed = clone(list);
+        Collections.reverse(reversed);
+        return reversed;
+    }
+    
+    /**
      * Determines if any element in a list is null.
      *
      * @param list The list.
+     * @param <T>  The type of the list.
      * @return Whether or not any element in the list is null.
      */
-    public static boolean anyNull(List<Object> list) {
-        for (Object entry : list) {
+    public static <T> boolean anyNull(List<T> list) {
+        for (T entry : list) {
             if (entry == null) {
                 return true;
             }
@@ -142,14 +157,27 @@ public final class ListUtility {
     }
     
     /**
-     * Determines if any element in the list is null.
+     * Determines if any element in a list is null.
      *
      * @param list The list.
+     * @param <T>  The type of the list.
      * @return Whether or not any element in the list is null.
      * @see #anyNull(List)
      */
-    public static boolean anyNull(Object... list) {
+    @SuppressWarnings("unchecked")
+    public static <T> boolean anyNull(T... list) {
         return anyNull(Arrays.asList(list));
+    }
+    
+    /**
+     * Removes null elements from a list.
+     *
+     * @param list The list.
+     * @param <T>  The type of the list.
+     * @return The list with null elements removed.
+     */
+    public static <T> List<T> removeNull(List<T> list) {
+        return list.stream().filter(Objects::nonNull).collect(Collectors.toList());
     }
     
     /**
@@ -207,7 +235,7 @@ public final class ListUtility {
     }
     
     /**
-     * Copies a list to the end of itself a number of times making a list of n times the original length.
+     * Copies a list to the end of itself a number of times making a list n times the original length.
      *
      * @param list  The list to duplicate.
      * @param times The number of copies of the list to add.
@@ -230,7 +258,7 @@ public final class ListUtility {
     }
     
     /**
-     * Copies a list to the end of itself making a list of double size.
+     * Copies a list to the end of itself making a list double the original length.
      *
      * @param list The list to duplicate.
      * @param <T>  The type of the list.

@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
@@ -62,7 +63,7 @@ public final class ArrayUtility {
     }
     
     /**
-     * Creates a sub array from the array.
+     * Creates a sub array from an array.
      *
      * @param array The array.
      * @param from  The index to start the sub array at.
@@ -80,7 +81,7 @@ public final class ArrayUtility {
     }
     
     /**
-     * Creates a sub array from the array.
+     * Creates a sub array from an array.
      *
      * @param array The array.
      * @param from  The index to start the sub array at.
@@ -132,6 +133,23 @@ public final class ArrayUtility {
     }
     
     /**
+     * Reverses an array.
+     *
+     * @param array The array.
+     * @param <T>   The type of the array.
+     * @return The reversed array.
+     */
+    public static <T> T[] reverse(T[] array) {
+        T[] reversed = array.clone();
+        for (int i = 0; i < array.length / 2; i++) {
+            T tmp = reversed[i];
+            reversed[i] = reversed[reversed.length - i - 1];
+            reversed[reversed.length - i - 1] = tmp;
+        }
+        return reversed;
+    }
+    
+    /**
      * Determines if any element in an array is null.
      *
      * @param array The array.
@@ -145,6 +163,18 @@ public final class ArrayUtility {
             }
         }
         return false;
+    }
+    
+    /**
+     * Removes null elements from an array.
+     *
+     * @param array The list.
+     * @param <T>   The type of the array.
+     * @return The array with null elements removed.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] removeNull(T[] array) {
+        return (T[]) Arrays.stream(array).filter(Objects::nonNull).toArray();
     }
     
     /**
@@ -204,7 +234,7 @@ public final class ArrayUtility {
     }
     
     /**
-     * Copies an array to the end of itself a number of times making an array of n times the original length.
+     * Copies an array to the end of itself a number of times making an array n times the original length.
      *
      * @param array The array to duplicate.
      * @param times The number of copies of the array to add.
@@ -229,7 +259,7 @@ public final class ArrayUtility {
     }
     
     /**
-     * Copies an array to the end of itself making an array of double size.
+     * Copies an array to the end of itself making an array double the original length.
      *
      * @param array The array to duplicate.
      * @param type  The type of the array.

@@ -443,6 +443,65 @@ public class ListUtilityTest {
     }
     
     /**
+     * JUnit test of reverse.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#reverse(List)
+     */
+    @Test
+    public void testReverse() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<Boolean> booleanReversedList = ListUtility.reverse(booleanList);
+        Assert.assertArrayEquals(new Boolean[] {false, true, false, false, true}, booleanReversedList.toArray());
+        Assert.assertNotEquals(booleanList, booleanReversedList);
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        List<Integer> integerReversedList = ListUtility.reverse(integerList);
+        Assert.assertArrayEquals(new Integer[] {6, -9, -4, 5, 48, 312, 15}, integerReversedList.toArray());
+        Assert.assertNotEquals(integerList, integerReversedList);
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        List<Float> floatList = ListUtility.toList(floatArray);
+        List<Float> floatReversedList = ListUtility.reverse(floatList);
+        Assert.assertArrayEquals(new Float[] {19776.4f, 6.99f, -9.7f, -4.006f, 5.45f, 48.0f, 312.91f, 15.1f}, floatReversedList.toArray());
+        Assert.assertNotEquals(floatList, floatReversedList);
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<Double> doubleReversedList = ListUtility.reverse(doubleList);
+        Assert.assertArrayEquals(new Double[] {6.99546101d, -9.70487745d, -4.006005001d, 5.457894511d, 48.00000015d, 312.9113874d, 15.104564d}, doubleReversedList.toArray());
+        Assert.assertNotEquals(doubleList, doubleReversedList);
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        List<Long> longList = ListUtility.toList(longArray);
+        List<Long> longReversedList = ListUtility.reverse(longList);
+        Assert.assertArrayEquals(new Long[] {699546101L, -970487745L, -4006005001L, 5457894511L, 4800000015L, 3129113874L, 15104564L}, longReversedList.toArray());
+        Assert.assertNotEquals(longList, longReversedList);
+        
+        //object
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> objectReversedList = ListUtility.reverse(objectList);
+        Assert.assertArrayEquals(new Object[] {objectArray[4], objectArray[3], objectArray[2], 54, ""}, objectReversedList.toArray());
+        Assert.assertNotEquals(objectList, objectReversedList);
+        
+        //invalid
+        
+        List<Object> emptyReversedList = ListUtility.reverse(Collections.emptyList());
+        Assert.assertArrayEquals(new Object[] {}, emptyReversedList.toArray());
+        
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.reverse(null));
+    }
+    
+    /**
      * JUnit test of anyNull.
      *
      * @throws Exception When there is an exception.
@@ -549,6 +608,56 @@ public class ListUtilityTest {
         //noinspection ResultOfMethodCallIgnored
         TestUtils.assertException(NullPointerException.class, () ->
                 ListUtility.anyNull((List<Object>) null));
+    }
+    
+    /**
+     * JUnit test of removeNull.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#removeNull(List)
+     */
+    @SuppressWarnings("WrapperTypeMayBePrimitive")
+    @Test
+    public void testRemoveNull() throws Exception {
+        Boolean a = true;
+        Boolean b = null;
+        Integer c = 5;
+        Integer d = null;
+        Float e = 3.6f;
+        Float f = null;
+        Double g = 48.56423004d;
+        Double h = null;
+        Long i = 1579843046840984L;
+        Long j = null;
+        String k = "something";
+        String l = null;
+        Object m = new Object();
+        Object n = null;
+        List<Object> list;
+        Object[] array;
+        
+        //all
+        array = new Object[] {a, b, c, d, e, f, g, h, i, j, k, l, m, n};
+        list = ListUtility.toList(array);
+        Assert.assertArrayEquals(new Object[] {a, c, e, g, i, k, m}, ListUtility.removeNull(list).toArray());
+        
+        //all not null
+        array = new Object[] {a, c, e, g, i, k, m};
+        list = ListUtility.toList(array);
+        Assert.assertArrayEquals(new Object[] {a, c, e, g, i, k, m}, ListUtility.removeNull(list).toArray());
+        
+        //all null
+        array = new Object[] {b, d, f, h, j, l, n};
+        list = ListUtility.toList(array);
+        Assert.assertArrayEquals(new Object[] {}, ListUtility.removeNull(list).toArray());
+        
+        //none
+        list = Collections.emptyList();
+        Assert.assertArrayEquals(new Object[] {}, ListUtility.removeNull(list).toArray());
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.removeNull(null));
     }
     
     /**
