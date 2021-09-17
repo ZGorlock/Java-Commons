@@ -98,7 +98,6 @@ public class NumberUtilityTest {
      * JUnit test of isEven.
      *
      * @throws Exception When there is an exception.
-     * @see NumberUtility#isEven(int)
      * @see NumberUtility#isEven(long)
      */
     @Test
@@ -134,7 +133,6 @@ public class NumberUtilityTest {
      * JUnit test of isOdd.
      *
      * @throws Exception When there is an exception.
-     * @see NumberUtility#isOdd(int)
      * @see NumberUtility#isOdd(long)
      */
     @Test
@@ -199,6 +197,45 @@ public class NumberUtilityTest {
         Assert.assertFalse(NumberUtility.isNumberChar('~'));
         Assert.assertFalse(NumberUtility.isNumberChar('+'));
         Assert.assertFalse(NumberUtility.isNumberChar('='));
+    }
+    
+    /**
+     * JUnit test of length.
+     *
+     * @throws Exception When there is an exception.
+     * @see NumberUtility#length(long)
+     */
+    @Test
+    public void testLength() throws Exception {
+        //int
+        Assert.assertEquals(1, NumberUtility.length(0));
+        Assert.assertEquals(1, NumberUtility.length(2));
+        Assert.assertEquals(1, NumberUtility.length(3));
+        Assert.assertEquals(1, NumberUtility.length(7));
+        Assert.assertEquals(2, NumberUtility.length(12));
+        Assert.assertEquals(2, NumberUtility.length(19));
+        Assert.assertEquals(7, NumberUtility.length(2880641));
+        Assert.assertEquals(7, NumberUtility.length(2880642));
+        Assert.assertEquals(9, NumberUtility.length(975405942));
+        Assert.assertEquals(1, NumberUtility.length(-1));
+        Assert.assertEquals(1, NumberUtility.length(-2));
+        Assert.assertEquals(6, NumberUtility.length(-456450));
+        Assert.assertEquals(6, NumberUtility.length(-456459));
+        Assert.assertEquals(9, NumberUtility.length(-975405942));
+        
+        //long
+        Assert.assertEquals(14, NumberUtility.length(99000000000001L));
+        Assert.assertEquals(14, NumberUtility.length(99000000000002L));
+        Assert.assertEquals(15, NumberUtility.length(564842130610265L));
+        Assert.assertEquals(15, NumberUtility.length(564842130610260L));
+        Assert.assertEquals(18, NumberUtility.length(789874653120632157L));
+        Assert.assertEquals(18, NumberUtility.length(789874653120632158L));
+        Assert.assertEquals(19, NumberUtility.length(4168018971564168061L));
+        Assert.assertEquals(14, NumberUtility.length(-99000000000001L));
+        Assert.assertEquals(14, NumberUtility.length(-99000000000002L));
+        Assert.assertEquals(16, NumberUtility.length(-8984567098465654L));
+        Assert.assertEquals(16, NumberUtility.length(-8984567098465659L));
+        Assert.assertEquals(19, NumberUtility.length(-4168018971564168061L));
     }
     
     /**

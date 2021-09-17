@@ -46,28 +46,8 @@ public class NumberUtility {
      * @param num The number.
      * @return Whether the number is even or not.
      */
-    public static boolean isEven(int num) {
-        return num % 2 == 0;
-    }
-    
-    /**
-     * Determines if a number is even.
-     *
-     * @param num The number.
-     * @return Whether the number is even or not.
-     */
     public static boolean isEven(long num) {
-        return num % 2 == 0;
-    }
-    
-    /**
-     * Determines if a number is odd.
-     *
-     * @param num The number.
-     * @return Whether the number is odd or not.
-     */
-    public static boolean isOdd(int num) {
-        return !isEven(num);
+        return (num % 2) == 0;
     }
     
     /**
@@ -88,6 +68,16 @@ public class NumberUtility {
      */
     public static boolean isNumberChar(char c) {
         return ((c >= '0') && (c <= '9')) || (c == '.') || (c == '-');
+    }
+    
+    /**
+     * Returns the number of digits in a number.
+     *
+     * @param num The number.
+     * @return The number of digits in the number.
+     */
+    public static int length(long num) {
+        return String.valueOf(num).replace("-", "").length();
     }
     
     /**
