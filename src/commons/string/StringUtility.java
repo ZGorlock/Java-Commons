@@ -91,7 +91,7 @@ public final class StringUtility {
      * @param str   The string to tokenize.
      * @param delim The regex delimiter to separate tokens by.
      * @param hard  Whether or not to include empty tokens.
-     * @return A list of all the tokens of the passed string.
+     * @return The list of all the tokens from the passed string.
      */
     public static List<String> tokenize(String str, String delim, boolean hard) {
         String[] lines = str.split(delim, (hard ? -1 : 0));
@@ -103,7 +103,7 @@ public final class StringUtility {
      *
      * @param str   The string to tokenize.
      * @param delim The regex delimiter to separate tokens by.
-     * @return A list of all the tokens of the passed string.
+     * @return The list of all the tokens from the passed string.
      * @see #tokenize(String, String, boolean)
      */
     public static List<String> tokenize(String str, String delim) {
@@ -114,7 +114,7 @@ public final class StringUtility {
      * Tokenizes a passed string into its tokens and returns a list of those tokens.
      *
      * @param str The string to tokenize.
-     * @return A list of all the tokens of the passed string.
+     * @return The list of all the tokens from the passed string.
      * @see #tokenize(String, String)
      */
     public static List<String> tokenize(String str) {
@@ -122,11 +122,22 @@ public final class StringUtility {
     }
     
     /**
+     * Tokenizes a string into a list of tokens of a certain length.
+     *
+     * @param str    The string to tokenize.
+     * @param length The length of the tokens.
+     * @return The list of all the tokens from the passed string.
+     */
+    public static List<String> tokenize(String str, int length) {
+        return Arrays.asList(str.split("(?<=\\G.{" + length + "})"));
+    }
+    
+    /**
      * Detokenizes a passed list of tokens back into a string.
      *
      * @param tokens The list of tokens to detokenize.
      * @param delim  The delimiter to insert between tokens.
-     * @return A string composed of the tokens in the passed list.
+     * @return The string composed of the tokens in the passed list.
      */
     public static String detokenize(List<String> tokens, String delim) {
         StringBuilder str = new StringBuilder();
@@ -143,7 +154,7 @@ public final class StringUtility {
      * Detokenizes a passed list of tokens back into a string.
      *
      * @param tokens The list of tokens to detokenize.
-     * @return A string composed of the tokens in the passed list.
+     * @return The string composed of the tokens in the passed list.
      * @see #detokenize(List, String)
      */
     public static String detokenize(List<String> tokens) {
@@ -154,7 +165,7 @@ public final class StringUtility {
      * Splits a passed string by line separators and returns a list of lines.
      *
      * @param str The string to split.
-     * @return A list of the lines in the passed string.
+     * @return The list of the lines in the passed string.
      * @see #tokenize(String, String, boolean)
      */
     public static List<String> splitLines(String str) {
@@ -165,7 +176,7 @@ public final class StringUtility {
      * Unsplits a passed list of lines with line separators and returns a string.
      *
      * @param lines The list of lines to unsplit.
-     * @return A string containing the lines in the passed list.
+     * @return The string containing the lines in the passed list.
      * @see #detokenize(List, String)
      */
     public static String unsplitLines(List<String> lines) {
@@ -176,7 +187,7 @@ public final class StringUtility {
      * Tokenizes a passed string into its a list of arguments delimited either by spaces or quotes.
      *
      * @param str The string to tokenize.
-     * @return A list of all the args from the passed string.
+     * @return The list of all the args from the passed string.
      */
     public static List<String> tokenizeArgs(String str) {
         List<String> args = new ArrayList<>();
@@ -209,6 +220,16 @@ public final class StringUtility {
         }
         
         return args;
+    }
+    
+    /**
+     * Reverses a string.
+     *
+     * @param str The string.
+     * @return The reversed string.
+     */
+    public static String reverse(String str) {
+        return new StringBuilder(str).reverse().toString();
     }
     
     /**

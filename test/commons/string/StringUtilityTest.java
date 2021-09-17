@@ -162,6 +162,7 @@ public class StringUtilityTest {
      * @see StringUtility#tokenize(String, String, boolean)
      * @see StringUtility#tokenize(String, String)
      * @see StringUtility#tokenize(String)
+     * @see StringUtility#tokenize(String, int)
      */
     @Test
     public void testTokenize() throws Exception {
@@ -231,6 +232,41 @@ public class StringUtilityTest {
         Assert.assertEquals("This is another string", tokens.get(2));
         Assert.assertEquals("And another", tokens.get(3));
         Assert.assertEquals("", tokens.get(4));
+        
+        //length
+        
+        tokens = StringUtility.tokenize("This is a string,This is another string,And another", 8);
+        Assert.assertEquals(7, tokens.size());
+        Assert.assertEquals("This is ", tokens.get(0));
+        Assert.assertEquals("a string", tokens.get(1));
+        Assert.assertEquals(",This is", tokens.get(2));
+        Assert.assertEquals(" another", tokens.get(3));
+        Assert.assertEquals(" string,", tokens.get(4));
+        Assert.assertEquals("And anot", tokens.get(5));
+        Assert.assertEquals("her", tokens.get(6));
+        
+        tokens = StringUtility.tokenize("This is a string|This is another string|And another", 12);
+        Assert.assertEquals(5, tokens.size());
+        Assert.assertEquals("This is a st", tokens.get(0));
+        Assert.assertEquals("ring|This is", tokens.get(1));
+        Assert.assertEquals(" another str", tokens.get(2));
+        Assert.assertEquals("ing|And anot", tokens.get(3));
+        Assert.assertEquals("her", tokens.get(4));
+        
+        tokens = StringUtility.tokenize("This is a string,This is another string,And another", 21);
+        Assert.assertEquals(3, tokens.size());
+        Assert.assertEquals("This is a string,This", tokens.get(0));
+        Assert.assertEquals(" is another string,An", tokens.get(1));
+        Assert.assertEquals("d another", tokens.get(2));
+        
+        tokens = StringUtility.tokenize("string", 1);
+        Assert.assertEquals(6, tokens.size());
+        Assert.assertEquals("s", tokens.get(0));
+        Assert.assertEquals("t", tokens.get(1));
+        Assert.assertEquals("r", tokens.get(2));
+        Assert.assertEquals("i", tokens.get(3));
+        Assert.assertEquals("n", tokens.get(4));
+        Assert.assertEquals("g", tokens.get(5));
     }
     
     /**
@@ -424,6 +460,23 @@ public class StringUtilityTest {
         tokens = StringUtility.tokenizeArgs("\"C:\\blah blah\\blah.txt\"");
         Assert.assertEquals(1, tokens.size());
         Assert.assertEquals("C:\\blah blah\\blah.txt", tokens.get(0));
+    }
+    
+    /**
+     * JUnit test of reverse.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#reverse(String)
+     */
+    @Test
+    public void testReverse() throws Exception {
+        //standard
+        Assert.assertEquals("gnirts a si sihT", StringUtility.reverse("This is a string"));
+        Assert.assertEquals("gnirtsasisihT", StringUtility.reverse("Thisisastring"));
+        Assert.assertEquals("gnirts", StringUtility.reverse("string"));
+        
+        //invalid
+        Assert.assertEquals("", StringUtility.reverse(""));
     }
     
     /**
