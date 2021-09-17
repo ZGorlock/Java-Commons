@@ -101,45 +101,86 @@ public class MathUtilityTest {
      * JUnit test of random.
      *
      * @throws Exception When there is an exception.
+     * @see MathUtility#random(long, long)
      * @see MathUtility#random(int, int)
+     * @see MathUtility#random(long)
      * @see MathUtility#random(int)
      */
     @Test
     public void testRandom() throws Exception {
-        int value;
+        int intValue;
+        long longValue;
         
-        //default, min
+        //int, default, min
         do {
-            value = MathUtility.random(10);
-        } while (value != 0);
+            intValue = MathUtility.random(10);
+            Assert.assertTrue(BoundUtility.inBounds(intValue, 0, 10));
+        } while (intValue != 0);
         
-        //default, max
+        //int, default, max
         do {
-            value = MathUtility.random(10);
-        } while (value != 10);
+            intValue = MathUtility.random(10);
+            Assert.assertTrue(BoundUtility.inBounds(intValue, 0, 10));
+        } while (intValue != 10);
         
-        //default, range
-        for (int i = 0; i < 1000000; i++) {
-            value = MathUtility.random(10);
-            Assert.assertTrue(value >= 0);
-            Assert.assertTrue(value <= 10);
+        //int, default, range
+        for (int i = 0; i < 100000; i++) {
+            intValue = MathUtility.random(10);
+            Assert.assertTrue(BoundUtility.inBounds(intValue, 0, 10));
         }
         
-        //range, min
+        //int, range, min
         do {
-            value = MathUtility.random(3, 21);
-        } while (value != 3);
+            intValue = MathUtility.random(3, 21);
+            Assert.assertTrue(BoundUtility.inBounds(intValue, 3, 21));
+        } while (intValue != 3);
         
-        //range, max
+        //int, range, max
         do {
-            value = MathUtility.random(3, 21);
-        } while (value != 21);
+            intValue = MathUtility.random(3, 21);
+            Assert.assertTrue(BoundUtility.inBounds(intValue, 3, 21));
+        } while (intValue != 21);
         
-        //range, range
-        for (int i = 0; i < 1000000; i++) {
-            value = MathUtility.random(3, 21);
-            Assert.assertTrue(value >= 3);
-            Assert.assertTrue(value <= 21);
+        //int, range, range
+        for (int i = 0; i < 100000; i++) {
+            intValue = MathUtility.random(3, 21);
+            Assert.assertTrue(BoundUtility.inBounds(intValue, 3, 21));
+        }
+        
+        //long, default, min
+        do {
+            longValue = MathUtility.random(10);
+            Assert.assertTrue(BoundUtility.inBounds(longValue, 0, 10));
+        } while (longValue != 0);
+        
+        //long, default, max
+        do {
+            longValue = MathUtility.random(10);
+            Assert.assertTrue(BoundUtility.inBounds(longValue, 0, 10));
+        } while (longValue != 10);
+        
+        //long, default, range
+        for (int i = 0; i < 100000; i++) {
+            longValue = MathUtility.random(10);
+            Assert.assertTrue(BoundUtility.inBounds(longValue, 0, 10));
+        }
+        
+        //long, range, min
+        do {
+            longValue = MathUtility.random(1984560454894L, 1984560454906L);
+            Assert.assertTrue(BoundUtility.inBounds(longValue, 1984560454894L, 1984560454906L));
+        } while (longValue != 1984560454894L);
+        
+        //long, range, max
+        do {
+            longValue = MathUtility.random(1984560454894L, 1984560454906L);
+            Assert.assertTrue(BoundUtility.inBounds(longValue, 1984560454894L, 1984560454906L));
+        } while (longValue != 1984560454906L);
+        
+        //long, range, range
+        for (int i = 0; i < 100000; i++) {
+            longValue = MathUtility.random(1984560454894L, 1984560454906L);
+            Assert.assertTrue(BoundUtility.inBounds(longValue, 1984560454894L, 1984560454906L));
         }
     }
     
@@ -147,27 +188,45 @@ public class MathUtilityTest {
      * JUnit test of dice.
      *
      * @throws Exception When there is an exception.
+     * @see MathUtility#dice(long, long)
      * @see MathUtility#dice(int, int)
+     * @see MathUtility#dice(long)
      * @see MathUtility#dice(int)
      */
     @Test
     public void testDice() throws Exception {
-        //standard
+        //int, standard
         for (int sides : Arrays.asList(2, 4, 6, 8, 10, 12, 20, 100)) {
             for (int i = 0; i < 1000; i++) {
                 int roll = MathUtility.dice(sides);
-                Assert.assertTrue(roll >= 1);
-                Assert.assertTrue(roll <= sides);
+                Assert.assertTrue(BoundUtility.inBounds(roll, 1, sides));
             }
         }
         
-        //multiple rolls
+        //int, multiple rolls
         for (int sides : Arrays.asList(2, 4, 6, 8, 10, 12, 20, 100)) {
             for (int i = 0; i < 1000; i++) {
                 int rolls = MathUtility.random(1, 50);
                 int roll = MathUtility.dice(sides, rolls);
-                Assert.assertTrue(roll >= rolls);
-                Assert.assertTrue(roll <= (sides * rolls));
+                Assert.assertTrue(BoundUtility.inBounds(roll, rolls, (sides * rolls)));
+            }
+        }
+        
+        //long, standard
+        int d = 1;
+        for (long sides : Arrays.asList(2L, 4L, 6L, 8L, 10L, 12L, 20L, 165406549187821L)) {
+            for (int i = 0; i < 1000; i++) {
+                long roll = MathUtility.dice(sides);
+                Assert.assertTrue(BoundUtility.inBounds(roll, 1, sides));
+            }
+        }
+        
+        //long, multiple rolls
+        for (long sides : Arrays.asList(2L, 4L, 6L, 8L, 10L, 12L, 20L, 165406549187821L)) {
+            for (int i = 0; i < 1000; i++) {
+                long rolls = MathUtility.random(1L, 50L);
+                long roll = MathUtility.dice(sides, rolls);
+                Assert.assertTrue(BoundUtility.inBounds(roll, rolls, (sides * rolls)));
             }
         }
         
@@ -183,6 +242,17 @@ public class MathUtilityTest {
         Assert.assertEquals(0, MathUtility.dice(0, -1));
         Assert.assertEquals(0, MathUtility.dice(-999, 0));
         Assert.assertEquals(0, MathUtility.dice(0, -999));
+        Assert.assertEquals(0, MathUtility.dice(0L));
+        Assert.assertEquals(0, MathUtility.dice(-1L));
+        Assert.assertEquals(0, MathUtility.dice(-489460546514987498L));
+        Assert.assertEquals(0, MathUtility.dice(6L, 0L));
+        Assert.assertEquals(0, MathUtility.dice(6L, -1L));
+        Assert.assertEquals(0, MathUtility.dice(6L, -489460546514987498L));
+        Assert.assertEquals(0, MathUtility.dice(0L, 0L));
+        Assert.assertEquals(0, MathUtility.dice(-1L, 0L));
+        Assert.assertEquals(0, MathUtility.dice(0L, -1L));
+        Assert.assertEquals(0, MathUtility.dice(-489460546514987498L, 0L));
+        Assert.assertEquals(0, MathUtility.dice(0L, -489460546514987498L));
     }
     
     /**
@@ -242,6 +312,84 @@ public class MathUtilityTest {
         //invalid
         Assert.assertFalse(MathUtility.isPrime(-1));
         Assert.assertFalse(MathUtility.isPrime(-16));
+    }
+    
+    /**
+     * JUnit test of isDivisibleBy.
+     *
+     * @throws Exception When there is an exception.
+     * @see MathUtility#isDivisibleBy(long, long)
+     */
+    @Test
+    public void testIsDivisibleBy() throws Exception {
+        //standard
+        Assert.assertTrue(MathUtility.isDivisibleBy(10, 1));
+        Assert.assertTrue(MathUtility.isDivisibleBy(10, 2));
+        Assert.assertTrue(MathUtility.isDivisibleBy(10, 5));
+        Assert.assertTrue(MathUtility.isDivisibleBy(10, 10));
+        Assert.assertFalse(MathUtility.isDivisibleBy(10, 3));
+        Assert.assertFalse(MathUtility.isDivisibleBy(10, 9));
+        Assert.assertTrue(MathUtility.isDivisibleBy(10, -2));
+        Assert.assertFalse(MathUtility.isDivisibleBy(10, -6));
+        Assert.assertTrue(MathUtility.isDivisibleBy(1408, 8));
+        Assert.assertTrue(MathUtility.isDivisibleBy(-1408, 8));
+        Assert.assertTrue(MathUtility.isDivisibleBy(-1408, -8));
+        Assert.assertTrue(MathUtility.isDivisibleBy(1408, -8));
+        Assert.assertTrue(MathUtility.isDivisibleBy(150000, 15));
+        Assert.assertTrue(MathUtility.isDivisibleBy(49024639287L, 117));
+        Assert.assertTrue(MathUtility.isDivisibleBy(0, 1));
+        Assert.assertTrue(MathUtility.isDivisibleBy(0, -1));
+        
+        //invalid
+        TestUtils.assertNoException(() ->
+                Assert.assertFalse(MathUtility.isDivisibleBy(10, 0)));
+        TestUtils.assertNoException(() ->
+                Assert.assertFalse(MathUtility.isDivisibleBy(0, 0)));
+    }
+    
+    /**
+     * JUnit test of xmod.
+     *
+     * @throws Exception When there is an exception.
+     * @see MathUtility#xmod(long, long)
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Test
+    public void testXmod() throws Exception {
+        //standard
+        Assert.assertEquals(3, MathUtility.xmod(6, 3));
+        Assert.assertEquals(2, MathUtility.xmod(5, 3));
+        Assert.assertEquals(1, MathUtility.xmod(4, 3));
+        Assert.assertEquals(3, MathUtility.xmod(3, 3));
+        Assert.assertEquals(2, MathUtility.xmod(2, 3));
+        Assert.assertEquals(1, MathUtility.xmod(1, 3));
+        Assert.assertEquals(3, MathUtility.xmod(0, 3));
+        Assert.assertEquals(-1, MathUtility.xmod(-1, 3));
+        Assert.assertEquals(-2, MathUtility.xmod(-2, 3));
+        Assert.assertEquals(-3, MathUtility.xmod(-3, 3));
+        Assert.assertEquals(-1, MathUtility.xmod(-4, 3));
+        Assert.assertEquals(-2, MathUtility.xmod(-5, 3));
+        Assert.assertEquals(-3, MathUtility.xmod(-6, 3));
+        Assert.assertEquals(3, MathUtility.xmod(6, -3));
+        Assert.assertEquals(2, MathUtility.xmod(5, -3));
+        Assert.assertEquals(1, MathUtility.xmod(4, -3));
+        Assert.assertEquals(3, MathUtility.xmod(3, -3));
+        Assert.assertEquals(2, MathUtility.xmod(2, -3));
+        Assert.assertEquals(1, MathUtility.xmod(1, -3));
+        Assert.assertEquals(3, MathUtility.xmod(0, -3));
+        Assert.assertEquals(-1, MathUtility.xmod(-1, -3));
+        Assert.assertEquals(-2, MathUtility.xmod(-2, -3));
+        Assert.assertEquals(-3, MathUtility.xmod(-3, -3));
+        Assert.assertEquals(-1, MathUtility.xmod(-4, -3));
+        Assert.assertEquals(-2, MathUtility.xmod(-5, -3));
+        Assert.assertEquals(-3, MathUtility.xmod(-6, -3));
+        Assert.assertEquals(61, MathUtility.xmod(154621, 160));
+        Assert.assertEquals(160, MathUtility.xmod(160, 154621));
+        Assert.assertEquals(141449, MathUtility.xmod(165431298, 154621));
+        
+        //invalid
+        TestUtils.assertException(ArithmeticException.class, () ->
+                MathUtility.xmod(15, 0));
     }
     
     /**
@@ -337,6 +485,110 @@ public class MathUtilityTest {
                 MathUtility.roundWithPrecision(new BigDecimal("111.70400000001"), -3).toPlainString());
         Assert.assertEquals("120",
                 MathUtility.roundWithPrecision(new BigDecimal("111.70400000001"), -1, RoundingMode.UP).toPlainString());
+    }
+    
+    /**
+     * JUnit test of digitSum.
+     *
+     * @throws Exception When there is an exception.
+     * @see MathUtility#digitSum(long)
+     */
+    @Test
+    public void testDigitSum() throws Exception {
+        //standard
+        Assert.assertEquals(0, MathUtility.digitSum(0));
+        Assert.assertEquals(1, MathUtility.digitSum(1));
+        Assert.assertEquals(2, MathUtility.digitSum(11));
+        Assert.assertEquals(6, MathUtility.digitSum(123));
+        Assert.assertEquals(6, MathUtility.digitSum(-123));
+        Assert.assertEquals(6, MathUtility.digitSum(321));
+        Assert.assertEquals(6, MathUtility.digitSum(-321));
+        Assert.assertEquals(5, MathUtility.digitSum(50000));
+        Assert.assertEquals(18, MathUtility.digitSum(842112));
+        Assert.assertEquals(16, MathUtility.digitSum(3154201));
+        Assert.assertEquals(34, MathUtility.digitSum(-70165483));
+        Assert.assertEquals(45, MathUtility.digitSum(123456789));
+        Assert.assertEquals(45, MathUtility.digitSum(987654321));
+        Assert.assertEquals(88, MathUtility.digitSum(Long.MAX_VALUE));
+        Assert.assertEquals(89, MathUtility.digitSum(Long.MIN_VALUE));
+    }
+    
+    /**
+     * JUnit test of digitSumAlternating.
+     *
+     * @throws Exception When there is an exception.
+     * @see MathUtility#digitSumAlternating(long)
+     */
+    @Test
+    public void testDigitSumAlternating() throws Exception {
+        //standard
+        Assert.assertEquals(0, MathUtility.digitSumAlternating(0));
+        Assert.assertEquals(1, MathUtility.digitSumAlternating(1));
+        Assert.assertEquals(0, MathUtility.digitSumAlternating(11));
+        Assert.assertEquals(2, MathUtility.digitSumAlternating(123));
+        Assert.assertEquals(2, MathUtility.digitSumAlternating(-123));
+        Assert.assertEquals(2, MathUtility.digitSumAlternating(321));
+        Assert.assertEquals(2, MathUtility.digitSumAlternating(-321));
+        Assert.assertEquals(5, MathUtility.digitSumAlternating(50000));
+        Assert.assertEquals(4, MathUtility.digitSumAlternating(842112));
+        Assert.assertEquals(6, MathUtility.digitSumAlternating(3154201));
+        Assert.assertEquals(8, MathUtility.digitSumAlternating(-70165483));
+        Assert.assertEquals(5, MathUtility.digitSumAlternating(123456789));
+        Assert.assertEquals(5, MathUtility.digitSumAlternating(987654321));
+        Assert.assertEquals(18, MathUtility.digitSumAlternating(Long.MAX_VALUE));
+        Assert.assertEquals(19, MathUtility.digitSumAlternating(Long.MIN_VALUE));
+    }
+    
+    /**
+     * JUnit test of digitSumWeighted.
+     *
+     * @throws Exception When there is an exception.
+     * @see MathUtility#digitSumWeighted(long)
+     */
+    @Test
+    public void testDigitSumWeighted() throws Exception {
+        //standard
+        Assert.assertEquals(0, MathUtility.digitSumWeighted(0));
+        Assert.assertEquals(1, MathUtility.digitSumWeighted(1));
+        Assert.assertEquals(3, MathUtility.digitSumWeighted(11));
+        Assert.assertEquals(14, MathUtility.digitSumWeighted(123));
+        Assert.assertEquals(14, MathUtility.digitSumWeighted(-123));
+        Assert.assertEquals(10, MathUtility.digitSumWeighted(321));
+        Assert.assertEquals(10, MathUtility.digitSumWeighted(-321));
+        Assert.assertEquals(5, MathUtility.digitSumWeighted(50000));
+        Assert.assertEquals(43, MathUtility.digitSumWeighted(842112));
+        Assert.assertEquals(53, MathUtility.digitSumWeighted(3154201));
+        Assert.assertEquals(163, MathUtility.digitSumWeighted(-70165483));
+        Assert.assertEquals(285, MathUtility.digitSumWeighted(123456789));
+        Assert.assertEquals(165, MathUtility.digitSumWeighted(987654321));
+        Assert.assertEquals(941, MathUtility.digitSumWeighted(Long.MAX_VALUE));
+        Assert.assertEquals(960, MathUtility.digitSumWeighted(Long.MIN_VALUE));
+    }
+    
+    /**
+     * JUnit test of digitSumK.
+     *
+     * @throws Exception When there is an exception.
+     * @see MathUtility#digitSumK(long, int)
+     */
+    @Test
+    public void testDigitSumK() throws Exception {
+        //standard
+        Assert.assertEquals(1, MathUtility.digitSumK(0, 1));
+        Assert.assertEquals(6, MathUtility.digitSumK(1, 5));
+        Assert.assertEquals(-1, MathUtility.digitSumK(11, -3));
+        Assert.assertEquals(121, MathUtility.digitSumK(123, 115));
+        Assert.assertEquals(6, MathUtility.digitSumK(-123, 0));
+        Assert.assertEquals(6, MathUtility.digitSumK(321, 0));
+        Assert.assertEquals(-25, MathUtility.digitSumK(-321, -31));
+        Assert.assertEquals(11, MathUtility.digitSumK(50000, 6));
+        Assert.assertEquals(31, MathUtility.digitSumK(842112, 13));
+        Assert.assertEquals(33, MathUtility.digitSumK(3154201, 17));
+        Assert.assertEquals(33, MathUtility.digitSumK(-70165483, -1));
+        Assert.assertEquals(52, MathUtility.digitSumK(123456789, 7));
+        Assert.assertEquals(144, MathUtility.digitSumK(987654321, 99));
+        Assert.assertEquals(98, MathUtility.digitSumK(Long.MAX_VALUE, 10));
+        Assert.assertEquals(99, MathUtility.digitSumK(Long.MIN_VALUE, 10));
     }
     
     /**

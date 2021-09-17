@@ -35,8 +35,31 @@ public class MathUtility {
      * @param max The maximum possible value.
      * @return A random number between the minimum and maximum values.
      */
+    public static long random(long min, long max) {
+        return (long) (Math.random() * (max - min + 1)) + min;
+    }
+    
+    /**
+     * Returns a random number between two values.
+     *
+     * @param min The minimum possible value.
+     * @param max The maximum possible value.
+     * @return A random number between the minimum and maximum values.
+     * @see #random(long, long)
+     */
     public static int random(int min, int max) {
-        return (int) (Math.random() * (max - min + 1)) + min;
+        return (int) random(min, (long) max);
+    }
+    
+    /**
+     * Returns a random number between 0 and a value.
+     *
+     * @param max The maximum possible value.
+     * @return A random number between 0 and the maximum values.
+     * @see #random(long, long)
+     */
+    public static long random(long max) {
+        return random(0, max);
     }
     
     /**
@@ -56,18 +79,41 @@ public class MathUtility {
      * @param sides The number of sides on the dice.
      * @param rolls The number of rolls to perform.
      * @return The result of the dice roll.
-     * @see #random(int, int)
+     * @see #random(long, long)
      */
-    public static int dice(int sides, int rolls) {
+    public static long dice(long sides, long rolls) {
         if ((sides <= 0) || (rolls <= 0)) {
             return 0;
         }
         
-        int roll = 0;
+        long roll = 0;
         for (int i = 0; i < rolls; i++) {
             roll += random(1, sides);
         }
         return roll;
+    }
+    
+    /**
+     * Returns the result of a dice roll.
+     *
+     * @param sides The number of sides on the dice.
+     * @param rolls The number of rolls to perform.
+     * @return The result of the dice roll.
+     * @see #dice(long, long)
+     */
+    public static int dice(int sides, int rolls) {
+        return (int) dice(sides, (long) rolls);
+    }
+    
+    /**
+     * Returns the result of a dice roll.
+     *
+     * @param sides The number of sides on the dice.
+     * @return The result of the dice roll.
+     * @see #dice(long, long)
+     */
+    public static long dice(long sides) {
+        return dice(sides, 1);
     }
     
     /**
@@ -116,6 +162,30 @@ public class MathUtility {
     }
     
     /**
+     * Determines if a number is evenly divisible by another number.
+     *
+     * @param num     The number.
+     * @param divisor The divisor
+     * @return Whether the number is divisible by the divisor or not.
+     */
+    public static boolean isDivisibleBy(long num, long divisor) {
+        return (divisor != 0) && ((num % divisor) == 0);
+    }
+    
+    /**
+     * Calculates the modulus of a number but returns a value in the range [1,mod] rather than [0,mod-1].
+     *
+     * @param num The number.
+     * @param mod The modulus.
+     * @return The adjusted modulus of the number.
+     */
+    public static long xmod(long num, long mod) {
+        return (isDivisibleBy(num, mod)) ?
+               (Math.abs(mod) * ((num >= 0) ? 1 : -1)) :
+               (num % mod);
+    }
+    
+    /**
      * Rounds a decimal number with a certain precision.
      *
      * @param value         The number.
@@ -149,6 +219,64 @@ public class MathUtility {
      */
     public static BigDecimal roundWithPrecision(BigDecimal value, int decimalPlaces) {
         return roundWithPrecision(value, decimalPlaces, RoundingMode.HALF_UP);
+    }
+    
+    /**
+     * Calculates the digit sum of a number.
+     *
+     * @param num The number.
+     * @return The digit sum of the number.
+     */
+    public static int digitSum(long num) {
+        int digitSum = 0;
+        while (num != 0) {
+            digitSum += (num % 10);
+            num /= 10;
+        }
+        return Math.abs(digitSum);
+    }
+    
+    /**
+     * Calculates the alternating digit sum of a number.
+     *
+     * @param num The number.
+     * @return The alternating digit sum of the number.
+     */
+    public static int digitSumAlternating(long num) {
+        int digitSum = 0;
+        int sign = NumberUtility.isEven(NumberUtility.length(num)) ? -1 : 1;
+        while (num != 0) {
+            digitSum += ((num % 10) * sign);
+            num /= 10;
+            sign *= -1;
+        }
+        return Math.abs(digitSum);
+    }
+    
+    /**
+     * Calculates the weighted digit sum of a number.
+     *
+     * @param num The number.
+     * @return The weighted digit sum of the number.
+     */
+    public static int digitSumWeighted(long num) {
+        int digitSum = 0;
+        while (num != 0) {
+            digitSum += ((num % 10) * NumberUtility.length(num));
+            num /= 10;
+        }
+        return Math.abs(digitSum);
+    }
+    
+    /**
+     * Calculates the k digit sum of a number.
+     *
+     * @param num The number.
+     * @return The k digit sum of the number.
+     * @see #digitSum(long)
+     */
+    public static int digitSumK(long num, int k) {
+        return digitSum(num) + k;
     }
     
     /**
