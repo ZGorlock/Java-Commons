@@ -1058,20 +1058,25 @@ public final class Archive {
          * @throws Exception When there is an error.
          */
         public static boolean extract(File zip, File outputDirectory) throws Exception {
+            if (!outputDirectory.exists() && !Filesystem.createDirectory(outputDirectory)) {
+                logger.trace("Unable to extract zip: {} output directory: {} does not exist and could not be created", StringUtility.fileString(zip), StringUtility.fileString(outputDirectory.getParentFile()));
+                return false;
+            }
+            
             try (ZipInputStream in = new ZipInputStream(new FileInputStream(zip))) {
                 
                 Map<File, ZipEntry> directoryEntries = new LinkedHashMap<>();
                 ZipEntry zipEntry = in.getNextEntry();
                 while (zipEntry != null) {
                     File output = new File(outputDirectory, zipEntry.getName());
-                    if (!output.getParentFile().exists()) {
-                        logger.trace("Unable to extract zip: {} output directory: {} does not exist", StringUtility.fileString(zip), StringUtility.fileString(output.getParentFile()));
+                    if (!output.getParentFile().exists() && !Filesystem.createDirectory(output.getParentFile())) {
+                        logger.trace("Unable to extract zip: {} output directory: {} does not exist and could not be created", StringUtility.fileString(zip), StringUtility.fileString(output.getParentFile()));
                         return false;
                     }
                     
                     if (zipEntry.isDirectory()) {
                         directoryEntries.put(output, zipEntry);
-                        if (!Filesystem.createDirectory(output)) {
+                        if (!output.exists() && !Filesystem.createDirectory(output)) {
                             logger.trace("Unable to extract zip: {} could not create output directory: {}", StringUtility.fileString(zip), StringUtility.fileString(output));
                             return false;
                         }
@@ -1354,6 +1359,11 @@ public final class Archive {
          * @throws Exception When there is an error.
          */
         public static boolean extract(File jar, File outputDirectory) throws Exception {
+            if (!outputDirectory.exists() && !Filesystem.createDirectory(outputDirectory)) {
+                logger.trace("Unable to extract jar: {} output directory: {} does not exist and could not be created", StringUtility.fileString(jar), StringUtility.fileString(outputDirectory.getParentFile()));
+                return false;
+            }
+            
             try (JarFile jarFile = new JarFile(jar)) {
                 Enumeration<JarEntry> entries = jarFile.entries();
                 
@@ -1362,14 +1372,14 @@ public final class Archive {
                 while (entries.hasMoreElements()) {
                     JarEntry jarEntry = entries.nextElement();
                     File output = new File(outputDirectory, jarEntry.getName());
-                    if (!output.getParentFile().exists()) {
-                        logger.trace("Unable to extract jar: {} output directory: {} does not exist", StringUtility.fileString(jar), StringUtility.fileString(output.getParentFile()));
+                    if (!output.getParentFile().exists() && !Filesystem.createDirectory(output.getParentFile())) {
+                        logger.trace("Unable to extract jar: {} output directory: {} does not exist and could not be created", StringUtility.fileString(jar), StringUtility.fileString(output.getParentFile()));
                         return false;
                     }
                     
                     if (jarEntry.isDirectory()) {
                         directoryEntries.put(output, jarEntry);
-                        if (!Filesystem.createDirectory(output)) {
+                        if (!output.exists() && !Filesystem.createDirectory(output)) {
                             logger.trace("Unable to extract jar: {} could not create output directory: {}", StringUtility.fileString(jar), StringUtility.fileString(output));
                             return false;
                         }

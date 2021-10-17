@@ -73,6 +73,16 @@ public class ArchiveTest {
      */
     private static File testJar2 = new File(testResources, "test2.jar");
     
+    /**
+     * An example zip archive for testing.
+     */
+    private static File testZip3 = new File(testResources, "test3.zip");
+    
+    /**
+     * An example jar archive for testing.
+     */
+    private static File testJar3 = new File(testResources, "test3.jar");
+    
     
     //Initialization
     
@@ -271,16 +281,29 @@ public class ArchiveTest {
     @Test
     public void testExtract() throws Exception {
         File testDir = Filesystem.createTemporaryDirectory();
+        File outputDir;
         
         //standard
         
-        Assert.assertTrue(Archive.extract(testZip, new File(testDir, "zip")));
-        Assert.assertTrue(new File(testDir, "zip").exists());
-        Assert.assertEquals(12, Filesystem.getFilesAndDirsRecursively(new File(testDir, "zip")).size());
+        outputDir = new File(testDir, "zip");
+        Assert.assertTrue(Archive.extract(testZip, outputDir));
+        Assert.assertTrue(outputDir.exists());
+        Assert.assertEquals(12, Filesystem.getFilesAndDirsRecursively(outputDir).size());
         
-        Assert.assertTrue(Archive.extract(testJar, new File(testDir, "jar")));
-        Assert.assertTrue(new File(testDir, "jar").exists());
-        Assert.assertEquals(13, Filesystem.getFilesAndDirsRecursively(new File(testDir, "jar")).size());
+        outputDir = new File(testDir, "jar");
+        Assert.assertTrue(Archive.extract(testJar, outputDir));
+        Assert.assertTrue(outputDir.exists());
+        Assert.assertEquals(13, Filesystem.getFilesAndDirsRecursively(outputDir).size());
+        
+        outputDir = new File(testDir, "zip3");
+        Assert.assertTrue(Archive.extract(testZip3, outputDir));
+        Assert.assertTrue(outputDir.exists());
+        Assert.assertEquals(2, Filesystem.getFilesAndDirsRecursively(outputDir).size());
+        
+        outputDir = new File(testDir, "jar3");
+        Assert.assertTrue(Archive.extract(testJar3, outputDir));
+        Assert.assertTrue(outputDir.exists());
+        Assert.assertEquals(3, Filesystem.getFilesAndDirsRecursively(outputDir).size());
         
         //archive does not exist
         
