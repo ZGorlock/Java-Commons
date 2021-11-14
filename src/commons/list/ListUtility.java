@@ -141,6 +141,30 @@ public final class ListUtility {
     }
     
     /**
+     * Determines whether an element exists in a list.
+     *
+     * @param list    The list.
+     * @param element The element.
+     * @param <T>     The type of the list.
+     * @return Whether the list contains the specified element or not.
+     */
+    public static <T> boolean contains(List<T> list, T element) {
+        return list.contains(element);
+    }
+    
+    /**
+     * Returns the index of an element in a list.
+     *
+     * @param list    The list.
+     * @param element The element.
+     * @param <T>     The type of the list.
+     * @return The index of the element in the list, or -1 if it does not exist.
+     */
+    public static <T> int indexOf(List<T> list, T element) {
+        return list.indexOf(element);
+    }
+    
+    /**
      * Determines if any element in a list is null.
      *
      * @param list The list.

@@ -7,6 +7,7 @@
 
 package commons.list;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -467,6 +468,102 @@ public class ArrayUtilityTest {
         
         TestUtils.assertException(NullPointerException.class, () ->
                 ArrayUtility.reverse(null));
+    }
+    
+    /**
+     * JUnit test of contains.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#contains(Object[], Object)
+     */
+    @Test
+    public void testContains() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        Assert.assertTrue(ArrayUtility.contains(booleanArray, true));
+        Assert.assertTrue(ArrayUtility.contains(booleanArray, false));
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        Assert.assertTrue(ArrayUtility.contains(integerArray, 5));
+        Assert.assertTrue(ArrayUtility.contains(integerArray, -9));
+        Assert.assertFalse(ArrayUtility.contains(integerArray, 10));
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        Assert.assertTrue(ArrayUtility.contains(floatArray, 312.91f));
+        Assert.assertTrue(ArrayUtility.contains(floatArray, -9.7f));
+        Assert.assertFalse(ArrayUtility.contains(floatArray, 123.8f));
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        Assert.assertTrue(ArrayUtility.contains(doubleArray, 15.104564d));
+        Assert.assertTrue(ArrayUtility.contains(doubleArray, -4.006005001d));
+        Assert.assertFalse(ArrayUtility.contains(doubleArray, 8.6451001211d));
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        Assert.assertTrue(ArrayUtility.contains(longArray, 3129113874L));
+        Assert.assertTrue(ArrayUtility.contains(longArray, 699546101L));
+        Assert.assertFalse(ArrayUtility.contains(longArray, 8465115960L));
+        
+        //object
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        Assert.assertTrue(ArrayUtility.contains(objectArray, objectArray[2]));
+        Assert.assertTrue(ArrayUtility.contains(objectArray, objectArray[4]));
+        Assert.assertFalse(ArrayUtility.contains(objectArray, new ArrayList<>()));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.contains(null, new Object()));
+    }
+    
+    /**
+     * JUnit test of indexOf.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#indexOf(Object[], Object)
+     */
+    @Test
+    public void testIndexOf() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        Assert.assertEquals(0, ArrayUtility.indexOf(booleanArray, true));
+        Assert.assertEquals(1, ArrayUtility.indexOf(booleanArray, false));
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        Assert.assertEquals(3, ArrayUtility.indexOf(integerArray, 5));
+        Assert.assertEquals(5, ArrayUtility.indexOf(integerArray, -9));
+        Assert.assertEquals(-1, ArrayUtility.indexOf(integerArray, 10));
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        Assert.assertEquals(1, ArrayUtility.indexOf(floatArray, 312.91f));
+        Assert.assertEquals(5, ArrayUtility.indexOf(floatArray, -9.7f));
+        Assert.assertEquals(-1, ArrayUtility.indexOf(floatArray, 123.8f));
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        Assert.assertEquals(0, ArrayUtility.indexOf(doubleArray, 15.104564d));
+        Assert.assertEquals(4, ArrayUtility.indexOf(doubleArray, -4.006005001d));
+        Assert.assertEquals(-1, ArrayUtility.indexOf(doubleArray, 8.6451001211d));
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        Assert.assertEquals(1, ArrayUtility.indexOf(longArray, 3129113874L));
+        Assert.assertEquals(6, ArrayUtility.indexOf(longArray, 699546101L));
+        Assert.assertEquals(-1, ArrayUtility.indexOf(longArray, 8465115960L));
+        
+        //object
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        Assert.assertEquals(2, ArrayUtility.indexOf(objectArray, objectArray[2]));
+        Assert.assertEquals(4, ArrayUtility.indexOf(objectArray, objectArray[4]));
+        Assert.assertEquals(-1, ArrayUtility.indexOf(objectArray, new ArrayList<>()));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.indexOf(null, new Object()));
     }
     
     /**

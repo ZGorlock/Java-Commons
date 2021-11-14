@@ -502,6 +502,115 @@ public class ListUtilityTest {
     }
     
     /**
+     * JUnit test of contains.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#contains(List, Object)
+     */
+    @Test
+    public void testContains() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        Assert.assertTrue(ListUtility.contains(booleanList, true));
+        Assert.assertTrue(ListUtility.contains(booleanList, false));
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        Assert.assertTrue(ListUtility.contains(integerList, 5));
+        Assert.assertTrue(ListUtility.contains(integerList, -9));
+        Assert.assertFalse(ListUtility.contains(integerList, 10));
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        List<Float> floatList = ListUtility.toList(floatArray);
+        Assert.assertTrue(ListUtility.contains(floatList, 312.91f));
+        Assert.assertTrue(ListUtility.contains(floatList, -9.7f));
+        Assert.assertFalse(ListUtility.contains(floatList, 123.8f));
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        Assert.assertTrue(ListUtility.contains(doubleList, 15.104564d));
+        Assert.assertTrue(ListUtility.contains(doubleList, -4.006005001d));
+        Assert.assertFalse(ListUtility.contains(doubleList, 8.6451001211d));
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        List<Long> longList = ListUtility.toList(longArray);
+        Assert.assertTrue(ListUtility.contains(longList, 3129113874L));
+        Assert.assertTrue(ListUtility.contains(longList, 699546101L));
+        Assert.assertFalse(ListUtility.contains(longList, 8465115960L));
+        
+        //object
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        List<Object> objectList = ListUtility.toList(objectArray);
+        Assert.assertTrue(ListUtility.contains(objectList, objectArray[2]));
+        Assert.assertTrue(ListUtility.contains(objectList, objectArray[4]));
+        Assert.assertFalse(ListUtility.contains(objectList, new ArrayList<>()));
+        
+        //invalid
+        //noinspection ResultOfMethodCallIgnored
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.contains(null, new Object()));
+    }
+    
+    /**
+     * JUnit test of indexOf.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#indexOf(List, Object)
+     */
+    @Test
+    public void testIndexOf() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        Assert.assertEquals(0, ListUtility.indexOf(booleanList, true));
+        Assert.assertEquals(1, ListUtility.indexOf(booleanList, false));
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        Assert.assertEquals(3, ListUtility.indexOf(integerList, 5));
+        Assert.assertEquals(5, ListUtility.indexOf(integerList, -9));
+        Assert.assertEquals(-1, ListUtility.indexOf(integerList, 10));
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        List<Float> floatList = ListUtility.toList(floatArray);
+        Assert.assertEquals(1, ListUtility.indexOf(floatList, 312.91f));
+        Assert.assertEquals(5, ListUtility.indexOf(floatList, -9.7f));
+        Assert.assertEquals(-1, ListUtility.indexOf(floatList, 123.8f));
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        Assert.assertEquals(0, ListUtility.indexOf(doubleList, 15.104564d));
+        Assert.assertEquals(4, ListUtility.indexOf(doubleList, -4.006005001d));
+        Assert.assertEquals(-1, ListUtility.indexOf(doubleList, 8.6451001211d));
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        List<Long> longList = ListUtility.toList(longArray);
+        Assert.assertEquals(1, ListUtility.indexOf(longList, 3129113874L));
+        Assert.assertEquals(6, ListUtility.indexOf(longList, 699546101L));
+        Assert.assertEquals(-1, ListUtility.indexOf(longList, 8465115960L));
+        
+        //object
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        List<Object> objectList = ListUtility.toList(objectArray);
+        Assert.assertEquals(2, ListUtility.indexOf(objectList, objectArray[2]));
+        Assert.assertEquals(4, ListUtility.indexOf(objectList, objectArray[4]));
+        Assert.assertEquals(-1, ListUtility.indexOf(objectList, new ArrayList<>()));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.indexOf(null, new Object()));
+    }
+    
+    /**
      * JUnit test of anyNull.
      *
      * @throws Exception When there is an exception.

@@ -150,6 +150,30 @@ public final class ArrayUtility {
     }
     
     /**
+     * Determines whether an element exists in an array.
+     *
+     * @param array   The array.
+     * @param element The element.
+     * @param <T>     The type of the array.
+     * @return Whether the array contains the specified element or not.
+     */
+    public static <T> boolean contains(T[] array, T element) {
+        return Arrays.asList(array).contains(element);
+    }
+    
+    /**
+     * Returns the index of an element in an array.
+     *
+     * @param array   The array.
+     * @param element The element.
+     * @param <T>     The type of the array.
+     * @return The index of the element in the array, or -1 if it does not exist.
+     */
+    public static <T> int indexOf(T[] array, T element) {
+        return Arrays.asList(array).indexOf(element);
+    }
+    
+    /**
      * Determines if any element in an array is null.
      *
      * @param array The array.
