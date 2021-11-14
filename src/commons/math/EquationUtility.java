@@ -435,27 +435,34 @@ public final class EquationUtility {
      * @return A mathematical equation.
      */
     public static String cleanEquation(String equation) {
-        equation = StringUtility.fixSpaces(equation);
-        equation = equation.replaceAll("\\sthe\\s", " ");
+        equation = equation.replaceAll("(?i)\\sthe\\s", " ");
+        equation = equation.replaceAll("(?i)((?:to|of|point)\\s[^\\s]+(?=[^\\s]{2}))(?:st|nd|rd|th)(?=\\s|$)", "$1");
+        equation = equation.replaceAll("(?i)(?:st|nd|rd|th)\\spow", " pow");
+        equation = equation.replaceAll("(?i)(?:st|nd|rd|th)\\sroot", " root");
+        equation = equation.replaceAll("(?i)(?:st|nd|rd|th)\\s?\\^", " ^");
+        equation = equation.replaceAll("(?i)(?:st|nd|rd|th)\\s?~", " ~");
         
-        equation = equation.replaceAll("(open|begin)\\sparen(thesis)?", "(");
-        equation = equation.replaceAll("(close|end)\\sparen(thesis)?", ")");
+        equation = equation.replaceAll("(?i)(?:open|begin)\\sparen(?:thesis)?", "(");
+        equation = equation.replaceAll("(?i)(?:close|end)\\sparen(?:thesis)?", ")");
         
-        equation = equation.replaceAll("plus|add|sum", "+");
-        equation = equation.replaceAll("minus|sub(tract)?|less", "-");
-        equation = equation.replaceAll("(times|mult(iply)?)(\\sby)?", "*");
-        equation = equation.replaceAll("div(ide(d)?)?(\\sby)?", "/");
-        equation = equation.replaceAll("mod(ulus|ulo|ular|)", "%");
+        equation = equation.replaceAll("(?i)plus|add|sum", "+");
+        equation = equation.replaceAll("(?i)minus|sub(tract)?|less", "-");
+        equation = equation.replaceAll("(?i)(?:times|mult(iply)?)(?:\\sby)?", "*");
+        equation = equation.replaceAll("(?i)div(?:ided?)?(?:\\sby)?", "/");
+        equation = equation.replaceAll("(?i)mod(?:ulus|ulo|ular)?", "%");
         
-        equation = equation.replaceAll("square(d)?\\sroot(\\sof)?", "2 ~");
-        equation = equation.replaceAll("cube(d)?\\sroot(\\sof)?", "3 ~");
-        equation = equation.replaceAll("root(\\sof)?", "~");
+        equation = equation.replaceAll("(?i)squared?\\sroot(?:\\sof)?", "2 ~");
+        equation = equation.replaceAll("(?i)cubed?\\sroot(?:\\sof)?", "3 ~");
+        equation = equation.replaceAll("(?i)root(?:\\sof)?", "~");
         
-        equation = equation.replaceAll("((raised)?\\sto\\s(power(\\sof)?)?)|(\\sto\\spower(\\sof)?)", "^");
-        equation = equation.replaceAll("pow(er)?(\\sof)?", "`");
+        equation = equation.replaceAll("(?i)(?:(?:raised)?\\sto\\s(?:pow(?:er)?(?:\\sof)?)?)|(?:\\sto\\spow(?:er)?(?:\\sof)?)", "^");
+        equation = equation.replaceAll("(?i)pow(?:er)?(?:\\sof)?", "`");
         
-        equation = equation.replaceAll("squared", "^ 2");
-        equation = equation.replaceAll("cubed", "^ 3");
+        equation = equation.replaceAll("(?i)squared", "^ 2");
+        equation = equation.replaceAll("(?i)cubed", "^ 3");
+        
+        equation = equation.replaceAll("(?i)(?<=[\\d\\s])E-(?=[\\d\\s])", "*10^-");
+        equation = equation.replaceAll("(?i)(?<=[\\d\\s])E\\+?(?=[\\d\\s])", "*10^");
         
         List<String> equationParts = new ArrayList<>();
         StringBuilder equationPartBuilder = new StringBuilder();
@@ -515,9 +522,12 @@ public final class EquationUtility {
         for (String finalEquationPart : finalEquationParts) {
             finalEquation.append(finalEquationPart);
         }
-        equation = finalEquation.toString();
+        equation = StringUtility.removeWhiteSpace(finalEquation.toString());
         
-        return equation.replaceAll("\\s+", "");
+        equation = equation.replaceAll("(?i)(?<=[\\d\\s])E-(?=[\\d\\s])", "*10^-");
+        equation = equation.replaceAll("(?i)(?<=[\\d\\s])E\\+?(?=[\\d\\s])", "*10^");
+        
+        return equation;
     }
     
     /**
