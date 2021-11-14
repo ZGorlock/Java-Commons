@@ -11,7 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
-import commons.console.ConsoleProgressBar;
+import commons.console.ProgressBar;
 import commons.string.StringUtility;
 import commons.test.TestUtils;
 import org.junit.After;
@@ -111,12 +111,12 @@ public class ProgressBarOutputStreamTest {
     @Test
     public void testConstructors() throws Exception {
         ProgressBarOutputStream sut;
-        ConsoleProgressBar progressBar;
+        ProgressBar progressBar;
         OutputStream outputStream = new ByteArrayOutputStream(100);
         
         //standard
         sut = new ProgressBarOutputStream("test", outputStream, 4);
-        progressBar = (ConsoleProgressBar) TestUtils.getField(sut, "progressBar");
+        progressBar = (ProgressBar) TestUtils.getField(sut, "progressBar");
         Assert.assertEquals("test", progressBar.getTitle());
         Assert.assertEquals(4, progressBar.getTotal());
         Assert.assertEquals("B", progressBar.getUnits());
@@ -124,7 +124,7 @@ public class ProgressBarOutputStreamTest {
         
         //default title
         sut = new ProgressBarOutputStream(outputStream, 100);
-        progressBar = (ConsoleProgressBar) TestUtils.getField(sut, "progressBar");
+        progressBar = (ProgressBar) TestUtils.getField(sut, "progressBar");
         Assert.assertEquals("", progressBar.getTitle());
         Assert.assertEquals(100, progressBar.getTotal());
         Assert.assertEquals("B", progressBar.getUnits());
@@ -140,14 +140,14 @@ public class ProgressBarOutputStreamTest {
     @Test
     public void testWrite() throws Exception {
         ProgressBarOutputStream sut;
-        ConsoleProgressBar progressBar;
+        ProgressBar progressBar;
         OutputStream outputStream;
         byte[] buffer;
         
         //standard
         outputStream = new ByteArrayOutputStream(200);
         sut = new ProgressBarOutputStream("test", outputStream, 200);
-        progressBar = Mockito.mock(ConsoleProgressBar.class);
+        progressBar = Mockito.mock(ProgressBar.class);
         TestUtils.setField(sut, "progressBar", progressBar);
         buffer = "testt".getBytes(StandardCharsets.UTF_8);
         sut.write(buffer, 0, 5);
@@ -165,7 +165,7 @@ public class ProgressBarOutputStreamTest {
         //end of stream
         outputStream = new ByteArrayOutputStream(0);
         sut = new ProgressBarOutputStream("test", outputStream, 200);
-        progressBar = Mockito.mock(ConsoleProgressBar.class);
+        progressBar = Mockito.mock(ProgressBar.class);
         TestUtils.setField(sut, "progressBar", progressBar);
         buffer = new byte[5];
         TestUtils.assertOutputStreamWriteDoesNotThrowException(
@@ -174,7 +174,7 @@ public class ProgressBarOutputStreamTest {
         //overflow
         outputStream = new ByteArrayOutputStream(200);
         sut = new ProgressBarOutputStream("test", outputStream, 200);
-        progressBar = Mockito.mock(ConsoleProgressBar.class);
+        progressBar = Mockito.mock(ProgressBar.class);
         TestUtils.setField(sut, "progressBar", progressBar);
         buffer = StringUtility.repeatString("test", 50).getBytes(StandardCharsets.UTF_8);
         TestUtils.assertOutputStreamWriteThrowsException(IndexOutOfBoundsException.class,
@@ -191,7 +191,7 @@ public class ProgressBarOutputStreamTest {
     public void testClose() throws Exception {
         OutputStream outputStream = new ByteArrayOutputStream(100);
         ProgressBarOutputStream sut = new ProgressBarOutputStream("test", outputStream, 200);
-        ConsoleProgressBar progressBar = Mockito.mock(ConsoleProgressBar.class);
+        ProgressBar progressBar = Mockito.mock(ProgressBar.class);
         TestUtils.setField(sut, "progressBar", progressBar);
         sut.close();
         Assert.assertEquals(0L, (long) TestUtils.getField(sut, "progress"));

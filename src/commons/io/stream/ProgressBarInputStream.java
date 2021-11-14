@@ -10,7 +10,7 @@ package commons.io.stream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import commons.console.ConsoleProgressBar;
+import commons.console.ProgressBar;
 import org.apache.commons.io.input.CountingInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +39,7 @@ public class ProgressBarInputStream extends CountingInputStream {
     /**
      * The progress bar for the input stream.
      */
-    private final ConsoleProgressBar progressBar;
+    private final ProgressBar progressBar;
     
     
     //Constructors
@@ -54,7 +54,7 @@ public class ProgressBarInputStream extends CountingInputStream {
      */
     public ProgressBarInputStream(String title, InputStream in, long size) {
         super(in);
-        progressBar = new ConsoleProgressBar(title, size, "B");
+        progressBar = new ProgressBar(title, size, "B");
     }
     
     /**
@@ -79,7 +79,7 @@ public class ProgressBarInputStream extends CountingInputStream {
      * @param len The maximum number of bytes to read.
      * @return The number of bytes that were read.
      * @throws IOException If an I/O error occurs.
-     * @see ConsoleProgressBar#update(long)
+     * @see ProgressBar#update(long)
      */
     public int read(byte[] b, int off, int len) throws IOException {
         int read = super.read(b, off, len);
@@ -94,7 +94,7 @@ public class ProgressBarInputStream extends CountingInputStream {
      * Wraps the close method of the input stream to complete the progress bar.
      *
      * @throws IOException If an I/O error occurs.
-     * @see ConsoleProgressBar#complete()
+     * @see ProgressBar#complete()
      */
     @Override
     public void close() throws IOException {

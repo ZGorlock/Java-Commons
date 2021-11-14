@@ -1,5 +1,5 @@
 /*
- * File:    ConsoleProgressBar.java
+ * File:    ProgressBar.java
  * Package: commons.console
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
@@ -20,14 +20,14 @@ import org.slf4j.LoggerFactory;
 /**
  * A progress bar for the console.
  */
-public class ConsoleProgressBar {
+public class ProgressBar {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(ConsoleProgressBar.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProgressBar.class);
     
     
     //Constants
@@ -199,7 +199,7 @@ public class ConsoleProgressBar {
     //Constructors
     
     /**
-     * Creates a new ConsoleProgressBar object.
+     * Creates a new ProgressBar object.
      *
      * @param title     The title to display for the progress bar.
      * @param total     The total size of the progress bar.
@@ -207,7 +207,7 @@ public class ConsoleProgressBar {
      * @param units     The units of the progress bar.
      * @param autoPrint Whether or not to automatically print the progress bar after an update.
      */
-    public ConsoleProgressBar(String title, long total, int width, String units, boolean autoPrint) {
+    public ProgressBar(String title, long total, int width, String units, boolean autoPrint) {
         this.title = title;
         this.total = total;
         this.width = width;
@@ -216,57 +216,57 @@ public class ConsoleProgressBar {
     }
     
     /**
-     * Creates a new ConsoleProgressBar object.
+     * Creates a new ProgressBar object.
      *
      * @param title The title to display for the progress bar.
      * @param total The total size of the progress bar.
      * @param width The with of the bar in the progress bar.
      * @param units The units of the progress bar.
-     * @see #ConsoleProgressBar(String, long, int, String, boolean)
+     * @see #ProgressBar(String, long, int, String, boolean)
      */
-    public ConsoleProgressBar(String title, long total, int width, String units) {
+    public ProgressBar(String title, long total, int width, String units) {
         this(title, total, width, units, DEFAULT_PROGRESS_BAR_AUTO_PRINT);
     }
     
     /**
-     * Creates a new ConsoleProgressBar object.
+     * Creates a new ProgressBar object.
      *
      * @param title The title to display for the progress bar.
      * @param total The total size of the progress bar.
      * @param units The units of the progress bar.
-     * @see #ConsoleProgressBar(String, long, int, String)
+     * @see #ProgressBar(String, long, int, String)
      */
-    public ConsoleProgressBar(String title, long total, String units) {
+    public ProgressBar(String title, long total, String units) {
         this(title, total, DEFAULT_PROGRESS_BAR_WIDTH, units);
     }
     
     /**
-     * Creates a new ConsoleProgressBar object.
+     * Creates a new ProgressBar object.
      *
      * @param title The title to display for the progress bar.
      * @param total The total size of the progress bar.
      * @param width The with of the bar in the progress bar.
-     * @see #ConsoleProgressBar(String, long, int, String)
+     * @see #ProgressBar(String, long, int, String)
      */
-    public ConsoleProgressBar(String title, long total, int width) {
+    public ProgressBar(String title, long total, int width) {
         this(title, total, width, "");
     }
     
     /**
-     * Creates a new ConsoleProgressBar object.
+     * Creates a new ProgressBar object.
      *
      * @param title The title to display for the progress bar.
      * @param total The total size of the progress bar.
-     * @see #ConsoleProgressBar(String, long, int, String)
+     * @see #ProgressBar(String, long, int, String)
      */
-    public ConsoleProgressBar(String title, long total) {
+    public ProgressBar(String title, long total) {
         this(title, total, DEFAULT_PROGRESS_BAR_WIDTH, "");
     }
     
     /**
-     * Private constructor for a new ConsoleProgressBar object.
+     * Private constructor for a new ProgressBar object.
      */
-    private ConsoleProgressBar() {
+    private ProgressBar() {
     }
     
     

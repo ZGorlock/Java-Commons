@@ -18,7 +18,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 import javax.ws.rs.ext.WriterInterceptorContext;
 
-import commons.console.ConsoleProgressBar;
+import commons.console.ProgressBar;
 import commons.string.StringUtility;
 import commons.test.TestUtils;
 import org.glassfish.jersey.media.multipart.BodyPart;
@@ -138,7 +138,7 @@ public class FileTransferInterceptorTest {
         context.setInputStream(inputStream);
         Mockito.doAnswer(invocationOnMock -> {
             ProgressBarInputStream progressBarInputStream = invocationOnMock.getArgument(0);
-            ConsoleProgressBar progressBar = (ConsoleProgressBar) TestUtils.getField(progressBarInputStream, "progressBar");
+            ProgressBar progressBar = (ProgressBar) TestUtils.getField(progressBarInputStream, "progressBar");
             Assert.assertEquals("test.txt", progressBar.getTitle());
             Assert.assertEquals(500, progressBar.getTotal());
             Assert.assertEquals("B", progressBar.getUnits());
@@ -232,7 +232,7 @@ public class FileTransferInterceptorTest {
         context.setOutputStream(outputStream);
         Mockito.doAnswer(invocationOnMock -> {
             ProgressBarOutputStream progressBarOutputStream = invocationOnMock.getArgument(0);
-            ConsoleProgressBar progressBar = (ConsoleProgressBar) TestUtils.getField(progressBarOutputStream, "progressBar");
+            ProgressBar progressBar = (ProgressBar) TestUtils.getField(progressBarOutputStream, "progressBar");
             Assert.assertEquals("test.txt", progressBar.getTitle());
             Assert.assertEquals(660, progressBar.getTotal());
             Assert.assertEquals("B", progressBar.getUnits());
@@ -261,7 +261,7 @@ public class FileTransferInterceptorTest {
         context.setOutputStream(outputStream);
         Mockito.doAnswer(invocationOnMock -> {
             ProgressBarOutputStream progressBarOutputStream = invocationOnMock.getArgument(0);
-            ConsoleProgressBar progressBar = (ConsoleProgressBar) TestUtils.getField(progressBarOutputStream, "progressBar");
+            ProgressBar progressBar = (ProgressBar) TestUtils.getField(progressBarOutputStream, "progressBar");
             Assert.assertEquals("test.txt", progressBar.getTitle());
             Assert.assertEquals(500, progressBar.getTotal());
             Assert.assertEquals("B", progressBar.getUnits());

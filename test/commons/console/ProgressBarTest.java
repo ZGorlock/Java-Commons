@@ -1,5 +1,5 @@
 /*
- * File:    ConsoleProgressBarTest.java
+ * File:    ProgressBarTest.java
  * Package: commons.console
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
@@ -34,21 +34,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of ConsoleProgressBar.
+ * JUnit test of ProgressBar.
  *
- * @see ConsoleProgressBar
+ * @see ProgressBar
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({ConsoleProgressBar.class, System.class})
-public class ConsoleProgressBarTest {
+@PrepareForTest({ProgressBar.class, System.class})
+public class ProgressBarTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(ConsoleProgressBarTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ProgressBarTest.class);
     
     
     //Fields
@@ -56,7 +56,7 @@ public class ConsoleProgressBarTest {
     /**
      * The system under test.
      */
-    ConsoleProgressBar progressBar;
+    ProgressBar progressBar;
     
     
     //Initialization
@@ -88,7 +88,7 @@ public class ConsoleProgressBarTest {
      */
     @Before
     public void setup() throws Exception {
-        progressBar = Mockito.spy(ConsoleProgressBar.class);
+        progressBar = Mockito.spy(ProgressBar.class);
         TestUtils.setField(progressBar, "title", "Test Bar");
         TestUtils.setField(progressBar, "total", 10000L);
         TestUtils.setField(progressBar, "width", 20);
@@ -97,11 +97,11 @@ public class ConsoleProgressBarTest {
         
         TestUtils.setField(progressBar, "rollingProgress", new ArrayList<>());
         TestUtils.setField(progressBar, "rollingUpdate", new ArrayList<>());
-        TestUtils.setField(progressBar, "showPercentage", ConsoleProgressBar.DEFAULT_SHOW_PERCENTAGE);
-        TestUtils.setField(progressBar, "showBar", ConsoleProgressBar.DEFAULT_SHOW_BAR);
-        TestUtils.setField(progressBar, "showRatio", ConsoleProgressBar.DEFAULT_SHOW_RATIO);
-        TestUtils.setField(progressBar, "showSpeed", ConsoleProgressBar.DEFAULT_SHOW_SPEED);
-        TestUtils.setField(progressBar, "showTimeRemaining", ConsoleProgressBar.DEFAULT_SHOW_TIME_REMAINING);
+        TestUtils.setField(progressBar, "showPercentage", ProgressBar.DEFAULT_SHOW_PERCENTAGE);
+        TestUtils.setField(progressBar, "showBar", ProgressBar.DEFAULT_SHOW_BAR);
+        TestUtils.setField(progressBar, "showRatio", ProgressBar.DEFAULT_SHOW_RATIO);
+        TestUtils.setField(progressBar, "showSpeed", ProgressBar.DEFAULT_SHOW_SPEED);
+        TestUtils.setField(progressBar, "showTimeRemaining", ProgressBar.DEFAULT_SHOW_TIME_REMAINING);
     }
     
     /**
@@ -121,44 +121,44 @@ public class ConsoleProgressBarTest {
      * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#DEFAULT_PROGRESS_BAR_WIDTH
-     * @see ConsoleProgressBar#DEFAULT_PROGRESS_BAR_AUTO_PRINT
-     * @see ConsoleProgressBar#PROGRESS_BAR_MINIMUM_UPDATE_DELAY
-     * @see ConsoleProgressBar#ROLLING_AVERAGE_UPDATE_COUNT
-     * @see ConsoleProgressBar#DEFAULT_SHOW_PERCENTAGE
-     * @see ConsoleProgressBar#DEFAULT_SHOW_BAR
-     * @see ConsoleProgressBar#DEFAULT_SHOW_RATIO
-     * @see ConsoleProgressBar#DEFAULT_SHOW_SPEED
-     * @see ConsoleProgressBar#DEFAULT_SHOW_TIME_REMAINING
+     * @see ProgressBar#DEFAULT_PROGRESS_BAR_WIDTH
+     * @see ProgressBar#DEFAULT_PROGRESS_BAR_AUTO_PRINT
+     * @see ProgressBar#PROGRESS_BAR_MINIMUM_UPDATE_DELAY
+     * @see ProgressBar#ROLLING_AVERAGE_UPDATE_COUNT
+     * @see ProgressBar#DEFAULT_SHOW_PERCENTAGE
+     * @see ProgressBar#DEFAULT_SHOW_BAR
+     * @see ProgressBar#DEFAULT_SHOW_RATIO
+     * @see ProgressBar#DEFAULT_SHOW_SPEED
+     * @see ProgressBar#DEFAULT_SHOW_TIME_REMAINING
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertEquals(32, ConsoleProgressBar.DEFAULT_PROGRESS_BAR_WIDTH);
-        Assert.assertTrue(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT);
-        Assert.assertEquals(200, ConsoleProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY);
-        Assert.assertEquals(5, ConsoleProgressBar.ROLLING_AVERAGE_UPDATE_COUNT);
-        Assert.assertTrue(ConsoleProgressBar.DEFAULT_SHOW_PERCENTAGE);
-        Assert.assertTrue(ConsoleProgressBar.DEFAULT_SHOW_BAR);
-        Assert.assertTrue(ConsoleProgressBar.DEFAULT_SHOW_RATIO);
-        Assert.assertTrue(ConsoleProgressBar.DEFAULT_SHOW_SPEED);
-        Assert.assertTrue(ConsoleProgressBar.DEFAULT_SHOW_TIME_REMAINING);
-        Assert.assertEquals(Console.ConsoleEffect.BLACK.apply(" "), ConsoleProgressBar.ENDCAP);
+        Assert.assertEquals(32, ProgressBar.DEFAULT_PROGRESS_BAR_WIDTH);
+        Assert.assertTrue(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT);
+        Assert.assertEquals(200, ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY);
+        Assert.assertEquals(5, ProgressBar.ROLLING_AVERAGE_UPDATE_COUNT);
+        Assert.assertTrue(ProgressBar.DEFAULT_SHOW_PERCENTAGE);
+        Assert.assertTrue(ProgressBar.DEFAULT_SHOW_BAR);
+        Assert.assertTrue(ProgressBar.DEFAULT_SHOW_RATIO);
+        Assert.assertTrue(ProgressBar.DEFAULT_SHOW_SPEED);
+        Assert.assertTrue(ProgressBar.DEFAULT_SHOW_TIME_REMAINING);
+        Assert.assertEquals(Console.ConsoleEffect.BLACK.apply(" "), ProgressBar.ENDCAP);
     }
     
     /**
      * JUnit test of constructors.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#ConsoleProgressBar(String, long, int, String, boolean)
-     * @see ConsoleProgressBar#ConsoleProgressBar(String, long, int, String)
-     * @see ConsoleProgressBar#ConsoleProgressBar(String, long, String)
-     * @see ConsoleProgressBar#ConsoleProgressBar(String, long, int)
-     * @see ConsoleProgressBar#ConsoleProgressBar(String, long)
+     * @see ProgressBar#ProgressBar(String, long, int, String, boolean)
+     * @see ProgressBar#ProgressBar(String, long, int, String)
+     * @see ProgressBar#ProgressBar(String, long, String)
+     * @see ProgressBar#ProgressBar(String, long, int)
+     * @see ProgressBar#ProgressBar(String, long)
      */
     @Test
     public void testConstructors() throws Exception {
         //standard
-        progressBar = new ConsoleProgressBar("Test", 1000, 50, "B", false);
+        progressBar = new ProgressBar("Test", 1000, 50, "B", false);
         Assert.assertEquals("Test", progressBar.getTitle());
         Assert.assertEquals(1000, progressBar.getTotal());
         Assert.assertEquals(50, progressBar.getWidth());
@@ -166,43 +166,43 @@ public class ConsoleProgressBarTest {
         Assert.assertFalse(progressBar.getAutoPrint());
         
         //default auto print
-        progressBar = new ConsoleProgressBar("Test2", 5000, 55, "kb");
+        progressBar = new ProgressBar("Test2", 5000, 55, "kb");
         Assert.assertEquals("Test2", progressBar.getTitle());
         Assert.assertEquals(5000, progressBar.getTotal());
         Assert.assertEquals(55, progressBar.getWidth());
         Assert.assertEquals("kb", progressBar.getUnits());
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
+        Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
         
         //default width
-        progressBar = new ConsoleProgressBar("Test3", 51000, "MB");
+        progressBar = new ProgressBar("Test3", 51000, "MB");
         Assert.assertEquals("Test3", progressBar.getTitle());
         Assert.assertEquals(51000, progressBar.getTotal());
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_WIDTH, progressBar.getWidth());
+        Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_WIDTH, progressBar.getWidth());
         Assert.assertEquals("MB", progressBar.getUnits());
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
+        Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
         
         //no units
-        progressBar = new ConsoleProgressBar("Test4", 581000, 61);
+        progressBar = new ProgressBar("Test4", 581000, 61);
         Assert.assertEquals("Test4", progressBar.getTitle());
         Assert.assertEquals(581000, progressBar.getTotal());
         Assert.assertEquals(61, progressBar.getWidth());
         Assert.assertEquals("", progressBar.getUnits());
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
+        Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
         
         //default width, no units
-        progressBar = new ConsoleProgressBar("Test5", 1581000);
+        progressBar = new ProgressBar("Test5", 1581000);
         Assert.assertEquals("Test5", progressBar.getTitle());
         Assert.assertEquals(1581000, progressBar.getTotal());
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_WIDTH, progressBar.getWidth());
+        Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_WIDTH, progressBar.getWidth());
         Assert.assertEquals("", progressBar.getUnits());
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
+        Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
     }
     
     /**
      * JUnit test of get.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#get()
+     * @see ProgressBar#get()
      */
     @Test
     public void testGet() throws Exception {
@@ -308,7 +308,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of getPrintable.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getPrintable()
+     * @see ProgressBar#getPrintable()
      */
     @Test
     public void testGetPrintable() throws Exception {
@@ -323,20 +323,20 @@ public class ConsoleProgressBarTest {
         
         TestUtils.setField(progressBar, "update", false);
         expected = "";
-        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         
         //standard
         
         TestUtils.setField(progressBar, "update", true);
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         
         //no update
         
         Mockito.when(progressBar.getPercentageString()).thenReturn(" 52%");
         TestUtils.setField(progressBar, "update", false);
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         Mockito.when(progressBar.getPercentageString()).thenReturn(" 51%");
         
         //partial
@@ -344,42 +344,42 @@ public class ConsoleProgressBarTest {
         progressBar.setShowPercentage(false);
         TestUtils.setField(progressBar, "update", true);
         expected = "[==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(4) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(4) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowPercentage(true);
         
         progressBar.setShowBar(false);
         TestUtils.setField(progressBar, "update", true);
         expected = " 51%  5100B/10000B at 5.2B/s - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(17) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(17) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowBar(true);
         
         progressBar.setShowRatio(false);
         TestUtils.setField(progressBar, "update", true);
         expected = " 51% [==========>         ] at 5.2B/s - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowRatio(true);
         
         progressBar.setShowSpeed(false);
         TestUtils.setField(progressBar, "update", true);
         expected = " 51% [==========>         ]  5100B/10000B - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowSpeed(true);
         
         progressBar.setShowTimeRemaining(false);
         TestUtils.setField(progressBar, "update", true);
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s";
-        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(5) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(5) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowTimeRemaining(true);
         
         TestUtils.setField(progressBar, "update", true);
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         
         progressBar.setShowSpeed(false);
         progressBar.setShowTimeRemaining(false);
         TestUtils.setField(progressBar, "update", true);
         expected = " 51% [==========>         ]  5100B/10000B";
-        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(25) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(25) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowSpeed(true);
         progressBar.setShowTimeRemaining(true);
         
@@ -389,7 +389,7 @@ public class ConsoleProgressBarTest {
         progressBar.setShowTimeRemaining(false);
         TestUtils.setField(progressBar, "update", true);
         expected = " 51%";
-        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(36) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(36) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowBar(true);
         progressBar.setShowRatio(true);
         progressBar.setShowSpeed(true);
@@ -400,22 +400,22 @@ public class ConsoleProgressBarTest {
         progressBar.setShowTimeRemaining(false);
         TestUtils.setField(progressBar, "update", true);
         expected = "[==========>         ]  5100B/10000B";
-        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowPercentage(true);
         progressBar.setShowSpeed(true);
         progressBar.setShowTimeRemaining(true);
         
         TestUtils.setField(progressBar, "update", true);
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
-        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ConsoleProgressBar.ENDCAP), progressBar.getPrintable());
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
     }
     
     /**
      * JUnit test of update.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#update(long, boolean)
-     * @see ConsoleProgressBar#update(long)
+     * @see ProgressBar#update(long, boolean)
+     * @see ProgressBar#update(long)
      */
     @Test
     public void testUpdate() throws Exception {
@@ -494,21 +494,21 @@ public class ConsoleProgressBarTest {
         Assert.assertEquals(1, rollingProgress.size());
         Assert.assertEquals(1, rollingUpdate.size());
         TestUtils.setField(progressBar, "update", false);
-        Thread.sleep((long) (ConsoleProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 1.2));
+        Thread.sleep((long) (ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 1.2));
         Assert.assertTrue(progressBar.update(3000));
         Assert.assertEquals(3000L, progressBar.getProgress());
         Assert.assertEquals(3000L, progressBar.getCurrent());
         Assert.assertEquals(2, rollingProgress.size());
         Assert.assertEquals(2, rollingUpdate.size());
         TestUtils.setField(progressBar, "update", false);
-        Thread.sleep((long) (ConsoleProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 0.2));
+        Thread.sleep((long) (ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 0.2));
         Assert.assertFalse(progressBar.update(4000));
         Assert.assertEquals(4000L, progressBar.getProgress());
         Assert.assertEquals(3000L, progressBar.getCurrent());
         Assert.assertEquals(2, rollingProgress.size());
         Assert.assertEquals(2, rollingUpdate.size());
         TestUtils.setField(progressBar, "update", false);
-        Thread.sleep(ConsoleProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY);
+        Thread.sleep(ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY);
         Assert.assertTrue(progressBar.update(5000));
         Assert.assertEquals(5000L, progressBar.getProgress());
         Assert.assertEquals(5000L, progressBar.getCurrent());
@@ -553,7 +553,7 @@ public class ConsoleProgressBarTest {
         Assert.assertEquals(1, rollingUpdate.size());
         Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).print();
-        Thread.sleep((long) (ConsoleProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 1.2));
+        Thread.sleep((long) (ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 1.2));
         Assert.assertFalse(progressBar.update(3000));
         Assert.assertEquals(3000L, progressBar.getProgress());
         Assert.assertEquals(3000L, progressBar.getCurrent());
@@ -561,7 +561,7 @@ public class ConsoleProgressBarTest {
         Assert.assertEquals(2, rollingUpdate.size());
         Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
         Mockito.verify(progressBar, VerificationModeFactory.times(3)).print();
-        Thread.sleep((long) (ConsoleProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 0.2));
+        Thread.sleep((long) (ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 0.2));
         Assert.assertFalse(progressBar.update(4000));
         Assert.assertEquals(4000L, progressBar.getProgress());
         Assert.assertEquals(3000L, progressBar.getCurrent());
@@ -569,7 +569,7 @@ public class ConsoleProgressBarTest {
         Assert.assertEquals(2, rollingUpdate.size());
         Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
         Mockito.verify(progressBar, VerificationModeFactory.times(3)).print();
-        Thread.sleep(ConsoleProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY);
+        Thread.sleep(ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY);
         Assert.assertFalse(progressBar.update(5000));
         Assert.assertEquals(5000L, progressBar.getProgress());
         Assert.assertEquals(5000L, progressBar.getCurrent());
@@ -680,7 +680,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of addOne.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#addOne()
+     * @see ProgressBar#addOne()
      */
     @Test
     public void testAddOne() throws Exception {
@@ -700,7 +700,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of print.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#print()
+     * @see ProgressBar#print()
      */
     @Test
     public void testPrint() throws Exception {
@@ -734,7 +734,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of getRatio.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getRatio()
+     * @see ProgressBar#getRatio()
      */
     @Test
     public void testGetRatio() throws Exception {
@@ -797,7 +797,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of getPercentage.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getPercentage()
+     * @see ProgressBar#getPercentage()
      */
     @Test
     public void testGetPercentage() throws Exception {
@@ -860,7 +860,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of getLastSpeed.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getLastSpeed()
+     * @see ProgressBar#getLastSpeed()
      */
     @Test
     public void testGetLastSpeed() throws Exception {
@@ -959,7 +959,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of getAverageSpeed.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getAverageSpeed()
+     * @see ProgressBar#getAverageSpeed()
      */
     @Test
     public void testGetAverageSpeed() throws Exception {
@@ -1038,7 +1038,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of getRollingAverageSpeed.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getRollingAverageSpeed()
+     * @see ProgressBar#getRollingAverageSpeed()
      */
     @Test
     public void testGetRollingAverageSpeed() throws Exception {
@@ -1128,7 +1128,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of getTotalDuration.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getTotalDuration()
+     * @see ProgressBar#getTotalDuration()
      */
     @Test
     public void testGetTotalDuration() throws Exception {
@@ -1187,7 +1187,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of getTimeRemaining.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getTimeRemaining()
+     * @see ProgressBar#getTimeRemaining()
      */
     @Test
     public void testGetTimeRemaining() throws Exception {
@@ -1338,7 +1338,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of isComplete.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#isComplete()
+     * @see ProgressBar#isComplete()
      */
     @Test
     public void testIsComplete() throws Exception {
@@ -1365,9 +1365,9 @@ public class ConsoleProgressBarTest {
      * JUnit test of complete.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#complete(boolean, String)
-     * @see ConsoleProgressBar#complete(boolean)
-     * @see ConsoleProgressBar#complete()
+     * @see ProgressBar#complete(boolean, String)
+     * @see ProgressBar#complete(boolean)
+     * @see ProgressBar#complete()
      */
     @Test
     public void testComplete() throws Exception {
@@ -1507,7 +1507,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of getTitleString.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getTitleString()
+     * @see ProgressBar#getTitleString()
      */
     @Test
     public void testGetTitleString() throws Exception {
@@ -1529,7 +1529,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of getPercentageString.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getPercentageString()
+     * @see ProgressBar#getPercentageString()
      */
     @Test
     public void testGetPercentageString() throws Exception {
@@ -1586,7 +1586,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of getBarString.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getBarString()
+     * @see ProgressBar#getBarString()
      */
     @Test
     public void testGetBarString() throws Exception {
@@ -1643,7 +1643,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of getRatioString.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getRatioString()
+     * @see ProgressBar#getRatioString()
      */
     @Test
     public void testGetRatioString() throws Exception {
@@ -1700,7 +1700,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of getSpeedString.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getSpeedString()
+     * @see ProgressBar#getSpeedString()
      */
     @Test
     public void testGetSpeedString() throws Exception {
@@ -1739,7 +1739,7 @@ public class ConsoleProgressBarTest {
      * JUnit test of getTimeRemainingString.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getTimeRemainingString()
+     * @see ProgressBar#getTimeRemainingString()
      */
     @Test
     public void testGetTimeRemainingString() throws Exception {
@@ -1890,11 +1890,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of getTitle.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getTitle()
+     * @see ProgressBar#getTitle()
      */
     @Test
     public void testGetTitle() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         TestUtils.setField(sut, "title", "test title");
         Assert.assertEquals("test title", sut.getTitle());
     }
@@ -1903,11 +1903,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of getTotal.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getTotal()
+     * @see ProgressBar#getTotal()
      */
     @Test
     public void testGetTotal() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         TestUtils.setField(sut, "total", 87000L);
         Assert.assertEquals(87000L, sut.getTotal());
     }
@@ -1916,11 +1916,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of getProgress.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getProgress()
+     * @see ProgressBar#getProgress()
      */
     @Test
     public void testGetProgress() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         TestUtils.setField(sut, "progress", 51L);
         Assert.assertEquals(51L, sut.getProgress());
     }
@@ -1929,11 +1929,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of getCurrent.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getCurrent()
+     * @see ProgressBar#getCurrent()
      */
     @Test
     public void testGetCurrent() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         TestUtils.setField(sut, "current", 50400L);
         Assert.assertEquals(50400L, sut.getCurrent());
     }
@@ -1942,11 +1942,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of getPrevious.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getPrevious()
+     * @see ProgressBar#getPrevious()
      */
     @Test
     public void testGetPrevious() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         TestUtils.setField(sut, "previous", 11123L);
         Assert.assertEquals(11123L, sut.getPrevious());
     }
@@ -1955,11 +1955,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of getInitialProgress.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getInitialProgress()
+     * @see ProgressBar#getInitialProgress()
      */
     @Test
     public void testGetInitialProgress() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         TestUtils.setField(sut, "initialProgress", 75436L);
         Assert.assertEquals(75436L, sut.getInitialProgress());
     }
@@ -1968,11 +1968,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of getInitialDuration.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getInitialDuration()
+     * @see ProgressBar#getInitialDuration()
      */
     @Test
     public void testGetInitialDuration() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         TestUtils.setField(sut, "initialDuration", 32554778965L);
         Assert.assertEquals(32554778965L, sut.getInitialDuration());
     }
@@ -1981,11 +1981,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of getCurrentUpdate.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getCurrentUpdate()
+     * @see ProgressBar#getCurrentUpdate()
      */
     @Test
     public void testGetCurrentUpdate() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         TestUtils.setField(sut, "currentUpdate", 641L);
         Assert.assertEquals(641L, sut.getCurrentUpdate());
     }
@@ -1994,11 +1994,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of getPreviousUpdate.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getPreviousUpdate()
+     * @see ProgressBar#getPreviousUpdate()
      */
     @Test
     public void testGetPreviousUpdate() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         TestUtils.setField(sut, "previousUpdate", 15462L);
         Assert.assertEquals(15462L, sut.getPreviousUpdate());
     }
@@ -2007,11 +2007,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of getFirstUpdate.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getFirstUpdate()
+     * @see ProgressBar#getFirstUpdate()
      */
     @Test
     public void testGetFirstUpdate() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         TestUtils.setField(sut, "firstUpdate", 8745100L);
         Assert.assertEquals(8745100L, sut.getFirstUpdate());
     }
@@ -2020,11 +2020,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of getWidth.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getWidth()
+     * @see ProgressBar#getWidth()
      */
     @Test
     public void testGetWidth() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         TestUtils.setField(sut, "width", 163);
         Assert.assertEquals(163, sut.getWidth());
     }
@@ -2033,11 +2033,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of getUnits.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getUnits()
+     * @see ProgressBar#getUnits()
      */
     @Test
     public void testGetUnits() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         TestUtils.setField(sut, "units", "test unit");
         Assert.assertEquals("test unit", sut.getUnits());
     }
@@ -2046,11 +2046,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of getAutoPrint.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getAutoPrint()
+     * @see ProgressBar#getAutoPrint()
      */
     @Test
     public void testGetAutoPrint() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         TestUtils.setField(sut, "autoPrint", false);
         Assert.assertFalse(sut.getAutoPrint());
         TestUtils.setField(sut, "autoPrint", true);
@@ -2061,12 +2061,12 @@ public class ConsoleProgressBarTest {
      * JUnit test of getShowPercentage.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getShowPercentage()
+     * @see ProgressBar#getShowPercentage()
      */
     @Test
     public void testGetShowPercentage() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_SHOW_PERCENTAGE, sut.getShowPercentage());
+        ProgressBar sut = new ProgressBar("", 0);
+        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_PERCENTAGE, sut.getShowPercentage());
         TestUtils.setField(sut, "showPercentage", false);
         Assert.assertFalse(sut.getShowPercentage());
         TestUtils.setField(sut, "showPercentage", true);
@@ -2077,12 +2077,12 @@ public class ConsoleProgressBarTest {
      * JUnit test of getShowBar.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getShowBar()
+     * @see ProgressBar#getShowBar()
      */
     @Test
     public void testGetShowBar() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_SHOW_BAR, sut.getShowBar());
+        ProgressBar sut = new ProgressBar("", 0);
+        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_BAR, sut.getShowBar());
         TestUtils.setField(sut, "showBar", false);
         Assert.assertFalse(sut.getShowBar());
         TestUtils.setField(sut, "showBar", true);
@@ -2093,12 +2093,12 @@ public class ConsoleProgressBarTest {
      * JUnit test of getShowRatio.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getShowRatio()
+     * @see ProgressBar#getShowRatio()
      */
     @Test
     public void testGetShowRatio() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_SHOW_RATIO, sut.getShowRatio());
+        ProgressBar sut = new ProgressBar("", 0);
+        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_RATIO, sut.getShowRatio());
         TestUtils.setField(sut, "showRatio", false);
         Assert.assertFalse(sut.getShowRatio());
         TestUtils.setField(sut, "showRatio", true);
@@ -2109,12 +2109,12 @@ public class ConsoleProgressBarTest {
      * JUnit test of getShowSpeed.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getShowSpeed()
+     * @see ProgressBar#getShowSpeed()
      */
     @Test
     public void testGetShowSpeed() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_SHOW_SPEED, sut.getShowSpeed());
+        ProgressBar sut = new ProgressBar("", 0);
+        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_SPEED, sut.getShowSpeed());
         TestUtils.setField(sut, "showSpeed", false);
         Assert.assertFalse(sut.getShowSpeed());
         TestUtils.setField(sut, "showSpeed", true);
@@ -2125,12 +2125,12 @@ public class ConsoleProgressBarTest {
      * JUnit test of getShowTimeRemaining.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#getShowTimeRemaining()
+     * @see ProgressBar#getShowTimeRemaining()
      */
     @Test
     public void testGetShowTimeRemaining() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_SHOW_TIME_REMAINING, sut.getShowTimeRemaining());
+        ProgressBar sut = new ProgressBar("", 0);
+        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_TIME_REMAINING, sut.getShowTimeRemaining());
         TestUtils.setField(sut, "showTimeRemaining", false);
         Assert.assertFalse(sut.getShowTimeRemaining());
         TestUtils.setField(sut, "showTimeRemaining", true);
@@ -2141,11 +2141,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of setInitialProgress.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#setInitialProgress(long)
+     * @see ProgressBar#setInitialProgress(long)
      */
     @Test
     public void testSetInitialProgress() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         sut.setInitialProgress(74461210L);
         Assert.assertEquals(74461210L, (long) TestUtils.getField(sut, "initialProgress"));
     }
@@ -2154,11 +2154,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of setInitialDuration.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#setInitialDuration(long)
+     * @see ProgressBar#setInitialDuration(long)
      */
     @Test
     public void testSetInitialDuration() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         sut.setInitialDuration(158L);
         Assert.assertEquals(158L, (long) TestUtils.getField(sut, "initialDuration"));
     }
@@ -2167,11 +2167,11 @@ public class ConsoleProgressBarTest {
      * JUnit test of setAutoPrint.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#setAutoPrint(boolean)
+     * @see ProgressBar#setAutoPrint(boolean)
      */
     @Test
     public void testSetAutoPrint() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
+        ProgressBar sut = new ProgressBar("", 0);
         sut.setAutoPrint(false);
         Assert.assertFalse((boolean) TestUtils.getField(sut, "autoPrint"));
         sut.setAutoPrint(true);
@@ -2182,12 +2182,12 @@ public class ConsoleProgressBarTest {
      * JUnit test of setShowPercentage.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#setShowPercentage(boolean)
+     * @see ProgressBar#setShowPercentage(boolean)
      */
     @Test
     public void testSetShowPercentage() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_SHOW_PERCENTAGE, TestUtils.getField(sut, "showPercentage"));
+        ProgressBar sut = new ProgressBar("", 0);
+        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_PERCENTAGE, TestUtils.getField(sut, "showPercentage"));
         sut.setShowPercentage(false);
         Assert.assertFalse((boolean) TestUtils.getField(sut, "showPercentage"));
         sut.setShowPercentage(true);
@@ -2198,12 +2198,12 @@ public class ConsoleProgressBarTest {
      * JUnit test of setShowBar.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#setShowBar(boolean)
+     * @see ProgressBar#setShowBar(boolean)
      */
     @Test
     public void testSetShowBar() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_SHOW_BAR, TestUtils.getField(sut, "showBar"));
+        ProgressBar sut = new ProgressBar("", 0);
+        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_BAR, TestUtils.getField(sut, "showBar"));
         sut.setShowBar(false);
         Assert.assertFalse((boolean) TestUtils.getField(sut, "showBar"));
         sut.setShowBar(true);
@@ -2214,12 +2214,12 @@ public class ConsoleProgressBarTest {
      * JUnit test of setShowRatio.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#setShowRatio(boolean)
+     * @see ProgressBar#setShowRatio(boolean)
      */
     @Test
     public void testSetShowRatio() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_SHOW_RATIO, TestUtils.getField(sut, "showRatio"));
+        ProgressBar sut = new ProgressBar("", 0);
+        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_RATIO, TestUtils.getField(sut, "showRatio"));
         sut.setShowRatio(false);
         Assert.assertFalse((boolean) TestUtils.getField(sut, "showRatio"));
         sut.setShowRatio(true);
@@ -2230,12 +2230,12 @@ public class ConsoleProgressBarTest {
      * JUnit test of setShowSpeed.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#setShowSpeed(boolean)
+     * @see ProgressBar#setShowSpeed(boolean)
      */
     @Test
     public void testSetShowSpeed() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_SHOW_SPEED, TestUtils.getField(sut, "showSpeed"));
+        ProgressBar sut = new ProgressBar("", 0);
+        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_SPEED, TestUtils.getField(sut, "showSpeed"));
         sut.setShowSpeed(false);
         Assert.assertFalse((boolean) TestUtils.getField(sut, "showSpeed"));
         sut.setShowSpeed(true);
@@ -2246,12 +2246,12 @@ public class ConsoleProgressBarTest {
      * JUnit test of setShowTimeRemaining.
      *
      * @throws Exception When there is an exception.
-     * @see ConsoleProgressBar#setShowTimeRemaining(boolean)
+     * @see ProgressBar#setShowTimeRemaining(boolean)
      */
     @Test
     public void testSetShowTimeRemaining() throws Exception {
-        ConsoleProgressBar sut = new ConsoleProgressBar("", 0);
-        Assert.assertEquals(ConsoleProgressBar.DEFAULT_SHOW_TIME_REMAINING, TestUtils.getField(sut, "showTimeRemaining"));
+        ProgressBar sut = new ProgressBar("", 0);
+        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_TIME_REMAINING, TestUtils.getField(sut, "showTimeRemaining"));
         sut.setShowTimeRemaining(false);
         Assert.assertFalse((boolean) TestUtils.getField(sut, "showTimeRemaining"));
         sut.setShowTimeRemaining(true);

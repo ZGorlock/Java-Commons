@@ -11,7 +11,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import commons.console.ConsoleProgressBar;
+import commons.console.ProgressBar;
 import commons.string.StringUtility;
 import commons.test.TestUtils;
 import org.junit.After;
@@ -111,12 +111,12 @@ public class ProgressBarInputStreamTest {
     @Test
     public void testConstructors() throws Exception {
         ProgressBarInputStream sut;
-        ConsoleProgressBar progressBar;
+        ProgressBar progressBar;
         InputStream inputStream = new ByteArrayInputStream("test".getBytes(StandardCharsets.UTF_8));
         
         //standard
         sut = new ProgressBarInputStream("test", inputStream, 4);
-        progressBar = (ConsoleProgressBar) TestUtils.getField(sut, "progressBar");
+        progressBar = (ProgressBar) TestUtils.getField(sut, "progressBar");
         Assert.assertEquals("test", progressBar.getTitle());
         Assert.assertEquals(4, progressBar.getTotal());
         Assert.assertEquals("B", progressBar.getUnits());
@@ -124,7 +124,7 @@ public class ProgressBarInputStreamTest {
         
         //default title
         sut = new ProgressBarInputStream(inputStream, 100);
-        progressBar = (ConsoleProgressBar) TestUtils.getField(sut, "progressBar");
+        progressBar = (ProgressBar) TestUtils.getField(sut, "progressBar");
         Assert.assertEquals("", progressBar.getTitle());
         Assert.assertEquals(100, progressBar.getTotal());
         Assert.assertEquals("B", progressBar.getUnits());
@@ -141,7 +141,7 @@ public class ProgressBarInputStreamTest {
     @Test
     public void testRead() throws Exception {
         ProgressBarInputStream sut;
-        ConsoleProgressBar progressBar;
+        ProgressBar progressBar;
         InputStream inputStream;
         byte[] buffer;
         int read;
@@ -149,7 +149,7 @@ public class ProgressBarInputStreamTest {
         //standard
         inputStream = new ByteArrayInputStream(StringUtility.repeatString("test", 50).getBytes(StandardCharsets.UTF_8));
         sut = new ProgressBarInputStream("test", inputStream, 200);
-        progressBar = Mockito.mock(ConsoleProgressBar.class);
+        progressBar = Mockito.mock(ProgressBar.class);
         TestUtils.setField(sut, "progressBar", progressBar);
         buffer = new byte[5];
         read = sut.read(buffer, 0, 5);
@@ -173,7 +173,7 @@ public class ProgressBarInputStreamTest {
         //end of stream
         inputStream = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
         sut = new ProgressBarInputStream("test", inputStream, 200);
-        progressBar = Mockito.mock(ConsoleProgressBar.class);
+        progressBar = Mockito.mock(ProgressBar.class);
         TestUtils.setField(sut, "progressBar", progressBar);
         buffer = new byte[5];
         read = sut.read(buffer, 0, 5);
@@ -182,7 +182,7 @@ public class ProgressBarInputStreamTest {
         //overflow
         inputStream = new ByteArrayInputStream(StringUtility.repeatString("test", 50).getBytes(StandardCharsets.UTF_8));
         sut = new ProgressBarInputStream("test", inputStream, 200);
-        progressBar = Mockito.mock(ConsoleProgressBar.class);
+        progressBar = Mockito.mock(ProgressBar.class);
         TestUtils.setField(sut, "progressBar", progressBar);
         buffer = new byte[200];
         TestUtils.assertInputStreamReadThrowsException(IndexOutOfBoundsException.class,
@@ -199,7 +199,7 @@ public class ProgressBarInputStreamTest {
     public void testClose() throws Exception {
         InputStream inputStream = new ByteArrayInputStream(StringUtility.repeatString("test", 50).getBytes(StandardCharsets.UTF_8));
         ProgressBarInputStream sut = new ProgressBarInputStream("test", inputStream, 200);
-        ConsoleProgressBar progressBar = Mockito.mock(ConsoleProgressBar.class);
+        ProgressBar progressBar = Mockito.mock(ProgressBar.class);
         TestUtils.setField(sut, "progressBar", progressBar);
         sut.close();
         Assert.assertEquals(0L, (long) TestUtils.getField(sut, "progress"));
