@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import commons.access.Project;
@@ -163,6 +164,8 @@ public class StringUtilityTest {
      * @see StringUtility#tokenize(String, String)
      * @see StringUtility#tokenize(String)
      * @see StringUtility#tokenize(String, int)
+     * @see StringUtility#tokenize(String, List, boolean)
+     * @see StringUtility#tokenize(String, List)
      */
     @Test
     public void testTokenize() throws Exception {
@@ -172,101 +175,128 @@ public class StringUtilityTest {
         
         tokens = StringUtility.tokenize("This is a string");
         Assert.assertEquals(4, tokens.size());
-        Assert.assertEquals("This", tokens.get(0));
-        Assert.assertEquals("is", tokens.get(1));
-        Assert.assertEquals("a", tokens.get(2));
-        Assert.assertEquals("string", tokens.get(3));
+        Assert.assertArrayEquals(new String[] {"This", "is", "a", "string"}, tokens.toArray());
         
         tokens = StringUtility.tokenize("Thisisastring");
         Assert.assertEquals(1, tokens.size());
-        Assert.assertEquals("Thisisastring", tokens.get(0));
+        Assert.assertArrayEquals(new String[] {"Thisisastring"}, tokens.toArray());
         
         tokens = StringUtility.tokenize("");
         Assert.assertEquals(1, tokens.size());
-        Assert.assertEquals("", tokens.get(0));
+        Assert.assertArrayEquals(new String[] {""}, tokens.toArray());
+        
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null));
         
         //delimiter
         
         tokens = StringUtility.tokenize("This is a string,This is another string,And another", ",");
         Assert.assertEquals(3, tokens.size());
-        Assert.assertEquals("This is a string", tokens.get(0));
-        Assert.assertEquals("This is another string", tokens.get(1));
-        Assert.assertEquals("And another", tokens.get(2));
+        Assert.assertArrayEquals(new String[] {"This is a string", "This is another string", "And another"}, tokens.toArray());
         
         tokens = StringUtility.tokenize("This is a string|This is another string|And another", "\\|");
         Assert.assertEquals(3, tokens.size());
-        Assert.assertEquals("This is a string", tokens.get(0));
-        Assert.assertEquals("This is another string", tokens.get(1));
-        Assert.assertEquals("And another", tokens.get(2));
+        Assert.assertArrayEquals(new String[] {"This is a string", "This is another string", "And another"}, tokens.toArray());
         
         tokens = StringUtility.tokenize("This is a string,This is another string,And another", "is");
         Assert.assertEquals(5, tokens.size());
-        Assert.assertEquals("Th", tokens.get(0));
-        Assert.assertEquals(" ", tokens.get(1));
-        Assert.assertEquals(" a string,Th", tokens.get(2));
-        Assert.assertEquals(" ", tokens.get(3));
-        Assert.assertEquals(" another string,And another", tokens.get(4));
+        Assert.assertArrayEquals(new String[] {"Th", " ", " a string,Th", " ", " another string,And another"}, tokens.toArray());
         
         tokens = StringUtility.tokenize("string", "");
         Assert.assertEquals(6, tokens.size());
-        Assert.assertEquals("s", tokens.get(0));
-        Assert.assertEquals("t", tokens.get(1));
-        Assert.assertEquals("r", tokens.get(2));
-        Assert.assertEquals("i", tokens.get(3));
-        Assert.assertEquals("n", tokens.get(4));
-        Assert.assertEquals("g", tokens.get(5));
+        Assert.assertArrayEquals(new String[] {"s", "t", "r", "i", "n", "g"}, tokens.toArray());
+        
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null, "\\|"));
+        
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize("string", (String) null));
+        
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null, (String) null));
         
         //hard
         
         tokens = StringUtility.tokenize("|This is a string|This is another string|And another|", "\\|", false);
         Assert.assertEquals(4, tokens.size());
-        Assert.assertEquals("", tokens.get(0));
-        Assert.assertEquals("This is a string", tokens.get(1));
-        Assert.assertEquals("This is another string", tokens.get(2));
-        Assert.assertEquals("And another", tokens.get(3));
+        Assert.assertArrayEquals(new String[] {"", "This is a string", "This is another string", "And another"}, tokens.toArray());
         
         tokens = StringUtility.tokenize("|This is a string|This is another string|And another|", "\\|", true);
         Assert.assertEquals(5, tokens.size());
-        Assert.assertEquals("", tokens.get(0));
-        Assert.assertEquals("This is a string", tokens.get(1));
-        Assert.assertEquals("This is another string", tokens.get(2));
-        Assert.assertEquals("And another", tokens.get(3));
-        Assert.assertEquals("", tokens.get(4));
+        Assert.assertArrayEquals(new String[] {"", "This is a string", "This is another string", "And another", ""}, tokens.toArray());
+        
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null, "\\|", true));
+        
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize("string", (String) null, true));
+        
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null, (String) null, true));
         
         //length
         
         tokens = StringUtility.tokenize("This is a string,This is another string,And another", 8);
         Assert.assertEquals(7, tokens.size());
-        Assert.assertEquals("This is ", tokens.get(0));
-        Assert.assertEquals("a string", tokens.get(1));
-        Assert.assertEquals(",This is", tokens.get(2));
-        Assert.assertEquals(" another", tokens.get(3));
-        Assert.assertEquals(" string,", tokens.get(4));
-        Assert.assertEquals("And anot", tokens.get(5));
-        Assert.assertEquals("her", tokens.get(6));
+        Assert.assertArrayEquals(new String[] {"This is ", "a string", ",This is", " another", " string,", "And anot", "her"}, tokens.toArray());
         
         tokens = StringUtility.tokenize("This is a string|This is another string|And another", 12);
         Assert.assertEquals(5, tokens.size());
-        Assert.assertEquals("This is a st", tokens.get(0));
-        Assert.assertEquals("ring|This is", tokens.get(1));
-        Assert.assertEquals(" another str", tokens.get(2));
-        Assert.assertEquals("ing|And anot", tokens.get(3));
-        Assert.assertEquals("her", tokens.get(4));
+        Assert.assertArrayEquals(new String[] {"This is a st", "ring|This is", " another str", "ing|And anot", "her"}, tokens.toArray());
         
         tokens = StringUtility.tokenize("This is a string,This is another string,And another", 21);
         Assert.assertEquals(3, tokens.size());
-        Assert.assertEquals("This is a string,This", tokens.get(0));
-        Assert.assertEquals(" is another string,An", tokens.get(1));
-        Assert.assertEquals("d another", tokens.get(2));
+        Assert.assertArrayEquals(new String[] {"This is a string,This", " is another string,An", "d another"}, tokens.toArray());
         
         tokens = StringUtility.tokenize("string", 1);
         Assert.assertEquals(6, tokens.size());
-        Assert.assertEquals("s", tokens.get(0));
-        Assert.assertEquals("t", tokens.get(1));
-        Assert.assertEquals("r", tokens.get(2));
-        Assert.assertEquals("i", tokens.get(3));
-        Assert.assertEquals("n", tokens.get(4));
-        Assert.assertEquals("g", tokens.get(5));
+        Assert.assertArrayEquals(new String[] {"s", "t", "r", "i", "n", "g"}, tokens.toArray());
+        
+        tokens = StringUtility.tokenize("string", 0);
+        Assert.assertEquals(1, tokens.size());
+        Assert.assertArrayEquals(new String[] {"string"}, tokens.toArray());
+        
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null, 1));
+        
+        //token list
+        
+        tokens = StringUtility.tokenize("catdogdogbatantdog", Arrays.asList("ant", "bat", "cat", "dog"));
+        Assert.assertEquals(6, tokens.size());
+        Assert.assertArrayEquals(new String[] {"cat", "dog", "dog", "bat", "ant", "dog"}, tokens.toArray());
+        
+        tokens = StringUtility.tokenize("tetestestestte", Arrays.asList("es", "te", "test"), true);
+        Assert.assertEquals(5, tokens.size());
+        Assert.assertArrayEquals(new String[] {"te", "test", "es", "test", "te"}, tokens.toArray());
+        
+        tokens = StringUtility.tokenize("tetestestestte", Arrays.asList("es", "te", "test"), false);
+        Assert.assertNull(tokens);
+        
+        tokens = StringUtility.tokenize("tetestestteste", Arrays.asList("te", "tes", "test"));
+        Assert.assertNull(tokens);
+        
+        tokens = StringUtility.tokenize("quattuoroctoginmilliamilliamilliamilliasescenquattuorquinquaginmilliamilliamilliaduocenseptendecmilliamilliaundecmilliaquingenquinquadragintillion",
+                Arrays.asList("thousand", "mi", "bi", "tri", "quadri", "quinti", "sexti", "septi", "octi", "noni", "un", "duo", "tre", "quattuor", "quin", "sex", "septen", "octo", "novem", "dec", "vigin", "trigin", "quadragin", "quinquagin", "sexagin", "septuagin", "octogin", "nonagin", "cen", "duocen", "trecen", "quadringen", "quingen", "sescen", "septingen", "octingen", "nongen", "millia", "llion", "illion", "tillion"));
+        Assert.assertEquals(24, tokens.size());
+        Assert.assertArrayEquals(new String[] {"quattuor", "octogin", "millia", "millia", "millia", "millia", "sescen", "quattuor", "quinquagin", "millia", "millia", "millia", "duocen", "septen", "dec", "millia", "millia", "un", "dec", "millia", "quingen", "quin", "quadragin", "tillion"}, tokens.toArray());
+        
+        tokens = StringUtility.tokenize("", Arrays.asList("ant", "bat", "cat", "dog"));
+        Assert.assertNull(tokens);
+        
+        tokens = StringUtility.tokenize("catdogdogbatantdog", Collections.emptyList());
+        Assert.assertNull(tokens);
+        
+        tokens = StringUtility.tokenize("cat￨dog�dog�bat￦ant￣dog�", Arrays.asList("ant￣", "bat￦", "cat￨", "dog�"));
+        Assert.assertNull(tokens);
+        
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null, Arrays.asList("ant", "bat", "cat", "dog")));
+        
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize("catdogdogbatantdog", (List<String>) null));
+        
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null, (List<String>) null));
     }
     
     /**
@@ -1437,34 +1467,34 @@ public class StringUtilityTest {
     @Test
     public void testNumberOfOccurrences() throws Exception {
         //standard
-        Assert.assertEquals(5, StringUtility.numberOfOccurrences("a", "That hat is a great hat"));
-        Assert.assertEquals(5, StringUtility.numberOfOccurrences(" ", "That hat is a great hat"));
-        Assert.assertEquals(3, StringUtility.numberOfOccurrences("hat", "That hat is a great hat"));
-        Assert.assertEquals(2, StringUtility.numberOfOccurrences("hat ", "That hat is a great hat"));
-        Assert.assertEquals(2, StringUtility.numberOfOccurrences(" hat", "That hat is a great hat"));
-        Assert.assertEquals(1, StringUtility.numberOfOccurrences(" hat ", "That hat is a great hat"));
-        Assert.assertEquals(1, StringUtility.numberOfOccurrences("great hat", "That hat is a great hat"));
-        Assert.assertEquals(3, StringUtility.numberOfOccurrences("t ", "That hat is a great hat"));
+        Assert.assertEquals(5, StringUtility.numberOfOccurrences("That hat is a great hat", "a"));
+        Assert.assertEquals(5, StringUtility.numberOfOccurrences("That hat is a great hat", " "));
+        Assert.assertEquals(3, StringUtility.numberOfOccurrences("That hat is a great hat", "hat"));
+        Assert.assertEquals(2, StringUtility.numberOfOccurrences("That hat is a great hat", "hat "));
+        Assert.assertEquals(2, StringUtility.numberOfOccurrences("That hat is a great hat", " hat"));
+        Assert.assertEquals(1, StringUtility.numberOfOccurrences("That hat is a great hat", " hat "));
+        Assert.assertEquals(1, StringUtility.numberOfOccurrences("That hat is a great hat", "great hat"));
+        Assert.assertEquals(3, StringUtility.numberOfOccurrences("That hat is a great hat", "t "));
         Assert.assertEquals(1, StringUtility.numberOfOccurrences("That hat is a great hat", "That hat is a great hat"));
-        Assert.assertEquals(24, StringUtility.numberOfOccurrences("", "That hat is a great hat"));
-        Assert.assertEquals(0, StringUtility.numberOfOccurrences("bad", "That hat is a great hat"));
-        Assert.assertEquals(0, StringUtility.numberOfOccurrences("  ", "That hat is a great hat"));
-        Assert.assertEquals(0, StringUtility.numberOfOccurrences("\n", "That hat is a great hat"));
+        Assert.assertEquals(24, StringUtility.numberOfOccurrences("That hat is a great hat", ""));
+        Assert.assertEquals(0, StringUtility.numberOfOccurrences("That hat is a great hat", "bad"));
+        Assert.assertEquals(0, StringUtility.numberOfOccurrences("That hat is a great hat", "  "));
+        Assert.assertEquals(0, StringUtility.numberOfOccurrences("That hat is a great hat", "\n"));
         
         //regex
-        Assert.assertEquals(5, StringUtility.numberOfOccurrences("\\s+", "That hat is a great hat"));
-        Assert.assertEquals(9, StringUtility.numberOfOccurrences("a|t", "That hat is a great hat"));
-        Assert.assertEquals(10, StringUtility.numberOfOccurrences("a|t|T", "That hat is a great hat"));
-        Assert.assertEquals(4, StringUtility.numberOfOccurrences("great|hat", "That hat is a great hat"));
-        Assert.assertEquals(1, StringUtility.numberOfOccurrences("^", "That hat is a great hat"));
-        Assert.assertEquals(1, StringUtility.numberOfOccurrences("$", "That hat is a great hat"));
+        Assert.assertEquals(5, StringUtility.numberOfOccurrences("That hat is a great hat", "\\s+"));
+        Assert.assertEquals(9, StringUtility.numberOfOccurrences("That hat is a great hat", "a|t"));
+        Assert.assertEquals(10, StringUtility.numberOfOccurrences("That hat is a great hat", "a|t|T"));
+        Assert.assertEquals(4, StringUtility.numberOfOccurrences("That hat is a great hat", "great|hat"));
+        Assert.assertEquals(1, StringUtility.numberOfOccurrences("That hat is a great hat", "^"));
+        Assert.assertEquals(1, StringUtility.numberOfOccurrences("That hat is a great hat", "$"));
         
         //substring
-        Assert.assertEquals(5, StringUtility.numberOfOccurrences("a", "That hat is a great hat", 0, 23));
-        Assert.assertEquals(4, StringUtility.numberOfOccurrences(" ", "That hat is a great hat", 3, 14));
-        Assert.assertEquals(2, StringUtility.numberOfOccurrences("hat", "That hat is a great hat", 0, 8));
-        Assert.assertEquals(3, StringUtility.numberOfOccurrences("\\s+", "That hat is a great hat", 7, 14));
-        Assert.assertEquals(4, StringUtility.numberOfOccurrences("a|t", "That hat is a great hat", 16, 23));
+        Assert.assertEquals(5, StringUtility.numberOfOccurrences("That hat is a great hat", "a", 0, 23));
+        Assert.assertEquals(4, StringUtility.numberOfOccurrences("That hat is a great hat", " ", 3, 14));
+        Assert.assertEquals(2, StringUtility.numberOfOccurrences("That hat is a great hat", "hat", 0, 8));
+        Assert.assertEquals(3, StringUtility.numberOfOccurrences("That hat is a great hat", "\\s+", 7, 14));
+        Assert.assertEquals(4, StringUtility.numberOfOccurrences("That hat is a great hat", "a|t", 16, 23));
     }
     
     /**
@@ -1478,14 +1508,15 @@ public class StringUtilityTest {
         //standard
         Assert.assertEquals("thisisastring", StringUtility.fixSpaces("thisisastring"));
         Assert.assertEquals("this is a string", StringUtility.fixSpaces("this is a string"));
-        Assert.assertEquals("this is a string ", StringUtility.fixSpaces("this   is  a string   "));
-        Assert.assertEquals(" this is a string ", StringUtility.fixSpaces("    this   is  a string  "));
+        Assert.assertEquals("this is a string", StringUtility.fixSpaces("this   is  a string"));
+        Assert.assertEquals("this is a string", StringUtility.fixSpaces(" this   is  a string   "));
+        Assert.assertEquals("this is a string", StringUtility.fixSpaces("    this   is  a string  "));
         
         //edge cases
         Assert.assertEquals("", StringUtility.fixSpaces(""));
-        Assert.assertEquals(" ", StringUtility.fixSpaces(" "));
-        Assert.assertEquals(" ", StringUtility.fixSpaces("  "));
-        Assert.assertEquals(" this is a string ", StringUtility.fixSpaces("    this  \r\n is  a\r\n string  "));
+        Assert.assertEquals("", StringUtility.fixSpaces(" "));
+        Assert.assertEquals("", StringUtility.fixSpaces("  "));
+        Assert.assertEquals("this is a string", StringUtility.fixSpaces("    this  \r\n is  a\r\n string  "));
     }
     
     /**
@@ -1673,6 +1704,30 @@ public class StringUtilityTest {
     }
     
     /**
+     * JUnit test of padLeftAbsolute.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#padLeftAbsolute(String, int, char)
+     * @see StringUtility#padLeftAbsolute(String, int)
+     */
+    @Test
+    public void testPadLeftAbsolute() throws Exception {
+        //valid
+        Assert.assertEquals("word", StringUtility.padLeftAbsolute("word", -1));
+        Assert.assertEquals("word", StringUtility.padLeftAbsolute("word", 0));
+        Assert.assertEquals(" word", StringUtility.padLeftAbsolute("word", 1));
+        Assert.assertEquals("     word", StringUtility.padLeftAbsolute("word", 5));
+        Assert.assertEquals("         word", StringUtility.padLeftAbsolute("word", 9));
+        
+        //specified padding
+        Assert.assertEquals("word", StringUtility.padLeftAbsolute("word", -1, '-'));
+        Assert.assertEquals("word", StringUtility.padLeftAbsolute("word", 0, '-'));
+        Assert.assertEquals("-word", StringUtility.padLeftAbsolute("word", 1, '-'));
+        Assert.assertEquals("-----word", StringUtility.padLeftAbsolute("word", 5, '-'));
+        Assert.assertEquals("---------word", StringUtility.padLeftAbsolute("word", 9, '-'));
+    }
+    
+    /**
      * JUnit test of padRight.
      *
      * @throws Exception When there is an exception.
@@ -1694,6 +1749,90 @@ public class StringUtilityTest {
         Assert.assertEquals("word", StringUtility.padRight("word", 1, '-'));
         Assert.assertEquals("word-", StringUtility.padRight("word", 5, '-'));
         Assert.assertEquals("word-----", StringUtility.padRight("word", 9, '-'));
+    }
+    
+    /**
+     * JUnit test of padRightAbsolute.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#padRightAbsolute(String, int, char)
+     * @see StringUtility#padRightAbsolute(String, int)
+     */
+    @Test
+    public void testPadRightAbsolute() throws Exception {
+        //valid
+        Assert.assertEquals("word", StringUtility.padRightAbsolute("word", -1));
+        Assert.assertEquals("word", StringUtility.padRightAbsolute("word", 0));
+        Assert.assertEquals("word ", StringUtility.padRightAbsolute("word", 1));
+        Assert.assertEquals("word     ", StringUtility.padRightAbsolute("word", 5));
+        Assert.assertEquals("word         ", StringUtility.padRightAbsolute("word", 9));
+        
+        //specified padding
+        Assert.assertEquals("word", StringUtility.padRightAbsolute("word", -1, '-'));
+        Assert.assertEquals("word", StringUtility.padRightAbsolute("word", 0, '-'));
+        Assert.assertEquals("word-", StringUtility.padRightAbsolute("word", 1, '-'));
+        Assert.assertEquals("word-----", StringUtility.padRightAbsolute("word", 5, '-'));
+        Assert.assertEquals("word---------", StringUtility.padRightAbsolute("word", 9, '-'));
+    }
+    
+    /**
+     * JUnit test of pad.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#pad(String, int, char)
+     * @see StringUtility#pad(String, int)
+     */
+    @Test
+    public void testPad() throws Exception {
+        //valid
+        Assert.assertEquals("word", StringUtility.pad("word", -1));
+        Assert.assertEquals("word", StringUtility.pad("word", 0));
+        Assert.assertEquals("word", StringUtility.pad("word", 1));
+        Assert.assertEquals("word", StringUtility.pad("word", 5));
+        Assert.assertEquals(" word ", StringUtility.pad("word", 6));
+        Assert.assertEquals("  word  ", StringUtility.pad("word", 8));
+        Assert.assertEquals("  word  ", StringUtility.pad("word", 9));
+        Assert.assertEquals("   word   ", StringUtility.pad("word", 10));
+        
+        //specified padding
+        Assert.assertEquals("word", StringUtility.pad("word", -1, '-'));
+        Assert.assertEquals("word", StringUtility.pad("word", 0, '-'));
+        Assert.assertEquals("word", StringUtility.pad("word", 1, '-'));
+        Assert.assertEquals("word", StringUtility.pad("word", 5, '-'));
+        Assert.assertEquals("-word-", StringUtility.pad("word", 6, '-'));
+        Assert.assertEquals("--word--", StringUtility.pad("word", 8, '-'));
+        Assert.assertEquals("--word--", StringUtility.pad("word", 9, '-'));
+        Assert.assertEquals("---word---", StringUtility.pad("word", 10, '-'));
+    }
+    
+    /**
+     * JUnit test of padAbsolute.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#padAbsolute(String, int, char)
+     * @see StringUtility#padAbsolute(String, int)
+     */
+    @Test
+    public void testPadAbsolute() throws Exception {
+        //valid
+        Assert.assertEquals("word", StringUtility.padAbsolute("word", -1));
+        Assert.assertEquals("word", StringUtility.padAbsolute("word", 0));
+        Assert.assertEquals(" word ", StringUtility.padAbsolute("word", 1));
+        Assert.assertEquals("     word     ", StringUtility.padAbsolute("word", 5));
+        Assert.assertEquals("      word      ", StringUtility.padAbsolute("word", 6));
+        Assert.assertEquals("        word        ", StringUtility.padAbsolute("word", 8));
+        Assert.assertEquals("         word         ", StringUtility.padAbsolute("word", 9));
+        Assert.assertEquals("          word          ", StringUtility.padAbsolute("word", 10));
+        
+        //specified padding
+        Assert.assertEquals("word", StringUtility.padAbsolute("word", -1, '-'));
+        Assert.assertEquals("word", StringUtility.padAbsolute("word", 0, '-'));
+        Assert.assertEquals("-word-", StringUtility.padAbsolute("word", 1, '-'));
+        Assert.assertEquals("-----word-----", StringUtility.padAbsolute("word", 5, '-'));
+        Assert.assertEquals("------word------", StringUtility.padAbsolute("word", 6, '-'));
+        Assert.assertEquals("--------word--------", StringUtility.padAbsolute("word", 8, '-'));
+        Assert.assertEquals("---------word---------", StringUtility.padAbsolute("word", 9, '-'));
+        Assert.assertEquals("----------word----------", StringUtility.padAbsolute("word", 10, '-'));
     }
     
     /**

@@ -231,7 +231,7 @@ public final class DateTimeUtility {
         if (timeMatcher.matches()) {
             int hour = Integer.parseInt(timeMatcher.group("hour"));
             int minute = Integer.parseInt(timeMatcher.group("minute"));
-            int second = (StringUtility.numberOfOccurrences(":", time) > 1) ? Integer.parseInt(timeMatcher.group("second")) : 0;
+            int second = (StringUtility.numberOfOccurrences(time, ":") > 1) ? Integer.parseInt(timeMatcher.group("second")) : 0;
             
             if (!validTime(hour, minute, second)) {
                 return time;
@@ -293,7 +293,7 @@ public final class DateTimeUtility {
         if (timeMatcher.matches()) {
             int hour = Integer.parseInt(timeMatcher.group("hour"));
             int minute = Integer.parseInt(timeMatcher.group("minute"));
-            int second = (StringUtility.numberOfOccurrences(":", time) > 1) ? Integer.parseInt(timeMatcher.group("second")) : 0;
+            int second = (StringUtility.numberOfOccurrences(time, ":") > 1) ? Integer.parseInt(timeMatcher.group("second")) : 0;
             
             if (!validTime(hour, minute, second)) {
                 return time;
@@ -706,7 +706,7 @@ public final class DateTimeUtility {
         if (timeMatcher.matches()) {
             int hour = Integer.parseInt(timeMatcher.group("hour"));
             int minute = Integer.parseInt(timeMatcher.group("minute"));
-            int second = (StringUtility.numberOfOccurrences(":", time) > 1) ? Integer.parseInt(timeMatcher.group("second")) : 0;
+            int second = (StringUtility.numberOfOccurrences(time, ":") > 1) ? Integer.parseInt(timeMatcher.group("second")) : 0;
             
             return validTime(hour, minute, second);
             
