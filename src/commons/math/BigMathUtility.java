@@ -107,6 +107,21 @@ public final class BigMathUtility {
      */
     public static final BigDecimal NEGATIVE_ONE = BigDecimal.ONE.negate();
     
+    /**
+     * A Big Decimal 10.
+     */
+    public static final BigDecimal TEN = BigDecimal.valueOf(10);
+    
+    /**
+     * A Big Decimal 100.
+     */
+    public static final BigDecimal ONE_HUNDRED = BigDecimal.valueOf(100);
+    
+    /**
+     * A Big Decimal 1000.
+     */
+    public static final BigDecimal ONE_THOUSAND = BigDecimal.valueOf(1000);
+    
     
     //Functions
     
@@ -1940,6 +1955,43 @@ public final class BigMathUtility {
      */
     public static boolean equalTo(BigDecimal n1, BigDecimal n2) {
         return (n1.compareTo(n2) == 0);
+    }
+    
+    /**
+     * Determines if a number is not equal to another number.
+     *
+     * @param n1 The first number.
+     * @param n2 The second number.
+     * @return Whether the first number is not equal to the second number or not.
+     */
+    public static boolean notEqualTo(BigDecimal n1, BigDecimal n2) {
+        return !equalTo(n1, n2);
+    }
+    
+    /**
+     * Determines if a number is greater than or equal to another number.
+     *
+     * @param n1 The first number.
+     * @param n2 The second number.
+     * @return Whether the first number is greater than or equal to the second number or not.
+     * @see #greaterThan(BigDecimal, BigDecimal)
+     * @see #equalTo(BigDecimal, BigDecimal)
+     */
+    public static boolean greaterThanOrEqualTo(BigDecimal n1, BigDecimal n2) {
+        return !lessThan(n1, n2);
+    }
+    
+    /**
+     * Determines if a number is less than or equal to another number.
+     *
+     * @param n1 The first number.
+     * @param n2 The second number.
+     * @return Whether the first number is less than or equal to the second number or not.
+     * @see #lessThan(BigDecimal, BigDecimal)
+     * @see #equalTo(BigDecimal, BigDecimal)
+     */
+    public static boolean lessThanOrEqualTo(BigDecimal n1, BigDecimal n2) {
+        return !greaterThan(n1, n2);
     }
     
 }
