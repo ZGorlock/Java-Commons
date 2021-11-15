@@ -286,7 +286,7 @@ public final class FilesystemMacro {
     public static List<File> findJarsInDirectoryThatContainFolder(File directory, String folderName) {
         List<File> found = new ArrayList<>();
         
-        for (File jar : Filesystem.getFilesRecursively(directory, ".*\\.jar")) {
+        for (File jar : Filesystem.getFilesRecursively(directory, (File file) -> file.getName().toLowerCase().endsWith(".jar"))) {
             File extractDir = Filesystem.createTemporaryDirectory();
             Archive.extract(jar, extractDir);
             File finding = new File(extractDir, folderName);

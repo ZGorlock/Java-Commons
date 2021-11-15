@@ -1570,7 +1570,7 @@ public class SpeechRecognizerTest {
         PowerMockito.when(WaveRecorder.class, "own", ArgumentMatchers.eq(speechTrainerClass)).thenCallRealMethod();
         
         //prepare
-        for (File recording : Filesystem.getFiles(testResources, "arctic_00\\d{2}\\.wav")) {
+        for (File recording : Filesystem.getFiles(testResources, (File file) -> file.getName().matches("arctic_00\\d{2}\\.wav"))) {
             Filesystem.copyFile(recording, trainingDirectory, true);
         }
         

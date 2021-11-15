@@ -823,19 +823,19 @@ public final class Filesystem {
             return new ArrayList<>();
         }
         
-        return new ArrayList<>(Arrays.asList(files));
+        return Arrays.asList(files);
     }
     
     /**
      * Returns a list of files that pass the specified filter in the specified directory and in all subdirectories that pass the filter.
      *
-     * @param directory       The directory to search for files in.
-     * @param regexFileFilter The filter for files.
-     * @param regexDirFilter  The filter for directories to enter.
+     * @param directory  The directory to search for files in.
+     * @param fileFilter The filter for files.
+     * @param dirFilter  The filter for directories to enter.
      * @return A list of files that were discovered.
-     * @see #getFilesRecursivelyHelper(File, String, String)
+     * @see #getFilesRecursivelyHelper(File, FileFilter, FileFilter)
      */
-    public static List<File> getFilesRecursively(File directory, String regexFileFilter, String regexDirFilter) {
+    public static List<File> getFilesRecursively(File directory, FileFilter fileFilter, FileFilter dirFilter) {
         if (!directory.isDirectory()) {
             if (logFilesystem()) {
                 logger.trace("Filesystem: The target directory is not a directory: {}", StringUtility.fileString(directory));
@@ -843,25 +843,45 @@ public final class Filesystem {
             return new ArrayList<>();
         }
         
-        return getFilesRecursivelyHelper(directory, regexFileFilter, regexDirFilter);
+        return getFilesRecursivelyHelper(directory, fileFilter, dirFilter);
     }
     
     /**
-     * Recursive helper for the getFilesRecursively() method.
+     * Returns a list of files that pass the specified filter in the specified directory and in all subdirectories.
      *
-     * @param directory       The directory to search for files in.
-     * @param regexFileFilter The filter for files.
-     * @param regexDirFilter  The filter for directories to enter.
+     * @param directory  The directory to search for files in.
+     * @param fileFilter The filter for files.
+     * @return A list of files that were discovered.
+     * @see #getFilesRecursively(File, FileFilter, FileFilter)
+     */
+    public static List<File> getFilesRecursively(File directory, FileFilter fileFilter) {
+        return getFilesRecursively(directory, fileFilter, dir -> true);
+    }
+    
+    /**
+     * Returns a list of files in the specified directory and in all subdirectories.
+     *
+     * @param directory The directory to search for files in.
+     * @return A list of files that were discovered.
+     * @see #getFilesRecursively(File, FileFilter)
+     */
+    public static List<File> getFilesRecursively(File directory) {
+        return getFilesRecursively(directory, file -> true);
+    }
+    
+    /**
+     * Recursive helper for the getFilesRecursively method.
+     *
+     * @param directory  The directory to search for files in.
+     * @param fileFilter The filter for files.
+     * @param dirFilter  The filter for directories to enter.
      * @return A list of files that were discovered.
      */
-    private static List<File> getFilesRecursivelyHelper(File directory, String regexFileFilter, String regexDirFilter) {
+    private static List<File> getFilesRecursivelyHelper(File directory, FileFilter fileFilter, FileFilter dirFilter) {
         List<File> returnList = new ArrayList<>();
-        Pattern fileFilter = Pattern.compile(regexFileFilter);
-        Pattern dirFilter = Pattern.compile(regexDirFilter);
         
         File[] list = directory.listFiles(file ->
-                (file.isFile() && fileFilter.matcher(file.getName()).matches()) ||
-                        (file.isDirectory() && dirFilter.matcher(file.getName()).matches())); //only get files and directories that match the specified filters
+                ((file.isFile() && fileFilter.accept(file)) || (file.isDirectory() && dirFilter.accept(file))));
         
         if (list == null) {
             if (logFilesystem()) {
@@ -870,12 +890,11 @@ public final class Filesystem {
             return returnList;
         }
         
-        for (File f : list) {
-            if (f.isFile()) {
-                returnList.add(f); //add file to list
+        for (File file : list) {
+            if (file.isFile()) {
+                returnList.add(file); //add file to list
             } else {
-                List<File> subList = getFilesRecursively(f, regexFileFilter, regexDirFilter); //enter directory
-                returnList.addAll(subList);
+                returnList.addAll(getFilesRecursively(file, fileFilter, dirFilter)); //enter directory
             }
         }
         
@@ -883,37 +902,14 @@ public final class Filesystem {
     }
     
     /**
-     * Returns a list of files that pass the specified filter in the specified directory and in all subdirectories.
-     *
-     * @param directory       The directory to search for files in.
-     * @param regexFileFilter The filter for files.
-     * @return A list of files that were discovered.
-     * @see #getFilesRecursively(File, String, String)
-     */
-    public static List<File> getFilesRecursively(File directory, String regexFileFilter) {
-        return getFilesRecursively(directory, regexFileFilter, "^.*$");
-    }
-    
-    /**
-     * Returns a list of files in the specified directory and in all subdirectories.
-     *
-     * @param directory The directory to search for files in.
-     * @return A list of files that were discovered.
-     * @see #getFilesRecursively(File, String)
-     */
-    public static List<File> getFilesRecursively(File directory) {
-        return getFilesRecursively(directory, "^.*$");
-    }
-    
-    /**
      * Returns a list of directories that pass the specified filter in the specified directory and in all subdirectories.
      *
-     * @param directory      The directory to search for directories in.
-     * @param regexDirFilter The filter for directories.
+     * @param directory The directory to search for directories in.
+     * @param dirFilter The filter for directories.
      * @return A list of directories that were discovered.
-     * @see #getDirsRecursivelyHelper(File, String)
+     * @see #getDirsRecursivelyHelper(File, FileFilter)
      */
-    public static List<File> getDirsRecursively(File directory, String regexDirFilter) {
+    public static List<File> getDirsRecursively(File directory, FileFilter dirFilter) {
         if (!directory.isDirectory()) {
             if (logFilesystem()) {
                 logger.trace("Filesystem: The target directory is not a directory: {}", StringUtility.fileString(directory));
@@ -921,22 +917,32 @@ public final class Filesystem {
             return new ArrayList<>();
         }
         
-        return getDirsRecursivelyHelper(directory, regexDirFilter);
+        return getDirsRecursivelyHelper(directory, dirFilter);
     }
     
     /**
-     * Recursive helper for the getDirsRecursively() method.
+     * Returns a list of directories in the specified directory and in all subdirectories.
      *
-     * @param directory      The directory to search for directories in.
-     * @param regexDirFilter The filter for directories.
+     * @param directory The directory to search for directories in.
+     * @return A list of directories that were discovered.
+     * @see #getDirsRecursively(File, FileFilter)
+     */
+    public static List<File> getDirsRecursively(File directory) {
+        return getDirsRecursively(directory, dir -> true);
+    }
+    
+    /**
+     * Recursive helper for the getDirsRecursively method.
+     *
+     * @param directory The directory to search for directories in.
+     * @param dirFilter The filter for directories.
      * @return A list of directories that were discovered.
      */
-    private static List<File> getDirsRecursivelyHelper(File directory, String regexDirFilter) {
+    private static List<File> getDirsRecursivelyHelper(File directory, FileFilter dirFilter) {
         List<File> returnList = new ArrayList<>();
-        Pattern dirFilter = Pattern.compile(regexDirFilter);
         
         File[] list = directory.listFiles(file ->
-                file.isDirectory() && dirFilter.matcher(file.getName()).matches()); //only get files that are directories and match the filter
+                (file.isDirectory() && dirFilter.accept(file)));
         
         if (list == null) {
             if (logFilesystem()) {
@@ -945,37 +951,24 @@ public final class Filesystem {
             return returnList;
         }
         
-        for (File f : list) {
-            returnList.add(f); //add directory to list
-            
-            List<File> subList = getDirsRecursively(f, regexDirFilter); //enter directory
-            returnList.addAll(subList);
+        for (File file : list) {
+            returnList.add(file); //add directory to list
+            returnList.addAll(getDirsRecursively(file, dirFilter)); //enter directory
         }
         
         return returnList;
     }
     
     /**
-     * Returns a list of directories in the specified directory and in all subdirectories.
-     *
-     * @param directory The directory to search for directories in.
-     * @return A list of directories that were discovered.
-     * @see #getDirsRecursively(File, String)
-     */
-    public static List<File> getDirsRecursively(File directory) {
-        return getDirsRecursively(directory, "^.*$");
-    }
-    
-    /**
      * Returns a list of files and directories that pass the specified filters in the specified directory and in all subdirectories.
      *
-     * @param directory       The directory to search for files and directories in.
-     * @param regexFileFilter The filter for files.
-     * @param regexDirFilter  The filter for directories.
+     * @param directory  The directory to search for files and directories in.
+     * @param fileFilter The filter for files.
+     * @param dirFilter  The filter for directories.
      * @return A list of files and directories that were discovered.
-     * @see #getFilesAndDirsRecursivelyHelper(File, String, String)
+     * @see #getFilesAndDirsRecursivelyHelper(File, FileFilter, FileFilter)
      */
-    public static List<File> getFilesAndDirsRecursively(File directory, String regexFileFilter, String regexDirFilter) {
+    public static List<File> getFilesAndDirsRecursively(File directory, FileFilter fileFilter, FileFilter dirFilter) {
         if (!directory.isDirectory()) {
             if (logFilesystem()) {
                 logger.trace("Filesystem: The target directory is not a directory: {}", StringUtility.fileString(directory));
@@ -983,25 +976,45 @@ public final class Filesystem {
             return new ArrayList<>();
         }
         
-        return getFilesAndDirsRecursivelyHelper(directory, regexFileFilter, regexDirFilter);
+        return getFilesAndDirsRecursivelyHelper(directory, fileFilter, dirFilter);
     }
     
     /**
-     * Recursive helper for the getFilesAndDirsRecursively() method.
+     * Returns a list of files and directories that pass the specified filter in the specified directory and in all subdirectories.
      *
-     * @param directory       The directory to search for files and directories in.
-     * @param regexFileFilter The filter for files.
-     * @param regexDirFilter  The filter for directories.
+     * @param directory  The directory to search for files and directories in.
+     * @param fileFilter The filter for files.
+     * @return A list of files and directories that were discovered.
+     * @see #getFilesAndDirsRecursively(File, FileFilter, FileFilter)
+     */
+    public static List<File> getFilesAndDirsRecursively(File directory, FileFilter fileFilter) {
+        return getFilesAndDirsRecursively(directory, fileFilter, dir -> true);
+    }
+    
+    /**
+     * Returns a list of files and directories in the specified directory and in all subdirectories.
+     *
+     * @param directory The directory to search for files and directories in.
+     * @return A list of files and directories that were discovered.
+     * @see #getFilesAndDirsRecursively(File, FileFilter)
+     */
+    public static List<File> getFilesAndDirsRecursively(File directory) {
+        return getFilesAndDirsRecursively(directory, file -> true);
+    }
+    
+    /**
+     * Recursive helper for the getFilesAndDirsRecursively method.
+     *
+     * @param directory  The directory to search for files and directories in.
+     * @param fileFilter The filter for files.
+     * @param dirFilter  The filter for directories.
      * @return A list of files and directories that were discovered.
      */
-    private static List<File> getFilesAndDirsRecursivelyHelper(File directory, String regexFileFilter, String regexDirFilter) {
+    private static List<File> getFilesAndDirsRecursivelyHelper(File directory, FileFilter fileFilter, FileFilter dirFilter) {
         List<File> returnList = new ArrayList<>();
-        Pattern fileFilter = Pattern.compile(regexFileFilter);
-        Pattern dirFilter = Pattern.compile(regexDirFilter);
         
         File[] list = directory.listFiles(file ->
-                (file.isFile() && fileFilter.matcher(file.getName()).matches()) ||
-                        (file.isDirectory() && dirFilter.matcher(file.getName()).matches())); //only get files and directories that match the specified filters
+                ((file.isFile() && fileFilter.accept(file)) || (file.isDirectory() && dirFilter.accept(file))));
         
         if (list == null) {
             if (logFilesystem()) {
@@ -1010,12 +1023,11 @@ public final class Filesystem {
             return new ArrayList<>();
         }
         
-        for (File f : list) {
-            returnList.add(f); //add file or directory to list
+        for (File file : list) {
+            returnList.add(file); //add file or directory to list
             
-            if (f.isDirectory()) {
-                List<File> subList = getFilesAndDirsRecursively(f, regexFileFilter, regexDirFilter); //enter directory
-                returnList.addAll(subList);
+            if (file.isDirectory()) {
+                returnList.addAll(getFilesAndDirsRecursively(file, fileFilter, dirFilter)); //enter directory
             }
         }
         
@@ -1023,40 +1035,16 @@ public final class Filesystem {
     }
     
     /**
-     * Returns a list of files and directories that pass the specified filter in the specified directory and in all subdirectories.
-     *
-     * @param directory       The directory to search for files and directories in.
-     * @param regexFileFilter The filter for files.
-     * @return A list of files and directories that were discovered.
-     * @see #getFilesAndDirsRecursively(File, String, String)
-     */
-    public static List<File> getFilesAndDirsRecursively(File directory, String regexFileFilter) {
-        return getFilesAndDirsRecursively(directory, regexFileFilter, "^.*$");
-    }
-    
-    /**
-     * Returns a list of files and directories in the specified directory and in all subdirectories.
-     *
-     * @param directory The directory to search for files and directories in.
-     * @return A list of files and directories that were discovered.
-     * @see #getFilesAndDirsRecursively(File, String)
-     */
-    public static List<File> getFilesAndDirsRecursively(File directory) {
-        return getFilesAndDirsRecursively(directory, "^.*$");
-    }
-    
-    /**
      * Returns a list of files that pass the specified filter in the specified directory.
      *
-     * @param directory   The directory to search for files in.
-     * @param regexFilter The filter for files.
+     * @param directory  The directory to search for files in.
+     * @param fileFilter The filter for files.
      * @return A list of files that were discovered.
      * @see #listFiles(File, FileFilter)
      */
-    public static List<File> getFiles(File directory, String regexFilter) {
-        Pattern filter = Pattern.compile(regexFilter);
+    public static List<File> getFiles(File directory, FileFilter fileFilter) {
         return listFiles(directory, file ->
-                file.isFile() && filter.matcher(file.getName()).matches());
+                (file.isFile() && fileFilter.accept(file)));
     }
     
     /**
@@ -1073,15 +1061,14 @@ public final class Filesystem {
     /**
      * Returns a list of directories that pass the specified filter in the specified directory.
      *
-     * @param directory   The directory to search for files in.
-     * @param regexFilter The filter for directories.
+     * @param directory The directory to search for files in.
+     * @param dirFilter The filter for directories.
      * @return A list of directories that were discovered.
      * @see #listFiles(File, FileFilter)
      */
-    public static List<File> getDirs(File directory, String regexFilter) {
-        Pattern filter = Pattern.compile(regexFilter);
+    public static List<File> getDirs(File directory, FileFilter dirFilter) {
         return listFiles(directory, file ->
-                file.isDirectory() && filter.matcher(file.getName()).matches());
+                (file.isDirectory() && dirFilter.accept(file)));
     }
     
     /**
@@ -1098,33 +1085,15 @@ public final class Filesystem {
     /**
      * Returns a list of files and directories that pass the specified filters in the specified directory.
      *
-     * @param directory       The directory to search for files and directories in.
-     * @param regexFileFilter The filter for files.
-     * @param regexDirFilter  The filter for directories.
+     * @param directory  The directory to search for files and directories in.
+     * @param fileFilter The filter for files.
+     * @param dirFilter  The filter for directories.
      * @return A list of files and directories that were discovered.
      * @see #listFiles(File, FileFilter)
      */
-    public static List<File> getFilesAndDirs(File directory, String regexFileFilter, String regexDirFilter) {
-        Pattern fileFilter = Pattern.compile(regexFileFilter);
-        Pattern dirFilter = Pattern.compile(regexDirFilter);
+    public static List<File> getFilesAndDirs(File directory, FileFilter fileFilter, FileFilter dirFilter) {
         return listFiles(directory, file ->
-                (file.isFile() && fileFilter.matcher(file.getName()).matches()) ||
-                        (file.isDirectory() && dirFilter.matcher(file.getName()).matches()));
-    }
-    
-    /**
-     * Returns a list of files and directories that pass the specified filters in the specified directory.
-     *
-     * @param directory       The directory to search for files and directories in.
-     * @param regexFileFilter The filter for files.
-     * @return A list of files and directories that were discovered.
-     * @see #listFiles(File, FileFilter)
-     */
-    public static List<File> getFilesAndDirs(File directory, String regexFileFilter) {
-        Pattern fileFilter = Pattern.compile(regexFileFilter);
-        return listFiles(directory, file ->
-                (file.isFile() && fileFilter.matcher(file.getName()).matches()) ||
-                        file.isDirectory());
+                ((file.isFile() && fileFilter.accept(file)) || (file.isDirectory() && dirFilter.accept(file))));
     }
     
     /**
@@ -1135,7 +1104,7 @@ public final class Filesystem {
      * @see #listFiles(File, FileFilter)
      */
     public static List<File> getFilesAndDirs(File directory) {
-        return listFiles(directory, x -> true);
+        return listFiles(directory, file -> true);
     }
     
     /**

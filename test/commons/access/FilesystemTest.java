@@ -8049,8 +8049,8 @@ public class FilesystemTest {
      * JUnit test of getFilesRecursively.
      *
      * @throws Exception When there is an exception.
-     * @see Filesystem#getFilesRecursively(File, String, String)
-     * @see Filesystem#getFilesRecursively(File, String)
+     * @see Filesystem#getFilesRecursively(File, FileFilter, FileFilter)
+     * @see Filesystem#getFilesRecursively(File, FileFilter)
      * @see Filesystem#getFilesRecursively(File)
      * @see #testGetFilesRecursivelyStandard()
      * @see #testGetFilesRecursivelyFileFilter()
@@ -8211,7 +8211,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createDirectory(testDir));
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getFilesRecursively(testDir, "^.*$");
+        list = Filesystem.getFilesRecursively(testDir, file -> true);
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
@@ -8224,7 +8224,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createFile(internalFile));
         Assert.assertTrue(internalFile.exists());
         Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getFilesRecursively(testDir, "^.*$");
+        list = Filesystem.getFilesRecursively(testDir, file -> true);
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile.delete());
@@ -8247,7 +8247,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesRecursively(testDir, "^.*$");
+        list = Filesystem.getFilesRecursively(testDir, file -> true);
         Assert.assertEquals(2, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(list.contains(internalFile2));
@@ -8279,7 +8279,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesRecursively(testDir, "^.*$");
+        list = Filesystem.getFilesRecursively(testDir, file -> true);
         Assert.assertEquals(2, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(list.contains(internalFile2));
@@ -8315,7 +8315,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesRecursively(testDir3, "^.*$");
+        list = Filesystem.getFilesRecursively(testDir3, file -> true);
         Assert.assertEquals(2, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(list.contains(internalFile2));
@@ -8336,7 +8336,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createDirectory(testDir));
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getFilesRecursively(testDir, "test[^\\d]+");
+        list = Filesystem.getFilesRecursively(testDir, (File file) -> file.getName().matches("test[^\\d]+"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
@@ -8349,7 +8349,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createFile(internalFile));
         Assert.assertTrue(internalFile.exists());
         Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getFilesRecursively(testDir, "test[^\\d]+");
+        list = Filesystem.getFilesRecursively(testDir, (File file) -> file.getName().matches("test[^\\d]+"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile.delete());
@@ -8372,7 +8372,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesRecursively(testDir, "test[^\\d]+");
+        list = Filesystem.getFilesRecursively(testDir, (File file) -> file.getName().matches("test[^\\d]+"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile2));
         Assert.assertTrue(internalFile2.delete());
@@ -8403,9 +8403,45 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesRecursively(testDir, "test[^\\d]+");
+        list = Filesystem.getFilesRecursively(testDir, (File file) -> file.getName().matches("test[^\\d]+"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile2));
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, file filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile2, "test"));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFilesRecursively(testDir, (File file) -> (file.length() == 0));
+        Assert.assertEquals(1, list.size());
+        Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
         Assert.assertTrue(internalFile.delete());
@@ -8438,9 +8474,45 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesRecursively(testDir3, "test[^\\d]+");
+        list = Filesystem.getFilesRecursively(testDir3, (File file) -> file.getName().matches("test[^\\d]+"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile2));
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, internal search, file filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile2, "test"));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFilesRecursively(testDir3, (File file) -> (file.length() == 0));
+        Assert.assertEquals(1, list.size());
+        Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
         Assert.assertTrue(internalFile.delete());
@@ -8467,7 +8539,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createDirectory(testDir));
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getFilesRecursively(testDir, "^.*$", "^.*$");
+        list = Filesystem.getFilesRecursively(testDir, file -> true, dir -> true);
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
@@ -8480,7 +8552,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createFile(internalFile));
         Assert.assertTrue(internalFile.exists());
         Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getFilesRecursively(testDir, "^.*$", "^.*$");
+        list = Filesystem.getFilesRecursively(testDir, file -> true, dir -> true);
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile.delete());
@@ -8503,7 +8575,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesRecursively(testDir, "^.*$", "^.*$");
+        list = Filesystem.getFilesRecursively(testDir, file -> true, dir -> true);
         Assert.assertEquals(2, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(list.contains(internalFile2));
@@ -8535,7 +8607,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesRecursively(testDir, "^.*$", "^.*$");
+        list = Filesystem.getFilesRecursively(testDir, file -> true, dir -> true);
         Assert.assertEquals(2, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(list.contains(internalFile2));
@@ -8571,7 +8643,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesRecursively(testDir3, "^.*$", "^.*$");
+        list = Filesystem.getFilesRecursively(testDir3, file -> true, dir -> true);
         Assert.assertEquals(2, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(list.contains(internalFile2));
@@ -8592,7 +8664,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createDirectory(testDir));
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getFilesRecursively(testDir, "^.*$", "test[^\\d]+");
+        list = Filesystem.getFilesRecursively(testDir, file -> true, (File dir) -> dir.getName().matches("test[^\\d]+"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
@@ -8605,7 +8677,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createFile(internalFile));
         Assert.assertTrue(internalFile.exists());
         Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getFilesRecursively(testDir, "^.*$", "test[^\\d]+");
+        list = Filesystem.getFilesRecursively(testDir, file -> true, (File dir) -> dir.getName().matches("test[^\\d]+"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile.delete());
@@ -8628,7 +8700,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesRecursively(testDir, "^.*$", "test[^\\d]+");
+        list = Filesystem.getFilesRecursively(testDir, file -> true, (File dir) -> dir.getName().matches("test[^\\d]+"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile2.delete());
@@ -8659,7 +8731,41 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesRecursively(testDir, "^.*$", "test[^\\d]+");
+        list = Filesystem.getFilesRecursively(testDir, file -> true, (File dir) -> dir.getName().matches("test[^\\d]+"));
+        Assert.assertEquals(0, list.size());
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, default file filter, directory filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFilesRecursively(testDir, file -> true, (File dir) -> (dir.listFiles().length > 1));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
@@ -8693,9 +8799,43 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesRecursively(testDir3, "^.*$", "test[^\\d]+");
+        list = Filesystem.getFilesRecursively(testDir3, file -> true, (File dir) -> dir.getName().matches("test[^\\d]+"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, internal search, default file filter, directory filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir, test2File.getName());
+        internalDir = new File(testDir3, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFilesRecursively(testDir3, file -> true, (File dir) -> (dir.listFiles().length > 1));
+        Assert.assertEquals(0, list.size());
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
         Assert.assertTrue(internalFile.delete());
@@ -8722,7 +8862,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createDirectory(testDir));
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getFilesRecursively(testDir, "test\\d+.*", "test(Dir)?\\d+.*");
+        list = Filesystem.getFilesRecursively(testDir, (File file) -> file.getName().matches("test\\d+.*"), (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
@@ -8735,7 +8875,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createFile(internalFile));
         Assert.assertTrue(internalFile.exists());
         Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getFilesRecursively(testDir, "test\\d+.*", "test(Dir)?\\d+.*");
+        list = Filesystem.getFilesRecursively(testDir, (File file) -> file.getName().matches("test\\d+.*"), (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(internalFile.delete());
         Assert.assertTrue(testDir.delete());
@@ -8757,7 +8897,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesRecursively(testDir, "test\\d+.*", "test(Dir)?\\d+.*");
+        list = Filesystem.getFilesRecursively(testDir, (File file) -> file.getName().matches("test\\d+.*"), (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile2.delete());
@@ -8788,9 +8928,45 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesRecursively(testDir, "test\\d+.*", "test(Dir)?\\d+.*");
+        list = Filesystem.getFilesRecursively(testDir, (File file) -> file.getName().matches("test\\d+.*"), (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, file filter, directory filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile2, "test"));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFilesRecursively(testDir, (File file) -> (file.length() > 0), (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
+        Assert.assertEquals(1, list.size());
+        Assert.assertTrue(list.contains(internalFile2));
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
         Assert.assertTrue(internalFile.delete());
@@ -8823,9 +8999,45 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesRecursively(testDir3, "test\\d+.*", "test(Dir)?\\d+.*");
+        list = Filesystem.getFilesRecursively(testDir3, (File file) -> file.getName().matches("test\\d+.*"), (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, internal search, file filter, directory filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile2, "test"));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFilesRecursively(testDir3, (File file) -> (file.length() > 0), (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
+        Assert.assertEquals(1, list.size());
+        Assert.assertTrue(list.contains(internalFile2));
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
         Assert.assertTrue(internalFile.delete());
@@ -8844,7 +9056,7 @@ public class FilesystemTest {
      * JUnit test of getDirsRecursively.
      *
      * @throws Exception When there is an exception.
-     * @see Filesystem#getDirsRecursively(File, String)
+     * @see Filesystem#getDirsRecursively(File, FileFilter)
      * @see Filesystem#getDirsRecursively(File)
      * @see #testGetDirsRecursivelyStandard()
      * @see #testGetDirsRecursivelyDirectoryFilter()
@@ -8999,7 +9211,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createDirectory(testDir));
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getDirsRecursively(testDir, "^.*$");
+        list = Filesystem.getDirsRecursively(testDir, dir -> true);
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
@@ -9012,7 +9224,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createFile(internalFile));
         Assert.assertTrue(internalFile.exists());
         Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getDirsRecursively(testDir, "^.*$");
+        list = Filesystem.getDirsRecursively(testDir, dir -> true);
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(internalFile.delete());
         Assert.assertTrue(testDir.delete());
@@ -9034,7 +9246,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getDirsRecursively(testDir, "^.*$");
+        list = Filesystem.getDirsRecursively(testDir, dir -> true);
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalDir));
         Assert.assertTrue(internalFile2.delete());
@@ -9065,7 +9277,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getDirsRecursively(testDir, "^.*$");
+        list = Filesystem.getDirsRecursively(testDir, dir -> true);
         Assert.assertEquals(3, list.size());
         Assert.assertTrue(list.contains(testDir2));
         Assert.assertTrue(list.contains(testDir3));
@@ -9102,7 +9314,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getDirsRecursively(testDir3, "^.*$");
+        list = Filesystem.getDirsRecursively(testDir3, dir -> true);
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalDir));
         Assert.assertTrue(internalFile2.delete());
@@ -9122,7 +9334,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createDirectory(testDir));
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getDirsRecursively(testDir, "test(Dir)?\\d+.*");
+        list = Filesystem.getDirsRecursively(testDir, (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
@@ -9135,7 +9347,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createFile(internalFile));
         Assert.assertTrue(internalFile.exists());
         Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getDirsRecursively(testDir, "test(Dir)?\\d+.*");
+        list = Filesystem.getDirsRecursively(testDir, (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(internalFile.delete());
         Assert.assertTrue(testDir.delete());
@@ -9157,7 +9369,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getDirsRecursively(testDir, "test(Dir)?\\d+.*");
+        list = Filesystem.getDirsRecursively(testDir, (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
@@ -9187,10 +9399,45 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getDirsRecursively(testDir, "test(Dir)?\\d+.*");
+        list = Filesystem.getDirsRecursively(testDir, (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
         Assert.assertEquals(2, list.size());
         Assert.assertTrue(list.contains(testDir2));
         Assert.assertTrue(list.contains(testDir3));
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, directory filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, testDir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getDirsRecursively(testDir, (File dir) -> (dir.getName().matches("test(Dir)?\\d+") && (Integer.parseInt(StringUtility.rSnip(dir.getName(), 1)) < 3)));
+        Assert.assertEquals(1, list.size());
+        Assert.assertTrue(list.contains(testDir2));
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
         Assert.assertTrue(internalFile.delete());
@@ -9223,8 +9470,43 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getDirsRecursively(testDir3, "test(Dir)?\\d+.*");
+        list = Filesystem.getDirsRecursively(testDir3, (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
         Assert.assertEquals(0, list.size());
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, internal search, directory filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, testDir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getDirsRecursively(testDir3, (File dir) -> dir.getName().matches("test(Dir)?.*"));
+        Assert.assertEquals(1, list.size());
+        Assert.assertTrue(list.contains(internalDir));
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
         Assert.assertTrue(internalFile.delete());
@@ -9243,8 +9525,8 @@ public class FilesystemTest {
      * JUnit test of getFilesAndDirsRecursively.
      *
      * @throws Exception When there is an exception.
-     * @see Filesystem#getFilesAndDirsRecursively(File, String, String)
-     * @see Filesystem#getFilesAndDirsRecursively(File, String)
+     * @see Filesystem#getFilesAndDirsRecursively(File, FileFilter, FileFilter)
+     * @see Filesystem#getFilesAndDirsRecursively(File, FileFilter)
      * @see Filesystem#getFilesAndDirsRecursively(File)
      * @see #testGetFilesAndDirsRecursivelyStandard()
      * @see #testGetFilesAndDirsRecursivelyFileFilter()
@@ -9410,7 +9692,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createDirectory(testDir));
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "^.*$");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, file -> true);
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
@@ -9423,7 +9705,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createFile(internalFile));
         Assert.assertTrue(internalFile.exists());
         Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "^.*$");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, file -> true);
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile.delete());
@@ -9446,7 +9728,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "^.*$");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, file -> true);
         Assert.assertEquals(3, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(list.contains(internalDir));
@@ -9479,7 +9761,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "^.*$");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, file -> true);
         Assert.assertEquals(5, list.size());
         Assert.assertTrue(list.contains(testDir2));
         Assert.assertTrue(list.contains(testDir3));
@@ -9518,7 +9800,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir3, "^.*$");
+        list = Filesystem.getFilesAndDirsRecursively(testDir3, file -> true);
         Assert.assertEquals(3, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(list.contains(internalDir));
@@ -9540,7 +9822,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createDirectory(testDir));
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "test[^\\d]+");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, (File file) -> file.getName().matches("test[^\\d]+"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
@@ -9553,7 +9835,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createFile(internalFile));
         Assert.assertTrue(internalFile.exists());
         Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "test[^\\d]+");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, (File file) -> file.getName().matches("test[^\\d]+"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile.delete());
@@ -9576,7 +9858,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "test[^\\d]+");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, (File file) -> file.getName().matches("test[^\\d]+"));
         Assert.assertEquals(2, list.size());
         Assert.assertTrue(list.contains(internalDir));
         Assert.assertTrue(list.contains(internalFile2));
@@ -9608,12 +9890,51 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "test[^\\d]+");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, (File file) -> file.getName().matches("test[^\\d]+"));
         Assert.assertEquals(4, list.size());
         Assert.assertTrue(list.contains(testDir2));
         Assert.assertTrue(list.contains(testDir3));
         Assert.assertTrue(list.contains(internalDir));
         Assert.assertTrue(list.contains(internalFile2));
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, file filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile, "test"));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFilesAndDirsRecursively(testDir, (File file) -> !Filesystem.isEmpty(file));
+        Assert.assertEquals(4, list.size());
+        Assert.assertTrue(list.contains(testDir2));
+        Assert.assertTrue(list.contains(testDir3));
+        Assert.assertTrue(list.contains(internalDir));
+        Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
         Assert.assertTrue(internalFile.delete());
@@ -9646,10 +9967,47 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir3, "test[^\\d]+");
+        list = Filesystem.getFilesAndDirsRecursively(testDir3, (File file) -> file.getName().matches("test[^\\d]+"));
         Assert.assertEquals(2, list.size());
         Assert.assertTrue(list.contains(internalDir));
         Assert.assertTrue(list.contains(internalFile2));
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, internal search, file filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile, "test"));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFilesAndDirsRecursively(testDir3, (File file) -> !Filesystem.isEmpty(file));
+        Assert.assertEquals(2, list.size());
+        Assert.assertTrue(list.contains(internalFile));
+        Assert.assertTrue(list.contains(internalDir));
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
         Assert.assertTrue(internalFile.delete());
@@ -9676,7 +10034,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createDirectory(testDir));
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "^.*$", "^.*$");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, file -> true, dir -> true);
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
@@ -9689,7 +10047,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createFile(internalFile));
         Assert.assertTrue(internalFile.exists());
         Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "^.*$", "^.*$");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, file -> true, dir -> true);
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile.delete());
@@ -9712,7 +10070,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "^.*$", "^.*$");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, file -> true, dir -> true);
         Assert.assertEquals(3, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(list.contains(internalDir));
@@ -9745,7 +10103,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "^.*$", "^.*$");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, file -> true, dir -> true);
         Assert.assertEquals(5, list.size());
         Assert.assertTrue(list.contains(testDir2));
         Assert.assertTrue(list.contains(testDir3));
@@ -9785,7 +10143,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir3, "^.*$", "^.*$");
+        list = Filesystem.getFilesAndDirsRecursively(testDir3, file -> true, dir -> true);
         Assert.assertEquals(3, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(list.contains(internalDir));
@@ -9807,7 +10165,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createDirectory(testDir));
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "^.*$", "testDir\\d+");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, file -> true, (File dir) -> dir.getName().matches("testDir\\d+"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
@@ -9820,7 +10178,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createFile(internalFile));
         Assert.assertTrue(internalFile.exists());
         Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "^.*$", "testDir\\d+");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, file -> true, (File dir) -> dir.getName().matches("testDir\\d+"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile.delete());
@@ -9843,7 +10201,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "^.*$", "testDir\\d+");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, file -> true, (File dir) -> dir.getName().matches("testDir\\d+"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile2.delete());
@@ -9874,10 +10232,80 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "^.*$", "testDir\\d+");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, file -> true, (File dir) -> dir.getName().matches("testDir\\d+"));
         Assert.assertEquals(3, list.size());
         Assert.assertTrue(list.contains(testDir2));
         Assert.assertTrue(list.contains(testDir3));
+        Assert.assertTrue(list.contains(internalFile));
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, default file filter, directory filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFilesAndDirsRecursively(testDir, file -> true, (File dir) -> (dir.listFiles().length == 1));
+        Assert.assertEquals(1, list.size());
+        Assert.assertTrue(list.contains(testDir2));
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, internal search, default file filter, directory filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFilesAndDirsRecursively(testDir3, file -> true, (File dir) -> dir.getName().matches("testDir\\d+"));
+        Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
@@ -9911,9 +10339,11 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir3, "^.*$", "testDir\\d+");
-        Assert.assertEquals(1, list.size());
+        list = Filesystem.getFilesAndDirsRecursively(testDir3, file -> true, (File dir) -> (dir.listFiles().length == 1));
+        Assert.assertEquals(3, list.size());
         Assert.assertTrue(list.contains(internalFile));
+        Assert.assertTrue(list.contains(internalDir));
+        Assert.assertTrue(list.contains(internalFile2));
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
         Assert.assertTrue(internalFile.delete());
@@ -9940,7 +10370,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createDirectory(testDir));
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "test\\d+.*", "test(Dir)?\\d+.*");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, (File file) -> file.getName().matches("test\\d+.*"), (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
@@ -9953,7 +10383,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createFile(internalFile));
         Assert.assertTrue(internalFile.exists());
         Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "test\\d+.*", "test(Dir)?\\d+.*");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, (File file) -> file.getName().matches("test\\d+.*"), (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(internalFile.delete());
         Assert.assertTrue(testDir.delete());
@@ -9975,7 +10405,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "test\\d+.*", "test(Dir)?\\d+.*");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, (File file) -> file.getName().matches("test\\d+.*"), (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
         Assert.assertEquals(2, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(list.contains(internalDir));
@@ -10007,12 +10437,49 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir, "test\\d+.*", "test(Dir)?\\d+.*");
+        list = Filesystem.getFilesAndDirsRecursively(testDir, (File file) -> file.getName().matches("test\\d+.*"), (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
         Assert.assertEquals(4, list.size());
         Assert.assertTrue(list.contains(testDir2));
         Assert.assertTrue(list.contains(testDir3));
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(list.contains(internalDir));
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, file filter, directory filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile, "test"));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile2, "test"));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFilesAndDirsRecursively(testDir, (File file) -> (file.length() > 0), (File dir) -> (dir.listFiles().length == 1));
+        Assert.assertEquals(1, list.size());
+        Assert.assertTrue(list.contains(testDir2));
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
         Assert.assertTrue(internalFile.delete());
@@ -10045,10 +10512,49 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirsRecursively(testDir3, "test\\d+.*", "test(Dir)?\\d+.*");
+        list = Filesystem.getFilesAndDirsRecursively(testDir3, (File file) -> file.getName().matches("test\\d+.*"), (File dir) -> dir.getName().matches("test(Dir)?\\d+.*"));
         Assert.assertEquals(2, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(list.contains(internalDir));
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, internal search, file filter, directory filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, test2Dir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile, "test"));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile2, "test"));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFilesAndDirsRecursively(testDir3, (File file) -> (file.length() > 0), (File dir) -> (dir.listFiles().length == 1));
+        Assert.assertEquals(3, list.size());
+        Assert.assertTrue(list.contains(internalFile));
+        Assert.assertTrue(list.contains(internalDir));
+        Assert.assertTrue(list.contains(internalFile2));
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
         Assert.assertTrue(internalFile.delete());
@@ -10067,7 +10573,7 @@ public class FilesystemTest {
      * JUnit test of getFiles.
      *
      * @throws Exception When there is an exception.
-     * @see Filesystem#getFiles(File, String)
+     * @see Filesystem#getFiles(File, FileFilter)
      * @see Filesystem#getFiles(File)
      */
     @Test
@@ -10199,7 +10705,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createDirectory(testDir));
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getFiles(testDir, "test[^\\d]+");
+        list = Filesystem.getFiles(testDir, (File file) -> file.getName().matches("test[^\\d]+"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
@@ -10212,7 +10718,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createFile(internalFile));
         Assert.assertTrue(internalFile.exists());
         Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getFiles(testDir, "test[^\\d]+");
+        list = Filesystem.getFiles(testDir, (File file) -> file.getName().matches("test[^\\d]+"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile.delete());
@@ -10235,7 +10741,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFiles(testDir, "test[^\\d]+");
+        list = Filesystem.getFiles(testDir, (File file) -> file.getName().matches("test[^\\d]+"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
@@ -10265,7 +10771,43 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFiles(testDir, "test[^\\d]+");
+        list = Filesystem.getFiles(testDir, (File file) -> file.getName().matches("test[^\\d]+"));
+        Assert.assertEquals(0, list.size());
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, name filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, testDir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile, "test"));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile2, "test"));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFiles(testDir, (File file) -> (file.length() > 0));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
@@ -10299,8 +10841,45 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFiles(testDir3, "test[^\\d]+");
+        list = Filesystem.getFiles(testDir3, (File file) -> file.getName().matches("test[^\\d]+"));
         Assert.assertEquals(0, list.size());
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, internal search, name filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, testDir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile, "test"));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile2, "test"));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFiles(testDir3, (File file) -> (file.length() > 0));
+        Assert.assertEquals(1, list.size());
+        Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
         Assert.assertTrue(internalFile.delete());
@@ -10319,7 +10898,7 @@ public class FilesystemTest {
      * JUnit test of getDirs.
      *
      * @throws Exception When there is an exception.
-     * @see Filesystem#getDirs(File, String)
+     * @see Filesystem#getDirs(File, FileFilter)
      * @see Filesystem#getDirs(File)
      */
     @Test
@@ -10451,7 +11030,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createDirectory(testDir));
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getDirs(testDir, "testDir\\d+");
+        list = Filesystem.getDirs(testDir, (File dir) -> dir.getName().matches("testDir\\d+"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
@@ -10464,7 +11043,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createFile(internalFile));
         Assert.assertTrue(internalFile.exists());
         Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getDirs(testDir, "testDir\\d+");
+        list = Filesystem.getDirs(testDir, (File dir) -> dir.getName().matches("testDir\\d+"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(internalFile.delete());
         Assert.assertTrue(testDir.delete());
@@ -10486,7 +11065,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getDirs(testDir, "testDir\\d+");
+        list = Filesystem.getDirs(testDir, (File dir) -> dir.getName().matches("testDir\\d+"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
@@ -10516,7 +11095,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getDirs(testDir, "testDir\\d+");
+        list = Filesystem.getDirs(testDir, (File dir) -> dir.getName().matches("testDir\\d+"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(testDir2));
         Assert.assertTrue(internalFile2.delete());
@@ -10551,7 +11130,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getDirs(testDir3, "testDir\\d+");
+        list = Filesystem.getDirs(testDir3, (File dir) -> dir.getName().matches("testDir\\d+"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
@@ -10571,8 +11150,7 @@ public class FilesystemTest {
      * JUnit test of getFilesAndDirs.
      *
      * @throws Exception When there is an exception.
-     * @see Filesystem#getFilesAndDirs(File, String, String)
-     * @see Filesystem#getFilesAndDirs(File, String)
+     * @see Filesystem#getFilesAndDirs(File, FileFilter, FileFilter)
      * @see Filesystem#getFilesAndDirs(File)
      */
     @Test
@@ -10703,133 +11281,11 @@ public class FilesystemTest {
         Assert.assertFalse(testDir2.exists());
         Assert.assertFalse(testDir.exists());
         
-        //base line, file name filter
-        Assert.assertTrue(Filesystem.createDirectory(testDir));
-        Assert.assertTrue(testDir.exists());
-        Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getFilesAndDirs(testDir, "test[^\\d]+");
-        Assert.assertEquals(0, list.size());
-        Assert.assertTrue(testDir.delete());
-        Assert.assertFalse(testDir.exists());
-        
-        //standard, file name filter
-        Assert.assertTrue(Filesystem.createDirectory(testDir));
-        Assert.assertTrue(testDir.exists());
-        Assert.assertTrue(testDir.isDirectory());
-        internalFile = new File(testDir, testFile.getName());
-        Assert.assertTrue(Filesystem.createFile(internalFile));
-        Assert.assertTrue(internalFile.exists());
-        Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getFilesAndDirs(testDir, "test[^\\d]+");
-        Assert.assertEquals(1, list.size());
-        Assert.assertTrue(list.contains(internalFile));
-        Assert.assertTrue(internalFile.delete());
-        Assert.assertTrue(testDir.delete());
-        Assert.assertFalse(internalFile.exists());
-        Assert.assertFalse(testDir.exists());
-        
-        //multiple files, file name filter
-        Assert.assertTrue(Filesystem.createDirectory(testDir));
-        Assert.assertTrue(testDir.exists());
-        Assert.assertTrue(testDir.isDirectory());
-        internalFile = new File(testDir, test2File.getName());
-        internalDir = new File(testDir, testDir.getName());
-        internalFile2 = new File(internalDir, testFile.getName());
-        Assert.assertTrue(Filesystem.createFile(internalFile));
-        Assert.assertTrue(Filesystem.createFile(internalFile2));
-        Assert.assertTrue(internalFile.exists());
-        Assert.assertTrue(internalDir.exists());
-        Assert.assertTrue(internalFile2.exists());
-        Assert.assertTrue(internalFile.isFile());
-        Assert.assertTrue(internalDir.isDirectory());
-        Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirs(testDir, "test[^\\d]+");
-        Assert.assertEquals(1, list.size());
-        Assert.assertTrue(list.contains(internalDir));
-        Assert.assertTrue(internalFile2.delete());
-        Assert.assertTrue(internalDir.delete());
-        Assert.assertTrue(internalFile.delete());
-        Assert.assertTrue(testDir.delete());
-        Assert.assertFalse(internalFile2.exists());
-        Assert.assertFalse(internalDir.exists());
-        Assert.assertFalse(internalFile.exists());
-        Assert.assertFalse(testDir.exists());
-        
-        //nested files, file name filter
-        Assert.assertTrue(Filesystem.createDirectory(testDir3));
-        Assert.assertTrue(testDir.exists());
-        Assert.assertTrue(testDir2.exists());
-        Assert.assertTrue(testDir3.exists());
-        Assert.assertTrue(testDir.isDirectory());
-        Assert.assertTrue(testDir2.isDirectory());
-        Assert.assertTrue(testDir3.isDirectory());
-        internalFile = new File(testDir3, test2File.getName());
-        internalDir = new File(testDir3, testDir.getName());
-        internalFile2 = new File(internalDir, testFile.getName());
-        Assert.assertTrue(Filesystem.createFile(internalFile));
-        Assert.assertTrue(Filesystem.createFile(internalFile2));
-        Assert.assertTrue(internalFile.exists());
-        Assert.assertTrue(internalDir.exists());
-        Assert.assertTrue(internalFile2.exists());
-        Assert.assertTrue(internalFile.isFile());
-        Assert.assertTrue(internalDir.isDirectory());
-        Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirs(testDir, "test[^\\d]+");
-        Assert.assertEquals(1, list.size());
-        Assert.assertTrue(list.contains(testDir2));
-        Assert.assertTrue(internalFile2.delete());
-        Assert.assertTrue(internalDir.delete());
-        Assert.assertTrue(internalFile.delete());
-        Assert.assertTrue(testDir3.delete());
-        Assert.assertTrue(testDir2.delete());
-        Assert.assertTrue(testDir.delete());
-        Assert.assertFalse(internalFile2.exists());
-        Assert.assertFalse(internalDir.exists());
-        Assert.assertFalse(internalFile.exists());
-        Assert.assertFalse(testDir3.exists());
-        Assert.assertFalse(testDir2.exists());
-        Assert.assertFalse(testDir.exists());
-        
-        //nested files, internal search, file name filter
-        Assert.assertTrue(Filesystem.createDirectory(testDir3));
-        Assert.assertTrue(testDir.exists());
-        Assert.assertTrue(testDir2.exists());
-        Assert.assertTrue(testDir3.exists());
-        Assert.assertTrue(testDir.isDirectory());
-        Assert.assertTrue(testDir2.isDirectory());
-        Assert.assertTrue(testDir3.isDirectory());
-        internalFile = new File(testDir3, test2File.getName());
-        internalDir = new File(testDir3, testDir.getName());
-        internalFile2 = new File(internalDir, testFile.getName());
-        Assert.assertTrue(Filesystem.createFile(internalFile));
-        Assert.assertTrue(Filesystem.createFile(internalFile2));
-        Assert.assertTrue(internalFile.exists());
-        Assert.assertTrue(internalDir.exists());
-        Assert.assertTrue(internalFile2.exists());
-        Assert.assertTrue(internalFile.isFile());
-        Assert.assertTrue(internalDir.isDirectory());
-        Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirs(testDir3, "test[^\\d]+");
-        Assert.assertEquals(1, list.size());
-        Assert.assertTrue(list.contains(internalDir));
-        Assert.assertTrue(internalFile2.delete());
-        Assert.assertTrue(internalDir.delete());
-        Assert.assertTrue(internalFile.delete());
-        Assert.assertTrue(testDir3.delete());
-        Assert.assertTrue(testDir2.delete());
-        Assert.assertTrue(testDir.delete());
-        Assert.assertFalse(internalFile2.exists());
-        Assert.assertFalse(internalDir.exists());
-        Assert.assertFalse(internalFile.exists());
-        Assert.assertFalse(testDir3.exists());
-        Assert.assertFalse(testDir2.exists());
-        Assert.assertFalse(testDir.exists());
-        
         //base line, file name filter, directory name filter
         Assert.assertTrue(Filesystem.createDirectory(testDir));
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
-        list = Filesystem.getFilesAndDirs(testDir, "test[^\\d]+", "testDir\\d+");
+        list = Filesystem.getFilesAndDirs(testDir, (File file) -> file.getName().matches("test[^\\d]+"), (File dir) -> dir.getName().matches("testDir\\d+"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
@@ -10842,7 +11298,7 @@ public class FilesystemTest {
         Assert.assertTrue(Filesystem.createFile(internalFile));
         Assert.assertTrue(internalFile.exists());
         Assert.assertTrue(internalFile.isFile());
-        list = Filesystem.getFilesAndDirs(testDir, "test[^\\d]+", "testDir\\d+");
+        list = Filesystem.getFilesAndDirs(testDir, (File file) -> file.getName().matches("test[^\\d]+"), (File dir) -> dir.getName().matches("testDir\\d+"));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile.delete());
@@ -10865,7 +11321,7 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirs(testDir, "test[^\\d]+", "testDir\\d+");
+        list = Filesystem.getFilesAndDirs(testDir, (File file) -> file.getName().matches("test[^\\d]+"), (File dir) -> dir.getName().matches("testDir\\d+"));
         Assert.assertEquals(0, list.size());
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
@@ -10895,7 +11351,44 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirs(testDir, "test[^\\d]+", "testDir\\d+");
+        list = Filesystem.getFilesAndDirs(testDir, (File file) -> file.getName().matches("test[^\\d]+"), (File dir) -> dir.getName().matches("testDir\\d+"));
+        Assert.assertEquals(1, list.size());
+        Assert.assertTrue(list.contains(testDir2));
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, file name filter, directory name filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, testDir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile, "test"));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile2, "test"));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFilesAndDirs(testDir, (File file) -> (file.length() > 0), (File dir) -> (dir.listFiles().length == 1));
         Assert.assertEquals(1, list.size());
         Assert.assertTrue(list.contains(testDir2));
         Assert.assertTrue(internalFile2.delete());
@@ -10930,8 +11423,46 @@ public class FilesystemTest {
         Assert.assertTrue(internalFile.isFile());
         Assert.assertTrue(internalDir.isDirectory());
         Assert.assertTrue(internalFile2.isFile());
-        list = Filesystem.getFilesAndDirs(testDir3, "test[^\\d]+", "testDir\\d+");
+        list = Filesystem.getFilesAndDirs(testDir3, (File file) -> file.getName().matches("test[^\\d]+"), (File dir) -> dir.getName().matches("testDir\\d+"));
         Assert.assertEquals(0, list.size());
+        Assert.assertTrue(internalFile2.delete());
+        Assert.assertTrue(internalDir.delete());
+        Assert.assertTrue(internalFile.delete());
+        Assert.assertTrue(testDir3.delete());
+        Assert.assertTrue(testDir2.delete());
+        Assert.assertTrue(testDir.delete());
+        Assert.assertFalse(internalFile2.exists());
+        Assert.assertFalse(internalDir.exists());
+        Assert.assertFalse(internalFile.exists());
+        Assert.assertFalse(testDir3.exists());
+        Assert.assertFalse(testDir2.exists());
+        Assert.assertFalse(testDir.exists());
+        
+        //nested files, internal search, file name filter, directory name filter
+        Assert.assertTrue(Filesystem.createDirectory(testDir3));
+        Assert.assertTrue(testDir.exists());
+        Assert.assertTrue(testDir2.exists());
+        Assert.assertTrue(testDir3.exists());
+        Assert.assertTrue(testDir.isDirectory());
+        Assert.assertTrue(testDir2.isDirectory());
+        Assert.assertTrue(testDir3.isDirectory());
+        internalFile = new File(testDir3, test2File.getName());
+        internalDir = new File(testDir3, testDir.getName());
+        internalFile2 = new File(internalDir, testFile.getName());
+        Assert.assertTrue(Filesystem.createFile(internalFile));
+        Assert.assertTrue(Filesystem.createFile(internalFile2));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile, "test"));
+        Assert.assertTrue(Filesystem.writeStringToFile(internalFile2, "test"));
+        Assert.assertTrue(internalFile.exists());
+        Assert.assertTrue(internalDir.exists());
+        Assert.assertTrue(internalFile2.exists());
+        Assert.assertTrue(internalFile.isFile());
+        Assert.assertTrue(internalDir.isDirectory());
+        Assert.assertTrue(internalFile2.isFile());
+        list = Filesystem.getFilesAndDirs(testDir3, (File file) -> (file.length() > 0), (File dir) -> (dir.listFiles().length == 1));
+        Assert.assertEquals(2, list.size());
+        Assert.assertTrue(list.contains(internalDir));
+        Assert.assertTrue(list.contains(internalFile));
         Assert.assertTrue(internalFile2.delete());
         Assert.assertTrue(internalDir.delete());
         Assert.assertTrue(internalFile.delete());
