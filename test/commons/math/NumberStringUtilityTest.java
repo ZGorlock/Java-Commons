@@ -49,7 +49,7 @@ public class NumberStringUtilityTest {
     /**
      * The directory containing resources for this test class.
      */
-    private static final File testResources = Project.testResourcesDir(NumberStringUtilityTest.class);
+    private static final File testResources = Project.testResourcesDir(NumberStringUtility.class);
     
     
     //Initialization
@@ -3973,12 +3973,12 @@ public class NumberStringUtilityTest {
         //dictionary test
         List<String> dictionary = Filesystem.readLines(new File(testResources, "latinPowers.txt"));
         for (int i = 0; i < dictionary.size(); i++) {
-            Assert.assertEquals("one " + dictionary.get(i), NumberStringUtility.latinPowerName(i * 3L));
-            Assert.assertEquals("ten " + dictionary.get(i), NumberStringUtility.latinPowerName((i * 3L) + 1));
-            Assert.assertEquals("hundred " + dictionary.get(i), NumberStringUtility.latinPowerName((i * 3L) + 2));
-            Assert.assertEquals("one " + dictionary.get(i) + "th", NumberStringUtility.latinPowerName(i * -3L));
-            Assert.assertEquals("ten " + dictionary.get(i) + "th", NumberStringUtility.latinPowerName((i * -3L) + 1));
-            Assert.assertEquals("hundred " + dictionary.get(i) + "th", NumberStringUtility.latinPowerName((i * -3L) + 2));
+            Assert.assertEquals("one " + dictionary.get(i), NumberStringUtility.powerOfTenName(((i + 1) * 3L)));
+            Assert.assertEquals("ten " + dictionary.get(i), NumberStringUtility.powerOfTenName(((i + 1) * 3L) + 1));
+            Assert.assertEquals("hundred " + dictionary.get(i), NumberStringUtility.powerOfTenName(((i + 1) * 3L) + 2));
+            Assert.assertEquals("one " + dictionary.get(i) + "th", NumberStringUtility.powerOfTenName(((i + 1) * -3L)));
+            Assert.assertEquals("ten " + dictionary.get(i) + "th", NumberStringUtility.powerOfTenName(((i + 1) * -3L) - 1));
+            Assert.assertEquals("hundred " + dictionary.get(i) + "th", NumberStringUtility.powerOfTenName(((i + 1) * -3L) - 2));
         }
     }
     
@@ -4092,8 +4092,8 @@ public class NumberStringUtilityTest {
         //dictionary test
         List<String> dictionary = Filesystem.readLines(new File(testResources, "latinPowers.txt"));
         for (int i = 0; i < dictionary.size(); i++) {
-            Assert.assertEquals(dictionary.get(i), NumberStringUtility.latinPowerName(i));
-            Assert.assertEquals(dictionary.get(i) + "th", NumberStringUtility.latinPowerName(-i));
+            Assert.assertEquals(dictionary.get(i), NumberStringUtility.latinPowerName((i + 1)));
+            Assert.assertEquals(dictionary.get(i) + "th", NumberStringUtility.latinPowerName(-(i + 1)));
         }
     }
     
@@ -4192,8 +4192,8 @@ public class NumberStringUtilityTest {
         //dictionary test
         List<String> dictionary = Filesystem.readLines(new File(testResources, "latinPowers.txt"));
         for (int i = 0; i < dictionary.size(); i++) {
-            Assert.assertEquals(i, NumberStringUtility.latinPowerNameToLatinPower(dictionary.get(i)));
-            Assert.assertEquals(-i, NumberStringUtility.latinPowerNameToLatinPower(dictionary.get(i) + "th"));
+            Assert.assertEquals((i + 1), NumberStringUtility.latinPowerNameToLatinPower(dictionary.get(i)));
+            Assert.assertEquals(-(i + 1), NumberStringUtility.latinPowerNameToLatinPower(dictionary.get(i) + "th"));
         }
         
         //reversability test
