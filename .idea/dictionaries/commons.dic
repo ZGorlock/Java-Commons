@@ -19,7 +19,13 @@ dfki
 dmatch
 endcap
 exponentiated
+ffmpeg
+ffplay
+ffprobe
 fileids
+fmpeg
+fplay
+fprobe
 hsmm
 khtml
 marytts
