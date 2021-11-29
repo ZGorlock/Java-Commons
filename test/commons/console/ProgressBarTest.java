@@ -94,6 +94,9 @@ public class ProgressBarTest {
         TestUtils.setField(progressBar, "width", 20);
         TestUtils.setField(progressBar, "units", "B");
         progressBar.setAutoPrint(false);
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(true));
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(false));
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(false));
         
         TestUtils.setField(progressBar, "rollingProgress", new ArrayList<>());
         TestUtils.setField(progressBar, "rollingUpdate", new ArrayList<>());
@@ -215,20 +218,20 @@ public class ProgressBarTest {
         
         //initial
         
-        TestUtils.setField(progressBar, "update", false);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(false));
         expected = "";
         Assert.assertEquals(expected, progressBar.get());
         
         //standard
         
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
         
         //no update
         
         Mockito.when(progressBar.getPercentageString()).thenReturn(" 52%");
-        TestUtils.setField(progressBar, "update", false);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(false));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
         Mockito.when(progressBar.getPercentageString()).thenReturn(" 51%");
@@ -236,42 +239,42 @@ public class ProgressBarTest {
         //partial
         
         progressBar.setShowPercentage(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = "[==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowPercentage(true);
         
         progressBar.setShowBar(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51%  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowBar(true);
         
         progressBar.setShowRatio(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ] at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowRatio(true);
         
         progressBar.setShowSpeed(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowSpeed(true);
         
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowTimeRemaining(true);
         
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
         
         progressBar.setShowSpeed(false);
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowSpeed(true);
@@ -281,7 +284,7 @@ public class ProgressBarTest {
         progressBar.setShowRatio(false);
         progressBar.setShowSpeed(false);
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51%";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowBar(true);
@@ -292,14 +295,14 @@ public class ProgressBarTest {
         progressBar.setShowPercentage(false);
         progressBar.setShowSpeed(false);
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = "[==========>         ]  5100B/10000B";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowPercentage(true);
         progressBar.setShowSpeed(true);
         progressBar.setShowTimeRemaining(true);
         
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
     }
@@ -321,20 +324,20 @@ public class ProgressBarTest {
         
         //initial
         
-        TestUtils.setField(progressBar, "update", false);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(false));
         expected = "";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         
         //standard
         
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         
         //no update
         
         Mockito.when(progressBar.getPercentageString()).thenReturn(" 52%");
-        TestUtils.setField(progressBar, "update", false);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(false));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         Mockito.when(progressBar.getPercentageString()).thenReturn(" 51%");
@@ -342,42 +345,42 @@ public class ProgressBarTest {
         //partial
         
         progressBar.setShowPercentage(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = "[==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(4) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowPercentage(true);
         
         progressBar.setShowBar(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51%  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(17) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowBar(true);
         
         progressBar.setShowRatio(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ] at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowRatio(true);
         
         progressBar.setShowSpeed(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowSpeed(true);
         
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(5) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowTimeRemaining(true);
         
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         
         progressBar.setShowSpeed(false);
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(25) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowSpeed(true);
@@ -387,7 +390,7 @@ public class ProgressBarTest {
         progressBar.setShowRatio(false);
         progressBar.setShowSpeed(false);
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51%";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(36) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowBar(true);
@@ -398,14 +401,14 @@ public class ProgressBarTest {
         progressBar.setShowPercentage(false);
         progressBar.setShowSpeed(false);
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = "[==========>         ]  5100B/10000B";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowPercentage(true);
         progressBar.setShowSpeed(true);
         progressBar.setShowTimeRemaining(true);
         
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
     }
@@ -425,7 +428,7 @@ public class ProgressBarTest {
         List<Long> rollingUpdate = (List<Long>) TestUtils.getField(progressBar, "rollingUpdate");
         
         //default auto print
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
         TestUtils.setField(progressBar, "title", "");
         progressBar.setAutoPrint(false);
         progressBar.update(1);
@@ -434,7 +437,7 @@ public class ProgressBarTest {
         progressBar.update(2);
         Mockito.verify(progressBar, VerificationModeFactory.times(1)).print();
         progressBar.setAutoPrint(false);
-        TestUtils.setField(progressBar, "update", false);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(false));
         
         //first update, no title
         TestUtils.setField(progressBar, "progress", 0);
@@ -464,7 +467,6 @@ public class ProgressBarTest {
         Assert.assertEquals(0L, progressBar.getFirstUpdate());
         Assert.assertTrue(progressBar.update(2000));
         Assert.assertNotEquals(0L, progressBar.getFirstUpdate());
-        Mockito.verify(progressBar, VerificationModeFactory.times(1)).getTitleString();
         Assert.assertEquals(2000L, progressBar.getProgress());
         Assert.assertEquals(0L, progressBar.getPrevious());
         Assert.assertEquals(2000L, progressBar.getCurrent());
@@ -487,46 +489,46 @@ public class ProgressBarTest {
         Assert.assertEquals(1000L, progressBar.getCurrent());
         Assert.assertEquals(1, rollingProgress.size());
         Assert.assertEquals(1, rollingUpdate.size());
-        TestUtils.setField(progressBar, "update", false);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(false));
         Assert.assertFalse(progressBar.update(2000));
         Assert.assertEquals(2000L, progressBar.getProgress());
         Assert.assertEquals(1000L, progressBar.getCurrent());
         Assert.assertEquals(1, rollingProgress.size());
         Assert.assertEquals(1, rollingUpdate.size());
-        TestUtils.setField(progressBar, "update", false);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(false));
         Thread.sleep((long) (ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 1.2));
         Assert.assertTrue(progressBar.update(3000));
         Assert.assertEquals(3000L, progressBar.getProgress());
         Assert.assertEquals(3000L, progressBar.getCurrent());
         Assert.assertEquals(2, rollingProgress.size());
         Assert.assertEquals(2, rollingUpdate.size());
-        TestUtils.setField(progressBar, "update", false);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(false));
         Thread.sleep((long) (ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 0.2));
         Assert.assertFalse(progressBar.update(4000));
         Assert.assertEquals(4000L, progressBar.getProgress());
         Assert.assertEquals(3000L, progressBar.getCurrent());
         Assert.assertEquals(2, rollingProgress.size());
         Assert.assertEquals(2, rollingUpdate.size());
-        TestUtils.setField(progressBar, "update", false);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(false));
         Thread.sleep(ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY);
         Assert.assertTrue(progressBar.update(5000));
         Assert.assertEquals(5000L, progressBar.getProgress());
         Assert.assertEquals(5000L, progressBar.getCurrent());
         Assert.assertEquals(3, rollingProgress.size());
         Assert.assertEquals(3, rollingUpdate.size());
-        TestUtils.setField(progressBar, "update", false);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(false));
         Assert.assertTrue(progressBar.update(20000));
         Assert.assertEquals(10000L, progressBar.getProgress());
         Assert.assertEquals(10000L, progressBar.getCurrent());
         Assert.assertEquals(4, rollingProgress.size());
         Assert.assertEquals(4, rollingUpdate.size());
-        TestUtils.setField(progressBar, "update", false);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(false));
         Assert.assertFalse(progressBar.update(21000));
         Assert.assertEquals(10000L, progressBar.getProgress());
         Assert.assertEquals(10000L, progressBar.getCurrent());
         Assert.assertEquals(4, rollingProgress.size());
         Assert.assertEquals(4, rollingUpdate.size());
-        TestUtils.setField(progressBar, "update", false);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(false));
         
         //autoprint
         progressBar.setAutoPrint(true);
@@ -539,27 +541,27 @@ public class ProgressBarTest {
         TestUtils.setField(progressBar, "currentUpdate", 0);
         rollingProgress.clear();
         rollingUpdate.clear();
-        Assert.assertFalse(progressBar.update(1000));
+        Assert.assertTrue(progressBar.update(1000));
         Assert.assertEquals(1000L, progressBar.getProgress());
         Assert.assertEquals(1000L, progressBar.getCurrent());
         Assert.assertEquals(1, rollingProgress.size());
         Assert.assertEquals(1, rollingUpdate.size());
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).print();
         Assert.assertFalse(progressBar.update(2000));
         Assert.assertEquals(2000L, progressBar.getProgress());
         Assert.assertEquals(1000L, progressBar.getCurrent());
         Assert.assertEquals(1, rollingProgress.size());
         Assert.assertEquals(1, rollingUpdate.size());
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).print();
         Thread.sleep((long) (ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 1.2));
-        Assert.assertFalse(progressBar.update(3000));
+        Assert.assertTrue(progressBar.update(3000));
         Assert.assertEquals(3000L, progressBar.getProgress());
         Assert.assertEquals(3000L, progressBar.getCurrent());
         Assert.assertEquals(2, rollingProgress.size());
         Assert.assertEquals(2, rollingUpdate.size());
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
         Mockito.verify(progressBar, VerificationModeFactory.times(3)).print();
         Thread.sleep((long) (ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 0.2));
         Assert.assertFalse(progressBar.update(4000));
@@ -567,29 +569,29 @@ public class ProgressBarTest {
         Assert.assertEquals(3000L, progressBar.getCurrent());
         Assert.assertEquals(2, rollingProgress.size());
         Assert.assertEquals(2, rollingUpdate.size());
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
         Mockito.verify(progressBar, VerificationModeFactory.times(3)).print();
         Thread.sleep(ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY);
-        Assert.assertFalse(progressBar.update(5000));
+        Assert.assertTrue(progressBar.update(5000));
         Assert.assertEquals(5000L, progressBar.getProgress());
         Assert.assertEquals(5000L, progressBar.getCurrent());
         Assert.assertEquals(3, rollingProgress.size());
         Assert.assertEquals(3, rollingUpdate.size());
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
         Mockito.verify(progressBar, VerificationModeFactory.times(4)).print();
-        Assert.assertFalse(progressBar.update(20000));
+        Assert.assertTrue(progressBar.update(20000));
         Assert.assertEquals(10000L, progressBar.getProgress());
         Assert.assertEquals(10000L, progressBar.getCurrent());
         Assert.assertEquals(4, rollingProgress.size());
         Assert.assertEquals(4, rollingUpdate.size());
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
         Mockito.verify(progressBar, VerificationModeFactory.times(5)).print();
         Assert.assertFalse(progressBar.update(21000));
         Assert.assertEquals(10000L, progressBar.getProgress());
         Assert.assertEquals(10000L, progressBar.getCurrent());
         Assert.assertEquals(4, rollingProgress.size());
         Assert.assertEquals(4, rollingUpdate.size());
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
         Mockito.verify(progressBar, VerificationModeFactory.times(5)).print();
         progressBar.setAutoPrint(false);
         
@@ -605,6 +607,19 @@ public class ProgressBarTest {
         Mockito.when(progressBar.isComplete()).thenReturn(true);
         Assert.assertFalse(progressBar.update(10000));
         Mockito.when(progressBar.isComplete()).thenCallRealMethod();
+        
+        //failed
+        TestUtils.setField(progressBar, "progress", 0);
+        TestUtils.setField(progressBar, "previous", 0);
+        TestUtils.setField(progressBar, "current", 0);
+        TestUtils.setField(progressBar, "firstUpdate", 0);
+        TestUtils.setField(progressBar, "previousUpdate", 0);
+        TestUtils.setField(progressBar, "currentUpdate", 0);
+        rollingProgress.clear();
+        rollingUpdate.clear();
+        Mockito.when(progressBar.isFailed()).thenReturn(true);
+        Assert.assertFalse(progressBar.update(10000));
+        Mockito.when(progressBar.isFailed()).thenCallRealMethod();
         
         //no premature complete
         TestUtils.setField(progressBar, "progress", 0);
@@ -623,7 +638,7 @@ public class ProgressBarTest {
         Assert.assertFalse(progressBar.update(10002));
         Assert.assertEquals(10000L, progressBar.getCurrent());
         
-        //full
+        //full, complete
         saveOut = System.out;
         out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));
@@ -635,43 +650,88 @@ public class ProgressBarTest {
         TestUtils.setField(progressBar, "firstUpdate", 0);
         TestUtils.setField(progressBar, "previousUpdate", 0);
         TestUtils.setField(progressBar, "currentUpdate", 0);
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(true));
         rollingProgress.clear();
         rollingUpdate.clear();
         for (int i = 0; i <= 10000; i += 512) {
             progressBar.update(i);
             Thread.sleep(250);
         }
-        progressBar.update(10000);
-        List<String> lines = StringUtility.splitLines(out.toString()
+        progressBar.complete(false);
+        List<String> completedLines = StringUtility.splitLines(out.toString()
                 .replace("\r", "\r\n").replace("\n\n", "\n"))
                 .stream()
                 .filter(e -> !e.isEmpty() && !StringUtility.isWhitespace(e))
                 .map(StringUtility::removeConsoleEscapeCharacters)
                 .map(StringUtility::rTrim)
                 .collect(Collectors.toList());
-        Assert.assertEquals(22, lines.size());
-        Assert.assertEquals("Test Bar:", lines.get(0));
-        Assert.assertEquals("  0% [>                   ]     0B/10000B - ETA: --:--:--", lines.get(1));
-        Assert.assertEquals("  5% [=>                  ]   512B/10000B - ETA: 00:00:0", StringUtility.rShear(lines.get(2), 1));
-        Assert.assertEquals(" 10% [==>                 ]  1024B/10000B - ETA: 00:00:0", StringUtility.rShear(lines.get(3), 1));
-        Assert.assertEquals(" 15% [===>                ]  1536B/10000B - ETA: 00:00:0", StringUtility.rShear(lines.get(4), 1));
-        Assert.assertEquals(" 20% [====>               ]  2048B/10000B - ETA: 00:00:0", StringUtility.rShear(lines.get(5), 1));
-        Assert.assertEquals(" 25% [=====>              ]  2560B/10000B - ETA: 00:00:03", lines.get(6));
-        Assert.assertEquals(" 30% [======>             ]  3072B/10000B - ETA: 00:00:03", lines.get(7));
-        Assert.assertEquals(" 35% [=======>            ]  3584B/10000B - ETA: 00:00:03", lines.get(8));
-        Assert.assertEquals(" 40% [========>           ]  4096B/10000B - ETA: 00:00:0", StringUtility.rShear(lines.get(9), 1));
-        Assert.assertEquals(" 46% [=========>          ]  4608B/10000B - ETA: 00:00:02", lines.get(10));
-        Assert.assertEquals(" 51% [==========>         ]  5120B/10000B - ETA: 00:00:02", lines.get(11));
-        Assert.assertEquals(" 56% [===========>        ]  5632B/10000B - ETA: 00:00:02", lines.get(12));
-        Assert.assertEquals(" 61% [============>       ]  6144B/10000B - ETA: 00:00:0", StringUtility.rShear(lines.get(13), 1));
-        Assert.assertEquals(" 66% [=============>      ]  6656B/10000B - ETA: 00:00:01", lines.get(14));
-        Assert.assertEquals(" 71% [==============>     ]  7168B/10000B - ETA: 00:00:01", lines.get(15));
-        Assert.assertEquals(" 76% [===============>    ]  7680B/10000B - ETA: 00:00:01", lines.get(16));
-        Assert.assertEquals(" 81% [================>   ]  8192B/10000B - ETA: 00:00:0", StringUtility.rShear(lines.get(17), 1));
-        Assert.assertEquals(" 87% [=================>  ]  8704B/10000B - ETA: 00:00:00", lines.get(18));
-        Assert.assertEquals(" 92% [==================> ]  9216B/10000B - ETA: 00:00:00", lines.get(19));
-        Assert.assertEquals(" 97% [===================>]  9728B/10000B - ETA: 00:00:00", lines.get(20));
-        Assert.assertEquals("100% [====================] 10000B/10000B - Complete", lines.get(21));
+        Assert.assertEquals(22, completedLines.size());
+        Assert.assertEquals("Test Bar:", completedLines.get(0));
+        Assert.assertEquals("  0% [>                   ]     0B/10000B - ETA: --:--:--", completedLines.get(1));
+        Assert.assertEquals("  5% [=>                  ]   512B/10000B - ETA: 00:00:0", StringUtility.rShear(completedLines.get(2), 1));
+        Assert.assertEquals(" 10% [==>                 ]  1024B/10000B - ETA: 00:00:0", StringUtility.rShear(completedLines.get(3), 1));
+        Assert.assertEquals(" 15% [===>                ]  1536B/10000B - ETA: 00:00:0", StringUtility.rShear(completedLines.get(4), 1));
+        Assert.assertEquals(" 20% [====>               ]  2048B/10000B - ETA: 00:00:0", StringUtility.rShear(completedLines.get(5), 1));
+        Assert.assertEquals(" 25% [=====>              ]  2560B/10000B - ETA: 00:00:03", completedLines.get(6));
+        Assert.assertEquals(" 30% [======>             ]  3072B/10000B - ETA: 00:00:03", completedLines.get(7));
+        Assert.assertEquals(" 35% [=======>            ]  3584B/10000B - ETA: 00:00:03", completedLines.get(8));
+        Assert.assertEquals(" 40% [========>           ]  4096B/10000B - ETA: 00:00:0", StringUtility.rShear(completedLines.get(9), 1));
+        Assert.assertEquals(" 46% [=========>          ]  4608B/10000B - ETA: 00:00:02", completedLines.get(10));
+        Assert.assertEquals(" 51% [==========>         ]  5120B/10000B - ETA: 00:00:02", completedLines.get(11));
+        Assert.assertEquals(" 56% [===========>        ]  5632B/10000B - ETA: 00:00:02", completedLines.get(12));
+        Assert.assertEquals(" 61% [============>       ]  6144B/10000B - ETA: 00:00:0", StringUtility.rShear(completedLines.get(13), 1));
+        Assert.assertEquals(" 66% [=============>      ]  6656B/10000B - ETA: 00:00:01", completedLines.get(14));
+        Assert.assertEquals(" 71% [==============>     ]  7168B/10000B - ETA: 00:00:01", completedLines.get(15));
+        Assert.assertEquals(" 76% [===============>    ]  7680B/10000B - ETA: 00:00:01", completedLines.get(16));
+        Assert.assertEquals(" 81% [================>   ]  8192B/10000B - ETA: 00:00:0", StringUtility.rShear(completedLines.get(17), 1));
+        Assert.assertEquals(" 87% [=================>  ]  8704B/10000B - ETA: 00:00:00", completedLines.get(18));
+        Assert.assertEquals(" 92% [==================> ]  9216B/10000B - ETA: 00:00:00", completedLines.get(19));
+        Assert.assertEquals(" 97% [===================>]  9728B/10000B - ETA: 00:00:00", completedLines.get(20));
+        Assert.assertEquals("100% [====================] 10000B/10000B - Complete", completedLines.get(21));
+        progressBar.setAutoPrint(false);
+        System.setOut(saveOut);
+        
+        //full, fail
+        saveOut = System.out;
+        out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+        progressBar.setAutoPrint(true);
+        progressBar.setShowSpeed(false);
+        TestUtils.setField(progressBar, "progress", 0);
+        TestUtils.setField(progressBar, "previous", 0);
+        TestUtils.setField(progressBar, "current", 0);
+        TestUtils.setField(progressBar, "firstUpdate", 0);
+        TestUtils.setField(progressBar, "previousUpdate", 0);
+        TestUtils.setField(progressBar, "currentUpdate", 0);
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(true));
+        rollingProgress.clear();
+        rollingUpdate.clear();
+        for (int i = 0; i <= 5000; i += 512) {
+            progressBar.update(i);
+            Thread.sleep(250);
+        }
+        progressBar.fail(false);
+        progressBar.update(10000);
+        List<String> failedLines = StringUtility.splitLines(out.toString()
+                .replace("\r", "\r\n").replace("\n\n", "\n"))
+                .stream()
+                .filter(e -> !e.isEmpty() && !StringUtility.isWhitespace(e))
+                .map(StringUtility::removeConsoleEscapeCharacters)
+                .map(StringUtility::rTrim)
+                .collect(Collectors.toList());
+        Assert.assertEquals(12, failedLines.size());
+        Assert.assertEquals("Test Bar:", failedLines.get(0));
+        Assert.assertEquals("  0% [>                   ]     0B/10000B - ETA: --:--:--", failedLines.get(1));
+        Assert.assertEquals("  5% [=>                  ]   512B/10000B - ETA: 00:00:0", StringUtility.rShear(failedLines.get(2), 1));
+        Assert.assertEquals(" 10% [==>                 ]  1024B/10000B - ETA: 00:00:0", StringUtility.rShear(failedLines.get(3), 1));
+        Assert.assertEquals(" 15% [===>                ]  1536B/10000B - ETA: 00:00:0", StringUtility.rShear(failedLines.get(4), 1));
+        Assert.assertEquals(" 20% [====>               ]  2048B/10000B - ETA: 00:00:0", StringUtility.rShear(failedLines.get(5), 1));
+        Assert.assertEquals(" 25% [=====>              ]  2560B/10000B - ETA: 00:00:03", failedLines.get(6));
+        Assert.assertEquals(" 30% [======>             ]  3072B/10000B - ETA: 00:00:03", failedLines.get(7));
+        Assert.assertEquals(" 35% [=======>            ]  3584B/10000B - ETA: 00:00:03", failedLines.get(8));
+        Assert.assertEquals(" 40% [========>           ]  4096B/10000B - ETA: 00:00:0", StringUtility.rShear(failedLines.get(9), 1));
+        Assert.assertEquals(" 46% [=========>          ]  4608B/10000B - ETA: 00:00:02", failedLines.get(10));
+        Assert.assertEquals(" 46% [=========           ]  4608B/10000B - Failed", failedLines.get(11));
         progressBar.setAutoPrint(false);
         System.setOut(saveOut);
     }
@@ -697,6 +757,49 @@ public class ProgressBarTest {
     }
     
     /**
+     * JUnit test of processLog.
+     *
+     * @throws Exception When there is an exception.
+     * @see ProgressBar#processLog(String, boolean)
+     * @see ProgressBar#processLog(String)
+     */
+    @Test
+    public void testProcessLog() throws Exception {
+        //default
+        Assert.assertEquals(0L, progressBar.getProgress());
+        Assert.assertFalse(progressBar.processLog("1"));
+        Assert.assertEquals(0L, progressBar.getProgress());
+        Assert.assertFalse(progressBar.processLog("1%"));
+        Assert.assertEquals(0L, progressBar.getProgress());
+        Assert.assertFalse(progressBar.processLog("test"));
+        Assert.assertEquals(0L, progressBar.getProgress());
+        Assert.assertFalse(progressBar.processLog("test\nlog\n1%\n"));
+        Assert.assertEquals(0L, progressBar.getProgress());
+        Assert.assertFalse(progressBar.processLog(null));
+        Assert.assertEquals(0L, progressBar.getProgress());
+        
+        //error flag
+        Assert.assertEquals(0L, progressBar.getProgress());
+        Assert.assertFalse(progressBar.processLog("1", false));
+        Assert.assertEquals(0L, progressBar.getProgress());
+        Assert.assertFalse(progressBar.processLog("1%", true));
+        Assert.assertEquals(0L, progressBar.getProgress());
+        Assert.assertFalse(progressBar.processLog("test", true));
+        Assert.assertEquals(0L, progressBar.getProgress());
+        Assert.assertFalse(progressBar.processLog("test\nlog\n1%\n", false));
+        Assert.assertEquals(0L, progressBar.getProgress());
+        Assert.assertFalse(progressBar.processLog(null, true));
+        Assert.assertEquals(0L, progressBar.getProgress());
+        
+        //default error flag
+        progressBar = Mockito.spy(ProgressBar.class);
+        Mockito.doReturn(false).when(progressBar).processLog(ArgumentMatchers.anyString(), ArgumentMatchers.anyBoolean());
+        Mockito.doCallRealMethod().when(progressBar).processLog(ArgumentMatchers.anyString());
+        progressBar.processLog("test");
+        Mockito.verify(progressBar).processLog(ArgumentMatchers.eq("test"), ArgumentMatchers.eq(false));
+    }
+    
+    /**
      * JUnit test of print.
      *
      * @throws Exception When there is an exception.
@@ -711,22 +814,40 @@ public class ProgressBarTest {
         saveOut = System.out;
         out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(false));
         progressBar.print();
         Assert.assertEquals(progressBar.getPrintable().replace(" ", " "), out.toString());
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).getPrintable();
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "firstPrint")).get());
         System.setOut(saveOut);
         
-        //update
+        //no update
         saveOut = System.out;
         out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));
-        TestUtils.setField(progressBar, "update", false);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(false));
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(false));
         progressBar.print();
         Assert.assertEquals(progressBar.getPrintable().replace(" ", " "), out.toString());
         Mockito.verify(progressBar, VerificationModeFactory.times(4)).getPrintable();
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "firstPrint")).get());
+        System.setOut(saveOut);
+        
+        //first print
+        saveOut = System.out;
+        out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(false));
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(true));
+        progressBar.print();
+        Assert.assertEquals(Console.ConsoleEffect.CYAN.apply("Test Bar: ") + System.lineSeparator() +
+                progressBar.getPrintable().replace(" ", " "), out.toString());
+        Mockito.verify(progressBar, VerificationModeFactory.times(6)).getPrintable();
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "firstPrint")).get());
         System.setOut(saveOut);
     }
     
@@ -1382,7 +1503,8 @@ public class ProgressBarTest {
         System.setOut(new PrintStream(out));
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).getPrintable();
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(false));
         TestUtils.setField(progressBar, "progress", 5000L);
         TestUtils.setField(progressBar, "current", 5000L);
         progressBar.complete(false, "");
@@ -1390,10 +1512,11 @@ public class ProgressBarTest {
         Assert.assertEquals(progressBar.getTotal(), progressBar.getCurrent());
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(1)).getPrintable();
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "firstPrint")).get());
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete",
-                StringUtility.trim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll("\\s+", " ").replaceAll(" ", ""))
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
         );
         Assert.assertFalse(out.toString().contains(" "));
         System.setOut(saveOut);
@@ -1405,7 +1528,8 @@ public class ProgressBarTest {
         Mockito.when(progressBar.getTotalDuration()).thenReturn(TimeUnit.SECONDS.toNanos(57653L));
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(1)).getPrintable();
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(false));
         TestUtils.setField(progressBar, "progress", 5000L);
         TestUtils.setField(progressBar, "current", 5000L);
         TestUtils.setField(progressBar, "currentUpdate", 50008147071900L);
@@ -1416,10 +1540,11 @@ public class ProgressBarTest {
         Assert.assertEquals(progressBar.getTotal(), progressBar.getCurrent());
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).getPrintable();
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "firstPrint")).get());
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete (16h 0m 53s)",
-                StringUtility.trim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll("\\s+", " ").replaceAll(" ", ""))
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
         );
         Assert.assertFalse(out.toString().contains(" "));
         Mockito.when(progressBar.getTotalDuration()).thenCallRealMethod();
@@ -1431,7 +1556,8 @@ public class ProgressBarTest {
         System.setOut(new PrintStream(out));
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).getPrintable();
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(false));
         TestUtils.setField(progressBar, "progress", 5000L);
         TestUtils.setField(progressBar, "current", 5000L);
         progressBar.complete(false, "Press any key to continue...");
@@ -1439,10 +1565,11 @@ public class ProgressBarTest {
         Assert.assertEquals(progressBar.getTotal(), progressBar.getCurrent());
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(3)).getPrintable();
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "firstPrint")).get());
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete - Press any key to continue...",
-                StringUtility.trim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll("\\s+", " ").replaceAll(" ", ""))
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
         );
         Assert.assertFalse(out.toString().contains(" "));
         System.setOut(saveOut);
@@ -1454,7 +1581,8 @@ public class ProgressBarTest {
         Mockito.when(progressBar.getTotalDuration()).thenReturn(TimeUnit.SECONDS.toNanos(57653L));
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(3)).getPrintable();
-        TestUtils.setField(progressBar, "update", true);
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(false));
         TestUtils.setField(progressBar, "progress", 5000L);
         TestUtils.setField(progressBar, "current", 5000L);
         TestUtils.setField(progressBar, "currentUpdate", 50008147071900L);
@@ -1465,18 +1593,43 @@ public class ProgressBarTest {
         Assert.assertEquals(progressBar.getTotal(), progressBar.getCurrent());
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(4)).getPrintable();
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "update"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "firstPrint")).get());
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete (16h 0m 53s) - Press any key to continue...",
-                StringUtility.trim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll("\\s+", " ").replaceAll(" ", ""))
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
         );
         Assert.assertFalse(out.toString().contains(" "));
         Mockito.when(progressBar.getTotalDuration()).thenCallRealMethod();
         System.setOut(saveOut);
         
+        //first print
+        saveOut = System.out;
+        out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+        Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
+        Mockito.verify(progressBar, VerificationModeFactory.times(4)).getPrintable();
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(true));
+        TestUtils.setField(progressBar, "progress", 5000L);
+        TestUtils.setField(progressBar, "current", 5000L);
+        TestUtils.setField(progressBar, "title", "Test Bar");
+        progressBar.complete(false, "");
+        Assert.assertEquals(progressBar.getTotal(), progressBar.getProgress());
+        Assert.assertEquals(progressBar.getTotal(), progressBar.getCurrent());
+        Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
+        Mockito.verify(progressBar, VerificationModeFactory.times(5)).getPrintable();
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "firstPrint")).get());
+        Assert.assertEquals(
+                "Test Bar: " + "100% [====================] 10000B/10000B - Complete",
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+        );
+        Assert.assertFalse(out.toString().contains(" "));
+        System.setOut(saveOut);
         
         //default additional info
-        Mockito.verify(progressBar, VerificationModeFactory.times(1)).complete(ArgumentMatchers.eq(false), ArgumentMatchers.eq(""));
+        Mockito.verify(progressBar, VerificationModeFactory.times(2)).complete(ArgumentMatchers.eq(false), ArgumentMatchers.eq(""));
         Mockito.verify(progressBar, VerificationModeFactory.times(1)).complete(ArgumentMatchers.eq(true), ArgumentMatchers.eq(""));
         final AtomicBoolean printTime = new AtomicBoolean(true);
         Mockito.doAnswer(invocationOnMock -> {
@@ -1486,7 +1639,7 @@ public class ProgressBarTest {
         }).when(progressBar).complete(ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyString());
         printTime.set(false);
         progressBar.complete(false);
-        Mockito.verify(progressBar, VerificationModeFactory.times(2)).complete(ArgumentMatchers.eq(false), ArgumentMatchers.eq(""));
+        Mockito.verify(progressBar, VerificationModeFactory.times(3)).complete(ArgumentMatchers.eq(false), ArgumentMatchers.eq(""));
         printTime.set(true);
         progressBar.complete(true);
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).complete(ArgumentMatchers.eq(true), ArgumentMatchers.eq(""));
@@ -1501,6 +1654,195 @@ public class ProgressBarTest {
         progressBar.complete();
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).complete(ArgumentMatchers.eq(true));
         Mockito.doCallRealMethod().when(progressBar).complete(ArgumentMatchers.anyBoolean());
+    }
+    
+    /**
+     * JUnit test of isFailed.
+     *
+     * @throws Exception When there is an exception.
+     * @see ProgressBar#isFailed()
+     */
+    @Test
+    public void testIsFailed() throws Exception {
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(false));
+        Assert.assertFalse(progressBar.isFailed());
+        
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(true));
+        Assert.assertTrue(progressBar.isFailed());
+    }
+    
+    /**
+     * JUnit test of fail.
+     *
+     * @throws Exception When there is an exception.
+     * @see ProgressBar#fail(boolean, String)
+     * @see ProgressBar#fail(boolean)
+     * @see ProgressBar#fail()
+     */
+    @Test
+    public void testFail() throws Exception {
+        PrintStream saveOut;
+        ByteArrayOutputStream out;
+        
+        TestUtils.setField(progressBar, "title", "");
+        
+        //standard
+        saveOut = System.out;
+        out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+        Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
+        Mockito.verify(progressBar, VerificationModeFactory.times(0)).getPrintable();
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(false));
+        TestUtils.setField(progressBar, "progress", 5000L);
+        TestUtils.setField(progressBar, "current", 5000L);
+        progressBar.fail(false, "");
+        Assert.assertEquals(5000L, progressBar.getProgress());
+        Assert.assertEquals(5000L, progressBar.getCurrent());
+        Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
+        Mockito.verify(progressBar, VerificationModeFactory.times(1)).getPrintable();
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "firstPrint")).get());
+        Assert.assertEquals(
+                " 50% [==========          ]  5000B/10000B - Failed",
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+        );
+        Assert.assertFalse(out.toString().contains(" "));
+        System.setOut(saveOut);
+        
+        //print time
+        saveOut = System.out;
+        out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+        Mockito.when(progressBar.getTotalDuration()).thenReturn(TimeUnit.SECONDS.toNanos(57653L));
+        Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
+        Mockito.verify(progressBar, VerificationModeFactory.times(1)).getPrintable();
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(false));
+        TestUtils.setField(progressBar, "progress", 5000L);
+        TestUtils.setField(progressBar, "current", 5000L);
+        TestUtils.setField(progressBar, "currentUpdate", 50008147071900L);
+        TestUtils.setField(progressBar, "firstUpdate", 19608147071900L);
+        TestUtils.setField(progressBar, "initialDuration", 120L);
+        progressBar.fail(true, "");
+        Assert.assertEquals(5000L, progressBar.getProgress());
+        Assert.assertEquals(5000L, progressBar.getCurrent());
+        Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
+        Mockito.verify(progressBar, VerificationModeFactory.times(2)).getPrintable();
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "firstPrint")).get());
+        Assert.assertEquals(
+                " 50% [==========          ]  5000B/10000B - Failed (16h 0m 53s)",
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+        );
+        Assert.assertFalse(out.toString().contains(" "));
+        Mockito.when(progressBar.getTotalDuration()).thenCallRealMethod();
+        System.setOut(saveOut);
+        
+        //additional info
+        saveOut = System.out;
+        out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+        Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
+        Mockito.verify(progressBar, VerificationModeFactory.times(2)).getPrintable();
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(false));
+        TestUtils.setField(progressBar, "progress", 5000L);
+        TestUtils.setField(progressBar, "current", 5000L);
+        progressBar.fail(false, "Press any key to continue...");
+        Assert.assertEquals(5000L, progressBar.getProgress());
+        Assert.assertEquals(5000L, progressBar.getCurrent());
+        Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
+        Mockito.verify(progressBar, VerificationModeFactory.times(3)).getPrintable();
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "firstPrint")).get());
+        Assert.assertEquals(
+                " 50% [==========          ]  5000B/10000B - Failed - Press any key to continue...",
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+        );
+        Assert.assertFalse(out.toString().contains(" "));
+        System.setOut(saveOut);
+        
+        //print time and additional info
+        saveOut = System.out;
+        out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+        Mockito.when(progressBar.getTotalDuration()).thenReturn(TimeUnit.SECONDS.toNanos(57653L));
+        Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
+        Mockito.verify(progressBar, VerificationModeFactory.times(3)).getPrintable();
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(false));
+        TestUtils.setField(progressBar, "progress", 5000L);
+        TestUtils.setField(progressBar, "current", 5000L);
+        TestUtils.setField(progressBar, "currentUpdate", 50008147071900L);
+        TestUtils.setField(progressBar, "firstUpdate", 19608147071900L);
+        TestUtils.setField(progressBar, "initialDuration", 120L);
+        progressBar.fail(true, "Press any key to continue...");
+        Assert.assertEquals(5000L, progressBar.getProgress());
+        Assert.assertEquals(5000L, progressBar.getCurrent());
+        Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
+        Mockito.verify(progressBar, VerificationModeFactory.times(4)).getPrintable();
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "firstPrint")).get());
+        Assert.assertEquals(
+                " 50% [==========          ]  5000B/10000B - Failed (16h 0m 53s) - Press any key to continue...",
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+        );
+        Assert.assertFalse(out.toString().contains(" "));
+        Mockito.when(progressBar.getTotalDuration()).thenCallRealMethod();
+        System.setOut(saveOut);
+        
+        //first print
+        saveOut = System.out;
+        out = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(out));
+        Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
+        Mockito.verify(progressBar, VerificationModeFactory.times(4)).getPrintable();
+        TestUtils.setField(progressBar, "update", new AtomicBoolean(true));
+        TestUtils.setField(progressBar, "firstPrint", new AtomicBoolean(true));
+        TestUtils.setField(progressBar, "progress", 5000L);
+        TestUtils.setField(progressBar, "current", 5000L);
+        TestUtils.setField(progressBar, "title", "Test Bar");
+        progressBar.fail(false, "");
+        Assert.assertEquals(5000L, progressBar.getProgress());
+        Assert.assertEquals(5000L, progressBar.getCurrent());
+        Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
+        Mockito.verify(progressBar, VerificationModeFactory.times(5)).getPrintable();
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "update")).get());
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(progressBar, "firstPrint")).get());
+        Assert.assertEquals(
+                "Test Bar:  50% [==========          ]  5000B/10000B - Failed",
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+        );
+        Assert.assertFalse(out.toString().contains(" "));
+        System.setOut(saveOut);
+        
+        //default additional info
+        Mockito.verify(progressBar, VerificationModeFactory.times(2)).fail(ArgumentMatchers.eq(false), ArgumentMatchers.eq(""));
+        Mockito.verify(progressBar, VerificationModeFactory.times(1)).fail(ArgumentMatchers.eq(true), ArgumentMatchers.eq(""));
+        final AtomicBoolean printTime = new AtomicBoolean(true);
+        Mockito.doAnswer(invocationOnMock -> {
+            Assert.assertEquals(printTime.get(), invocationOnMock.getArgument(0));
+            Assert.assertEquals("", invocationOnMock.getArgument(1));
+            return null;
+        }).when(progressBar).fail(ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyString());
+        printTime.set(false);
+        progressBar.fail(false);
+        Mockito.verify(progressBar, VerificationModeFactory.times(3)).fail(ArgumentMatchers.eq(false), ArgumentMatchers.eq(""));
+        printTime.set(true);
+        progressBar.fail(true);
+        Mockito.verify(progressBar, VerificationModeFactory.times(2)).fail(ArgumentMatchers.eq(true), ArgumentMatchers.eq(""));
+        Mockito.doCallRealMethod().when(progressBar).fail(ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyString());
+        
+        //default print time
+        Mockito.verify(progressBar, VerificationModeFactory.times(1)).fail(ArgumentMatchers.eq(true));
+        Mockito.doAnswer(invocationOnMock -> {
+            Assert.assertTrue(invocationOnMock.getArgument(0));
+            return null;
+        }).when(progressBar).fail(ArgumentMatchers.anyBoolean());
+        progressBar.fail();
+        Mockito.verify(progressBar, VerificationModeFactory.times(2)).fail(ArgumentMatchers.eq(true));
+        Mockito.doCallRealMethod().when(progressBar).fail(ArgumentMatchers.anyBoolean());
     }
     
     /**
@@ -1580,6 +1922,27 @@ public class ProgressBarTest {
                 Console.ConsoleEffect.GREEN.apply("  0") + '%',
                 progressBar.getPercentageString()
         );
+        
+        TestUtils.setField(progressBar, "current", 0L);
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(true));
+        Assert.assertEquals(
+                Console.ConsoleEffect.RED.apply("  0") + '%',
+                progressBar.getPercentageString()
+        );
+        
+        TestUtils.setField(progressBar, "current", 7784L);
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(true));
+        Assert.assertEquals(
+                Console.ConsoleEffect.RED.apply(" 77") + '%',
+                progressBar.getPercentageString()
+        );
+        
+        TestUtils.setField(progressBar, "current", 10000L);
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(true));
+        Assert.assertEquals(
+                Console.ConsoleEffect.RED.apply("100") + '%',
+                progressBar.getPercentageString()
+        );
     }
     
     /**
@@ -1635,6 +1998,27 @@ public class ProgressBarTest {
         TestUtils.setField(progressBar, "current", -941L);
         Assert.assertEquals(
                 '[' + Console.ConsoleEffect.GREEN.apply(">                   ") + ']',
+                progressBar.getBarString()
+        );
+        
+        TestUtils.setField(progressBar, "current", 0L);
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(true));
+        Assert.assertEquals(
+                '[' + Console.ConsoleEffect.RED.apply("                    ") + ']',
+                progressBar.getBarString()
+        );
+        
+        TestUtils.setField(progressBar, "current", 7784L);
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(true));
+        Assert.assertEquals(
+                '[' + Console.ConsoleEffect.RED.apply("===============     ") + ']',
+                progressBar.getBarString()
+        );
+        
+        TestUtils.setField(progressBar, "current", 10000L);
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(true));
+        Assert.assertEquals(
+                '[' + Console.ConsoleEffect.RED.apply("====================") + ']',
                 progressBar.getBarString()
         );
     }
@@ -1694,6 +2078,27 @@ public class ProgressBarTest {
                 Console.ConsoleEffect.GREEN.apply("    0") + "B/" + Console.ConsoleEffect.CYAN.apply("10000") + 'B',
                 progressBar.getRatioString()
         );
+        
+        TestUtils.setField(progressBar, "current", 0L);
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(true));
+        Assert.assertEquals(
+                Console.ConsoleEffect.RED.apply("    0") + "B/" + Console.ConsoleEffect.CYAN.apply("10000") + 'B',
+                progressBar.getRatioString()
+        );
+        
+        TestUtils.setField(progressBar, "current", 7784L);
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(true));
+        Assert.assertEquals(
+                Console.ConsoleEffect.RED.apply(" 7784") + "B/" + Console.ConsoleEffect.CYAN.apply("10000") + 'B',
+                progressBar.getRatioString()
+        );
+        
+        TestUtils.setField(progressBar, "current", 10000L);
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(true));
+        Assert.assertEquals(
+                Console.ConsoleEffect.RED.apply("10000") + "B/" + Console.ConsoleEffect.CYAN.apply("10000") + 'B',
+                progressBar.getRatioString()
+        );
     }
     
     /**
@@ -1731,6 +2136,30 @@ public class ProgressBarTest {
         Mockito.doReturn(-3870.0).when(progressBar).getRollingAverageSpeed();
         Assert.assertEquals(
                 "at -3870.0B/s",
+                progressBar.getSpeedString()
+        );
+        
+        Mockito.doReturn(503.0).when(progressBar).getRollingAverageSpeed();
+        TestUtils.setField(progressBar, "current", 10000L);
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(false));
+        Assert.assertEquals(
+                "",
+                progressBar.getSpeedString()
+        );
+        
+        Mockito.doReturn(503.0).when(progressBar).getRollingAverageSpeed();
+        TestUtils.setField(progressBar, "current", 7784L);
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(true));
+        Assert.assertEquals(
+                "",
+                progressBar.getSpeedString()
+        );
+        
+        Mockito.doReturn(503.0).when(progressBar).getRollingAverageSpeed();
+        TestUtils.setField(progressBar, "current", 10000L);
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(true));
+        Assert.assertEquals(
+                "",
                 progressBar.getSpeedString()
         );
     }
@@ -1884,6 +2313,29 @@ public class ProgressBarTest {
         TestUtils.setField(progressBar, "currentUpdate", 19610147071900L);
         TestUtils.setField(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: 00:33:18", progressBar.getTimeRemainingString());
+        
+        //done
+        
+        TestUtils.setField(progressBar, "current", 10000L);
+        TestUtils.setField(progressBar, "initialProgress", 0L);
+        TestUtils.setField(progressBar, "currentUpdate", 19610147071900L);
+        TestUtils.setField(progressBar, "firstUpdate", 19608147071900L);
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(false));
+        Assert.assertEquals(Console.ConsoleEffect.CYAN.apply("Complete"), progressBar.getTimeRemainingString());
+        
+        TestUtils.setField(progressBar, "current", 5000L);
+        TestUtils.setField(progressBar, "initialProgress", 0L);
+        TestUtils.setField(progressBar, "currentUpdate", 19610147071900L);
+        TestUtils.setField(progressBar, "firstUpdate", 19608147071900L);
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(true));
+        Assert.assertEquals(Console.ConsoleEffect.RED.apply("Failed"), progressBar.getTimeRemainingString());
+        
+        TestUtils.setField(progressBar, "current", 10000L);
+        TestUtils.setField(progressBar, "initialProgress", 0L);
+        TestUtils.setField(progressBar, "currentUpdate", 19610147071900L);
+        TestUtils.setField(progressBar, "firstUpdate", 19608147071900L);
+        TestUtils.setField(progressBar, "failed", new AtomicBoolean(true));
+        Assert.assertEquals(Console.ConsoleEffect.RED.apply("Failed"), progressBar.getTimeRemainingString());
     }
     
     /**
