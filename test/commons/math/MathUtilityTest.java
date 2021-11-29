@@ -256,6 +256,25 @@ public class MathUtilityTest {
     }
     
     /**
+     * JUnit test of coinFlip.
+     *
+     * @throws Exception When there is an exception.
+     * @see MathUtility#coinFlip()
+     */
+    @Test
+    public void testCoinFlip() throws Exception {
+        //standard
+        int heads = 0;
+        int tails = 0;
+        for (int i = 0; i < 1000000; i++) {
+            boolean coinFlip = MathUtility.coinFlip();
+            heads += (coinFlip ? 1 : 0);
+            tails += (coinFlip ? 0 : 1);
+        }
+        Assert.assertTrue(Math.abs(heads - tails) < (1000000 * 0.01));
+    }
+    
+    /**
      * JUnit test of isSquare.
      *
      * @throws Exception When there is an exception.

@@ -128,6 +128,15 @@ public class MathUtility {
     }
     
     /**
+     * Returns the result of a coin flip.
+     *
+     * @return The result of the coin flip; 50% true / 50% false.
+     */
+    public static boolean coinFlip() {
+        return (Math.random() < 0.5);
+    }
+    
+    /**
      * Determines if a number is a perfect square or not.
      *
      * @param value The number.
