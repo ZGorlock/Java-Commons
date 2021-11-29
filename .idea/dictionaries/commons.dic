@@ -12,6 +12,9 @@ atanh
 cmudict
 coth
 delim
+demux
+demuxer
+demuxing
 depuncted
 detokenize
 detokenizes
@@ -26,10 +29,16 @@ fileids
 fmpeg
 fplay
 fprobe
+framerate
 hsmm
 khtml
+libx
 marytts
 millia
+movflags
+mux
+muxer
+muxing
 noncommercially
 pkcs
 redim
@@ -39,6 +48,7 @@ sinh
 sublicenses
 sublicensing
 tanh
+transcodes
 unmute
 unmutes
 unmuting
