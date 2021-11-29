@@ -8,10 +8,16 @@
 package commons.media;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import commons.access.CmdLine;
+import commons.console.Console;
+import commons.console.ProgressBar;
 import commons.string.StringUtility;
 
 /**
@@ -128,23 +134,218 @@ public class FFmpeg {
     /**
      * Executes an ffmpeg process.
      *
-     * @param params The parameters send to ffmpeg.
+     * @param params      The parameters send to ffmpeg.
+     * @param progressBar The FFmpegProgressBar for the process.
      * @return The response from the ffmpeg process.
      */
+    public static String ffmpeg(String params, FFmpegProgressBar progressBar) {
+        final String executable = (ffmpeg == null) ? "ffmpeg" : ("\"" + ffmpeg.getAbsolutePath() + "\"");
+        final String cmd = executable + ' ' + params;
+        
+        return (progressBar != null) ?
+               CmdLine.executeCmd(cmd, progressBar) :
+               CmdLine.executeCmd(cmd);
+    }
+    
+    /**
+     * Executes an ffmpeg process.
+     *
+     * @param params The parameters send to ffmpeg.
+     * @return The response from the ffmpeg process.
+     * @see #ffmpeg(String, FFmpegProgressBar)
+     */
     public static String ffmpeg(String params) {
-        String executable = (ffmpeg == null) ? "ffmpeg" : ("\"" + ffmpeg.getAbsolutePath() + "\"");
-        return CmdLine.executeCmd(executable + " " + params);
+        return ffmpeg(params, null);
+    }
+    
+    /**
+     * Executes an ffmpeg process.
+     *
+     * @param inputParams The input parameters send to ffmpeg.
+     * @param sourceFiles The source files to send to ffmpeg.
+     * @param params      The parameters send to ffmpeg.
+     * @param outputFile  The output file to send to ffmpeg.
+     * @param progressBar Whether or not to show a progress bar.
+     * @return The response from the ffmpeg process.
+     * @see #ffmpeg(String, FFmpegProgressBar)
+     */
+    public static String ffmpeg(String inputParams, List<File> sourceFiles, String params, File outputFile, boolean progressBar) {
+        final String cmd = "-hide_banner" +
+                (progressBar ? " -progress - -nostats" : "") +
+                ((inputParams == null || StringUtility.trim(inputParams).isEmpty()) ? "" : ' ') + StringUtility.trim(inputParams) +
+                sourceFiles.stream().map(File::getAbsolutePath)
+                        .collect(Collectors.joining("\" -i \"", " -i \"", "\"")) +
+                ((params == null || StringUtility.trim(params).isEmpty()) ? "" : ' ') + StringUtility.trim(params) +
+                " \"" + outputFile.getAbsolutePath() + "\"";
+        return ffmpeg(cmd,
+                (progressBar && !sourceFiles.isEmpty()) ? new FFmpegProgressBar("FFmpeg " + Console.ConsoleEffect.GREY.apply(cmd), sourceFiles.get(0)) : null);
+    }
+    
+    /**
+     * Executes an ffmpeg process.
+     *
+     * @param sourceFiles The source files to send to ffmpeg.
+     * @param params      The parameters send to ffmpeg.
+     * @param outputFile  The output file to send to ffmpeg.
+     * @param progressBar Whether or not to show a progress bar.
+     * @return The response from the ffmpeg process.
+     * @see #ffmpeg(String, List, String, File, boolean)
+     */
+    public static String ffmpeg(List<File> sourceFiles, String params, File outputFile, boolean progressBar) {
+        return ffmpeg("", sourceFiles, params, outputFile, progressBar);
+    }
+    
+    /**
+     * Executes an ffmpeg process.
+     *
+     * @param inputParams The input parameters send to ffmpeg.
+     * @param sourceFiles The source files to send to ffmpeg.
+     * @param params      The parameters send to ffmpeg.
+     * @param outputFile  The output file to send to ffmpeg.
+     * @return The response from the ffmpeg process.
+     * @see #ffmpeg(String, List, String, File, boolean)
+     */
+    public static String ffmpeg(String inputParams, List<File> sourceFiles, String params, File outputFile) {
+        return ffmpeg(inputParams, sourceFiles, params, outputFile, true);
+    }
+    
+    /**
+     * Executes an ffmpeg process.
+     *
+     * @param sourceFiles The source files to send to ffmpeg.
+     * @param params      The parameters send to ffmpeg.
+     * @param outputFile  The output file to send to ffmpeg.
+     * @return The response from the ffmpeg process.
+     * @see #ffmpeg(List, String, File, boolean)
+     */
+    public static String ffmpeg(List<File> sourceFiles, String params, File outputFile) {
+        return ffmpeg(sourceFiles, params, outputFile, true);
+    }
+    
+    /**
+     * Executes an ffmpeg process.
+     *
+     * @param inputParams The input parameters send to ffmpeg.
+     * @param sourceFile  The source file to send to ffmpeg.
+     * @param params      The parameters send to ffmpeg.
+     * @param outputFile  The output file to send to ffmpeg.
+     * @return The response from the ffmpeg process.
+     * @see #ffmpeg(String, List, String, File, boolean)
+     */
+    public static String ffmpeg(String inputParams, File sourceFile, String params, File outputFile, boolean progressBar) {
+        return ffmpeg(inputParams, Collections.singletonList(sourceFile), params, outputFile, progressBar);
+    }
+    
+    /**
+     * Executes an ffmpeg process.
+     *
+     * @param sourceFile The source file to send to ffmpeg.
+     * @param params     The parameters send to ffmpeg.
+     * @param outputFile The output file to send to ffmpeg.
+     * @return The response from the ffmpeg process.
+     * @see #ffmpeg(List, String, File, boolean)
+     */
+    public static String ffmpeg(File sourceFile, String params, File outputFile, boolean progressBar) {
+        return ffmpeg(Collections.singletonList(sourceFile), params, outputFile, progressBar);
+    }
+    
+    /**
+     * Executes an ffmpeg process.
+     *
+     * @param inputParams The input parameters send to ffmpeg.
+     * @param sourceFile  The source file to send to ffmpeg.
+     * @param params      The parameters send to ffmpeg.
+     * @param outputFile  The output file to send to ffmpeg.
+     * @return The response from the ffmpeg process.
+     * @see #ffmpeg(File, String, File, boolean)
+     */
+    public static String ffmpeg(String inputParams, File sourceFile, String params, File outputFile) {
+        return ffmpeg(inputParams, sourceFile, params, outputFile, true);
+    }
+    
+    /**
+     * Executes an ffmpeg process.
+     *
+     * @param sourceFile The source file to send to ffmpeg.
+     * @param params     The parameters send to ffmpeg.
+     * @param outputFile The output file to send to ffmpeg.
+     * @return The response from the ffmpeg process.
+     * @see #ffmpeg(File, String, File, boolean)
+     */
+    public static String ffmpeg(File sourceFile, String params, File outputFile) {
+        return ffmpeg(sourceFile, params, outputFile, true);
     }
     
     /**
      * Executes an ffmpeg process asynchronously.
      *
      * @param params The parameters to send to ffmpeg.
-     * @return Whether the ffmpeg process was successfully created or not.
+     * @return The ffmpeg Process that was started, or null if there was an error.
      */
-    public static boolean ffmpegAsync(String params) {
-        String executable = (ffmpeg == null) ? "ffmpeg" : ("\"" + ffmpeg.getAbsolutePath() + "\"");
-        return CmdLine.executeCmdAsync(executable + " " + params) != null;
+    public static Process ffmpegAsync(String params) {
+        final String executable = (ffmpeg == null) ? "ffmpeg" : ("\"" + ffmpeg.getAbsolutePath() + "\"");
+        final String cmd = executable + ' ' + params;
+        
+        return CmdLine.executeCmdAsync(cmd);
+    }
+    
+    /**
+     * Executes an ffmpeg process asynchronously.
+     *
+     * @param inputParams The input parameters send to ffmpeg.
+     * @param sourceFiles The source files to send to ffmpeg.
+     * @param params      The parameters send to ffmpeg.
+     * @param outputFile  The output file to send to ffmpeg.
+     * @return The ffmpeg Process that was started, or null if there was an error.
+     * @see #ffmpegAsync(String)
+     */
+    public static Process ffmpegAsync(String inputParams, List<File> sourceFiles, String params, File outputFile) {
+        return ffmpegAsync("-hide_banner" +
+                ((inputParams == null || StringUtility.trim(inputParams).isEmpty()) ? "" : ' ') + StringUtility.trim(inputParams) +
+                sourceFiles.stream().map(File::getAbsolutePath)
+                        .collect(Collectors.joining("\" -i \"", " -i \"", "\"")) +
+                ((params == null || StringUtility.trim(params).isEmpty()) ? "" : ' ') + StringUtility.trim(params) +
+                " \"" + outputFile.getAbsolutePath() + "\"");
+    }
+    
+    /**
+     * Executes an ffmpeg process asynchronously.
+     *
+     * @param sourceFiles The source files to send to ffmpeg.
+     * @param params      The parameters send to ffmpeg.
+     * @param outputFile  The output file to send to ffmpeg.
+     * @return The ffmpeg Process that was started, or null if there was an error.
+     * @see #ffmpegAsync(String, List, String, File)
+     */
+    public static Process ffmpegAsync(List<File> sourceFiles, String params, File outputFile) {
+        return ffmpegAsync("", sourceFiles, params, outputFile);
+    }
+    
+    /**
+     * Executes an ffmpeg process asynchronously.
+     *
+     * @param inputParams The input parameters send to ffmpeg.
+     * @param sourceFile  The source file to send to ffmpeg.
+     * @param params      The parameters send to ffmpeg.
+     * @param outputFile  The output file to send to ffmpeg.
+     * @return The ffmpeg Process that was started, or null if there was an error.
+     * @see #ffmpegAsync(String, List, String, File)
+     */
+    public static Process ffmpegAsync(String inputParams, File sourceFile, String params, File outputFile) {
+        return ffmpegAsync(inputParams, Collections.singletonList(sourceFile), params, outputFile);
+    }
+    
+    /**
+     * Executes an ffmpeg process asynchronously.
+     *
+     * @param sourceFile The source file to send to ffmpeg.
+     * @param params     The parameters send to ffmpeg.
+     * @param outputFile The output file to send to ffmpeg.
+     * @return The ffmpeg Process that was started, or null if there was an error.
+     * @see #ffmpegAsync(List, String, File)
+     */
+    public static Process ffmpegAsync(File sourceFile, String params, File outputFile) {
+        return ffmpegAsync(Collections.singletonList(sourceFile), params, outputFile);
     }
     
     /**
@@ -154,19 +355,73 @@ public class FFmpeg {
      * @return The response from the ffprobe process.
      */
     public static String ffprobe(String params) {
-        String executable = (ffprobe == null) ? "ffprobe" : ("\"" + ffprobe.getAbsolutePath() + "\"");
-        return CmdLine.executeCmd(executable + " " + params);
+        final String executable = (ffprobe == null) ? "ffprobe" : ("\"" + ffprobe.getAbsolutePath() + "\"");
+        final String cmd = executable + ' ' + params;
+        
+        return CmdLine.executeCmd(cmd);
+    }
+    
+    /**
+     * Executes an ffprobe process.
+     *
+     * @param params     The parameters send to ffprobe.
+     * @param sourceFile The source file to send to ffprobe.
+     * @return The response from the ffprobe process.
+     * @see #ffprobe(String)
+     */
+    public static String ffprobe(String params, File sourceFile) {
+        return ffprobe("-hide_banner" +
+                ((params == null || StringUtility.trim(params).isEmpty()) ? "" : ' ') + StringUtility.trim(params) +
+                " \"" + sourceFile.getAbsolutePath() + "\"");
+    }
+    
+    /**
+     * Executes an ffprobe process.
+     *
+     * @param sourceFile The source file to send to ffprobe.
+     * @return The response from the ffprobe process.
+     * @see #ffprobe(String, File)
+     */
+    public static String ffprobe(File sourceFile) {
+        return ffprobe("", sourceFile);
     }
     
     /**
      * Executes an ffprobe process asynchronously.
      *
      * @param params The parameters to send to ffprobe.
-     * @return Whether the ffprobe process was successfully created or not.
+     * @return The ffprobe Process that was started, or null if there was an error.
      */
-    public static boolean ffprobeAsync(String params) {
-        String executable = (ffprobe == null) ? "ffprobe" : ("\"" + ffprobe.getAbsolutePath() + "\"");
-        return CmdLine.executeCmdAsync(executable + " " + params) != null;
+    public static Process ffprobeAsync(String params) {
+        final String executable = (ffprobe == null) ? "ffprobe" : ("\"" + ffprobe.getAbsolutePath() + "\"");
+        final String cmd = executable + ' ' + params;
+        
+        return CmdLine.executeCmdAsync(cmd);
+    }
+    
+    /**
+     * Executes an ffprobe process asynchronously.
+     *
+     * @param params     The parameters send to ffprobe.
+     * @param sourceFile The source file to send to ffprobe.
+     * @return The ffprobe Process that was started, or null if there was an error.
+     * @see #ffprobeAsync(String)
+     */
+    public static Process ffprobeAsync(String params, File sourceFile) {
+        return ffprobeAsync("-hide_banner" +
+                ((params == null || StringUtility.trim(params).isEmpty()) ? "" : ' ') + StringUtility.trim(params) +
+                " \"" + sourceFile.getAbsolutePath() + "\"");
+    }
+    
+    /**
+     * Executes an ffprobe process asynchronously.
+     *
+     * @param sourceFile The source file to send to ffprobe.
+     * @return The ffprobe Process that was started, or null if there was an error.
+     * @see #ffprobeAsync(String, File)
+     */
+    public static Process ffprobeAsync(File sourceFile) {
+        return ffprobeAsync("", sourceFile);
     }
     
     /**
@@ -176,19 +431,73 @@ public class FFmpeg {
      * @return The response from the ffplay process.
      */
     public static String ffplay(String params) {
-        String executable = (ffplay == null) ? "ffplay" : ("\"" + ffplay.getAbsolutePath() + "\"");
-        return CmdLine.executeCmd(executable + " " + params);
+        final String executable = (ffplay == null) ? "ffplay" : ("\"" + ffplay.getAbsolutePath() + "\"");
+        final String cmd = executable + ' ' + params;
+        
+        return CmdLine.executeCmd(cmd);
+    }
+    
+    /**
+     * Executes an ffplay process.
+     *
+     * @param params     The parameters send to ffplay.
+     * @param sourceFile The source file to send to ffplay.
+     * @return The response from the ffplay process.
+     * @see #ffplay(String)
+     */
+    public static String ffplay(String params, File sourceFile) {
+        return ffplay("-hide_banner" +
+                ((params == null || StringUtility.trim(params).isEmpty()) ? "" : ' ') + StringUtility.trim(params) +
+                " \"" + sourceFile.getAbsolutePath() + "\"");
+    }
+    
+    /**
+     * Executes an ffplay process.
+     *
+     * @param sourceFile The source file to send to ffplay.
+     * @return The response from the ffplay process.
+     * @see #ffplay(String, File)
+     */
+    public static String ffplay(File sourceFile) {
+        return ffplay("", sourceFile);
     }
     
     /**
      * Executes an ffplay process asynchronously.
      *
      * @param params The parameters to send to ffplay.
-     * @return Whether the ffplay process was successfully created or not.
+     * @return The ffplay Process that was started, or null if there was an error.
      */
-    public static boolean ffplayAsync(String params) {
-        String executable = (ffplay == null) ? "ffplay" : ("\"" + ffplay.getAbsolutePath() + "\"");
-        return CmdLine.executeCmdAsync(executable + " " + params) != null;
+    public static Process ffplayAsync(String params) {
+        final String executable = (ffplay == null) ? "ffplay" : ("\"" + ffplay.getAbsolutePath() + "\"");
+        final String cmd = executable + ' ' + params;
+        
+        return CmdLine.executeCmdAsync(cmd);
+    }
+    
+    /**
+     * Executes an ffplay process asynchronously.
+     *
+     * @param params     The parameters send to ffplay.
+     * @param sourceFile The source file to send to ffplay.
+     * @return The ffplay Process that was started, or null if there was an error.
+     * @see #ffplayAsync(String)
+     */
+    public static Process ffplayAsync(String params, File sourceFile) {
+        return ffplayAsync("-hide_banner" +
+                ((params == null || StringUtility.trim(params).isEmpty()) ? "" : ' ') + StringUtility.trim(params) +
+                " \"" + sourceFile.getAbsolutePath() + "\"");
+    }
+    
+    /**
+     * Executes an ffplay process asynchronously.
+     *
+     * @param sourceFile The source file to send to ffplay.
+     * @return The ffplay Process that was started, or null if there was an error.
+     * @see #ffplayAsync(String, File)
+     */
+    public static Process ffplayAsync(File sourceFile) {
+        return ffplayAsync("", sourceFile);
     }
     
     
@@ -219,6 +528,120 @@ public class FFmpeg {
      */
     public static void setFFplayExecutable(File ffplay) {
         FFmpeg.ffplay = ffplay;
+    }
+    
+    
+    //Inner Classes
+    
+    /**
+     * A progress bar for ffmpeg muxing operations.
+     */
+    public static class FFmpegProgressBar extends ProgressBar {
+        
+        //Constants
+        
+        /**
+         * A regex pattern for an ffmpeg muxing progress log line.
+         */
+        public static final Pattern MUXING_PROGRESS_LOG_PATTERN = Pattern.compile("^\\s*frame=\\s*(?<frame>\\d+)\\s+fps=\\s*(?<fps>[\\d.]+)\\s+q=\\s*(?<q>[\\-\\d.]+)\\s+(?:Lq=\\s*(?<Lq>[\\-\\d.]+)\\s+)?(?:q=\\s*(?<q2>[\\-\\d.]+)\\s+)?(?:Lsize=\\s*(?<Lsize>[\\d.]+kB)\\s+)?time=\\s*(?<time>[\\d:.]+)\\s+bitrate=\\s*(?<bitrate>[\\d.]+kbits/s)\\s+speed=\\s*(?<speed>[\\d.]+x)\\s*$");
+        
+        /**
+         * A regex pattern for an ffmpeg muxing progress line.
+         */
+        public static final Pattern MUXING_PROGRESS_PATTERN = Pattern.compile("^\\s*frame=(?<frame>\\d+)\\s*$");
+        
+        /**
+         * A regex pattern for an ffmpeg muxing completion log line.
+         */
+        public static final Pattern MUXING_COMPLETE_LOG_PATTERN = Pattern.compile("^\\s*video:\\s*(?<video>\\d+kB)\\s+audio:\\s*(?<audio>\\d+kB)\\s+subtitle:\\s*(?<subtitle>\\d+kB)\\s+other\\sstreams:\\s*(?<otherStreams>\\d+kB)\\s+global\\sheaders:\\s*(?<globalHeaders>\\d+kB)\\s+muxing\\soverhead:\\s*(?<muxingOverhead>[\\d.]+%)\\s*$");
+        
+        /**
+         * A regex pattern for an ffmpeg muxing completion line.
+         */
+        public static final Pattern MUXING_COMPLETE_PATTERN = Pattern.compile("^\\s*progress=end\\s*$");
+        
+        
+        //Fields
+        
+        /**
+         * A flag indicating whether the FFmpeg progress bar completed naturally or not.
+         */
+        private boolean completedNaturally = false;
+        
+        /**
+         * A list of errors returned by ffmpeg.
+         */
+        private final List<String> errors = new ArrayList<>();
+        
+        
+        //Constructors
+        
+        /**
+         * Creates a new FFmpegProgressBar object.
+         *
+         * @param title     The title to display for the progress bar.
+         * @param videoFile The video file being operated on.
+         */
+        public FFmpegProgressBar(String title, File videoFile) {
+            super(title, VideoUtility.getFrameCount(videoFile), "frames");
+        }
+        
+        
+        //Methods
+        
+        /**
+         * Processes ffmpeg log data and updates the progress bar accordingly.
+         *
+         * @param log     The ffmpeg log data.
+         * @param isError Whether the passed log is an error log or not.
+         * @return Whether the progress bar was updated or not.
+         * @see #update(long)
+         */
+        @Override
+        public synchronized boolean processLog(String log, boolean isError) {
+            if (isError) {
+                if (!log.startsWith("  ") && !log.startsWith("[") &&
+                        !log.startsWith("Input #") && !log.startsWith("Output #") && !log.startsWith("Stream mapping:")) {
+                    errors.add(log);
+                    if (log.equals("Press [q] to stop, [?] for help")) {
+                        errors.clear();
+                    }
+                }
+                
+            } else {
+                final Matcher muxingProgressMatcher = MUXING_PROGRESS_PATTERN.matcher(log);
+                if (muxingProgressMatcher.matches()) {
+                    return update(Long.parseLong(muxingProgressMatcher.group("frame")));
+                    
+                } else {
+                    final Matcher muxingCompleteMatcher = MUXING_COMPLETE_PATTERN.matcher(log);
+                    if (muxingCompleteMatcher.matches()) {
+                        completedNaturally = true;
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+        }
+        
+        /**
+         * Completes the progress bar.
+         *
+         * @see #complete(boolean)
+         * @see #fail(boolean, String)
+         */
+        @Override
+        public synchronized void complete() {
+            if (completedNaturally) {
+                complete(true);
+            } else {
+                fail(true, Console.ConsoleEffect.RED.apply(
+                        "See method response for more information" + (errors.isEmpty() ? "" : System.lineSeparator()) +
+                                StringUtility.trim(errors.stream().collect(Collectors.joining(System.lineSeparator())))));
+            }
+        }
+        
     }
     
 }
