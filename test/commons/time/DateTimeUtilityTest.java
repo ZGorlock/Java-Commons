@@ -1608,6 +1608,7 @@ public class DateTimeUtilityTest {
         Assert.assertEquals(60000L, DateTimeUtility.durationStampToDuration("00:01:00.000"));
         Assert.assertEquals(3599999L, DateTimeUtility.durationStampToDuration("00:59:59.999"));
         Assert.assertEquals(3600000L, DateTimeUtility.durationStampToDuration("01:00:00.000"));
+        Assert.assertEquals(3599999L, DateTimeUtility.durationStampToDuration("00:59:59.999648444"));
         
         //negative
         Assert.assertEquals(-44163191L, DateTimeUtility.durationStampToDuration("-12:16:03.191"));
@@ -1625,17 +1626,21 @@ public class DateTimeUtilityTest {
         Assert.assertEquals(-60000L, DateTimeUtility.durationStampToDuration("-00:01:00.000"));
         Assert.assertEquals(-3599999L, DateTimeUtility.durationStampToDuration("-00:59:59.999"));
         Assert.assertEquals(-3600000L, DateTimeUtility.durationStampToDuration("-01:00:00.000"));
+        Assert.assertEquals(-3599999L, DateTimeUtility.durationStampToDuration("-00:59:59.999648444"));
         
         //empty
         Assert.assertEquals(0L, DateTimeUtility.durationStampToDuration("00:00:00.000"));
         Assert.assertEquals(0L, DateTimeUtility.durationStampToDuration("-00:00:00.000"));
+        Assert.assertEquals(0L, DateTimeUtility.durationStampToDuration("-00:00:00.000000000"));
         
         //abbreviated
         Assert.assertEquals(44163191L, DateTimeUtility.durationStampToDuration("12:16:03.191"));
         Assert.assertEquals(991542231L, DateTimeUtility.durationStampToDuration("275:25:42.231"));
+        Assert.assertEquals(991542231L, DateTimeUtility.durationStampToDuration("275:25:42.231077668"));
         Assert.assertEquals(1542231L, DateTimeUtility.durationStampToDuration("25:42.231"));
         Assert.assertEquals(1542200L, DateTimeUtility.durationStampToDuration("25:42.2"));
         Assert.assertEquals(542877L, DateTimeUtility.durationStampToDuration("9:02.877"));
+        Assert.assertEquals(542877L, DateTimeUtility.durationStampToDuration("9:02.87791017"));
         Assert.assertEquals(1L, DateTimeUtility.durationStampToDuration("0.001"));
         Assert.assertEquals(10L, DateTimeUtility.durationStampToDuration("0.01"));
         Assert.assertEquals(100L, DateTimeUtility.durationStampToDuration("0.1"));
@@ -1646,11 +1651,14 @@ public class DateTimeUtilityTest {
         Assert.assertEquals(60000L, DateTimeUtility.durationStampToDuration("1:00"));
         Assert.assertEquals(3599999L, DateTimeUtility.durationStampToDuration("59:59.999"));
         Assert.assertEquals(3600000L, DateTimeUtility.durationStampToDuration("1:00:00"));
+        Assert.assertEquals(3599999L, DateTimeUtility.durationStampToDuration("59:59.999648444"));
         Assert.assertEquals(-44163191L, DateTimeUtility.durationStampToDuration("-12:16:03.191"));
         Assert.assertEquals(-991542231L, DateTimeUtility.durationStampToDuration("-275:25:42.231"));
+        Assert.assertEquals(-991542231L, DateTimeUtility.durationStampToDuration("-275:25:42.231077668"));
         Assert.assertEquals(-1542231L, DateTimeUtility.durationStampToDuration("-25:42.231"));
         Assert.assertEquals(-1542200L, DateTimeUtility.durationStampToDuration("-25:42.2"));
         Assert.assertEquals(-542877L, DateTimeUtility.durationStampToDuration("-9:02.877"));
+        Assert.assertEquals(-542877L, DateTimeUtility.durationStampToDuration("-9:02.87791017"));
         Assert.assertEquals(-1L, DateTimeUtility.durationStampToDuration("-0.001"));
         Assert.assertEquals(-10L, DateTimeUtility.durationStampToDuration("-0.01"));
         Assert.assertEquals(-100L, DateTimeUtility.durationStampToDuration("-0.1"));
@@ -1661,6 +1669,7 @@ public class DateTimeUtilityTest {
         Assert.assertEquals(-60000L, DateTimeUtility.durationStampToDuration("-1:00"));
         Assert.assertEquals(-3599999L, DateTimeUtility.durationStampToDuration("-59:59.999"));
         Assert.assertEquals(-3600000L, DateTimeUtility.durationStampToDuration("-1:00:00"));
+        Assert.assertEquals(-3599999L, DateTimeUtility.durationStampToDuration("-59:59.999648444"));
         Assert.assertEquals(0L, DateTimeUtility.durationStampToDuration("0"));
         Assert.assertEquals(0L, DateTimeUtility.durationStampToDuration("-0"));
         

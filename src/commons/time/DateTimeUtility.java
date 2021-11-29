@@ -591,7 +591,7 @@ public final class DateTimeUtility {
      */
     public static long durationStampToDuration(String durationStamp) {
         boolean isNegative = durationStamp.startsWith("-");
-        durationStamp = durationStamp.replaceAll("^-", "");
+        durationStamp = durationStamp.replaceAll("^-", "").replaceAll("(?<=\\.\\d{3}).+$", "");
         int[] unitValues = new int[4];
         
         List<String> units = StringUtility.tokenize(durationStamp, ":", true);
