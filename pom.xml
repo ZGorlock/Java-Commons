@@ -291,7 +291,7 @@
         <repository>
             <id>spring-plugin</id> <!-- Mary TTS -->
             <name>Spring Plugins</name>
-            <url>http://repo.spring.io/plugins-release</url>
+            <url>https://repo.spring.io/plugins-release/</url>
         </repository>
     </repositories>
 
