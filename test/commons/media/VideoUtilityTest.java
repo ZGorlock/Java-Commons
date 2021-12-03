@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 import commons.access.Filesystem;
 import commons.access.Project;
 import commons.graphics.DrawUtility;
+import commons.log.CommonsLogging;
 import commons.math.MathUtility;
 import commons.math.component.vector.IntVector;
 import commons.string.StringUtility;
@@ -50,7 +51,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.crypto.*", "javax.swing.*", "javax.xml.*", "org.xml.*", "org.w3c.*"})
-@PrepareForTest({VideoUtility.class, FFmpeg.class})
+@PrepareForTest({VideoUtility.class, FFmpeg.class, CommonsLogging.class})
 public class VideoUtilityTest {
     
     //Logger
@@ -96,9 +97,10 @@ public class VideoUtilityTest {
      *
      * @throws Exception When there is an exception.
      */
-    @SuppressWarnings("EmptyMethod")
     @Before
     public void setup() throws Exception {
+        PowerMockito.mockStatic(CommonsLogging.class);
+        PowerMockito.doReturn(true).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
     }
     
     /**

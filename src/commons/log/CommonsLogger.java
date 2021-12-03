@@ -35,4 +35,11 @@ public interface CommonsLogger {
      */
     boolean logInternet();
     
+    /**
+     * Returns whether or not FFmpeg progress bars should be shown by default.
+     *
+     * @return Whether or not FFmpeg progress bars should be shown by default.
+     */
+    boolean showFfmpegProgressBarsByDefault();
+    
 }

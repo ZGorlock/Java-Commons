@@ -19,6 +19,7 @@ import commons.access.Filesystem;
 import commons.access.Project;
 import commons.console.Console;
 import commons.console.ProgressBar;
+import commons.log.CommonsLogging;
 import commons.test.TestUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -46,7 +47,7 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PowerMockIgnore({"com.sun.org.apache.xerces.*", "javax.crypto.*", "javax.swing.*", "javax.xml.*", "org.xml.*", "org.w3c.*"})
-@PrepareForTest({FFmpeg.class, CmdLine.class})
+@PrepareForTest({FFmpeg.class, CmdLine.class, CommonsLogging.class})
 public class FFmpegTest {
     
     //Logger
@@ -94,6 +95,9 @@ public class FFmpegTest {
      */
     @Before
     public void setup() throws Exception {
+        PowerMockito.mockStatic(CommonsLogging.class);
+        PowerMockito.doReturn(true).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
+        
         FFmpeg.setFFmpegExecutable(null);
         Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffmpeg"));
         FFmpeg.setFFprobeExecutable(null);
@@ -377,6 +381,20 @@ public class FFmpegTest {
         PowerMockito.verifyStatic(CmdLine.class);
         CmdLine.executeCmd(ArgumentMatchers.eq("\"" + testExecutable.getAbsolutePath() + "\" -hide_banner -i \"" + testFile1.getAbsolutePath() + "\" -y -c:copy \"" + testFile4.getAbsolutePath() + "\""));
         
+        //files, default progress bar off
+        PowerMockito.doReturn(false).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
+        PowerMockito.mockStatic(CmdLine.class);
+        FFmpeg.setFFmpegExecutable(null);
+        FFmpeg.ffmpeg(testFile1, "-y -c:copy", testFile4);
+        PowerMockito.verifyStatic(CmdLine.class);
+        CmdLine.executeCmd(ArgumentMatchers.eq("ffmpeg -hide_banner -i \"" + testFile1.getAbsolutePath() + "\" -y -c:copy \"" + testFile4.getAbsolutePath() + "\""));
+        PowerMockito.mockStatic(CmdLine.class);
+        FFmpeg.setFFmpegExecutable(testExecutable);
+        FFmpeg.ffmpeg(testFile1, "-y -c:copy", testFile4);
+        PowerMockito.verifyStatic(CmdLine.class);
+        CmdLine.executeCmd(ArgumentMatchers.eq("\"" + testExecutable.getAbsolutePath() + "\" -hide_banner -i \"" + testFile1.getAbsolutePath() + "\" -y -c:copy \"" + testFile4.getAbsolutePath() + "\""));
+        PowerMockito.doReturn(true).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
+        
         //files, input params
         PowerMockito.mockStatic(CmdLine.class);
         FFmpeg.setFFmpegExecutable(null);
@@ -412,6 +430,20 @@ public class FFmpegTest {
         FFmpeg.ffmpeg("-y", testFile1, "-c:copy", testFile4, false);
         PowerMockito.verifyStatic(CmdLine.class);
         CmdLine.executeCmd(ArgumentMatchers.eq("\"" + testExecutable.getAbsolutePath() + "\" -hide_banner -y -i \"" + testFile1.getAbsolutePath() + "\" -c:copy \"" + testFile4.getAbsolutePath() + "\""));
+        
+        //files, input params, default progress bar off
+        PowerMockito.doReturn(false).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
+        PowerMockito.mockStatic(CmdLine.class);
+        FFmpeg.setFFmpegExecutable(null);
+        FFmpeg.ffmpeg("-y", testFile1, "-c:copy", testFile4);
+        PowerMockito.verifyStatic(CmdLine.class);
+        CmdLine.executeCmd(ArgumentMatchers.eq("ffmpeg -hide_banner -y -i \"" + testFile1.getAbsolutePath() + "\" -c:copy \"" + testFile4.getAbsolutePath() + "\""));
+        PowerMockito.mockStatic(CmdLine.class);
+        FFmpeg.setFFmpegExecutable(testExecutable);
+        FFmpeg.ffmpeg("-y", testFile1, "-c:copy", testFile4);
+        PowerMockito.verifyStatic(CmdLine.class);
+        CmdLine.executeCmd(ArgumentMatchers.eq("\"" + testExecutable.getAbsolutePath() + "\" -hide_banner -y -i \"" + testFile1.getAbsolutePath() + "\" -c:copy \"" + testFile4.getAbsolutePath() + "\""));
+        PowerMockito.doReturn(true).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
         
         //file list
         PowerMockito.mockStatic(CmdLine.class);
@@ -449,6 +481,20 @@ public class FFmpegTest {
         PowerMockito.verifyStatic(CmdLine.class);
         CmdLine.executeCmd(ArgumentMatchers.eq("\"" + testExecutable.getAbsolutePath() + "\" -hide_banner -i \"" + testFile1.getAbsolutePath() + "\" -i \"" + testFile2.getAbsolutePath() + "\" -i \"" + testFile3.getAbsolutePath() + "\" -y -c:copy \"" + testFile4.getAbsolutePath() + "\""));
         
+        //file list, default progress bar off
+        PowerMockito.doReturn(false).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
+        PowerMockito.mockStatic(CmdLine.class);
+        FFmpeg.setFFmpegExecutable(null);
+        FFmpeg.ffmpeg(Arrays.asList(testFile1, testFile2, testFile3), "-y -c:copy", testFile4);
+        PowerMockito.verifyStatic(CmdLine.class);
+        CmdLine.executeCmd(ArgumentMatchers.eq("ffmpeg -hide_banner -i \"" + testFile1.getAbsolutePath() + "\" -i \"" + testFile2.getAbsolutePath() + "\" -i \"" + testFile3.getAbsolutePath() + "\" -y -c:copy \"" + testFile4.getAbsolutePath() + "\""));
+        PowerMockito.mockStatic(CmdLine.class);
+        FFmpeg.setFFmpegExecutable(testExecutable);
+        FFmpeg.ffmpeg(Arrays.asList(testFile1, testFile2, testFile3), "-y -c:copy", testFile4);
+        PowerMockito.verifyStatic(CmdLine.class);
+        CmdLine.executeCmd(ArgumentMatchers.eq("\"" + testExecutable.getAbsolutePath() + "\" -hide_banner -i \"" + testFile1.getAbsolutePath() + "\" -i \"" + testFile2.getAbsolutePath() + "\" -i \"" + testFile3.getAbsolutePath() + "\" -y -c:copy \"" + testFile4.getAbsolutePath() + "\""));
+        PowerMockito.doReturn(true).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
+        
         //file list, input params
         PowerMockito.mockStatic(CmdLine.class);
         FFmpeg.setFFmpegExecutable(null);
@@ -484,6 +530,20 @@ public class FFmpegTest {
         FFmpeg.ffmpeg("-y", Arrays.asList(testFile1, testFile2, testFile3), "-c:copy", testFile4, false);
         PowerMockito.verifyStatic(CmdLine.class);
         CmdLine.executeCmd(ArgumentMatchers.eq("\"" + testExecutable.getAbsolutePath() + "\" -hide_banner -y -i \"" + testFile1.getAbsolutePath() + "\" -i \"" + testFile2.getAbsolutePath() + "\" -i \"" + testFile3.getAbsolutePath() + "\" -c:copy \"" + testFile4.getAbsolutePath() + "\""));
+        
+        //file list, input params, default progress bar off
+        PowerMockito.doReturn(false).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
+        PowerMockito.mockStatic(CmdLine.class);
+        FFmpeg.setFFmpegExecutable(null);
+        FFmpeg.ffmpeg("-y", Arrays.asList(testFile1, testFile2, testFile3), "-c:copy", testFile4);
+        PowerMockito.verifyStatic(CmdLine.class);
+        CmdLine.executeCmd(ArgumentMatchers.eq("ffmpeg -hide_banner -y -i \"" + testFile1.getAbsolutePath() + "\" -i \"" + testFile2.getAbsolutePath() + "\" -i \"" + testFile3.getAbsolutePath() + "\" -c:copy \"" + testFile4.getAbsolutePath() + "\""));
+        PowerMockito.mockStatic(CmdLine.class);
+        FFmpeg.setFFmpegExecutable(testExecutable);
+        FFmpeg.ffmpeg("-y", Arrays.asList(testFile1, testFile2, testFile3), "-c:copy", testFile4);
+        PowerMockito.verifyStatic(CmdLine.class);
+        CmdLine.executeCmd(ArgumentMatchers.eq("\"" + testExecutable.getAbsolutePath() + "\" -hide_banner -y -i \"" + testFile1.getAbsolutePath() + "\" -i \"" + testFile2.getAbsolutePath() + "\" -i \"" + testFile3.getAbsolutePath() + "\" -c:copy \"" + testFile4.getAbsolutePath() + "\""));
+        PowerMockito.doReturn(true).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
     }
     
     /**

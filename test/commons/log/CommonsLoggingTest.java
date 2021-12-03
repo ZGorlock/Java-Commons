@@ -60,6 +60,11 @@ public class CommonsLoggingTest {
             return true;
         }
         
+        @Override
+        public boolean showFfmpegProgressBarsByDefault() {
+            return true;
+        }
+        
     };
     
     
@@ -115,12 +120,14 @@ public class CommonsLoggingTest {
      * @see CommonsLogging#DEFAULT_LOG_FILESYSTEM
      * @see CommonsLogging#DEFAULT_LOG_CLIPBOARD
      * @see CommonsLogging#DEFAULT_LOG_INTERNET
+     * @see CommonsLogging#DEFAULT_SHOW_FFMPEG_PROGRESS_BARS_BY_DEFAULT
      */
     @Test
     public void testConstants() throws Exception {
         Assert.assertFalse(CommonsLogging.DEFAULT_LOG_FILESYSTEM);
         Assert.assertFalse(CommonsLogging.DEFAULT_LOG_CLIPBOARD);
         Assert.assertFalse(CommonsLogging.DEFAULT_LOG_INTERNET);
+        Assert.assertFalse(CommonsLogging.DEFAULT_SHOW_FFMPEG_PROGRESS_BARS_BY_DEFAULT);
     }
     
     /**

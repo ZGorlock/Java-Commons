@@ -40,6 +40,11 @@ public final class CommonsLogging {
      */
     public static final boolean DEFAULT_LOG_INTERNET = false;
     
+    /**
+     * The default value of the flag to enable default FFmpeg progress bars or not.
+     */
+    public static final boolean DEFAULT_SHOW_FFMPEG_PROGRESS_BARS_BY_DEFAULT = false;
+    
     
     //Fields
     
@@ -85,6 +90,18 @@ public final class CommonsLogging {
             return commonsLogger.logInternet();
         }
         return DEFAULT_LOG_INTERNET;
+    }
+    
+    /**
+     * Determines whether or not FFmpeg progress bars should be shown by default.
+     *
+     * @return Whether or not FFmpeg progress bars should be shown by default.
+     */
+    public static boolean showFfmpegProgressBarsByDefault() {
+        if (commonsLogger != null) {
+            return commonsLogger.showFfmpegProgressBarsByDefault();
+        }
+        return DEFAULT_SHOW_FFMPEG_PROGRESS_BARS_BY_DEFAULT;
     }
     
     

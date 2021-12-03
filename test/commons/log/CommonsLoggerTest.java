@@ -128,4 +128,16 @@ public class CommonsLoggerTest {
                 CommonsLogger.class, "logInternet");
     }
     
+    /**
+     * JUnit test of showFfmpegProgressBarsByDefault.
+     *
+     * @throws Exception When there is an exception.
+     * @see CommonsLogger#showFfmpegProgressBarsByDefault()
+     */
+    @Test
+    public void testShowFfmpegProgressBarsByDefault() throws Exception {
+        TestUtils.assertMethodExists(
+                CommonsLogger.class, "showFfmpegProgressBarsByDefault");
+    }
+    
 }

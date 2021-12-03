@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
 import commons.access.CmdLine;
 import commons.console.Console;
 import commons.console.ProgressBar;
+import commons.log.CommonsLogging;
 import commons.math.BoundUtility;
 import commons.math.EquationUtility;
 import commons.string.StringUtility;
@@ -243,7 +244,7 @@ public class FFmpeg {
      * @see #ffmpeg(String, List, String, File, boolean)
      */
     public static String ffmpeg(String inputParams, List<File> sourceFiles, String params, File outputFile) {
-        return ffmpeg(inputParams, sourceFiles, params, outputFile, true);
+        return ffmpeg(inputParams, sourceFiles, params, outputFile, CommonsLogging.showFfmpegProgressBarsByDefault());
     }
     
     /**
@@ -256,7 +257,7 @@ public class FFmpeg {
      * @see #ffmpeg(List, String, File, boolean)
      */
     public static String ffmpeg(List<File> sourceFiles, String params, File outputFile) {
-        return ffmpeg(sourceFiles, params, outputFile, true);
+        return ffmpeg(sourceFiles, params, outputFile, CommonsLogging.showFfmpegProgressBarsByDefault());
     }
     
     /**
@@ -297,7 +298,7 @@ public class FFmpeg {
      * @see #ffmpeg(File, String, File, boolean)
      */
     public static String ffmpeg(String inputParams, File sourceFile, String params, File outputFile) {
-        return ffmpeg(inputParams, sourceFile, params, outputFile, true);
+        return ffmpeg(inputParams, sourceFile, params, outputFile, CommonsLogging.showFfmpegProgressBarsByDefault());
     }
     
     /**
@@ -310,7 +311,7 @@ public class FFmpeg {
      * @see #ffmpeg(File, String, File, boolean)
      */
     public static String ffmpeg(File sourceFile, String params, File outputFile) {
-        return ffmpeg(sourceFile, params, outputFile, true);
+        return ffmpeg(sourceFile, params, outputFile, CommonsLogging.showFfmpegProgressBarsByDefault());
     }
     
     /**
