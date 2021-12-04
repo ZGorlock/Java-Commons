@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import commons.access.CmdLine;
@@ -830,57 +831,6 @@ public class FFmpegTest {
         FFmpeg.ffplayAsync(testFile1);
         PowerMockito.verifyStatic(CmdLine.class);
         CmdLine.executeCmdAsync(ArgumentMatchers.eq("\"" + testExecutable.getAbsolutePath() + "\" -hide_banner \"" + testFile1.getAbsolutePath() + "\""));
-    }
-    
-    /**
-     * JUnit test of setFFmpegExecutable.
-     *
-     * @throws Exception When there is an exception.
-     * @see FFmpeg#setFFmpegExecutable(File)
-     */
-    @Test
-    public void testSetFFmpegExecutable() throws Exception {
-        final File testExecutable = new File(testResources, "ffmpeg.exe");
-        Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffmpeg"));
-        FFmpeg.setFFmpegExecutable(testExecutable);
-        Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffmpeg")).getAbsolutePath());
-        Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffmpeg")).getAbsolutePath());
-    }
-    
-    /**
-     * JUnit test of setFFprobeExecutable.
-     *
-     * @throws Exception When there is an exception.
-     * @see FFmpeg#setFFprobeExecutable(File)
-     */
-    @Test
-    public void testSetFFprobeExecutable() throws Exception {
-        final File testExecutable = new File(testResources, "ffprobe.exe");
-        Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffprobe"));
-        FFmpeg.setFFprobeExecutable(testExecutable);
-        Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffprobe")).getAbsolutePath());
-        Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffprobe")).getAbsolutePath());
-    }
-    
-    /**
-     * JUnit test of setFFplayExecutable.
-     *
-     * @throws Exception When there is an exception.
-     * @see FFmpeg#setFFplayExecutable(File)
-     */
-    @Test
-    public void testSetFFplayExecutable() throws Exception {
-        final File testExecutable = new File(testResources, "ffplay.exe");
-        Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffplay"));
-        FFmpeg.setFFplayExecutable(testExecutable);
-        Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffplay")).getAbsolutePath());
-        Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffplay")).getAbsolutePath());
     }
     
     /**
@@ -2018,6 +1968,243 @@ public class FFmpegTest {
     }
     
     /**
+     * JUnit test of getCodecs.
+     *
+     * @throws Exception When there is an exception.
+     * @see FFmpeg#getCodecs()
+     */
+    @Test
+    public void testGetCodecs() throws Exception {
+        if (!FFmpeg.ffmpegExists()) {
+            logger.warn("ffmpeg is not installed... skipping test");
+            return;
+        }
+        
+        final File testExecutable = new File(testResources, "ffmpeg.exe");
+        List<FFmpeg.Codec> codecs;
+        List<FFmpeg.Codec> codecsCache;
+        
+        //standard
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "codecs", null));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "codecs"));
+        codecs = FFmpeg.getCodecs();
+        Assert.assertNotNull(codecs);
+        Assert.assertNotNull(TestUtils.getField(FFmpeg.class, "codecs"));
+        Assert.assertFalse(codecs.isEmpty());
+        Assert.assertEquals(codecs.size(), codecs.stream().filter(e -> !e.getName().isEmpty()).count());
+        Assert.assertEquals(codecs.size(), codecs.stream().filter(e -> !e.getDescription().isEmpty()).count());
+        Assert.assertNotEquals(0, codecs.stream().filter(e -> e.getType() == FFmpeg.StreamType.VIDEO).count());
+        Assert.assertNotEquals(0, codecs.stream().filter(e -> e.getType() == FFmpeg.StreamType.AUDIO).count());
+        Assert.assertNotEquals(0, codecs.stream().filter(e -> e.getType() == FFmpeg.StreamType.SUBTITLE).count());
+        
+        //cache
+        PowerMockito.mockStatic(CmdLine.class);
+        codecsCache = FFmpeg.getCodecs();
+        Assert.assertNotNull(codecsCache);
+        Assert.assertEquals(codecs, codecsCache);
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString());
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString(), ArgumentMatchers.any());
+        
+        //invalid
+        PowerMockito.mockStatic(FFmpeg.class);
+        PowerMockito.doCallRealMethod().when(FFmpeg.class, "getCodecs");
+        PowerMockito.doReturn("").when(FFmpeg.class, "ffmpeg", ArgumentMatchers.anyString());
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "codecs", null));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "codecs"));
+        Assert.assertNotNull(FFmpeg.getCodecs());
+        Assert.assertTrue(FFmpeg.getCodecs().isEmpty());
+        FFmpeg.setFFmpegExecutable(testExecutable);
+        PowerMockito.doCallRealMethod().when(FFmpeg.class, "ffmpeg", ArgumentMatchers.anyString());
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "codecs", null));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "codecs"));
+        TestUtils.assertException(NullPointerException.class, FFmpeg::getCodecs);
+    }
+    
+    /**
+     * JUnit test of getEncoders.
+     *
+     * @throws Exception When there is an exception.
+     * @see FFmpeg#getEncoders()
+     */
+    @Test
+    public void testGetEncoders() throws Exception {
+        if (!FFmpeg.ffmpegExists()) {
+            logger.warn("ffmpeg is not installed... skipping test");
+            return;
+        }
+        
+        final File testExecutable = new File(testResources, "ffmpeg.exe");
+        List<FFmpeg.Encoder> encoders;
+        List<FFmpeg.Encoder> encodersCache;
+        
+        //standard
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "encoders", null));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "encoders"));
+        encoders = FFmpeg.getEncoders();
+        Assert.assertNotNull(encoders);
+        Assert.assertNotNull(TestUtils.getField(FFmpeg.class, "encoders"));
+        Assert.assertFalse(encoders.isEmpty());
+        Assert.assertEquals(encoders.size(), encoders.stream().filter(e -> !e.getName().isEmpty()).count());
+        Assert.assertEquals(encoders.size(), encoders.stream().filter(e -> !e.getDescription().isEmpty()).count());
+        Assert.assertNotEquals(0, encoders.stream().filter(e -> e.getType() == FFmpeg.StreamType.VIDEO).count());
+        Assert.assertNotEquals(0, encoders.stream().filter(e -> e.getType() == FFmpeg.StreamType.AUDIO).count());
+        Assert.assertNotEquals(0, encoders.stream().filter(e -> e.getType() == FFmpeg.StreamType.SUBTITLE).count());
+        
+        //cache
+        PowerMockito.mockStatic(CmdLine.class);
+        encodersCache = FFmpeg.getEncoders();
+        Assert.assertNotNull(encodersCache);
+        Assert.assertEquals(encoders, encodersCache);
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString());
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString(), ArgumentMatchers.any());
+        
+        //invalid
+        PowerMockito.mockStatic(FFmpeg.class);
+        PowerMockito.doCallRealMethod().when(FFmpeg.class, "getEncoders");
+        PowerMockito.doReturn("").when(FFmpeg.class, "ffmpeg", ArgumentMatchers.anyString());
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "encoders", null));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "encoders"));
+        Assert.assertNotNull(FFmpeg.getEncoders());
+        Assert.assertTrue(FFmpeg.getEncoders().isEmpty());
+        FFmpeg.setFFmpegExecutable(testExecutable);
+        PowerMockito.doCallRealMethod().when(FFmpeg.class, "ffmpeg", ArgumentMatchers.anyString());
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "encoders", null));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "encoders"));
+        TestUtils.assertException(NullPointerException.class, FFmpeg::getEncoders);
+    }
+    
+    /**
+     * JUnit test of getDecoders.
+     *
+     * @throws Exception When there is an exception.
+     * @see FFmpeg#getDecoders()
+     */
+    @Test
+    public void testGetDecoders() throws Exception {
+        if (!FFmpeg.ffmpegExists()) {
+            logger.warn("ffmpeg is not installed... skipping test");
+            return;
+        }
+        
+        final File testExecutable = new File(testResources, "ffmpeg.exe");
+        List<FFmpeg.Decoder> decoders;
+        List<FFmpeg.Decoder> decodersCache;
+        
+        //standard
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "decoders", null));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "decoders"));
+        decoders = FFmpeg.getDecoders();
+        Assert.assertNotNull(decoders);
+        Assert.assertNotNull(TestUtils.getField(FFmpeg.class, "decoders"));
+        Assert.assertFalse(decoders.isEmpty());
+        Assert.assertEquals(decoders.size(), decoders.stream().filter(e -> !e.getName().isEmpty()).count());
+        Assert.assertEquals(decoders.size(), decoders.stream().filter(e -> !e.getDescription().isEmpty()).count());
+        Assert.assertNotEquals(0, decoders.stream().filter(e -> e.getType() == FFmpeg.StreamType.VIDEO).count());
+        Assert.assertNotEquals(0, decoders.stream().filter(e -> e.getType() == FFmpeg.StreamType.AUDIO).count());
+        Assert.assertNotEquals(0, decoders.stream().filter(e -> e.getType() == FFmpeg.StreamType.SUBTITLE).count());
+        
+        //cache
+        PowerMockito.mockStatic(CmdLine.class);
+        decodersCache = FFmpeg.getDecoders();
+        Assert.assertNotNull(decodersCache);
+        Assert.assertEquals(decoders, decodersCache);
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString());
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString(), ArgumentMatchers.any());
+        
+        //invalid
+        PowerMockito.mockStatic(FFmpeg.class);
+        PowerMockito.doCallRealMethod().when(FFmpeg.class, "getDecoders");
+        PowerMockito.doReturn("").when(FFmpeg.class, "ffmpeg", ArgumentMatchers.anyString());
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "decoders", null));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "decoders"));
+        Assert.assertNotNull(FFmpeg.getDecoders());
+        Assert.assertTrue(FFmpeg.getDecoders().isEmpty());
+        FFmpeg.setFFmpegExecutable(testExecutable);
+        PowerMockito.doCallRealMethod().when(FFmpeg.class, "ffmpeg", ArgumentMatchers.anyString());
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "decoders", null));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "decoders"));
+        TestUtils.assertException(NullPointerException.class, FFmpeg::getDecoders);
+    }
+    
+    /**
+     * JUnit test of setFFmpegExecutable.
+     *
+     * @throws Exception When there is an exception.
+     * @see FFmpeg#setFFmpegExecutable(File)
+     */
+    @Test
+    public void testSetFFmpegExecutable() throws Exception {
+        final File testExecutable = new File(testResources, "ffmpeg.exe");
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "codecs", new ArrayList<>()));
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "encoders", new ArrayList<>()));
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "decoders", new ArrayList<>()));
+        Assert.assertNotNull(TestUtils.getField(FFmpeg.class, "codecs"));
+        Assert.assertNotNull(TestUtils.getField(FFmpeg.class, "encoders"));
+        Assert.assertNotNull(TestUtils.getField(FFmpeg.class, "decoders"));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffmpeg"));
+        FFmpeg.setFFmpegExecutable(testExecutable);
+        Assert.assertEquals(testExecutable.getAbsolutePath(),
+                ((File) TestUtils.getField(FFmpeg.class, "ffmpeg")).getAbsolutePath());
+        Assert.assertEquals(testExecutable.getAbsolutePath(),
+                ((File) TestUtils.getField(FFmpeg.class, "ffmpeg")).getAbsolutePath());
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "codecs"));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "encoders"));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "decoders"));
+    }
+    
+    /**
+     * JUnit test of setFFprobeExecutable.
+     *
+     * @throws Exception When there is an exception.
+     * @see FFmpeg#setFFprobeExecutable(File)
+     */
+    @Test
+    public void testSetFFprobeExecutable() throws Exception {
+        final File testExecutable = new File(testResources, "ffprobe.exe");
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "codecs", new ArrayList<>()));
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "encoders", new ArrayList<>()));
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "decoders", new ArrayList<>()));
+        Assert.assertNotNull(TestUtils.getField(FFmpeg.class, "codecs"));
+        Assert.assertNotNull(TestUtils.getField(FFmpeg.class, "encoders"));
+        Assert.assertNotNull(TestUtils.getField(FFmpeg.class, "decoders"));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffprobe"));
+        FFmpeg.setFFprobeExecutable(testExecutable);
+        Assert.assertEquals(testExecutable.getAbsolutePath(),
+                ((File) TestUtils.getField(FFmpeg.class, "ffprobe")).getAbsolutePath());
+        Assert.assertEquals(testExecutable.getAbsolutePath(),
+                ((File) TestUtils.getField(FFmpeg.class, "ffprobe")).getAbsolutePath());
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "codecs"));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "encoders"));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "decoders"));
+    }
+    
+    /**
+     * JUnit test of setFFplayExecutable.
+     *
+     * @throws Exception When there is an exception.
+     * @see FFmpeg#setFFplayExecutable(File)
+     */
+    @Test
+    public void testSetFFplayExecutable() throws Exception {
+        final File testExecutable = new File(testResources, "ffplay.exe");
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "codecs", new ArrayList<>()));
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "encoders", new ArrayList<>()));
+        Assert.assertTrue(TestUtils.setField(FFmpeg.class, "decoders", new ArrayList<>()));
+        Assert.assertNotNull(TestUtils.getField(FFmpeg.class, "codecs"));
+        Assert.assertNotNull(TestUtils.getField(FFmpeg.class, "encoders"));
+        Assert.assertNotNull(TestUtils.getField(FFmpeg.class, "decoders"));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffplay"));
+        FFmpeg.setFFplayExecutable(testExecutable);
+        Assert.assertEquals(testExecutable.getAbsolutePath(),
+                ((File) TestUtils.getField(FFmpeg.class, "ffplay")).getAbsolutePath());
+        Assert.assertEquals(testExecutable.getAbsolutePath(),
+                ((File) TestUtils.getField(FFmpeg.class, "ffplay")).getAbsolutePath());
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "codecs"));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "encoders"));
+        Assert.assertNull(TestUtils.getField(FFmpeg.class, "decoders"));
+    }
+    
+    /**
      * JUnit test of FFmpegProgressBar.
      *
      * @throws Exception When there is an exception.
@@ -2569,6 +2756,237 @@ public class FFmpegTest {
         Assert.assertNotNull(metadata.getChapters());
         Assert.assertEquals(15, metadata.getStreams().size());
         Assert.assertEquals(3, metadata.getChapters().size());
+    }
+    
+    /**
+     * JUnit test of Codec.
+     *
+     * @throws Exception When there is an exception.
+     * @see FFmpeg.Codec
+     */
+    @Test
+    public void testCodec() throws Exception {
+        FFmpeg.Codec codec1;
+        FFmpeg.Codec codec2;
+        FFmpeg.Codec codec3;
+        FFmpeg.Codec codec4;
+        
+        //constants
+        Assert.assertEquals("^\\s*(?<supportsDecoding>.)(?<supportsEncoding>.)(?<type>.)(?<isIntraFrameOnly>.)(?<hasLossyCompression>.)(?<hasLosslessCompression>.)\\s+(?<name>[^\\s]+)\\s+(?<description>.+)\\s*$",
+                FFmpeg.Codec.CODEC_LINE_PATTERN.pattern());
+        
+        //constructors
+        codec1 = new FFmpeg.Codec("DEVILS test1                Just a test Codec");
+        Assert.assertNotNull(codec1);
+        codec2 = new FFmpeg.Codec("..A.L. test-2               Another test Codec");
+        Assert.assertNotNull(codec2);
+        codec3 = new FFmpeg.Codec("D.SI.S test:3               An even other test Codec (Codec 3)");
+        Assert.assertNotNull(codec3);
+        codec4 = new FFmpeg.Codec("D...LS test_4               The last Codec");
+        Assert.assertNotNull(codec4);
+        
+        //getters
+        Assert.assertEquals("test1", codec1.getName());
+        Assert.assertEquals("Just a test Codec", codec1.getDescription());
+        Assert.assertEquals(FFmpeg.StreamType.VIDEO, codec1.getType());
+        Assert.assertTrue(codec1.supportsDecoding());
+        Assert.assertTrue(codec1.supportsEncoding());
+        Assert.assertTrue(codec1.isIntraFrameOnly());
+        Assert.assertTrue(codec1.hasLossyCompression());
+        Assert.assertTrue(codec1.hasLosslessCompression());
+        Assert.assertEquals("test-2", codec2.getName());
+        Assert.assertEquals("Another test Codec", codec2.getDescription());
+        Assert.assertEquals(FFmpeg.StreamType.AUDIO, codec2.getType());
+        Assert.assertFalse(codec2.supportsDecoding());
+        Assert.assertFalse(codec2.supportsEncoding());
+        Assert.assertFalse(codec2.isIntraFrameOnly());
+        Assert.assertTrue(codec2.hasLossyCompression());
+        Assert.assertFalse(codec2.hasLosslessCompression());
+        Assert.assertEquals("test:3", codec3.getName());
+        Assert.assertEquals("An even other test Codec (Codec 3)", codec3.getDescription());
+        Assert.assertEquals(FFmpeg.StreamType.SUBTITLE, codec3.getType());
+        Assert.assertTrue(codec3.supportsDecoding());
+        Assert.assertFalse(codec3.supportsEncoding());
+        Assert.assertTrue(codec3.isIntraFrameOnly());
+        Assert.assertFalse(codec3.hasLossyCompression());
+        Assert.assertTrue(codec3.hasLosslessCompression());
+        Assert.assertEquals("test_4", codec4.getName());
+        Assert.assertEquals("The last Codec", codec4.getDescription());
+        Assert.assertNull(codec4.getType());
+        Assert.assertTrue(codec4.supportsDecoding());
+        Assert.assertFalse(codec4.supportsEncoding());
+        Assert.assertFalse(codec4.isIntraFrameOnly());
+        Assert.assertTrue(codec4.hasLossyCompression());
+        Assert.assertTrue(codec4.hasLosslessCompression());
+    }
+    
+    /**
+     * JUnit test of Coder.
+     *
+     * @throws Exception When there is an exception.
+     * @see FFmpeg.Coder
+     */
+    @Test
+    public void testCoder() throws Exception {
+        //class
+        Class<?> coder = Arrays.stream(FFmpeg.class.getDeclaredClasses())
+                .filter(e -> e.getSimpleName().equals("Coder")).findFirst().orElseGet(null);
+        Assert.assertNotNull(coder);
+        
+        //constants
+        Assert.assertEquals("^\\s*(?<type>.)(?<hasFrameLevelMultithreading>.)(?<hasSliceLevelMultithreading>.)(?<isExperimental>.)(?<supportsDrawHorizontalBand>.)(?<supportsDirectRenderingMethod1>.)\\s+(?<name>[^\\s]+)\\s+(?<description>.+)\\s*$",
+                ((Pattern) TestUtils.getField(coder, "CODER_LINE_PATTERN")).pattern());
+        
+        //fields
+        Assert.assertEquals(String.class, coder.getDeclaredField("name").getType());
+        Assert.assertEquals(String.class, coder.getDeclaredField("description").getType());
+        Assert.assertEquals(FFmpeg.StreamType.class, coder.getDeclaredField("type").getType());
+        Assert.assertEquals(boolean.class, coder.getDeclaredField("hasFrameLevelMultithreading").getType());
+        Assert.assertEquals(boolean.class, coder.getDeclaredField("hasSliceLevelMultithreading").getType());
+        Assert.assertEquals(boolean.class, coder.getDeclaredField("isExperimental").getType());
+        Assert.assertEquals(boolean.class, coder.getDeclaredField("supportsDrawHorizontalBand").getType());
+        Assert.assertEquals(boolean.class, coder.getDeclaredField("supportsDirectRenderingMethod1").getType());
+        
+        //methods
+        Assert.assertNotNull(coder.getConstructor(String.class));
+        Assert.assertNotNull(coder.getDeclaredMethod("getName"));
+        Assert.assertNotNull(coder.getDeclaredMethod("getDescription"));
+        Assert.assertNotNull(coder.getDeclaredMethod("getType"));
+        Assert.assertNotNull(coder.getDeclaredMethod("hasFrameLevelMultithreading"));
+        Assert.assertNotNull(coder.getDeclaredMethod("hasSliceLevelMultithreading"));
+        Assert.assertNotNull(coder.getDeclaredMethod("isExperimental"));
+        Assert.assertNotNull(coder.getDeclaredMethod("supportsDrawHorizontalBand"));
+        Assert.assertNotNull(coder.getDeclaredMethod("supportsDirectRenderingMethod1"));
+        
+        //subclasses
+        Assert.assertEquals(coder.getSimpleName(), FFmpeg.Encoder.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(coder.getSimpleName(), FFmpeg.Decoder.class.getSuperclass().getSimpleName());
+    }
+    
+    /**
+     * JUnit test of Encoder.
+     *
+     * @throws Exception When there is an exception.
+     * @see FFmpeg.Encoder
+     */
+    @Test
+    public void testEncoder() throws Exception {
+        FFmpeg.Encoder encoder1;
+        FFmpeg.Encoder encoder2;
+        FFmpeg.Encoder encoder3;
+        FFmpeg.Encoder encoder4;
+        Assert.assertEquals("Coder", FFmpeg.Encoder.class.getSuperclass().getSimpleName());
+        
+        //constants
+        Assert.assertEquals("^\\s*(?<type>.)(?<hasFrameLevelMultithreading>.)(?<hasSliceLevelMultithreading>.)(?<isExperimental>.)(?<supportsDrawHorizontalBand>.)(?<supportsDirectRenderingMethod1>.)\\s+(?<name>[^\\s]+)\\s+(?<description>.+)\\s*$",
+                FFmpeg.Encoder.ENCODER_LINE_PATTERN.pattern());
+        
+        //constructors
+        encoder1 = new FFmpeg.Encoder("VFSXBD test1                Just a test Encoder");
+        Assert.assertNotNull(encoder1);
+        encoder2 = new FFmpeg.Encoder("A...B. test-2               Another test Encoder");
+        Assert.assertNotNull(encoder2);
+        encoder3 = new FFmpeg.Encoder("SF.X.D test:3               An even other test Encoder (Encoder 3)");
+        Assert.assertNotNull(encoder3);
+        encoder4 = new FFmpeg.Encoder(".F..BC test_4               The last Encoder");
+        Assert.assertNotNull(encoder4);
+        
+        //getters
+        Assert.assertEquals("test1", encoder1.getName());
+        Assert.assertEquals("Just a test Encoder", encoder1.getDescription());
+        Assert.assertEquals(FFmpeg.StreamType.VIDEO, encoder1.getType());
+        Assert.assertTrue(encoder1.hasFrameLevelMultithreading());
+        Assert.assertTrue(encoder1.hasSliceLevelMultithreading());
+        Assert.assertTrue(encoder1.isExperimental());
+        Assert.assertTrue(encoder1.supportsDrawHorizontalBand());
+        Assert.assertTrue(encoder1.supportsDirectRenderingMethod1());
+        Assert.assertEquals("test-2", encoder2.getName());
+        Assert.assertEquals("Another test Encoder", encoder2.getDescription());
+        Assert.assertEquals(FFmpeg.StreamType.AUDIO, encoder2.getType());
+        Assert.assertFalse(encoder2.hasFrameLevelMultithreading());
+        Assert.assertFalse(encoder2.hasSliceLevelMultithreading());
+        Assert.assertFalse(encoder2.isExperimental());
+        Assert.assertTrue(encoder2.supportsDrawHorizontalBand());
+        Assert.assertFalse(encoder2.supportsDirectRenderingMethod1());
+        Assert.assertEquals("test:3", encoder3.getName());
+        Assert.assertEquals("An even other test Encoder (Encoder 3)", encoder3.getDescription());
+        Assert.assertEquals(FFmpeg.StreamType.SUBTITLE, encoder3.getType());
+        Assert.assertTrue(encoder3.hasFrameLevelMultithreading());
+        Assert.assertFalse(encoder3.hasSliceLevelMultithreading());
+        Assert.assertTrue(encoder3.isExperimental());
+        Assert.assertFalse(encoder3.supportsDrawHorizontalBand());
+        Assert.assertTrue(encoder3.supportsDirectRenderingMethod1());
+        Assert.assertEquals("test_4", encoder4.getName());
+        Assert.assertEquals("The last Encoder", encoder4.getDescription());
+        Assert.assertNull(encoder4.getType());
+        Assert.assertTrue(encoder4.hasFrameLevelMultithreading());
+        Assert.assertFalse(encoder4.hasSliceLevelMultithreading());
+        Assert.assertFalse(encoder4.isExperimental());
+        Assert.assertTrue(encoder4.supportsDrawHorizontalBand());
+        Assert.assertTrue(encoder4.supportsDirectRenderingMethod1());
+    }
+    
+    /**
+     * JUnit test of Decoder.
+     *
+     * @throws Exception When there is an exception.
+     * @see FFmpeg.Decoder
+     */
+    @Test
+    public void testDecoder() throws Exception {
+        FFmpeg.Decoder decoder1;
+        FFmpeg.Decoder decoder2;
+        FFmpeg.Decoder decoder3;
+        FFmpeg.Decoder decoder4;
+        Assert.assertEquals("Coder", FFmpeg.Decoder.class.getSuperclass().getSimpleName());
+        
+        //constants
+        Assert.assertEquals("^\\s*(?<type>.)(?<hasFrameLevelMultithreading>.)(?<hasSliceLevelMultithreading>.)(?<isExperimental>.)(?<supportsDrawHorizontalBand>.)(?<supportsDirectRenderingMethod1>.)\\s+(?<name>[^\\s]+)\\s+(?<description>.+)\\s*$",
+                FFmpeg.Decoder.DECODER_LINE_PATTERN.pattern());
+        
+        //constructors
+        decoder1 = new FFmpeg.Decoder("VFSXBD test1                Just a test Decoder");
+        Assert.assertNotNull(decoder1);
+        decoder2 = new FFmpeg.Decoder("A...B. test-2               Another test Decoder");
+        Assert.assertNotNull(decoder2);
+        decoder3 = new FFmpeg.Decoder("SF.X.D test:3               An even other test Decoder (Decoder 3)");
+        Assert.assertNotNull(decoder3);
+        decoder4 = new FFmpeg.Decoder(".F..BC test_4               The last Decoder");
+        Assert.assertNotNull(decoder4);
+        
+        //getters
+        Assert.assertEquals("test1", decoder1.getName());
+        Assert.assertEquals("Just a test Decoder", decoder1.getDescription());
+        Assert.assertEquals(FFmpeg.StreamType.VIDEO, decoder1.getType());
+        Assert.assertTrue(decoder1.hasFrameLevelMultithreading());
+        Assert.assertTrue(decoder1.hasSliceLevelMultithreading());
+        Assert.assertTrue(decoder1.isExperimental());
+        Assert.assertTrue(decoder1.supportsDrawHorizontalBand());
+        Assert.assertTrue(decoder1.supportsDirectRenderingMethod1());
+        Assert.assertEquals("test-2", decoder2.getName());
+        Assert.assertEquals("Another test Decoder", decoder2.getDescription());
+        Assert.assertEquals(FFmpeg.StreamType.AUDIO, decoder2.getType());
+        Assert.assertFalse(decoder2.hasFrameLevelMultithreading());
+        Assert.assertFalse(decoder2.hasSliceLevelMultithreading());
+        Assert.assertFalse(decoder2.isExperimental());
+        Assert.assertTrue(decoder2.supportsDrawHorizontalBand());
+        Assert.assertFalse(decoder2.supportsDirectRenderingMethod1());
+        Assert.assertEquals("test:3", decoder3.getName());
+        Assert.assertEquals("An even other test Decoder (Decoder 3)", decoder3.getDescription());
+        Assert.assertEquals(FFmpeg.StreamType.SUBTITLE, decoder3.getType());
+        Assert.assertTrue(decoder3.hasFrameLevelMultithreading());
+        Assert.assertFalse(decoder3.hasSliceLevelMultithreading());
+        Assert.assertTrue(decoder3.isExperimental());
+        Assert.assertFalse(decoder3.supportsDrawHorizontalBand());
+        Assert.assertTrue(decoder3.supportsDirectRenderingMethod1());
+        Assert.assertEquals("test_4", decoder4.getName());
+        Assert.assertEquals("The last Decoder", decoder4.getDescription());
+        Assert.assertNull(decoder4.getType());
+        Assert.assertTrue(decoder4.hasFrameLevelMultithreading());
+        Assert.assertFalse(decoder4.hasSliceLevelMultithreading());
+        Assert.assertFalse(decoder4.isExperimental());
+        Assert.assertTrue(decoder4.supportsDrawHorizontalBand());
+        Assert.assertTrue(decoder4.supportsDirectRenderingMethod1());
     }
     
 }

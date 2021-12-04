@@ -82,6 +82,21 @@ public class FFmpeg {
      */
     private static File ffplay = null;
     
+    /**
+     * The list of Codecs supported by ffmpeg.
+     */
+    private static List<Codec> codecs = null;
+    
+    /**
+     * The list of Encoders supported by ffmpeg.
+     */
+    private static List<Encoder> encoders = null;
+    
+    /**
+     * The list of Decoders supported by ffmpeg.
+     */
+    private static List<Decoder> decoders = null;
+    
     
     //Functions
     
@@ -983,6 +998,78 @@ public class FFmpeg {
     }
     
     
+    //Getters
+    
+    /**
+     * Returns the list of Codecs supported by ffmpeg.
+     *
+     * @return The list of Codecs supported by ffmpeg.
+     */
+    public static List<Codec> getCodecs() {
+        if (codecs != null) {
+            return codecs;
+        }
+        
+        List<Codec> tmpCodecs = new ArrayList<>();
+        boolean start = false;
+        for (String codecLine : StringUtility.splitLines(ffmpeg("-hide_banner -codecs"))) {
+            if (!start) {
+                start = codecLine.matches("^\\s*-+$");
+                continue;
+            }
+            tmpCodecs.add(new Codec(codecLine));
+        }
+        codecs = Collections.unmodifiableList(tmpCodecs);
+        return codecs;
+    }
+    
+    /**
+     * Returns the list of Encoders supported by ffmpeg.
+     *
+     * @return The list of Encoders supported by ffmpeg.
+     */
+    public static List<Encoder> getEncoders() {
+        if (encoders != null) {
+            return encoders;
+        }
+        
+        List<Encoder> tmpEncoders = new ArrayList<>();
+        boolean start = false;
+        for (String encoderLine : StringUtility.splitLines(ffmpeg("-hide_banner -encoders"))) {
+            if (!start) {
+                start = encoderLine.matches("^\\s*-+$");
+                continue;
+            }
+            tmpEncoders.add(new Encoder(encoderLine));
+        }
+        encoders = Collections.unmodifiableList(tmpEncoders);
+        return encoders;
+    }
+    
+    /**
+     * Returns the list of Decoders supported by ffmpeg.
+     *
+     * @return The list of Decoders supported by ffmpeg.
+     */
+    public static List<Decoder> getDecoders() {
+        if (decoders != null) {
+            return decoders;
+        }
+        
+        List<Decoder> tmpDecoders = new ArrayList<>();
+        boolean start = false;
+        for (String decoderLine : StringUtility.splitLines(ffmpeg("-hide_banner -decoders"))) {
+            if (!start) {
+                start = decoderLine.matches("^\\s*-+$");
+                continue;
+            }
+            tmpDecoders.add(new Decoder(decoderLine));
+        }
+        decoders = Collections.unmodifiableList(tmpDecoders);
+        return decoders;
+    }
+    
+    
     //Setters
     
     /**
@@ -992,6 +1079,9 @@ public class FFmpeg {
      */
     public static void setFFmpegExecutable(File ffmpeg) {
         FFmpeg.ffmpeg = ffmpeg;
+        FFmpeg.codecs = null;
+        FFmpeg.encoders = null;
+        FFmpeg.decoders = null;
     }
     
     /**
@@ -1001,6 +1091,9 @@ public class FFmpeg {
      */
     public static void setFFprobeExecutable(File ffprobe) {
         FFmpeg.ffprobe = ffprobe;
+        FFmpeg.codecs = null;
+        FFmpeg.encoders = null;
+        FFmpeg.decoders = null;
     }
     
     /**
@@ -1010,6 +1103,9 @@ public class FFmpeg {
      */
     public static void setFFplayExecutable(File ffplay) {
         FFmpeg.ffplay = ffplay;
+        FFmpeg.codecs = null;
+        FFmpeg.encoders = null;
+        FFmpeg.decoders = null;
     }
     
     
@@ -2132,6 +2228,370 @@ public class FFmpeg {
          */
         public List<ChapterMetadata> getChapters() {
             return chapterMetadata;
+        }
+        
+    }
+    
+    /**
+     * Defines an FFmpeg codec.
+     */
+    public static class Codec {
+        
+        //Constants
+        
+        /**
+         * The regex pattern for an ffmpeg codec line.
+         */
+        public static final Pattern CODEC_LINE_PATTERN = Pattern.compile("^\\s*(?<supportsDecoding>.)(?<supportsEncoding>.)(?<type>.)(?<isIntraFrameOnly>.)(?<hasLossyCompression>.)(?<hasLosslessCompression>.)\\s+(?<name>[^\\s]+)\\s+(?<description>.+)\\s*$");
+        
+        
+        //Fields
+        
+        /**
+         * The name of the codec.
+         */
+        private String name;
+        
+        /**
+         * The description of the codec.
+         */
+        private String description;
+        
+        /**
+         * The stream type the codec is for.
+         */
+        private StreamType type;
+        
+        /**
+         * Whether or not the codec supports decoding.
+         */
+        private boolean supportsDecoding;
+        
+        /**
+         * Whether or not the codec supports encoding.
+         */
+        private boolean supportsEncoding;
+        
+        /**
+         * Whether or not the codec is intra frame-only.
+         */
+        private boolean isIntraFrameOnly;
+        
+        /**
+         * Whether or not the codec uses lossy compression.
+         */
+        private boolean hasLossyCompression;
+        
+        /**
+         * Whether or not the codec uses lossless compression.
+         */
+        private boolean hasLosslessCompression;
+        
+        
+        //Constructors
+        
+        /**
+         * Creates a new Codec from an ffmpeg codec line.
+         *
+         * @param codecLine The ffmpeg codec line.
+         */
+        public Codec(String codecLine) {
+            final Matcher codecLineMatcher = CODEC_LINE_PATTERN.matcher(codecLine);
+            if (codecLineMatcher.matches()) {
+                this.name = codecLineMatcher.group("name");
+                this.description = codecLineMatcher.group("description");
+                this.type = Arrays.stream(StreamType.values())
+                        .filter(e -> StringUtility.lSnip(e.name(), 1).equalsIgnoreCase(codecLineMatcher.group("type")))
+                        .findFirst().orElse(null);
+                this.supportsDecoding = !codecLineMatcher.group("supportsDecoding").equals(".");
+                this.supportsEncoding = !codecLineMatcher.group("supportsEncoding").equals(".");
+                this.isIntraFrameOnly = !codecLineMatcher.group("isIntraFrameOnly").equals(".");
+                this.hasLossyCompression = !codecLineMatcher.group("hasLossyCompression").equals(".");
+                this.hasLosslessCompression = !codecLineMatcher.group("hasLosslessCompression").equals(".");
+            }
+        }
+        
+        
+        //Getters
+        
+        /**
+         * Returns the name of the codec.
+         *
+         * @return The name of the codec.
+         */
+        public String getName() {
+            return name;
+        }
+        
+        /**
+         * Returns the description of the codec.
+         *
+         * @return The description of the codec.
+         */
+        public String getDescription() {
+            return description;
+        }
+        
+        /**
+         * Returns the stream type the codec is for.
+         *
+         * @return The stream type the codec is for.
+         */
+        public StreamType getType() {
+            return type;
+        }
+        
+        /**
+         * Returns whether or not the codec supports decoding.
+         *
+         * @return Whether or not the codec supports decoding.
+         */
+        public boolean supportsDecoding() {
+            return supportsDecoding;
+        }
+        
+        /**
+         * Returns whether or not the codec supports encoding.
+         *
+         * @return Whether or not the codec supports encoding.
+         */
+        public boolean supportsEncoding() {
+            return supportsEncoding;
+        }
+        
+        /**
+         * Returns whether or not the codec is intra frame-only.
+         *
+         * @return Whether or not the codec is intra frame-only.
+         */
+        public boolean isIntraFrameOnly() {
+            return isIntraFrameOnly;
+        }
+        
+        /**
+         * Returns whether or not the codec uses lossy compression.
+         *
+         * @return Whether or not the codec uses lossy compression.
+         */
+        public boolean hasLossyCompression() {
+            return hasLossyCompression;
+        }
+        
+        /**
+         * Returns whether or not the codec uses lossless compression.
+         *
+         * @return Whether or not the codec uses lossless compression.
+         */
+        public boolean hasLosslessCompression() {
+            return hasLosslessCompression;
+        }
+        
+    }
+    
+    /**
+     * Defines an FFmpeg coder.
+     */
+    private static abstract class Coder {
+        
+        //Constants
+        
+        /**
+         * The regex pattern for an ffmpeg coder line.
+         */
+        public static final Pattern CODER_LINE_PATTERN = Pattern.compile("^\\s*(?<type>.)(?<hasFrameLevelMultithreading>.)(?<hasSliceLevelMultithreading>.)(?<isExperimental>.)(?<supportsDrawHorizontalBand>.)(?<supportsDirectRenderingMethod1>.)\\s+(?<name>[^\\s]+)\\s+(?<description>.+)\\s*$");
+        
+        
+        //Fields
+        
+        /**
+         * The name of the coder.
+         */
+        private String name;
+        
+        /**
+         * The description of the coder.
+         */
+        private String description;
+        
+        /**
+         * The stream type the coder is for.
+         */
+        private StreamType type;
+        
+        /**
+         * Whether or not the coder has frame-level multithreading.
+         */
+        private boolean hasFrameLevelMultithreading;
+        
+        /**
+         * Whether or not the coder has slice-level multithreading.
+         */
+        private boolean hasSliceLevelMultithreading;
+        
+        /**
+         * Whether or not the coder is experimental.
+         */
+        private boolean isExperimental;
+        
+        /**
+         * Whether or not the coder supports drawing horizontal bands.
+         */
+        private boolean supportsDrawHorizontalBand;
+        
+        /**
+         * Whether or not the coder supports direct rendering method 1.
+         */
+        private boolean supportsDirectRenderingMethod1;
+        
+        
+        //Constructors
+        
+        /**
+         * Creates a new Coder from an ffmpeg coder line.
+         *
+         * @param coderLine The ffmpeg coder line.
+         */
+        public Coder(String coderLine) {
+            final Matcher coderLineMatcher = CODER_LINE_PATTERN.matcher(coderLine);
+            if (coderLineMatcher.matches()) {
+                this.name = coderLineMatcher.group("name");
+                this.description = coderLineMatcher.group("description");
+                this.type = Arrays.stream(StreamType.values())
+                        .filter(e -> StringUtility.lSnip(e.name(), 1).equalsIgnoreCase(coderLineMatcher.group("type")))
+                        .findFirst().orElse(null);
+                this.hasFrameLevelMultithreading = !coderLineMatcher.group("hasFrameLevelMultithreading").equals(".");
+                this.hasSliceLevelMultithreading = !coderLineMatcher.group("hasSliceLevelMultithreading").equals(".");
+                this.isExperimental = !coderLineMatcher.group("isExperimental").equals(".");
+                this.supportsDrawHorizontalBand = !coderLineMatcher.group("supportsDrawHorizontalBand").equals(".");
+                this.supportsDirectRenderingMethod1 = !coderLineMatcher.group("supportsDirectRenderingMethod1").equals(".");
+            }
+        }
+        
+        
+        //Getters
+        
+        /**
+         * Returns the name of the coder.
+         *
+         * @return The name of the coder.
+         */
+        public String getName() {
+            return name;
+        }
+        
+        /**
+         * Returns the description of the coder.
+         *
+         * @return The description of the coder.
+         */
+        public String getDescription() {
+            return description;
+        }
+        
+        /**
+         * Returns the stream type the coder is for.
+         *
+         * @return The stream type the coder is for.
+         */
+        public StreamType getType() {
+            return type;
+        }
+        
+        /**
+         * Returns whether or not the coder has frame-level multithreading.
+         *
+         * @return Whether or not the coder has frame-level multithreading.
+         */
+        public boolean hasFrameLevelMultithreading() {
+            return hasFrameLevelMultithreading;
+        }
+        
+        /**
+         * Returns whether or not the coder has slice-level multithreading.
+         *
+         * @return Whether or not the coder has slice-level multithreading.
+         */
+        public boolean hasSliceLevelMultithreading() {
+            return hasSliceLevelMultithreading;
+        }
+        
+        /**
+         * Returns whether or not the coder is experimental.
+         *
+         * @return Whether or not the coder is experimental.
+         */
+        public boolean isExperimental() {
+            return isExperimental;
+        }
+        
+        /**
+         * Returns whether or not the coder supports drawing horizontal bands.
+         *
+         * @return Whether or not the coder supports drawing horizontal bands.
+         */
+        public boolean supportsDrawHorizontalBand() {
+            return supportsDrawHorizontalBand;
+        }
+        
+        /**
+         * Returns whether or not the coder supports direct rendering method 1.
+         *
+         * @return Whether or not the coder supports direct rendering method 1.
+         */
+        public boolean supportsDirectRenderingMethod1() {
+            return supportsDirectRenderingMethod1;
+        }
+        
+    }
+    
+    /**
+     * Defines an FFmpeg encoder.
+     */
+    public static class Encoder extends Coder {
+        
+        //Constants
+        
+        /**
+         * The regex pattern for an ffmpeg encoder line.
+         */
+        public static final Pattern ENCODER_LINE_PATTERN = CODER_LINE_PATTERN;
+        
+        
+        //Constructors
+        
+        /**
+         * Creates a new Encoder from an ffmpeg encoder line.
+         *
+         * @param encoderLine The ffmpeg encoder line.
+         */
+        public Encoder(String encoderLine) {
+            super(encoderLine);
+        }
+        
+    }
+    
+    /**
+     * Defines an FFmpeg decoder.
+     */
+    public static class Decoder extends Coder {
+        
+        //Constants
+        
+        /**
+         * The regex pattern for an ffmpeg decoder line.
+         */
+        public static final Pattern DECODER_LINE_PATTERN = CODER_LINE_PATTERN;
+        
+        
+        //Constructors
+        
+        /**
+         * Creates a new Decoder from an ffmpeg decoder line.
+         *
+         * @param decoderLine The ffmpeg decoder line.
+         */
+        public Decoder(String decoderLine) {
+            super(decoderLine);
         }
         
     }
