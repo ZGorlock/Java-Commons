@@ -659,7 +659,7 @@ public class ProgressBarTest {
         }
         progressBar.complete(false);
         List<String> completedLines = StringUtility.splitLines(out.toString()
-                .replace("\r", "\r\n").replace("\n\n", "\n"))
+                        .replace("\r", "\r\n").replace("\n\n", "\n"))
                 .stream()
                 .filter(e -> !e.isEmpty() && !StringUtility.isWhitespace(e))
                 .map(StringUtility::removeConsoleEscapeCharacters)
@@ -713,7 +713,7 @@ public class ProgressBarTest {
         progressBar.fail(false);
         progressBar.update(10000);
         List<String> failedLines = StringUtility.splitLines(out.toString()
-                .replace("\r", "\r\n").replace("\n\n", "\n"))
+                        .replace("\r", "\r\n").replace("\n\n", "\n"))
                 .stream()
                 .filter(e -> !e.isEmpty() && !StringUtility.isWhitespace(e))
                 .map(StringUtility::removeConsoleEscapeCharacters)
@@ -2590,29 +2590,124 @@ public class ProgressBarTest {
     }
     
     /**
-     * JUnit test of setInitialProgress.
+     * JUnit test of updateTitle.
      *
      * @throws Exception When there is an exception.
-     * @see ProgressBar#setInitialProgress(long)
+     * @see ProgressBar#updateTitle(String)
      */
     @Test
-    public void testSetInitialProgress() throws Exception {
+    public void testUpdateTitle() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        sut.setInitialProgress(74461210L);
-        Assert.assertEquals(74461210L, (long) TestUtils.getField(sut, "initialProgress"));
+        Assert.assertEquals("", TestUtils.getField(sut, "title"));
+        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(sut, "firstPrint")).get());
+        Assert.assertTrue(sut.updateTitle("Test"));
+        Assert.assertEquals("Test", TestUtils.getField(sut, "title"));
+        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(sut, "firstPrint")).get());
+        Assert.assertTrue(sut.updateTitle("Test 2"));
+        Assert.assertEquals("Test 2", TestUtils.getField(sut, "title"));
+        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(sut, "firstPrint")).get());
+        TestUtils.setField(sut, "firstPrint", new AtomicBoolean(false));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(sut, "firstPrint")).get());
+        Assert.assertFalse(sut.updateTitle("Test 3"));
+        Assert.assertEquals("Test 2", TestUtils.getField(sut, "title"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(sut, "firstPrint")).get());
     }
     
     /**
-     * JUnit test of setInitialDuration.
+     * JUnit test of updateTotal.
      *
      * @throws Exception When there is an exception.
-     * @see ProgressBar#setInitialDuration(long)
+     * @see ProgressBar#updateTotal(long)
      */
     @Test
-    public void testSetInitialDuration() throws Exception {
+    public void testUpdateTotal() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        sut.setInitialDuration(158L);
+        Assert.assertEquals(0L, (long) TestUtils.getField(sut, "total"));
+        sut.updateTotal(74461210L);
+        Assert.assertEquals(74461210L, (long) TestUtils.getField(sut, "total"));
+    }
+    
+    /**
+     * JUnit test of updateUnits.
+     *
+     * @throws Exception When there is an exception.
+     * @see ProgressBar#updateUnits(String, double)
+     * @see ProgressBar#updateUnits(String)
+     */
+    @Test
+    public void testUpdateUnits() throws Exception {
+        ProgressBar sut = new ProgressBar("", 100, "seconds");
+        Assert.assertEquals("seconds", TestUtils.getField(sut, "units"));
+        Assert.assertEquals(100L, (long) TestUtils.getField(sut, "total"));
+        Assert.assertEquals(0L, (long) TestUtils.getField(sut, "progress"));
+        Assert.assertEquals(0L, (long) TestUtils.getField(sut, "current"));
+        Assert.assertEquals(0L, (long) TestUtils.getField(sut, "previous"));
+        Assert.assertEquals(0L, (long) TestUtils.getField(sut, "initialProgress"));
+        Assert.assertArrayEquals(new Long[] {},
+                ((List<Long>) TestUtils.getField(sut, "rollingProgress")).toArray());
+        TestUtils.setField(sut, "progress", 54L);
+        TestUtils.setField(sut, "current", 54L);
+        TestUtils.setField(sut, "previous", 51L);
+        TestUtils.setField(sut, "initialProgress", 10L);
+        TestUtils.setField(sut, "rollingProgress", Arrays.asList(39L, 43L, 46L, 51L, 54L));
+        sut.updateUnits("s");
+        Assert.assertEquals("s", TestUtils.getField(sut, "units"));
+        Assert.assertEquals(100L, (long) TestUtils.getField(sut, "total"));
+        Assert.assertEquals(54L, (long) TestUtils.getField(sut, "progress"));
+        Assert.assertEquals(54L, (long) TestUtils.getField(sut, "current"));
+        Assert.assertEquals(51L, (long) TestUtils.getField(sut, "previous"));
+        Assert.assertEquals(10L, (long) TestUtils.getField(sut, "initialProgress"));
+        Assert.assertArrayEquals(new Long[] {39L, 43L, 46L, 51L, 54L},
+                ((List<Long>) TestUtils.getField(sut, "rollingProgress")).toArray());
+        sut.updateUnits("ms", 1000);
+        Assert.assertEquals("ms", TestUtils.getField(sut, "units"));
+        Assert.assertEquals(100000L, (long) TestUtils.getField(sut, "total"));
+        Assert.assertEquals(54000L, (long) TestUtils.getField(sut, "progress"));
+        Assert.assertEquals(54000L, (long) TestUtils.getField(sut, "current"));
+        Assert.assertEquals(51000L, (long) TestUtils.getField(sut, "previous"));
+        Assert.assertEquals(10000L, (long) TestUtils.getField(sut, "initialProgress"));
+        Assert.assertArrayEquals(new Long[] {39000L, 43000L, 46000L, 51000L, 54000L},
+                ((List<Long>) TestUtils.getField(sut, "rollingProgress")).toArray());
+    }
+    
+    /**
+     * JUnit test of defineInitialProgress.
+     *
+     * @throws Exception When there is an exception.
+     * @see ProgressBar#defineInitialProgress(long)
+     */
+    @Test
+    public void testDefineInitialProgress() throws Exception {
+        ProgressBar sut = new ProgressBar("", 0);
+        Assert.assertEquals(0L, (long) TestUtils.getField(sut, "initialProgress"));
+        Assert.assertTrue(sut.defineInitialProgress(74461210L));
+        Assert.assertEquals(74461210L, (long) TestUtils.getField(sut, "initialProgress"));
+        Assert.assertFalse(sut.defineInitialProgress(191070334L));
+        Assert.assertEquals(74461210L, (long) TestUtils.getField(sut, "initialProgress"));
+        TestUtils.setField(sut, "initialProgress", 0L);
+        Assert.assertEquals(0L, (long) TestUtils.getField(sut, "initialProgress"));
+        Assert.assertTrue(sut.defineInitialProgress(191070334L));
+        Assert.assertEquals(191070334L, (long) TestUtils.getField(sut, "initialProgress"));
+    }
+    
+    /**
+     * JUnit test of defineInitialDuration.
+     *
+     * @throws Exception When there is an exception.
+     * @see ProgressBar#defineInitialDuration(long)
+     */
+    @Test
+    public void testDefineInitialDuration() throws Exception {
+        ProgressBar sut = new ProgressBar("", 0);
+        Assert.assertEquals(0L, (long) TestUtils.getField(sut, "initialDuration"));
+        Assert.assertTrue(sut.defineInitialDuration(158L));
         Assert.assertEquals(158L, (long) TestUtils.getField(sut, "initialDuration"));
+        Assert.assertFalse(sut.defineInitialDuration(3877L));
+        Assert.assertEquals(158L, (long) TestUtils.getField(sut, "initialDuration"));
+        TestUtils.setField(sut, "initialDuration", 0L);
+        Assert.assertEquals(0L, (long) TestUtils.getField(sut, "initialDuration"));
+        Assert.assertTrue(sut.defineInitialDuration(3877L));
+        Assert.assertEquals(3877L, (long) TestUtils.getField(sut, "initialDuration"));
     }
     
     /**

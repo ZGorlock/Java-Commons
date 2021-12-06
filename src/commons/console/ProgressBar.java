@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.IntStream;
 
 import commons.math.BoundUtility;
 import commons.string.StringUtility;
@@ -917,21 +918,85 @@ public class ProgressBar {
     //Setters
     
     /**
-     * Sets the initial progress of the progress bar.
+     * Updates the title of the progress bar.<br>
+     * If the title has already been printed then the title will not be changed.
      *
-     * @param initialProgress The initial progress of the progress bar.
+     * @param title The new title of the progress bar.
+     * @return Whether the title of the progress bar was updated or not.
      */
-    public void setInitialProgress(long initialProgress) {
-        this.initialProgress = initialProgress;
+    public synchronized boolean updateTitle(String title) {
+        if (firstPrint.get()) {
+            this.title = title;
+            return true;
+        }
+        return false;
     }
     
     /**
-     * Sets the initial duration of the progress bar in seconds.
+     * Updates the total progress of the progress bar.
+     *
+     * @param total The new total progress of the progress bar.
+     */
+    public synchronized void updateTotal(long total) {
+        this.total = total;
+    }
+    
+    /**
+     * Updates the units of the progress bar and scales the progress.
+     *
+     * @param units The new units of the progress bar.
+     * @param scale The amount to scale the current and total progress by.
+     */
+    public synchronized void updateUnits(String units, double scale) {
+        this.units = units;
+        
+        this.total *= scale;
+        this.progress *= scale;
+        this.current *= scale;
+        this.previous *= scale;
+        this.initialProgress *= scale;
+        IntStream.range(0, this.rollingProgress.size()).boxed().forEach(i ->
+                this.rollingProgress.set(i, (long) (this.rollingProgress.get(i) * scale)));
+    }
+    
+    /**
+     * Updates the units of the progress bar.
+     *
+     * @param units The new units of the progress bar.
+     * @see #updateUnits(String, double)
+     */
+    public synchronized void updateUnits(String units) {
+        updateUnits(units, 1.0);
+    }
+    
+    /**
+     * Defines the initial progress of the progress bar.<br>
+     * If the initial progress has already been defined the initial progress will not be changed.
+     *
+     * @param initialProgress The initial progress of the progress bar.
+     * @return Whether the initial progress was defined or not.
+     */
+    public synchronized boolean defineInitialProgress(long initialProgress) {
+        if (this.initialProgress == 0) {
+            this.initialProgress = initialProgress;
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Sets the initial duration of the progress bar in seconds.<br>
+     * If the initial duration has already been defined the initial duration will not be changed.
      *
      * @param initialDuration The initial duration of the progress bar in seconds.
+     * @return Whether the initial duration was defined or not.
      */
-    public void setInitialDuration(long initialDuration) {
-        this.initialDuration = initialDuration;
+    public synchronized boolean defineInitialDuration(long initialDuration) {
+        if (this.initialDuration == 0) {
+            this.initialDuration = initialDuration;
+            return true;
+        }
+        return false;
     }
     
     /**
