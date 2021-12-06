@@ -284,6 +284,28 @@ public final class StringUtility {
     }
     
     /**
+     * Determines if a string contains any of a set of substrings.
+     *
+     * @param str    The string.
+     * @param search The set of substrings to search for.
+     * @return Whether or not the string contains any of the set of substrings.
+     */
+    public static boolean containsAny(String str, String[] search) {
+        return Arrays.stream(search).anyMatch(str::contains);
+    }
+    
+    /**
+     * Determines if a string contains any of a set of characters.
+     *
+     * @param str    The string.
+     * @param search The set of characters to search for.
+     * @return Whether or not the string contains any of the set of characters.
+     */
+    public static boolean containsAny(String str, Character[] search) {
+        return Arrays.stream(search).anyMatch(e -> (str.indexOf(e) >= 0));
+    }
+    
+    /**
      * Determines if a character is alphanumeric or not.
      *
      * @param c The character.

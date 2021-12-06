@@ -510,6 +510,63 @@ public class StringUtilityTest {
     }
     
     /**
+     * JUnit test of containsAny.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#containsAny(String, String[])
+     * @see StringUtility#containsAny(String, Character[])
+     */
+    @Test
+    public void testContainsAny() throws Exception {
+        //string
+        Assert.assertTrue(StringUtility.containsAny("This is a string", new String[] {" ", "is", "\n"}));
+        Assert.assertTrue(StringUtility.containsAny("Thisisastring", new String[] {" ", "is", "\n"}));
+        Assert.assertFalse(StringUtility.containsAny("string", new String[] {" ", "is", "\n"}));
+        Assert.assertFalse(StringUtility.containsAny("cat dog bird snake fish lizard", new String[] {"rat", "bug", "ferret"}));
+        Assert.assertTrue(StringUtility.containsAny("cat dog bird snake fish lizard", new String[] {"rat", "bug", "ferret", "cat"}));
+        Assert.assertTrue(StringUtility.containsAny("cat dog bird snake fish lizard", new String[] {"lizard", "rat", "bug", "ferret"}));
+        
+        //character
+        Assert.assertFalse(StringUtility.containsAny("123ayy5g@3]/..f47)", new Character[] {'+', ',', '(', '[', '#'}));
+        Assert.assertTrue(StringUtility.containsAny("123ayy5g@3]/..f47)", new Character[] {'+', ',', '(', ')', '[', ']', '#'}));
+        Assert.assertTrue(StringUtility.containsAny("123ayy5g@3]/..f47)", new Character[] {'b', '3', '+', ',', '(', '[', '#'}));
+        
+        //invalid
+        Assert.assertFalse(StringUtility.containsAny("test", new String[] {}));
+        Assert.assertFalse(StringUtility.containsAny("test", new Character[] {}));
+        Assert.assertTrue(StringUtility.containsAny("test", new String[] {""}));
+        Assert.assertFalse(StringUtility.containsAny("test", new Character[] {'\0'}));
+        Assert.assertFalse(StringUtility.containsAny("", new String[] {"test"}));
+        Assert.assertFalse(StringUtility.containsAny("", new Character[] {'t'}));
+        Assert.assertTrue(StringUtility.containsAny("", new String[] {""}));
+        Assert.assertFalse(StringUtility.containsAny("", new Character[] {'\0'}));
+        TestUtils.assertNoException(() ->
+                StringUtility.containsAny("test", new String[] {"test", null}));
+        TestUtils.assertNoException(() ->
+                StringUtility.containsAny("test", new Character[] {'t', null}));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.containsAny("test", new String[] {null, "test"}));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.containsAny("test", new Character[] {null, 't'}));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.containsAny("test", new String[] {null}));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.containsAny("test", new Character[] {null}));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.containsAny("test", (String[]) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.containsAny("test", (Character[]) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.containsAny(null, new String[] {"test"}));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.containsAny(null, new Character[] {'t'}));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.containsAny(null, (String[]) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.containsAny(null, (Character[]) null));
+    }
+    
+    /**
      * JUnit test of isAlphanumeric.
      *
      * @throws Exception When there is an exception.
