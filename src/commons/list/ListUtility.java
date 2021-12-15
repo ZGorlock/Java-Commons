@@ -153,6 +153,17 @@ public final class ListUtility {
     }
     
     /**
+     * Determines whether a string exists in a list, regardless of case.
+     *
+     * @param list    The list.
+     * @param element The element.
+     * @return Whether the list contains the specified string or not.
+     */
+    public static boolean containsIgnoreCase(List<String> list, String element) {
+        return list.stream().anyMatch(e -> e.equalsIgnoreCase(element));
+    }
+    
+    /**
      * Returns the index of an element in a list.
      *
      * @param list    The list.

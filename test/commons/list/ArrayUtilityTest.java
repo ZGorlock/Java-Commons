@@ -507,6 +507,13 @@ public class ArrayUtilityTest {
         Assert.assertTrue(ArrayUtility.contains(longArray, 699546101L));
         Assert.assertFalse(ArrayUtility.contains(longArray, 8465115960L));
         
+        //string
+        String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        Assert.assertTrue(ArrayUtility.contains(stringArray, "cat"));
+        Assert.assertTrue(ArrayUtility.contains(stringArray, "lizard"));
+        Assert.assertFalse(ArrayUtility.contains(stringArray, "DOG"));
+        Assert.assertFalse(ArrayUtility.contains(stringArray, "rat"));
+        
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         Assert.assertTrue(ArrayUtility.contains(objectArray, objectArray[2]));
@@ -516,6 +523,33 @@ public class ArrayUtilityTest {
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 ArrayUtility.contains(null, new Object()));
+    }
+    
+    /**
+     * JUnit test of containsIgnoreCase.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#containsIgnoreCase(String[], String)
+     */
+    @Test
+    public void testContainsIgnoreCase() throws Exception {
+        String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        
+        //standard
+        Assert.assertTrue(ArrayUtility.containsIgnoreCase(stringArray, "cat"));
+        Assert.assertTrue(ArrayUtility.containsIgnoreCase(stringArray, "lizard"));
+        Assert.assertTrue(ArrayUtility.containsIgnoreCase(stringArray, "dog"));
+        Assert.assertFalse(ArrayUtility.containsIgnoreCase(stringArray, "rat"));
+        
+        //case
+        Assert.assertTrue(ArrayUtility.containsIgnoreCase(stringArray, "CAT"));
+        Assert.assertTrue(ArrayUtility.containsIgnoreCase(stringArray, "LIzArD"));
+        Assert.assertTrue(ArrayUtility.containsIgnoreCase(stringArray, "doG"));
+        Assert.assertFalse(ArrayUtility.containsIgnoreCase(stringArray, "rAt"));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.containsIgnoreCase(null, ""));
     }
     
     /**

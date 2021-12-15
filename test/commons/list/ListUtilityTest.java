@@ -543,6 +543,14 @@ public class ListUtilityTest {
         Assert.assertTrue(ListUtility.contains(longList, 699546101L));
         Assert.assertFalse(ListUtility.contains(longList, 8465115960L));
         
+        //string
+        String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        List<String> stringList = ListUtility.toList(stringArray);
+        Assert.assertTrue(ListUtility.contains(stringList, "cat"));
+        Assert.assertTrue(ListUtility.contains(stringList, "lizard"));
+        Assert.assertFalse(ListUtility.contains(stringList, "DOG"));
+        Assert.assertFalse(ListUtility.contains(stringList, "rat"));
+        
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         List<Object> objectList = ListUtility.toList(objectArray);
@@ -554,6 +562,35 @@ public class ListUtilityTest {
         //noinspection ResultOfMethodCallIgnored
         TestUtils.assertException(NullPointerException.class, () ->
                 ListUtility.contains(null, new Object()));
+    }
+    
+    /**
+     * JUnit test of containsIgnoreCase.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#containsIgnoreCase(List, String)
+     */
+    @Test
+    public void testContainsIgnoreCase() throws Exception {
+        String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        List<String> stringList = ListUtility.toList(stringArray);
+        
+        //standard
+        Assert.assertTrue(ListUtility.containsIgnoreCase(stringList, "cat"));
+        Assert.assertTrue(ListUtility.containsIgnoreCase(stringList, "lizard"));
+        Assert.assertTrue(ListUtility.containsIgnoreCase(stringList, "dog"));
+        Assert.assertFalse(ListUtility.containsIgnoreCase(stringList, "rat"));
+        
+        //case
+        Assert.assertTrue(ListUtility.containsIgnoreCase(stringList, "CAT"));
+        Assert.assertTrue(ListUtility.containsIgnoreCase(stringList, "LIzArD"));
+        Assert.assertTrue(ListUtility.containsIgnoreCase(stringList, "doG"));
+        Assert.assertFalse(ListUtility.containsIgnoreCase(stringList, "rAt"));
+        
+        //invalid
+        //noinspection ResultOfMethodCallIgnored
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.containsIgnoreCase(null, ""));
     }
     
     /**

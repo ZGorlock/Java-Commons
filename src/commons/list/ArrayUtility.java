@@ -162,6 +162,17 @@ public final class ArrayUtility {
     }
     
     /**
+     * Determines whether a string exists in an array, regardless of case.
+     *
+     * @param array   The array.
+     * @param element The element.
+     * @return Whether the array contains the specified string or not.
+     */
+    public static boolean containsIgnoreCase(String[] array, String element) {
+        return Arrays.stream(array).anyMatch(e -> e.equalsIgnoreCase(element));
+    }
+    
+    /**
      * Returns the index of an element in an array.
      *
      * @param array   The array.
