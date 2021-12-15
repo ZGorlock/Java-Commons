@@ -10,6 +10,7 @@ package commons.test;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
@@ -21,6 +22,7 @@ import commons.string.StringUtility;
 import org.junit.Assert;
 import org.powermock.reflect.Whitebox;
 import org.powermock.reflect.exceptions.MethodInvocationException;
+import org.powermock.reflect.internal.primitivesupport.PrimitiveWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -70,16 +72,19 @@ public final class TestUtils {
     public static void assertException(Class<? extends Exception> exception, String expectedMessage, Runnable call) {
         try {
             call.run();
-            AssertWrapper.fail("Expected code to produce " + StringUtility.justifyAOrAn(exception.getSimpleName()) +
+            AssertWrapper.fail("Expected code to produce " + ((exception != null) ? StringUtility.justifyAOrAn(exception.getSimpleName()) : "an exception") +
                     " but no exception was produced");
             
         } catch (Exception e) {
-            AssertWrapper.assertEquals("Expected code to produce " + StringUtility.justifyAOrAn(exception.getSimpleName()) +
-                            " but instead it produced " + StringUtility.justifyAOrAn(e.getClass().getSimpleName()),
-                    exception, e.getClass());
+            if (exception != null) {
+                AssertWrapper.assertEquals("Expected code to produce " + StringUtility.justifyAOrAn(exception.getSimpleName()) +
+                                " but instead it produced " + StringUtility.justifyAOrAn(e.getClass().getSimpleName()),
+                        exception, e.getClass());
+            }
             
             if (expectedMessage != null) {
-                AssertWrapper.assertEquals("Expected the error message of the " + exception.getSimpleName() + " to be: \"" + expectedMessage + '\"' +
+                AssertWrapper.assertEquals("Expected the error message of the " + ((exception != null) ? exception.getSimpleName() : "exception") +
+                                " to be: \"" + expectedMessage + '\"' +
                                 " but the error message was: \"" + e.getMessage() + '\"',
                         expectedMessage, e.getMessage());
             }
@@ -95,6 +100,16 @@ public final class TestUtils {
      */
     public static void assertException(Class<? extends Exception> exception, Runnable call) {
         assertException(exception, null, call);
+    }
+    
+    /**
+     * Asserts that a call throws an exception.
+     *
+     * @param call The call.
+     * @see #assertException(Class, String, Runnable)
+     */
+    public static void assertException(Runnable call) {
+        assertException(null, null, call);
     }
     
     /**
@@ -373,12 +388,46 @@ public final class TestUtils {
      * @throws MethodInvocationException When there is an exception while invoking the method.
      */
     public static Object invokeMethod(Object object, String methodName, Object... arguments) throws MethodInvocationException {
+        Class<?> clazz = (object instanceof Class<?>) ? (Class<?>) object : object.getClass();
+        
         try {
-            return Whitebox.invokeMethod(object, methodName, arguments);
+            return Whitebox.invokeMethod(((object instanceof Class<?>) ? clazz : object), methodName, arguments);
+            
         } catch (Exception e) {
-            AssertWrapper.fail("Attempted to invoke the method " + StringUtility.methodString(object.getClass(), methodName, Arrays.stream(arguments).map(Object::getClass).toArray(Class<?>[]::new)) +
-                    " but an exception occurred");
-            throw new MethodInvocationException(e);
+            
+            try {
+                Class<?>[] argumentTypes = Arrays.stream(arguments).map(arg -> (arg == null) ? null : arg.getClass()).toArray(Class<?>[]::new);
+                
+                for (Method method : clazz.getDeclaredMethods()) {
+                    Class<?>[] methodArgumentTypes = method.getParameterTypes();
+                    if (!method.getName().equals(methodName) || (methodArgumentTypes.length != arguments.length)) {
+                        continue;
+                    }
+                    
+                    boolean hit = true;
+                    for (int i = 0; i < argumentTypes.length; i++) {
+                        if (((argumentTypes[i] != null) && (methodArgumentTypes[i] != argumentTypes[i]) &&
+                                (methodArgumentTypes[i] != PrimitiveWrapper.getPrimitiveFromWrapperType(argumentTypes[i]))) ||
+                                ((argumentTypes[i] == null) && methodArgumentTypes[i].isPrimitive()) ||
+                                (methodArgumentTypes[i].getSimpleName().equals("IndicateReloadClass"))) {
+                            hit = false;
+                            break;
+                        }
+                    }
+                    if (hit) {
+                        argumentTypes = methodArgumentTypes;
+                        break;
+                    }
+                }
+                
+                return Whitebox.invokeMethod(((object instanceof Class<?>) ? clazz : object), methodName, argumentTypes, arguments);
+                
+            } catch (Exception e2) {
+                AssertWrapper.fail("Attempted to invoke the method " + StringUtility.methodString(clazz, methodName,
+                        Arrays.stream(arguments).map(arg -> (arg == null) ? null : arg.getClass()).toArray(Class<?>[]::new)) +
+                        " but an exception occurred");
+                throw new MethodInvocationException(e2);
+            }
         }
     }
     
@@ -390,14 +439,60 @@ public final class TestUtils {
      * @param arguments  The arguments to the method.
      * @return The result of the method invocation.
      * @throws MethodInvocationException When there is an exception while invoking the method.
+     * @see #invokeMethod(Object, String, Object...)
      */
     public static Object invokeMethod(Class<?> clazz, String methodName, Object... arguments) throws MethodInvocationException {
+        return invokeMethod((Object) clazz, methodName, arguments);
+    }
+    
+    /**
+     * Invokes a constructor of a class.
+     *
+     * @param clazz     The class.
+     * @param arguments The arguments to the constructor.
+     * @param <T>       The type of the class.
+     * @return The constructed instance of the class, or null if there was there was an error.
+     * @throws MethodInvocationException When there is an exception while invoking the constructor.
+     */
+    public static <T> T invokeConstructor(Class<T> clazz, Object... arguments) throws MethodInvocationException {
         try {
-            return Whitebox.invokeMethod(clazz, methodName, arguments);
+            return Whitebox.invokeConstructor(clazz, arguments);
+            
         } catch (Exception e) {
-            AssertWrapper.fail("Attempted to invoke the method " + StringUtility.methodString(clazz, methodName, Arrays.stream(arguments).map(Object::getClass).toArray(Class<?>[]::new)) +
-                    " but an exception occurred");
-            throw new MethodInvocationException(e);
+            
+            try {
+                Class<?>[] argumentTypes = Arrays.stream(arguments).map(arg -> (arg == null) ? null : arg.getClass()).toArray(Class<?>[]::new);
+                
+                for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
+                    Class<?>[] constructorArgumentTypes = constructor.getParameterTypes();
+                    if (constructorArgumentTypes.length != arguments.length) {
+                        continue;
+                    }
+                    
+                    boolean hit = true;
+                    for (int i = 0; i < argumentTypes.length; i++) {
+                        if (((argumentTypes[i] != null) && (constructorArgumentTypes[i] != argumentTypes[i]) &&
+                                (constructorArgumentTypes[i] != PrimitiveWrapper.getPrimitiveFromWrapperType(argumentTypes[i]))) ||
+                                ((argumentTypes[i] == null) && constructorArgumentTypes[i].isPrimitive()) ||
+                                (constructorArgumentTypes[i].getSimpleName().equals("IndicateReloadClass"))) {
+                            hit = false;
+                            break;
+                        }
+                    }
+                    if (hit) {
+                        argumentTypes = constructorArgumentTypes;
+                        break;
+                    }
+                }
+                
+                return Whitebox.invokeConstructor(clazz, argumentTypes, arguments);
+                
+            } catch (Exception e2) {
+                AssertWrapper.fail("Attempted to invoke the constructor " + StringUtility.methodString(clazz, clazz.getSimpleName(),
+                        Arrays.stream(arguments).map(arg -> (arg == null) ? null : arg.getClass()).toArray(Class<?>[]::new)) +
+                        " but an exception occurred");
+                throw new MethodInvocationException(e2);
+            }
         }
     }
     
@@ -423,7 +518,8 @@ public final class TestUtils {
                     .bindTo(target).invokeWithArguments(arguments);
             
         } catch (Throwable ignored) {
-            AssertWrapper.fail("Attempted to invoke the method " + StringUtility.methodString(clazz, methodName, Arrays.stream(arguments).map(Object::getClass).toArray(Class<?>[]::new)) +
+            AssertWrapper.fail("Attempted to invoke the method " + StringUtility.methodString(clazz, methodName,
+                    Arrays.stream(arguments).map(arg -> (arg == null) ? null : arg.getClass()).toArray(Class<?>[]::new)) +
                     " but an exception occurred");
             return null;
         }
