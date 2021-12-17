@@ -1262,7 +1262,7 @@ public final class StringUtility {
      */
     public static String methodString(Class<?> clazz, String methodName, Class<?>... argumentClasses) {
         return clazz.getSimpleName() + "::" + methodName +
-                '(' + Arrays.stream(argumentClasses).sequential().map(Class::getSimpleName).collect(Collectors.joining(", ")) + ')';
+                '(' + Arrays.stream(argumentClasses).sequential().map(e -> (e == null) ? "null" : e.getSimpleName()).collect(Collectors.joining(", ")) + ')';
     }
     
     /**

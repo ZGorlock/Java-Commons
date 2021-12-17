@@ -2082,6 +2082,10 @@ public class StringUtilityTest {
                 StringUtility.methodString(OutputStream.class, "println"));
         
         //edge case
+        Assert.assertEquals("StringUtility::methodString(Class, null, Class[])",
+                StringUtility.methodString(StringUtility.class, "methodString", Class.class, null, Class[].class));
+        Assert.assertEquals("StringUtility::methodString(null)",
+                StringUtility.methodString(StringUtility.class, "methodString", (Class<?>) null));
         Assert.assertEquals("StringUtility::(Class, String, Class[])",
                 StringUtility.methodString(StringUtility.class, "", Class.class, String.class, Class[].class));
         Assert.assertEquals("StringUtility::null(Class, String, Class[])",
@@ -2090,10 +2094,6 @@ public class StringUtilityTest {
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 StringUtility.methodString(null, "methodString", Class.class, String.class, Class[].class));
-        TestUtils.assertException(NullPointerException.class, () ->
-                StringUtility.methodString(StringUtility.class, "methodString", Class.class, String.class, null));
-        TestUtils.assertException(NullPointerException.class, () ->
-                StringUtility.methodString(StringUtility.class, "methodString", (Class<?>) null));
     }
     
     /**
