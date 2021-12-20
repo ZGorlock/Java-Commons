@@ -26,6 +26,7 @@ import commons.io.SystemIn;
 import commons.io.WaveRecorder;
 import commons.io.hotkey.HotKey;
 import commons.io.hotkey.HotKeyManager;
+import commons.string.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -271,14 +272,14 @@ public class SpeechRecognizer {
         
         String hmm = Filesystem.generatePath(true, "model", SPHINX_LANGUAGE);
         
-        String cmdHeader = "cd \"" + SPHINX_DIRECTORY.getAbsolutePath() + "\" && " +
+        String cmdHeader = "cd " + StringUtility.quote(SPHINX_DIRECTORY.getAbsolutePath()) + " && " +
                 (isWindows ? "" : "LD_LIBRARY_PATH=$(pwd) ") +
                 BINARY_NAME + (isWindows ? ".exe" : "") + ' ';
         
         String cmdFooter = " -hmm " + hmm + SPHINX_LANGUAGE +
                 " -lm " + hmm + SPHINX_LANGUAGE_MODEL +
                 " -dict " + hmm + SPHINX_DICTIONARY +
-                (hasAcousticModelAdaption ? (" -mllr \"" + adaptionMatrix.getAbsolutePath() + '"') : "") +
+                (hasAcousticModelAdaption ? (" -mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())) : "") +
                 (isWindows ? " -logfn nul" : " &> /dev/null");
         
         runPocketSphinxCmd = cmdHeader + "-inmic yes" + cmdFooter;
@@ -857,7 +858,7 @@ public class SpeechRecognizer {
             File sphinxFe = new File(SPHINX_DIRECTORY, "sphinx_fe" + (isWindows ? ".exe" : ""));
             String featParams = Filesystem.generatePath(SPHINX_LANGUAGE, "feat.params");
             
-            String genFeatureFilesCmd = "cd \"" + trainingDirectory.getAbsolutePath() + "\" && " + (isWindows ? "" : "LD_LIBRARY_PATH=$(pwd) ") +
+            String genFeatureFilesCmd = "cd " + StringUtility.quote(trainingDirectory.getAbsolutePath()) + " && " + (isWindows ? "" : "LD_LIBRARY_PATH=$(pwd) ") +
                     sphinxFe.getName() +
                     " -argfile " + featParams +
                     " -samprate " + RECORDING_SAMPLE_RATE +
@@ -887,7 +888,7 @@ public class SpeechRecognizer {
             String mdef = Filesystem.generatePath(SPHINX_LANGUAGE, "mdef");
             //String featureTransform = Filesystem.generatePath(SPHINX_LANGUAGE, "feature_transform");
             
-            String accumulateObservationCountCmd = "cd \"" + trainingDirectory.getAbsolutePath() + "\" && " + (isWindows ? "" : "LD_LIBRARY_PATH=$(pwd) ") +
+            String accumulateObservationCountCmd = "cd " + StringUtility.quote(trainingDirectory.getAbsolutePath()) + " && " + (isWindows ? "" : "LD_LIBRARY_PATH=$(pwd) ") +
                     sphinxBw.getName() +
                     " -hmmdir " + SPHINX_LANGUAGE +
                     " -moddeffn " + mdef +
@@ -922,7 +923,7 @@ public class SpeechRecognizer {
             String means = Filesystem.generatePath(SPHINX_LANGUAGE, "means");
             String variances = Filesystem.generatePath(SPHINX_LANGUAGE, "variances");
             
-            String transformationMllrCmd = "cd \"" + trainingDirectory.getAbsolutePath() + "\" && " + (isWindows ? "" : "LD_LIBRARY_PATH=$(pwd) ") +
+            String transformationMllrCmd = "cd " + StringUtility.quote(trainingDirectory.getAbsolutePath()) + " && " + (isWindows ? "" : "LD_LIBRARY_PATH=$(pwd) ") +
                     sphinxMllr.getName() +
                     " -meanfn " + means +
                     " -varfn " + variances +

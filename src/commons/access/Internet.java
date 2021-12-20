@@ -20,6 +20,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import commons.log.CommonsLogging;
+import commons.string.StringUtility;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.text.StringEscapeUtils;
 import org.jsoup.Jsoup;
@@ -191,7 +192,7 @@ public final class Internet {
                 contentBuilder.append(code).append(clear);
             }
             
-            int jmpIndex = parsedHtml.indexOf("id=\"" + id + "\"");
+            int jmpIndex = parsedHtml.indexOf("id=" + StringUtility.quote(id));
             int insertIndex = parsedHtml.indexOf(">", jmpIndex) + 1;
             parsedHtml.insert(insertIndex, contentBuilder);
         }

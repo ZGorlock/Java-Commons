@@ -1910,6 +1910,24 @@ public class StringUtilityTest {
     }
     
     /**
+     * JUnit test of quote.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#quote(String)
+     */
+    @Test
+    public void testQuote() throws Exception {
+        //valid
+        Assert.assertEquals("\"test\"", StringUtility.quote("test"));
+        Assert.assertEquals("\"test 2\"", StringUtility.quote("test 2"));
+        Assert.assertEquals("\"something\"", StringUtility.quote("something"));
+        Assert.assertEquals("\"something else\"", StringUtility.quote("something else"));
+        Assert.assertEquals("\"C:\\Program Files\\Test\"", StringUtility.quote("C:\\Program Files\\Test"));
+        Assert.assertEquals("\"   \"", StringUtility.quote("   "));
+        Assert.assertEquals("\"\"", StringUtility.quote(""));
+    }
+    
+    /**
      * JUnit test of spaces.
      *
      * @throws Exception When there is an exception.

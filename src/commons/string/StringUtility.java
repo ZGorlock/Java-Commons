@@ -1152,6 +1152,16 @@ public final class StringUtility {
     }
     
     /**
+     * Quotes a string.
+     *
+     * @param str The string to quote.
+     * @return The quoted string.
+     */
+    public static String quote(String str) {
+        return "\"" + str + '"';
+    }
+    
+    /**
      * Creates a string of the length specified filled with spaces.
      *
      * @param num The length to make the string.

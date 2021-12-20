@@ -84,8 +84,8 @@ public final class TestUtils {
             
             if (expectedMessage != null) {
                 AssertWrapper.assertEquals("Expected the error message of the " + ((exception != null) ? exception.getSimpleName() : "exception") +
-                                " to be: \"" + expectedMessage + '\"' +
-                                " but the error message was: \"" + e.getMessage() + '\"',
+                                " to be: " + StringUtility.quote(expectedMessage) +
+                                " but the error message was: " + StringUtility.quote(e.getMessage()),
                         expectedMessage, e.getMessage());
             }
         }

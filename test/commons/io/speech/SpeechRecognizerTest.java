@@ -270,10 +270,10 @@ public class SpeechRecognizerTest {
         TestUtils.setField(sut, "killPocketSphinxCmd", "");
         TestUtils.invokeMethod(sut, "initializeCommands");
         Assert.assertEquals(
-                "cd \"" + SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath() + "\" && pocketsphinx_continuous.exe -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -logfn nul",
+                "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && pocketsphinx_continuous.exe -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -logfn nul",
                 TestUtils.getField(sut, "runPocketSphinxCmd"));
         Assert.assertEquals(
-                "cd \"" + SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath() + "\" && pocketsphinx_continuous.exe -infile \"%s\" -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -logfn nul",
+                "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && pocketsphinx_continuous.exe -infile \"%s\" -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -logfn nul",
                 TestUtils.getField(sut, "decodeRecordingCmd"));
         Assert.assertEquals(
                 "Taskkill /IM pocketsphinx_continuous.exe /F",
@@ -286,10 +286,10 @@ public class SpeechRecognizerTest {
         TestUtils.setField(sut, "killPocketSphinxCmd", "");
         TestUtils.invokeMethod(sut, "initializeCommands");
         Assert.assertEquals(
-                "cd \"" + SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath() + "\" && pocketsphinx_continuous.exe -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -mllr \"" + adaptionMatrix.getAbsolutePath() + "\" -logfn nul",
+                "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && pocketsphinx_continuous.exe -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath()) + " -logfn nul",
                 TestUtils.getField(sut, "runPocketSphinxCmd"));
         Assert.assertEquals(
-                "cd \"" + SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath() + "\" && pocketsphinx_continuous.exe -infile \"%s\" -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -mllr \"" + adaptionMatrix.getAbsolutePath() + "\" -logfn nul",
+                "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && pocketsphinx_continuous.exe -infile \"%s\" -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath()) + " -logfn nul",
                 TestUtils.getField(sut, "decodeRecordingCmd"));
         Assert.assertEquals(
                 "Taskkill /IM pocketsphinx_continuous.exe /F",
@@ -303,10 +303,10 @@ public class SpeechRecognizerTest {
         TestUtils.setField(sut, "killPocketSphinxCmd", "");
         TestUtils.invokeMethod(sut, "initializeCommands");
         Assert.assertEquals(
-                "cd \"" + SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath() + "\" && LD_LIBRARY_PATH=$(pwd) pocketsphinx_continuous -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict &> /dev/null",
+                "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && LD_LIBRARY_PATH=$(pwd) pocketsphinx_continuous -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict &> /dev/null",
                 TestUtils.getField(sut, "runPocketSphinxCmd"));
         Assert.assertEquals(
-                "cd \"" + SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath() + "\" && LD_LIBRARY_PATH=$(pwd) pocketsphinx_continuous -infile \"%s\" -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict &> /dev/null",
+                "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && LD_LIBRARY_PATH=$(pwd) pocketsphinx_continuous -infile \"%s\" -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict &> /dev/null",
                 TestUtils.getField(sut, "decodeRecordingCmd"));
         Assert.assertEquals(
                 "pkill -f pocketsphinx_continuous",
@@ -319,10 +319,10 @@ public class SpeechRecognizerTest {
         TestUtils.setField(sut, "killPocketSphinxCmd", "");
         TestUtils.invokeMethod(sut, "initializeCommands");
         Assert.assertEquals(
-                "cd \"" + SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath() + "\" && LD_LIBRARY_PATH=$(pwd) pocketsphinx_continuous -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -mllr \"" + adaptionMatrix.getAbsolutePath() + "\" &> /dev/null",
+                "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && LD_LIBRARY_PATH=$(pwd) pocketsphinx_continuous -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath()) + " &> /dev/null",
                 TestUtils.getField(sut, "runPocketSphinxCmd"));
         Assert.assertEquals(
-                "cd \"" + SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath() + "\" && LD_LIBRARY_PATH=$(pwd) pocketsphinx_continuous -infile \"%s\" -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -mllr \"" + adaptionMatrix.getAbsolutePath() + "\" &> /dev/null",
+                "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && LD_LIBRARY_PATH=$(pwd) pocketsphinx_continuous -infile \"%s\" -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath()) + " &> /dev/null",
                 TestUtils.getField(sut, "decodeRecordingCmd"));
         Assert.assertEquals(
                 "pkill -f pocketsphinx_continuous",
@@ -1099,8 +1099,8 @@ public class SpeechRecognizerTest {
         TestUtils.setField(sut, "decodeRecordingCmd", "");
         sut.setAcousticModelAdaptionMatrix(adaptionMatrix);
         Assert.assertEquals(adaptionMatrix, TestUtils.getField(sut, "adaptionMatrix"));
-        Assert.assertTrue(((String) TestUtils.getField(sut, "runPocketSphinxCmd")).contains("-mllr \"" + adaptionMatrix.getAbsolutePath() + "\""));
-        Assert.assertTrue(((String) TestUtils.getField(sut, "decodeRecordingCmd")).contains("-mllr \"" + adaptionMatrix.getAbsolutePath() + "\""));
+        Assert.assertTrue(((String) TestUtils.getField(sut, "runPocketSphinxCmd")).contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
+        Assert.assertTrue(((String) TestUtils.getField(sut, "decodeRecordingCmd")).contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
         
         //standard Linux
         PowerMockito.when(OperatingSystem.class, "isWindows").thenReturn(false);
@@ -1109,8 +1109,8 @@ public class SpeechRecognizerTest {
         TestUtils.setField(sut, "decodeRecordingCmd", "");
         sut.setAcousticModelAdaptionMatrix(adaptionMatrix);
         Assert.assertEquals(adaptionMatrix, TestUtils.getField(sut, "adaptionMatrix"));
-        Assert.assertTrue(((String) TestUtils.getField(sut, "runPocketSphinxCmd")).contains("-mllr \"" + adaptionMatrix.getAbsolutePath() + "\""));
-        Assert.assertTrue(((String) TestUtils.getField(sut, "decodeRecordingCmd")).contains("-mllr \"" + adaptionMatrix.getAbsolutePath() + "\""));
+        Assert.assertTrue(((String) TestUtils.getField(sut, "runPocketSphinxCmd")).contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
+        Assert.assertTrue(((String) TestUtils.getField(sut, "decodeRecordingCmd")).contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
         
         //does not exist
         File missingAdaptionMatrix = new File("nonexistant_mllr_matrix");
@@ -1120,8 +1120,8 @@ public class SpeechRecognizerTest {
         TestUtils.setField(sut, "decodeRecordingCmd", "");
         sut.setAcousticModelAdaptionMatrix(missingAdaptionMatrix);
         Assert.assertEquals(missingAdaptionMatrix, TestUtils.getField(sut, "adaptionMatrix"));
-        Assert.assertFalse(((String) TestUtils.getField(sut, "runPocketSphinxCmd")).contains("-mllr \"" + adaptionMatrix.getAbsolutePath() + "\""));
-        Assert.assertFalse(((String) TestUtils.getField(sut, "decodeRecordingCmd")).contains("-mllr \"" + adaptionMatrix.getAbsolutePath() + "\""));
+        Assert.assertFalse(((String) TestUtils.getField(sut, "runPocketSphinxCmd")).contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
+        Assert.assertFalse(((String) TestUtils.getField(sut, "decodeRecordingCmd")).contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
         
         //invalid
         TestUtils.setField(sut, "adaptionMatrix", null);
@@ -1129,8 +1129,8 @@ public class SpeechRecognizerTest {
         TestUtils.setField(sut, "decodeRecordingCmd", "");
         sut.setAcousticModelAdaptionMatrix(null);
         Assert.assertNull(TestUtils.getField(sut, "adaptionMatrix"));
-        Assert.assertFalse(((String) TestUtils.getField(sut, "runPocketSphinxCmd")).contains("-mllr \"" + adaptionMatrix.getAbsolutePath() + "\""));
-        Assert.assertFalse(((String) TestUtils.getField(sut, "decodeRecordingCmd")).contains("-mllr \"" + adaptionMatrix.getAbsolutePath() + "\""));
+        Assert.assertFalse(((String) TestUtils.getField(sut, "runPocketSphinxCmd")).contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
+        Assert.assertFalse(((String) TestUtils.getField(sut, "decodeRecordingCmd")).contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
     }
     
     /**
