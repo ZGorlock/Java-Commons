@@ -7,26 +7,35 @@
 
 package commons.math.component.matrix;
 
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+
 import commons.math.component.BaseComponent;
 import commons.math.component.Component;
 import commons.math.component.ComponentInterface;
 import commons.math.component.handler.error.ComponentErrorHandlerInterface;
 import commons.math.component.handler.error.ComponentErrorHandlerProvider;
 import commons.math.component.handler.math.DoubleComponentMathHandler;
-import commons.math.component.vector.*;
+import commons.math.component.vector.BigVector;
+import commons.math.component.vector.IntVector;
+import commons.math.component.vector.Vector;
+import commons.math.component.vector.Vector3;
+import commons.math.component.vector.VectorInterface;
 import commons.string.StringUtility;
 import commons.test.TestUtils;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * JUnit test of Matrix3.

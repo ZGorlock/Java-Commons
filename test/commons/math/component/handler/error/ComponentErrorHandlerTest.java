@@ -7,17 +7,32 @@
 
 package commons.math.component.handler.error;
 
+import java.math.BigDecimal;
+
 import commons.math.component.ComponentInterface;
-import commons.math.component.matrix.*;
-import commons.math.component.vector.*;
-import org.junit.*;
+import commons.math.component.matrix.BigMatrix;
+import commons.math.component.matrix.IntMatrix;
+import commons.math.component.matrix.Matrix;
+import commons.math.component.matrix.Matrix2;
+import commons.math.component.matrix.Matrix3;
+import commons.math.component.matrix.RawMatrix;
+import commons.math.component.vector.BigVector;
+import commons.math.component.vector.IntVector;
+import commons.math.component.vector.RawVector;
+import commons.math.component.vector.Vector;
+import commons.math.component.vector.Vector3;
+import commons.math.component.vector.Vector4;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
 
 /**
  * JUnit test of ComponentErrorHandler.

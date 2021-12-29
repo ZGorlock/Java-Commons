@@ -7,25 +7,46 @@
 
 package commons.math.component;
 
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import commons.math.component.handler.error.ComponentErrorHandlerInterface;
 import commons.math.component.handler.error.ComponentErrorHandlerProvider;
-import commons.math.component.handler.math.*;
-import commons.math.component.matrix.*;
-import commons.math.component.vector.*;
+import commons.math.component.handler.math.BigComponentMathHandler;
+import commons.math.component.handler.math.ComponentMathHandlerInterface;
+import commons.math.component.handler.math.DoubleComponentMathHandler;
+import commons.math.component.handler.math.IntComponentMathHandler;
+import commons.math.component.handler.math.RawComponentMathHandler;
+import commons.math.component.matrix.BigMatrix;
+import commons.math.component.matrix.IntMatrix;
+import commons.math.component.matrix.Matrix;
+import commons.math.component.matrix.Matrix2;
+import commons.math.component.matrix.Matrix3;
+import commons.math.component.matrix.Matrix4;
+import commons.math.component.matrix.RawMatrix;
+import commons.math.component.vector.BigVector;
+import commons.math.component.vector.IntVector;
+import commons.math.component.vector.RawVector;
+import commons.math.component.vector.Vector;
+import commons.math.component.vector.Vector2;
+import commons.math.component.vector.Vector3;
+import commons.math.component.vector.Vector4;
 import commons.test.TestUtils;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * JUnit test of BaseComponent.

@@ -7,17 +7,22 @@
 
 package commons.math.component;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+
 import commons.math.component.vector.BigVector;
 import commons.test.TestUtils;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
 
 /**
  * JUnit test of BigComponentInterface.

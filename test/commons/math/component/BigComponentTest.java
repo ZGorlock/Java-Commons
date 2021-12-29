@@ -7,22 +7,27 @@
 
 package commons.math.component;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+
 import commons.math.BigMathUtility;
 import commons.math.MathUtility;
 import commons.math.component.handler.math.BigComponentMathHandler;
 import commons.math.component.matrix.BigMatrix;
 import commons.math.component.vector.BigVector;
 import commons.test.TestUtils;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
 
 /**
  * JUnit test of BigComponent.

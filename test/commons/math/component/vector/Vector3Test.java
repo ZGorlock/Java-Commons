@@ -7,6 +7,11 @@
 
 package commons.math.component.vector;
 
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.List;
+
 import commons.math.component.BaseComponent;
 import commons.math.component.Component;
 import commons.math.component.ComponentInterface;
@@ -17,17 +22,17 @@ import commons.math.component.matrix.BigMatrix;
 import commons.math.component.matrix.Matrix;
 import commons.math.component.matrix.RawMatrix;
 import commons.test.TestUtils;
-import org.junit.*;
+import org.junit.After;
+import org.junit.AfterClass;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.List;
 
 /**
  * JUnit test of Vector3.
