@@ -101,6 +101,7 @@ public class AudioUtilityTest {
      * @throws Exception When there is an exception.
      * @see AudioUtility#playMp3(File)
      */
+    @SuppressWarnings("EmptyMethod")
     @Test
     public void testPlayMp3() throws Exception {
         //TODO

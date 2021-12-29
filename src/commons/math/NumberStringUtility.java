@@ -336,7 +336,7 @@ public final class NumberStringUtility {
      * @return The phrase equivalent of the number string.
      * @throws NumberFormatException When the string does not represent a number.
      */
-    @SuppressWarnings("DuplicateExpressions")
+    @SuppressWarnings({"DuplicateExpressions", "RedundantSuppression"})
     public static String numberStringToNumberPhrase(String numberString, FractionMode fractionMode) throws NumberFormatException {
         final String originalNumberString = numberString;
         numberString = cleanNumberString(numberString);
@@ -1001,6 +1001,7 @@ public final class NumberStringUtility {
      * @param numberString The number string.
      * @return The cleaned number string.
      */
+    @SuppressWarnings("ConditionCoveredByFurtherCondition")
     public static String cleanNumberString(String numberString) {
         numberString = StringUtility.removeWhiteSpace(numberString.toUpperCase());
         

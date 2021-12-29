@@ -510,10 +510,8 @@ public class SpeechSynthesizer {
     private static void configureLogging() {
         if (loggingConfigured.compareAndSet(false, true)) {
             Properties props = new Properties();
-            try {
-                InputStream configStream = LocalMaryInterface.class.getResourceAsStream("util/log4j.properties");
+            try (InputStream configStream = LocalMaryInterface.class.getResourceAsStream("util/log4j.properties")) {
                 props.load(configStream);
-                configStream.close();
             } catch (IOException ignored) {
             }
             String workingDirectory = Paths.get(".").toAbsolutePath().normalize().toString().replace("\\", "/") + '/';

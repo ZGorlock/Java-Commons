@@ -343,7 +343,6 @@ public class SpeechRecognizer {
                 if (pocketsphinx != null) {
                     logger.debug("Continuous speech recognition started");
                     speechStream = new BufferedReader(new InputStreamReader(pocketsphinx.getInputStream()));
-                    success = true;
                 } else {
                     success = false;
                 }

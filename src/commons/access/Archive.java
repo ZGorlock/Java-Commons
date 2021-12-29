@@ -1257,7 +1257,7 @@ public final class Archive {
          * @throws Exception When there is an error.
          * @see #setEntryProperties(ZipEntry, File, CompressionMethod)
          */
-        protected static ZipEntry createEntry(String resource, File file, CompressionMethod method) throws Exception {
+        private static ZipEntry createEntry(String resource, File file, CompressionMethod method) throws Exception {
             ZipEntry entry = new ZipEntry(resource);
             setEntryProperties(entry, file, method);
             return entry;
@@ -1272,7 +1272,7 @@ public final class Archive {
          * @throws Exception When there is an error.
          * @see #createEntry(String, File, CompressionMethod)
          */
-        protected static ZipEntry createEntry(File file, CompressionMethod method) throws Exception {
+        private static ZipEntry createEntry(File file, CompressionMethod method) throws Exception {
             return createEntry(file.getName(), file, method);
         }
         
@@ -1571,7 +1571,7 @@ public final class Archive {
          * @throws Exception When there is an error.
          * @see #setEntryProperties(ZipEntry, File, CompressionMethod)
          */
-        protected static JarEntry createEntry(String resource, File file, CompressionMethod method) throws Exception {
+        private static JarEntry createEntry(String resource, File file, CompressionMethod method) throws Exception {
             JarEntry entry = new JarEntry(resource);
             setEntryProperties(entry, file, method);
             return entry;
@@ -1586,7 +1586,7 @@ public final class Archive {
          * @throws Exception When there is an error.
          * @see #createEntry(String, File, CompressionMethod)
          */
-        protected static JarEntry createEntry(File file, CompressionMethod method) throws Exception {
+        private static JarEntry createEntry(File file, CompressionMethod method) throws Exception {
             return createEntry(file.getName(), file, method);
         }
         

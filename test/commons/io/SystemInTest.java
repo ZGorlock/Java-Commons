@@ -136,6 +136,7 @@ public class SystemInTest {
         TestUtils.setField(sut, "owner", "");
         TestUtils.setField(sut, "defaultOwner", "");
         SystemIn.defaultOwn(SystemInTest.class);
+        Assert.assertTrue(interrupt.getAndSet(false));
     }
     
     /**

@@ -294,7 +294,6 @@ public class ProgressBar {
      * @see #getSpeedString()
      * @see #getTimeRemainingString()
      */
-    @SuppressWarnings("HardcodedLineSeparator")
     public String get() {
         if (update.get()) {
             StringBuilder progressBarBuilder = new StringBuilder();

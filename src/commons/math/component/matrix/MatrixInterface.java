@@ -293,7 +293,7 @@ public interface MatrixInterface<T extends Number, I extends MatrixInterface<?, 
     default I inverse() throws ArithmeticException {
         T determinant = determinant();
         if (getHandler().isZero(determinant)) {
-            throw new ArithmeticException("The " + getName() + ": " + toString() + " cannot be inverted");
+            throw new ArithmeticException("The " + getName() + ": " + this + " cannot be inverted");
         }
         return (I) adjoint().scale(getHandler().reciprocal(determinant()));
     }

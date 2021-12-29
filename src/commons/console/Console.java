@@ -198,7 +198,7 @@ public final class Console {
             }
             codeBuilder.append(codeEntry);
         }
-        return (codeBuilder.length() > 0) ? ("\u001B[" + codeBuilder.toString() + 'm') : "";
+        return (codeBuilder.length() > 0) ? ("\u001B[" + codeBuilder + 'm') : "";
     }
     
     /**

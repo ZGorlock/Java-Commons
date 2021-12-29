@@ -866,7 +866,7 @@ public class SpeechSynthesizerTest {
         startTime = System.currentTimeMillis();
         SpeechSynthesizer.waitUntilSpeaking();
         duration = System.currentTimeMillis() - startTime;
-        Assert.assertTrue(BoundUtility.inBounds(duration, (500 * 0.8), (500 * 1.25)));
+        Assert.assertTrue(BoundUtility.inBounds(duration, (500 * 0.8), (500 * 1.5)));
         
         //quiet mode
         
@@ -909,7 +909,7 @@ public class SpeechSynthesizerTest {
         startTime = System.currentTimeMillis();
         SpeechSynthesizer.waitUntilDoneSpeaking();
         duration = System.currentTimeMillis() - startTime;
-        Assert.assertTrue(BoundUtility.inBounds(duration, (500 * 0.75), (500 * 1.25)));
+        Assert.assertTrue(BoundUtility.inBounds(duration, (500 * 0.75), (500 * 1.5)));
         
         //quiet mode
         

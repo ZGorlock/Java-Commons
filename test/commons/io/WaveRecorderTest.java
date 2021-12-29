@@ -102,6 +102,7 @@ public class WaveRecorderTest {
         TestUtils.setField(sut, "owner", "");
         TestUtils.setField(sut, "defaultOwner", "");
         WaveRecorder.defaultOwn(WaveRecorderTest.class);
+        Assert.assertTrue(interrupt.getAndSet(false));
     }
     
     /**

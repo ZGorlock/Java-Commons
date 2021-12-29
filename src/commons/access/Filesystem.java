@@ -2212,7 +2212,7 @@ public final class Filesystem {
      * @return The path length of a temporary file.
      */
     public static int getTemporaryFilePathLength(String extension) {
-        String tmpDirPath = generatePath(Project.TMP_DIR.getName(), UUID.randomUUID().toString() +
+        String tmpDirPath = generatePath(Project.TMP_DIR.getName(), UUID.randomUUID() +
                 ((extension.isEmpty() || extension.startsWith(".")) ? "" : ".") + extension);
         return tmpDirPath.length();
     }

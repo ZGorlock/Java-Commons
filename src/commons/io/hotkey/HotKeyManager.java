@@ -340,7 +340,7 @@ public class HotKeyManager {
          *
          * @throws NativeHookException When there is an error with the native hook.
          */
-        protected static void registerNativeHook() throws NativeHookException {
+        static void registerNativeHook() throws NativeHookException {
             GlobalScreen.registerNativeHook();
         }
         
@@ -349,7 +349,7 @@ public class HotKeyManager {
          *
          * @throws NativeHookException When there is an error with the native hook.
          */
-        protected static void unregisterNativeHook() throws NativeHookException {
+        static void unregisterNativeHook() throws NativeHookException {
             GlobalScreen.unregisterNativeHook();
         }
         
@@ -358,7 +358,7 @@ public class HotKeyManager {
          *
          * @return Whether the native hook is registered or not.
          */
-        protected static boolean isNativeHookRegistered() {
+        static boolean isNativeHookRegistered() {
             return GlobalScreen.isNativeHookRegistered();
         }
         
@@ -367,7 +367,7 @@ public class HotKeyManager {
          *
          * @param keyListener The native key listener.
          */
-        protected static void addNativeKeyListener(NativeKeyListener keyListener) {
+        static void addNativeKeyListener(NativeKeyListener keyListener) {
             GlobalScreen.addNativeKeyListener(keyListener);
         }
         
@@ -376,7 +376,7 @@ public class HotKeyManager {
          *
          * @param keyListener The native key listener.
          */
-        protected static void removeNativeKeyListener(NativeKeyListener keyListener) {
+        static void removeNativeKeyListener(NativeKeyListener keyListener) {
             GlobalScreen.removeNativeKeyListener(keyListener);
         }
         

@@ -83,7 +83,7 @@ public class SingletonInputHandlerTest {
     @SuppressWarnings("EmptyMethod")
     @Before
     public void setup() throws Exception {
-        sut = new InputHandler();
+        sut = new TestInputHandler();
         TestUtils.setField(sut, "interrupt", (Runnable) () -> interrupt.set(true));
     }
     
@@ -292,7 +292,7 @@ public class SingletonInputHandlerTest {
     /**
      * An implementation of the system under test.
      */
-    private static class InputHandler extends SingletonInputHandler {
+    private static class TestInputHandler extends SingletonInputHandler {
         
     }
     
