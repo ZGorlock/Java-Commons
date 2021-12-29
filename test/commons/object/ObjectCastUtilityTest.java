@@ -1091,7 +1091,7 @@ public class ObjectCastUtilityTest {
         arrayList1 = ObjectCastUtility.toCollectionType(testCollection1, ArrayList.class, Boolean.class);
         Assert.assertNotNull(arrayList1);
         Assert.assertEquals(ArrayList.class, arrayList1.getClass());
-        Assert.assertTrue(testCollection1 == arrayList1);
+        Assert.assertSame(testCollection1, arrayList1);
         Assert.assertEquals(3, arrayList1.size());
         Assert.assertFalse(arrayList1.get(0));
         Assert.assertTrue(arrayList1.get(1));
@@ -1099,7 +1099,7 @@ public class ObjectCastUtilityTest {
         arrayList2 = ObjectCastUtility.toCollectionType(testCollection2, ArrayList.class, Integer.class);
         Assert.assertNotNull(arrayList2);
         Assert.assertEquals(ArrayList.class, arrayList2.getClass());
-        Assert.assertFalse(testCollection2 == arrayList2);
+        Assert.assertNotSame(testCollection2, arrayList2);
         Assert.assertEquals(3, arrayList2.size());
         Assert.assertEquals(1, arrayList2.get(0).intValue());
         Assert.assertEquals(4, arrayList2.get(1).intValue());
@@ -1107,7 +1107,7 @@ public class ObjectCastUtilityTest {
         arrayList3 = ObjectCastUtility.toCollectionType(testCollection3, ArrayList.class, String.class);
         Assert.assertNotNull(arrayList3);
         Assert.assertEquals(ArrayList.class, arrayList3.getClass());
-        Assert.assertFalse(testCollection3 == arrayList3);
+        Assert.assertNotSame(testCollection3, arrayList3);
         Assert.assertEquals(4, arrayList3.size());
         Assert.assertTrue(arrayList3.contains("test"));
         Assert.assertTrue(arrayList3.contains("value"));
@@ -1121,7 +1121,7 @@ public class ObjectCastUtilityTest {
         linkedList1 = ObjectCastUtility.toCollectionType(testCollection1, LinkedList.class, Boolean.class);
         Assert.assertNotNull(linkedList1);
         Assert.assertEquals(LinkedList.class, linkedList1.getClass());
-        Assert.assertFalse(testCollection1 == linkedList1);
+        Assert.assertNotSame(testCollection1, linkedList1);
         Assert.assertEquals(3, linkedList1.size());
         Assert.assertFalse(linkedList1.get(0));
         Assert.assertTrue(linkedList1.get(1));
@@ -1129,7 +1129,7 @@ public class ObjectCastUtilityTest {
         linkedList2 = ObjectCastUtility.toCollectionType(testCollection2, LinkedList.class, Integer.class);
         Assert.assertNotNull(linkedList2);
         Assert.assertEquals(LinkedList.class, linkedList2.getClass());
-        Assert.assertFalse(testCollection2 == linkedList2);
+        Assert.assertNotSame(testCollection2, linkedList2);
         Assert.assertEquals(3, linkedList2.size());
         Assert.assertEquals(1, linkedList2.get(0).intValue());
         Assert.assertEquals(4, linkedList2.get(1).intValue());
@@ -1137,7 +1137,7 @@ public class ObjectCastUtilityTest {
         linkedList3 = ObjectCastUtility.toCollectionType(testCollection3, LinkedList.class, String.class);
         Assert.assertNotNull(linkedList3);
         Assert.assertEquals(LinkedList.class, linkedList3.getClass());
-        Assert.assertFalse(testCollection3 == linkedList3);
+        Assert.assertNotSame(testCollection3, linkedList3);
         Assert.assertEquals(4, linkedList3.size());
         Assert.assertTrue(linkedList3.contains("test"));
         Assert.assertTrue(linkedList3.contains("value"));
@@ -1151,7 +1151,7 @@ public class ObjectCastUtilityTest {
         vector1 = ObjectCastUtility.toCollectionType(testCollection1, Vector.class, Boolean.class);
         Assert.assertNotNull(vector1);
         Assert.assertEquals(Vector.class, vector1.getClass());
-        Assert.assertFalse(testCollection1 == vector1);
+        Assert.assertNotSame(testCollection1, vector1);
         Assert.assertEquals(3, vector1.size());
         Assert.assertFalse(vector1.get(0));
         Assert.assertTrue(vector1.get(1));
@@ -1159,7 +1159,7 @@ public class ObjectCastUtilityTest {
         vector2 = ObjectCastUtility.toCollectionType(testCollection2, Vector.class, Integer.class);
         Assert.assertNotNull(vector2);
         Assert.assertEquals(Vector.class, vector2.getClass());
-        Assert.assertFalse(testCollection2 == vector2);
+        Assert.assertNotSame(testCollection2, vector2);
         Assert.assertEquals(3, vector2.size());
         Assert.assertEquals(1, vector2.get(0).intValue());
         Assert.assertEquals(4, vector2.get(1).intValue());
@@ -1167,7 +1167,7 @@ public class ObjectCastUtilityTest {
         vector3 = ObjectCastUtility.toCollectionType(testCollection3, Vector.class, String.class);
         Assert.assertNotNull(vector3);
         Assert.assertEquals(Vector.class, vector3.getClass());
-        Assert.assertFalse(testCollection3 == vector3);
+        Assert.assertNotSame(testCollection3, vector3);
         Assert.assertEquals(4, vector3.size());
         Assert.assertTrue(vector3.contains("test"));
         Assert.assertTrue(vector3.contains("value"));
@@ -1181,7 +1181,7 @@ public class ObjectCastUtilityTest {
         priorityQueue1 = ObjectCastUtility.toCollectionType(testCollection1, PriorityQueue.class, Boolean.class);
         Assert.assertNotNull(priorityQueue1);
         Assert.assertEquals(PriorityQueue.class, priorityQueue1.getClass());
-        Assert.assertFalse(testCollection1 == priorityQueue1);
+        Assert.assertNotSame(testCollection1, priorityQueue1);
         Assert.assertEquals(3, priorityQueue1.size());
         Assert.assertFalse(priorityQueue1.poll());
         Assert.assertTrue(priorityQueue1.poll());
@@ -1189,7 +1189,7 @@ public class ObjectCastUtilityTest {
         priorityQueue2 = ObjectCastUtility.toCollectionType(testCollection2, PriorityQueue.class, Integer.class);
         Assert.assertNotNull(priorityQueue2);
         Assert.assertEquals(PriorityQueue.class, priorityQueue2.getClass());
-        Assert.assertTrue(testCollection2 == priorityQueue2);
+        Assert.assertSame(testCollection2, priorityQueue2);
         Assert.assertEquals(3, priorityQueue2.size());
         Assert.assertEquals(1, priorityQueue2.poll().intValue());
         Assert.assertEquals(4, priorityQueue2.poll().intValue());
@@ -1198,7 +1198,7 @@ public class ObjectCastUtilityTest {
         priorityQueue3 = ObjectCastUtility.toCollectionType(testCollection3, PriorityQueue.class, String.class);
         Assert.assertNotNull(priorityQueue3);
         Assert.assertEquals(PriorityQueue.class, priorityQueue3.getClass());
-        Assert.assertFalse(testCollection3 == priorityQueue3);
+        Assert.assertNotSame(testCollection3, priorityQueue3);
         Assert.assertEquals(4, priorityQueue3.size());
         final List<String> priorityQueue3Values = new ArrayList<>(priorityQueue3);
         Assert.assertTrue(priorityQueue3Values.contains("test"));
@@ -1213,7 +1213,7 @@ public class ObjectCastUtilityTest {
         arrayDeque1 = ObjectCastUtility.toCollectionType(testCollection1, ArrayDeque.class, Boolean.class);
         Assert.assertNotNull(arrayDeque1);
         Assert.assertEquals(ArrayDeque.class, arrayDeque1.getClass());
-        Assert.assertFalse(testCollection1 == arrayDeque1);
+        Assert.assertNotSame(testCollection1, arrayDeque1);
         Assert.assertEquals(3, arrayDeque1.size());
         Assert.assertFalse(arrayDeque1.poll());
         Assert.assertTrue(arrayDeque1.poll());
@@ -1221,7 +1221,7 @@ public class ObjectCastUtilityTest {
         arrayDeque2 = ObjectCastUtility.toCollectionType(testCollection2, ArrayDeque.class, Integer.class);
         Assert.assertNotNull(arrayDeque2);
         Assert.assertEquals(ArrayDeque.class, arrayDeque2.getClass());
-        Assert.assertFalse(testCollection2 == arrayDeque2);
+        Assert.assertNotSame(testCollection2, arrayDeque2);
         Assert.assertEquals(3, arrayDeque2.size());
         Assert.assertEquals(1, arrayDeque2.poll().intValue());
         Assert.assertEquals(4, arrayDeque2.poll().intValue());
@@ -1229,7 +1229,7 @@ public class ObjectCastUtilityTest {
         arrayDeque3 = ObjectCastUtility.toCollectionType(testCollection3, ArrayDeque.class, String.class);
         Assert.assertNotNull(arrayDeque3);
         Assert.assertEquals(ArrayDeque.class, arrayDeque3.getClass());
-        Assert.assertFalse(testCollection3 == arrayDeque3);
+        Assert.assertNotSame(testCollection3, arrayDeque3);
         Assert.assertEquals(4, arrayDeque3.size());
         final List<String> arrayDeque3Values = new ArrayList<>(arrayDeque3);
         Assert.assertTrue(arrayDeque3Values.contains("test"));
@@ -1244,14 +1244,14 @@ public class ObjectCastUtilityTest {
         hashSet1 = ObjectCastUtility.toCollectionType(testCollection1, HashSet.class, Boolean.class);
         Assert.assertNotNull(hashSet1);
         Assert.assertEquals(HashSet.class, hashSet1.getClass());
-        Assert.assertFalse(testCollection1 == hashSet1);
+        Assert.assertNotSame(testCollection1, hashSet1);
         Assert.assertEquals(2, hashSet1.size());
         Assert.assertTrue(hashSet1.contains(false));
         Assert.assertTrue(hashSet1.contains(true));
         hashSet2 = ObjectCastUtility.toCollectionType(testCollection2, HashSet.class, Integer.class);
         Assert.assertNotNull(hashSet2);
         Assert.assertEquals(HashSet.class, hashSet2.getClass());
-        Assert.assertFalse(testCollection2 == hashSet2);
+        Assert.assertNotSame(testCollection2, hashSet2);
         Assert.assertEquals(3, hashSet2.size());
         Assert.assertTrue(hashSet2.contains(1));
         Assert.assertTrue(hashSet2.contains(4));
@@ -1259,7 +1259,7 @@ public class ObjectCastUtilityTest {
         hashSet3 = ObjectCastUtility.toCollectionType(testCollection3, HashSet.class, String.class);
         Assert.assertNotNull(hashSet3);
         Assert.assertEquals(HashSet.class, hashSet3.getClass());
-        Assert.assertTrue(testCollection3 == hashSet3);
+        Assert.assertSame(testCollection3, hashSet3);
         Assert.assertEquals(4, hashSet3.size());
         Assert.assertTrue(hashSet3.contains("test"));
         Assert.assertTrue(hashSet3.contains("value"));
@@ -1273,14 +1273,14 @@ public class ObjectCastUtilityTest {
         linkedHashSet1 = ObjectCastUtility.toCollectionType(testCollection1, LinkedHashSet.class, Boolean.class);
         Assert.assertNotNull(linkedHashSet1);
         Assert.assertEquals(LinkedHashSet.class, linkedHashSet1.getClass());
-        Assert.assertFalse(testCollection1 == linkedHashSet1);
+        Assert.assertNotSame(testCollection1, linkedHashSet1);
         Assert.assertEquals(2, linkedHashSet1.size());
         Assert.assertTrue(linkedHashSet1.contains(false));
         Assert.assertTrue(linkedHashSet1.contains(true));
         linkedHashSet2 = ObjectCastUtility.toCollectionType(testCollection2, LinkedHashSet.class, Integer.class);
         Assert.assertNotNull(linkedHashSet2);
         Assert.assertEquals(LinkedHashSet.class, linkedHashSet2.getClass());
-        Assert.assertFalse(testCollection2 == linkedHashSet2);
+        Assert.assertNotSame(testCollection2, linkedHashSet2);
         Assert.assertEquals(3, linkedHashSet2.size());
         Assert.assertTrue(linkedHashSet2.contains(1));
         Assert.assertTrue(linkedHashSet2.contains(4));
@@ -1288,7 +1288,7 @@ public class ObjectCastUtilityTest {
         linkedHashSet3 = ObjectCastUtility.toCollectionType(testCollection3, LinkedHashSet.class, String.class);
         Assert.assertNotNull(linkedHashSet3);
         Assert.assertEquals(LinkedHashSet.class, linkedHashSet3.getClass());
-        Assert.assertFalse(testCollection3 == linkedHashSet3);
+        Assert.assertNotSame(testCollection3, linkedHashSet3);
         Assert.assertEquals(4, linkedHashSet3.size());
         Assert.assertTrue(linkedHashSet3.contains("test"));
         Assert.assertTrue(linkedHashSet3.contains("value"));
@@ -1302,14 +1302,14 @@ public class ObjectCastUtilityTest {
         treeSet1 = ObjectCastUtility.toCollectionType(testCollection1, TreeSet.class, Boolean.class);
         Assert.assertNotNull(treeSet1);
         Assert.assertEquals(TreeSet.class, treeSet1.getClass());
-        Assert.assertFalse(testCollection1 == treeSet1);
+        Assert.assertNotSame(testCollection1, treeSet1);
         Assert.assertEquals(2, treeSet1.size());
         Assert.assertTrue(treeSet1.contains(false));
         Assert.assertTrue(treeSet1.contains(true));
         treeSet2 = ObjectCastUtility.toCollectionType(testCollection2, TreeSet.class, Integer.class);
         Assert.assertNotNull(treeSet2);
         Assert.assertEquals(TreeSet.class, treeSet2.getClass());
-        Assert.assertFalse(testCollection2 == treeSet2);
+        Assert.assertNotSame(testCollection2, treeSet2);
         Assert.assertEquals(3, treeSet2.size());
         Assert.assertTrue(treeSet2.contains(1));
         Assert.assertTrue(treeSet2.contains(4));
@@ -1317,7 +1317,7 @@ public class ObjectCastUtilityTest {
         treeSet3 = ObjectCastUtility.toCollectionType(testCollection3, TreeSet.class, String.class);
         Assert.assertNotNull(treeSet3);
         Assert.assertEquals(TreeSet.class, treeSet3.getClass());
-        Assert.assertFalse(testCollection3 == treeSet3);
+        Assert.assertNotSame(testCollection3, treeSet3);
         Assert.assertEquals(4, treeSet3.size());
         Assert.assertTrue(treeSet3.contains("test"));
         Assert.assertTrue(treeSet3.contains("value"));
@@ -1391,7 +1391,7 @@ public class ObjectCastUtilityTest {
         hashMap1 = ObjectCastUtility.toMapType(testMap1, HashMap.class, Integer.class, Boolean.class);
         Assert.assertNotNull(hashMap1);
         Assert.assertEquals(HashMap.class, hashMap1.getClass());
-        Assert.assertTrue(testMap1 == hashMap1);
+        Assert.assertSame(testMap1, hashMap1);
         Assert.assertEquals(3, hashMap1.size());
         Assert.assertFalse(hashMap1.get(1));
         Assert.assertTrue(hashMap1.get(4));
@@ -1399,7 +1399,7 @@ public class ObjectCastUtilityTest {
         hashMap2 = ObjectCastUtility.toMapType(testMap2, HashMap.class, String.class, String.class);
         Assert.assertNotNull(hashMap2);
         Assert.assertEquals(HashMap.class, hashMap2.getClass());
-        Assert.assertFalse(testMap2 == hashMap2);
+        Assert.assertNotSame(testMap2, hashMap2);
         Assert.assertEquals(3, hashMap2.size());
         Assert.assertEquals("test", hashMap2.get("test"));
         Assert.assertEquals("value", hashMap2.get("key"));
@@ -1407,7 +1407,7 @@ public class ObjectCastUtilityTest {
         hashMap3 = ObjectCastUtility.toMapType(testMap3, HashMap.class, Integer.class, String.class);
         Assert.assertNotNull(hashMap3);
         Assert.assertEquals(HashMap.class, hashMap3.getClass());
-        Assert.assertFalse(testMap3 == hashMap3);
+        Assert.assertNotSame(testMap3, hashMap3);
         Assert.assertEquals(4, hashMap3.size());
         Assert.assertEquals("test", hashMap3.get(0));
         Assert.assertEquals("value", hashMap3.get(9));
@@ -1421,7 +1421,7 @@ public class ObjectCastUtilityTest {
         linkedHashMap1 = ObjectCastUtility.toMapType(testMap1, LinkedHashMap.class, Integer.class, Boolean.class);
         Assert.assertNotNull(linkedHashMap1);
         Assert.assertEquals(LinkedHashMap.class, linkedHashMap1.getClass());
-        Assert.assertFalse(testMap1 == linkedHashMap1);
+        Assert.assertNotSame(testMap1, linkedHashMap1);
         Assert.assertEquals(3, linkedHashMap1.size());
         Assert.assertFalse(linkedHashMap1.get(1));
         Assert.assertTrue(linkedHashMap1.get(4));
@@ -1429,7 +1429,7 @@ public class ObjectCastUtilityTest {
         linkedHashMap2 = ObjectCastUtility.toMapType(testMap2, LinkedHashMap.class, String.class, String.class);
         Assert.assertNotNull(linkedHashMap2);
         Assert.assertEquals(LinkedHashMap.class, linkedHashMap2.getClass());
-        Assert.assertTrue(testMap2 == linkedHashMap2);
+        Assert.assertSame(testMap2, linkedHashMap2);
         Assert.assertEquals(3, linkedHashMap2.size());
         Assert.assertEquals("test", linkedHashMap2.get("test"));
         Assert.assertEquals("value", linkedHashMap2.get("key"));
@@ -1437,7 +1437,7 @@ public class ObjectCastUtilityTest {
         linkedHashMap3 = ObjectCastUtility.toMapType(testMap3, LinkedHashMap.class, Integer.class, String.class);
         Assert.assertNotNull(linkedHashMap3);
         Assert.assertEquals(LinkedHashMap.class, linkedHashMap3.getClass());
-        Assert.assertFalse(testMap3 == linkedHashMap3);
+        Assert.assertNotSame(testMap3, linkedHashMap3);
         Assert.assertEquals(4, linkedHashMap3.size());
         Assert.assertEquals("test", linkedHashMap3.get(0));
         Assert.assertEquals("value", linkedHashMap3.get(9));
@@ -1451,7 +1451,7 @@ public class ObjectCastUtilityTest {
         treeMap1 = ObjectCastUtility.toMapType(testMap1, TreeMap.class, Integer.class, Boolean.class);
         Assert.assertNotNull(treeMap1);
         Assert.assertEquals(TreeMap.class, treeMap1.getClass());
-        Assert.assertFalse(testMap1 == treeMap1);
+        Assert.assertNotSame(testMap1, treeMap1);
         Assert.assertEquals(3, treeMap1.size());
         Assert.assertFalse(treeMap1.get(1));
         Assert.assertTrue(treeMap1.get(4));
@@ -1459,7 +1459,7 @@ public class ObjectCastUtilityTest {
         treeMap2 = ObjectCastUtility.toMapType(testMap2, TreeMap.class, String.class, String.class);
         Assert.assertNotNull(treeMap2);
         Assert.assertEquals(TreeMap.class, treeMap2.getClass());
-        Assert.assertFalse(testMap2 == treeMap2);
+        Assert.assertNotSame(testMap2, treeMap2);
         Assert.assertEquals(3, treeMap2.size());
         Assert.assertEquals("test", treeMap2.get("test"));
         Assert.assertEquals("value", treeMap2.get("key"));
@@ -1467,7 +1467,7 @@ public class ObjectCastUtilityTest {
         treeMap3 = ObjectCastUtility.toMapType(testMap3, TreeMap.class, Integer.class, String.class);
         Assert.assertNotNull(treeMap3);
         Assert.assertEquals(TreeMap.class, treeMap3.getClass());
-        Assert.assertTrue(testMap3 == treeMap3);
+        Assert.assertSame(testMap3, treeMap3);
         Assert.assertEquals(4, treeMap3.size());
         Assert.assertEquals("test", treeMap3.get(0));
         Assert.assertEquals("value", treeMap3.get(9));
