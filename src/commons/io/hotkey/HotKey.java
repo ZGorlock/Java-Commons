@@ -200,7 +200,6 @@ public class HotKey {
                 (modifiers.get(ModifierKey.SHIFT) == other.modifiers.get(ModifierKey.SHIFT)) &&
                 (modifiers.get(ModifierKey.ALT) == other.modifiers.get(ModifierKey.ALT)) &&
                 (modifiers.get(ModifierKey.META) == other.modifiers.get(ModifierKey.META));
-        
     }
     
     /**

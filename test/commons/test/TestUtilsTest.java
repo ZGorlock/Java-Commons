@@ -979,6 +979,7 @@ public class TestUtilsTest {
             PUBLIC_VALUE_1,
             PUBLIC_VALUE_2,
             PUBLIC_VALUE_3
+            
         }
         
         /**
@@ -991,6 +992,7 @@ public class TestUtilsTest {
             PRIVATE_VALUE_1,
             PRIVATE_VALUE_2,
             PRIVATE_VALUE_3
+            
         }
         
         //Fields

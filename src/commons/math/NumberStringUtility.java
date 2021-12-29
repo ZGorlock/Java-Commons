@@ -64,6 +64,7 @@ public final class NumberStringUtility {
         FRACTIONAL,
         RECIPROCAL,
         MODIFIERS
+        
     }
     
     /**
@@ -76,6 +77,7 @@ public final class NumberStringUtility {
         SPECIAL,
         SMALL,
         STANDARD
+        
     }
     
     /**
@@ -92,6 +94,7 @@ public final class NumberStringUtility {
         O_HUNDRED,
         EXPONENTIATED,
         PLURAL
+        
     }
     
     /**
@@ -104,6 +107,7 @@ public final class NumberStringUtility {
         DEFAULT,
         SIMPLE,
         FANCY
+        
     }
     
     
@@ -140,11 +144,11 @@ public final class NumberStringUtility {
      * A list of valid tokens that can appear in a latin power name.
      */
     private static final List<String> VALID_LATIN_POWER_NAME_TOKENS = Stream.of(
-            IntStream.rangeClosed(NumberNameSet.LATIN_SPECIAL.ordinal(), NumberNameSet.LATIN_THOUSANDS_SEPARATORS.ordinal()).boxed()
-                    .map(e -> NUMBER_NAMES[e]).flatMap(Arrays::stream).filter(e -> !e.isEmpty())
-                    .sorted((o1, o2) -> Integer.compare(o2.length(), o1.length())).toArray(),
-            Arrays.stream(NUMBER_NAMES[NumberNameSet.SUFFIXES.ordinal()])
-                    .sorted((o1, o2) -> Integer.compare(o2.length(), o1.length())).toArray())
+                    IntStream.rangeClosed(NumberNameSet.LATIN_SPECIAL.ordinal(), NumberNameSet.LATIN_THOUSANDS_SEPARATORS.ordinal()).boxed()
+                            .map(e -> NUMBER_NAMES[e]).flatMap(Arrays::stream).filter(e -> !e.isEmpty())
+                            .sorted((o1, o2) -> Integer.compare(o2.length(), o1.length())).toArray(),
+                    Arrays.stream(NUMBER_NAMES[NumberNameSet.SUFFIXES.ordinal()])
+                            .sorted((o1, o2) -> Integer.compare(o2.length(), o1.length())).toArray())
             .flatMap(Arrays::stream).map(String.class::cast).collect(Collectors.toList());
     
     /**
@@ -200,12 +204,12 @@ public final class NumberStringUtility {
     /**
      * A regex pattern for validating number phrases.
      */
-    public static final Pattern NUMBER_PHRASE_PATTERN = Pattern.compile("^(?:" +
-            Stream.of(VALID_TOKENS,
+    public static final Pattern NUMBER_PHRASE_PATTERN = Pattern.compile("^(?:" + Stream.of(
+                    VALID_TOKENS,
                     Collections.singletonList("(?:" + NUMBER_PATTERN.pattern() + ")"),
-                    Collections.singletonList("(?:" + EXPONENTIAL_NOTATION_PATTERN.pattern().replaceAll("\\?<[^>]+>", "?:") + ")")
-            ).flatMap(Collection::stream)
-                    .collect(Collectors.joining("|", "(?:", ")")) + "[\\s\\-]?)+$");
+                    Collections.singletonList("(?:" + EXPONENTIAL_NOTATION_PATTERN.pattern().replaceAll("\\?<[^>]+>", "?:") + ")"))
+            .flatMap(Collection::stream)
+            .collect(Collectors.joining("|", "(?:", ")")) + "[\\s\\-]?)+$");
     
     
     //Functions

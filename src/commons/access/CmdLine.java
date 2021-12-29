@@ -53,8 +53,8 @@ public final class CmdLine {
             if (!killProcess(key)) {
                 Stream.of(Collections.singletonList(key.toHandle()), key.children().collect(Collectors.toList()))
                         .flatMap(List::stream).filter(ProcessHandle::isAlive).forEach(e ->
-                        logger.error("{} with pid: {} could not be terminated: {}", ((e.pid() == key.pid()) ? "Process" : "Subprocess"),
-                                e.pid(), (((e.pid() == key.pid()) ? "" : "Subprocess of: ") + value)));
+                                logger.error("{} with pid: {} could not be terminated: {}", ((e.pid() == key.pid()) ? "Process" : "Subprocess"),
+                                        e.pid(), (((e.pid() == key.pid()) ? "" : "Subprocess of: ") + value)));
                 
             }
         })));
