@@ -1154,11 +1154,24 @@ public final class StringUtility {
     /**
      * Quotes a string.
      *
-     * @param str The string to quote.
+     * @param str          The string to quote.
+     * @param singleQuotes Whether to use single quotes, otherwise double quotes will be used.
      * @return The quoted string.
      */
+    public static String quote(String str, boolean singleQuotes) {
+        final String quote = singleQuotes ? "'" : "\"";
+        return quote + str + quote;
+    }
+    
+    /**
+     * Quotes a string.
+     *
+     * @param str The string to quote.
+     * @return The quoted string.
+     * @see #quote(String, boolean)
+     */
     public static String quote(String str) {
-        return "\"" + str + '"';
+        return quote(str, false);
     }
     
     /**

@@ -1917,7 +1917,7 @@ public class StringUtilityTest {
      */
     @Test
     public void testQuote() throws Exception {
-        //valid
+        //standard
         Assert.assertEquals("\"test\"", StringUtility.quote("test"));
         Assert.assertEquals("\"test 2\"", StringUtility.quote("test 2"));
         Assert.assertEquals("\"something\"", StringUtility.quote("something"));
@@ -1925,6 +1925,24 @@ public class StringUtilityTest {
         Assert.assertEquals("\"C:\\Program Files\\Test\"", StringUtility.quote("C:\\Program Files\\Test"));
         Assert.assertEquals("\"   \"", StringUtility.quote("   "));
         Assert.assertEquals("\"\"", StringUtility.quote(""));
+        
+        //double
+        Assert.assertEquals("\"test\"", StringUtility.quote("test", false));
+        Assert.assertEquals("\"test 2\"", StringUtility.quote("test 2", false));
+        Assert.assertEquals("\"something\"", StringUtility.quote("something", false));
+        Assert.assertEquals("\"something else\"", StringUtility.quote("something else", false));
+        Assert.assertEquals("\"C:\\Program Files\\Test\"", StringUtility.quote("C:\\Program Files\\Test", false));
+        Assert.assertEquals("\"   \"", StringUtility.quote("   ", false));
+        Assert.assertEquals("\"\"", StringUtility.quote("", false));
+        
+        //single
+        Assert.assertEquals("'test'", StringUtility.quote("test", true));
+        Assert.assertEquals("'test 2'", StringUtility.quote("test 2", true));
+        Assert.assertEquals("'something'", StringUtility.quote("something", true));
+        Assert.assertEquals("'something else'", StringUtility.quote("something else", true));
+        Assert.assertEquals("'C:\\Program Files\\Test'", StringUtility.quote("C:\\Program Files\\Test", true));
+        Assert.assertEquals("'   '", StringUtility.quote("   ", true));
+        Assert.assertEquals("''", StringUtility.quote("", true));
     }
     
     /**

@@ -337,7 +337,7 @@ public final class NumberStringUtility {
         final String originalNumberString = numberString;
         numberString = cleanNumberString(numberString);
         if (!numberString.matches(NUMBER_PATTERN.pattern()) && !numberString.matches(EXPONENTIAL_NOTATION_PATTERN.pattern())) {
-            throw new NumberFormatException("The string: '" + originalNumberString + "' does not represent a number");
+            throw new NumberFormatException("The string: " + StringUtility.quote(originalNumberString, true) + " does not represent a number");
         }
         final String cleanedNumberString = numberString;
         
@@ -554,7 +554,7 @@ public final class NumberStringUtility {
     public static String numberStringToExponentialNotationPhrase(String numberString) throws NumberFormatException {
         numberString = cleanNumberString(numberString);
         if (!numberString.matches(EXPONENTIAL_NOTATION_PATTERN.pattern())) {
-            throw new NumberFormatException("The string: '" + numberString + "' does not represent a number in exponential notation");
+            throw new NumberFormatException("The string: " + StringUtility.quote(numberString, true) + " does not represent a number in exponential notation");
         }
         
         String value = StringUtility.lSnip(numberString, numberString.indexOf('E'));
@@ -975,7 +975,7 @@ public final class NumberStringUtility {
             return result.toString();
             
         } catch (NumberFormatException ignored) {
-            throw new NumberFormatException("The string: '" + originalNumberPhrase + "' does not represent a valid number phrase");
+            throw new NumberFormatException("The string: " + StringUtility.quote(originalNumberPhrase) + " does not represent a valid number phrase");
         }
     }
     
@@ -1443,7 +1443,7 @@ public final class NumberStringUtility {
             return (latinPower + 1L) * (isNegative ? -1 : 1);
             
         } catch (NumberFormatException ignored) {
-            throw new NumberFormatException("The string: '" + originalLatinPowerName + "' does not represent a valid latin power name");
+            throw new NumberFormatException("The string: " + StringUtility.quote(originalLatinPowerName, true) + " does not represent a valid latin power name");
         }
     }
     

@@ -533,9 +533,9 @@ public class VideoUtility {
     public static String encodeFramesToVideo(List<File> frames, List<Long> frameDurations, File output) {
         final File concatDemuxer = Filesystem.getTemporaryFile("txt");
         Filesystem.writeStringToFile(concatDemuxer, IntStream.range(0, Math.min(frames.size(), frameDurations.size())).boxed()
-                .map(i -> "file '" + frames.get(i).getAbsolutePath() + "'" + System.lineSeparator() + "duration " + (frameDurations.get(i) / 1000.0))
+                .map(i -> "file " + StringUtility.quote(frames.get(i).getAbsolutePath(), true) + System.lineSeparator() + "duration " + (frameDurations.get(i) / 1000.0))
                 .collect(Collectors.joining(System.lineSeparator())));
-        Filesystem.writeStringToFile(concatDemuxer, System.lineSeparator() + "file '" + frames.get(frames.size() - 1).getAbsolutePath() + "'", true);
+        Filesystem.writeStringToFile(concatDemuxer, System.lineSeparator() + "file " + StringUtility.quote(frames.get(frames.size() - 1).getAbsolutePath(), true), true);
         
         return FFmpeg.ffmpeg("-f concat -safe 0",
                 concatDemuxer,
