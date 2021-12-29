@@ -123,7 +123,7 @@ public final class EquationUtility {
     }
     
     /**
-     * An enumeration representing the order of operations.
+     * An enumeration representing the Order of Operations.
      */
     public enum OrderOfOperations {
         

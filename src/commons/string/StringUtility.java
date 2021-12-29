@@ -72,7 +72,7 @@ public final class StringUtility {
     //Enums
     
     /**
-     * An enumeration of box types for the boxText method.
+     * An enumeration of Box Types for the boxText method.
      */
     public enum BoxType {
         

@@ -35,7 +35,7 @@ public final class DateTimeUtility {
     //Enums
     
     /**
-     * An enumerations of the months in a year.
+     * An enumerations of Months.
      */
     public enum Month {
         
@@ -57,7 +57,7 @@ public final class DateTimeUtility {
     }
     
     /**
-     * An enumeration of the days of the week.
+     * An enumeration of Weekdays.
      */
     public enum Weekday {
         

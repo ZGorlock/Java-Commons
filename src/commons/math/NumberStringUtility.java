@@ -45,7 +45,7 @@ public final class NumberStringUtility {
     //Enums
     
     /**
-     * An enumeration of the sets in the number names token table.
+     * An enumeration of the Sets in the number names token table.
      */
     private enum NumberNameSet {
         
@@ -67,7 +67,7 @@ public final class NumberStringUtility {
     }
     
     /**
-     * An enumeration of the suffixes available in the number names token table.
+     * An enumeration of the Suffixes in the number names token table.
      */
     private enum NumberNameSuffix {
         
@@ -79,7 +79,7 @@ public final class NumberStringUtility {
     }
     
     /**
-     * An enumeration of the modifiers available in the number names token table.
+     * An enumeration of the Modifiers in the number names token table.
      */
     private enum NumberNameModifier {
         
@@ -95,7 +95,7 @@ public final class NumberStringUtility {
     }
     
     /**
-     * An enumeration of the fraction modes available.
+     * An enumeration of the Fraction Modes.
      */
     public enum FractionMode {
         

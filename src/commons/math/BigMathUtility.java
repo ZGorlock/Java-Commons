@@ -31,7 +31,7 @@ public final class BigMathUtility {
     //Enums
     
     /**
-     * An enumeration of precision modes for decimal places for math operations.
+     * An enumeration of Precision Modes for decimal places for math operations.
      */
     public enum PrecisionMode {
         

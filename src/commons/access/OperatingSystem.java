@@ -36,7 +36,7 @@ public final class OperatingSystem {
     //Enums
     
     /**
-     * An enumeration of operating systems.
+     * An enumeration of Operating Systems.
      */
     public enum OS {
         
