@@ -7,22 +7,17 @@
 
 package commons.list;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
 import commons.test.TestUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * JUnit test of ArrayUtility.
@@ -173,42 +168,42 @@ public class ArrayUtilityTest {
         Boolean[] booleanClone = ArrayUtility.clone(booleanArray);
         Assert.assertEquals(booleanArray.length, booleanClone.length);
         Assert.assertArrayEquals(booleanArray, booleanClone);
-        Assert.assertNotEquals(System.identityHashCode(booleanArray), System.identityHashCode(booleanClone));
+        Assert.assertNotSame(booleanArray, booleanClone);
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         Integer[] integerClone = ArrayUtility.clone(integerArray);
         Assert.assertEquals(integerArray.length, integerClone.length);
         Assert.assertArrayEquals(integerArray, integerClone);
-        Assert.assertNotEquals(System.identityHashCode(integerArray), System.identityHashCode(integerClone));
+        Assert.assertNotSame(integerArray, integerClone);
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         Float[] floatClone = ArrayUtility.clone(floatArray);
         Assert.assertEquals(floatArray.length, floatClone.length);
         Assert.assertArrayEquals(floatArray, floatClone);
-        Assert.assertNotEquals(System.identityHashCode(floatArray), System.identityHashCode(floatClone));
+        Assert.assertNotSame(floatArray, floatClone);
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         Double[] doubleClone = ArrayUtility.clone(doubleArray);
         Assert.assertEquals(doubleArray.length, doubleClone.length);
         Assert.assertArrayEquals(doubleArray, doubleClone);
-        Assert.assertNotEquals(System.identityHashCode(doubleArray), System.identityHashCode(doubleClone));
+        Assert.assertNotSame(doubleArray, doubleClone);
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         Long[] longClone = ArrayUtility.clone(longArray);
         Assert.assertEquals(longArray.length, longClone.length);
         Assert.assertArrayEquals(longArray, longClone);
-        Assert.assertNotEquals(System.identityHashCode(longArray), System.identityHashCode(longClone));
+        Assert.assertNotSame(longArray, longClone);
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         Object[] objectClone = ArrayUtility.clone(objectArray);
         Assert.assertEquals(objectArray.length, objectClone.length);
         Assert.assertArrayEquals(objectArray, objectClone);
-        Assert.assertNotEquals(System.identityHashCode(objectArray), System.identityHashCode(objectClone));
+        Assert.assertNotSame(objectArray, objectClone);
         
         //invalid
         //noinspection ResultOfMethodCallIgnored

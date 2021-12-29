@@ -7,23 +7,18 @@
 
 package commons.list;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
 import commons.test.TestUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * JUnit test of ListUtility.
@@ -161,8 +156,7 @@ public class ListUtilityTest {
         List<Boolean> booleanClone = ListUtility.clone(booleanList);
         Assert.assertEquals(booleanList.size(), booleanClone.size());
         Assert.assertArrayEquals(booleanList.toArray(), booleanClone.toArray());
-        Assert.assertEquals(booleanList, booleanClone);
-        Assert.assertNotEquals(System.identityHashCode(booleanList), System.identityHashCode(booleanClone));
+        Assert.assertNotSame(booleanList, booleanClone);
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
@@ -170,8 +164,7 @@ public class ListUtilityTest {
         List<Integer> integerClone = ListUtility.clone(integerList);
         Assert.assertEquals(integerList.size(), integerClone.size());
         Assert.assertArrayEquals(integerList.toArray(), integerClone.toArray());
-        Assert.assertEquals(integerList, integerClone);
-        Assert.assertNotEquals(System.identityHashCode(integerList), System.identityHashCode(integerClone));
+        Assert.assertNotSame(integerList, integerClone);
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
@@ -179,8 +172,7 @@ public class ListUtilityTest {
         List<Float> floatClone = ListUtility.clone(floatList);
         Assert.assertEquals(floatList.size(), floatClone.size());
         Assert.assertArrayEquals(floatList.toArray(), floatClone.toArray());
-        Assert.assertEquals(floatList, floatClone);
-        Assert.assertNotEquals(System.identityHashCode(floatList), System.identityHashCode(floatClone));
+        Assert.assertNotSame(floatList, floatClone);
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
@@ -188,8 +180,7 @@ public class ListUtilityTest {
         List<Double> doubleClone = ListUtility.clone(doubleList);
         Assert.assertEquals(doubleList.size(), doubleClone.size());
         Assert.assertArrayEquals(doubleList.toArray(), doubleClone.toArray());
-        Assert.assertEquals(doubleList, doubleClone);
-        Assert.assertNotEquals(System.identityHashCode(doubleList), System.identityHashCode(doubleClone));
+        Assert.assertNotSame(doubleList, doubleClone);
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
@@ -197,8 +188,7 @@ public class ListUtilityTest {
         List<Long> longClone = ListUtility.clone(longList);
         Assert.assertEquals(longList.size(), longClone.size());
         Assert.assertArrayEquals(longList.toArray(), longClone.toArray());
-        Assert.assertEquals(longList, longClone);
-        Assert.assertNotEquals(System.identityHashCode(longList), System.identityHashCode(longClone));
+        Assert.assertNotSame(longList, longClone);
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
@@ -206,8 +196,7 @@ public class ListUtilityTest {
         List<Object> objectClone = ListUtility.clone(objectList);
         Assert.assertEquals(objectList.size(), objectClone.size());
         Assert.assertArrayEquals(objectList.toArray(), objectClone.toArray());
-        Assert.assertEquals(objectList, objectClone);
-        Assert.assertNotEquals(System.identityHashCode(objectList), System.identityHashCode(objectClone));
+        Assert.assertNotSame(objectList, objectClone);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->

@@ -979,7 +979,7 @@ public final class NumberStringUtility {
             return result.toString();
             
         } catch (NumberFormatException ignored) {
-            throw new NumberFormatException("The string: " + StringUtility.quote(originalNumberPhrase) + " does not represent a valid number phrase");
+            throw new NumberFormatException("The string: " + StringUtility.quote(originalNumberPhrase, true) + " does not represent a valid number phrase");
         }
     }
     

@@ -7,14 +7,6 @@
 
 package commons.math.component.vector;
 
-import java.io.File;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import commons.math.BigMathUtility;
 import commons.math.MathUtility;
 import commons.math.component.BaseComponent;
@@ -27,18 +19,21 @@ import commons.math.component.matrix.IntMatrix;
 import commons.math.component.matrix.Matrix;
 import commons.math.component.matrix.RawMatrix;
 import commons.test.TestUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * JUnit test of BigVector.
@@ -621,14 +616,14 @@ public class BigVectorTest {
         BigVector clone = sut.cloned();
         Assert.assertNotNull(clone);
         Assert.assertArrayEquals(sut.getRawComponents(), clone.getRawComponents());
-        Assert.assertNotEquals(sut.hashCode(), clone.hashCode());
+        Assert.assertNotSame(sut, clone);
         
         //big
         sut = new BigVector(new BigDecimal("8.1798906456468046140621074678418708"), new BigDecimal("6.68987846515405151504957982720704"), new BigDecimal("5.08917984982428719878814854359782987184"), new BigDecimal("1.097084949814687678164861560484198265140"));
         clone = sut.cloned();
         Assert.assertNotNull(clone);
         Assert.assertArrayEquals(sut.getRawComponents(), clone.getRawComponents());
-        Assert.assertNotEquals(sut.hashCode(), clone.hashCode());
+        Assert.assertNotSame(sut, clone);
     }
     
     /**
@@ -644,14 +639,14 @@ public class BigVectorTest {
         BigVector emptyCopy = sut.emptyCopy();
         Assert.assertNotNull(emptyCopy);
         Assert.assertArrayEquals(BigVector.origin(sut.getDimensionality()).getRawComponents(), emptyCopy.getRawComponents());
-        Assert.assertNotEquals(sut.hashCode(), emptyCopy.hashCode());
+        Assert.assertNotSame(sut, emptyCopy);
         
         //big
         sut = new BigVector(new BigDecimal("8.1798906456468046140621074678418708"), new BigDecimal("6.68987846515405151504957982720704"), new BigDecimal("5.08917984982428719878814854359782987184"), new BigDecimal("1.097084949814687678164861560484198265140"));
         emptyCopy = sut.emptyCopy();
         Assert.assertNotNull(emptyCopy);
         Assert.assertArrayEquals(BigVector.origin(sut.getDimensionality()).getRawComponents(), emptyCopy.getRawComponents());
-        Assert.assertNotEquals(sut.hashCode(), emptyCopy.hashCode());
+        Assert.assertNotSame(sut, emptyCopy);
     }
     
     /**
@@ -696,35 +691,35 @@ public class BigVectorTest {
         sut = new BigVector(8.5, -1.944, 2.67, 8, 5.501);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.501"), new BigDecimal("8.0"), new BigDecimal("2.67"), new BigDecimal("-1.944"), new BigDecimal("8.5")}, reversed.getRawComponents());
         
         sut = new BigVector(5.501, 8, 2.67, -1.944, 8.5);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.5"), new BigDecimal("-1.944"), new BigDecimal("2.67"), new BigDecimal("8.0"), new BigDecimal("5.501")}, reversed.getRawComponents());
         
         sut = new BigVector(0, 1, 0, 1);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("1.0"), new BigDecimal("0.0"), new BigDecimal("1.0"), new BigDecimal("0.0")}, reversed.getRawComponents());
         
         sut = new BigVector(5.501);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.501")}, reversed.getRawComponents());
         
         sut = new BigVector();
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {}, reversed.getRawComponents());
         
@@ -733,7 +728,7 @@ public class BigVectorTest {
         sut = new BigVector(new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654"));
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.598779040509846549575492484052654"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("5.50104550454564410654564549828941987897287189798208908")}, reversed.getRawComponents());
     }

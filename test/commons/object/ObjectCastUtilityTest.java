@@ -7,43 +7,23 @@
 
 package commons.object;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Stack;
-import java.util.TreeMap;
-import java.util.TreeSet;
-import java.util.Vector;
-
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.*;
+
 /**
  * JUnit test of ObjectCastUtility.
  *
  * @see ObjectCastUtility
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "UnnecessaryUnboxing"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ObjectCastUtility.class})
 public class ObjectCastUtilityTest {
@@ -117,6 +97,7 @@ public class ObjectCastUtilityTest {
      * @throws Exception When there is an exception.
      * @see ObjectCastUtility#toBoolean(Object)
      */
+    @SuppressWarnings("UnnecessaryUnboxing")
     @Test
     public void testToBoolean() throws Exception {
         //boolean
@@ -552,6 +533,7 @@ public class ObjectCastUtilityTest {
      * @throws Exception When there is an exception.
      * @see ObjectCastUtility#toFloat(Object)
      */
+    @SuppressWarnings("UnnecessaryUnboxing")
     @Test
     public void testToFloat() throws Exception {
         //boolean
@@ -639,6 +621,7 @@ public class ObjectCastUtilityTest {
      * @throws Exception When there is an exception.
      * @see ObjectCastUtility#toDouble(Object)
      */
+    @SuppressWarnings("UnnecessaryUnboxing")
     @Test
     public void testToDouble() throws Exception {
         //boolean

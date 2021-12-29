@@ -7,13 +7,6 @@
 
 package commons.math.component.matrix;
 
-import java.io.File;
-import java.math.BigDecimal;
-import java.math.MathContext;
-import java.math.RoundingMode;
-import java.util.Arrays;
-import java.util.List;
-
 import commons.math.BigMathUtility;
 import commons.math.MathUtility;
 import commons.math.component.BaseComponent;
@@ -27,18 +20,20 @@ import commons.math.component.vector.Vector;
 import commons.math.component.vector.VectorInterface;
 import commons.string.StringUtility;
 import commons.test.TestUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.math.BigDecimal;
+import java.math.MathContext;
+import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * JUnit test of BigMatrix.
@@ -498,14 +493,14 @@ public class BigMatrixTest {
         BigMatrix clone = sut.cloned();
         Assert.assertNotNull(clone);
         Assert.assertArrayEquals(sut.getRawComponents(), clone.getRawComponents());
-        Assert.assertNotEquals(sut.hashCode(), clone.hashCode());
+        Assert.assertNotSame(sut, clone);
         
         //big
         sut = new BigMatrix(new BigDecimal("8.1798906456468046140621074678418708"), new BigDecimal("6.68987846515405151504957982720704"), new BigDecimal("5.08917984982428719878814854359782987184"), new BigDecimal("1.097084949814687678164861560484198265140"));
         clone = sut.cloned();
         Assert.assertNotNull(clone);
         Assert.assertArrayEquals(sut.getRawComponents(), clone.getRawComponents());
-        Assert.assertNotEquals(sut.hashCode(), clone.hashCode());
+        Assert.assertNotSame(sut, clone);
     }
     
     /**
@@ -521,14 +516,14 @@ public class BigMatrixTest {
         BigMatrix emptyCopy = sut.emptyCopy();
         Assert.assertNotNull(emptyCopy);
         Assert.assertArrayEquals(BigMatrix.origin(sut.getDimensionality()).getRawComponents(), emptyCopy.getRawComponents());
-        Assert.assertNotEquals(sut.hashCode(), emptyCopy.hashCode());
+        Assert.assertNotSame(sut, emptyCopy);
         
         //big
         sut = new BigMatrix(new BigDecimal("8.1798906456468046140621074678418708"), new BigDecimal("6.68987846515405151504957982720704"), new BigDecimal("5.08917984982428719878814854359782987184"), new BigDecimal("1.097084949814687678164861560484198265140"));
         emptyCopy = sut.emptyCopy();
         Assert.assertNotNull(emptyCopy);
         Assert.assertArrayEquals(BigMatrix.origin(sut.getDimensionality()).getRawComponents(), emptyCopy.getRawComponents());
-        Assert.assertNotEquals(sut.hashCode(), emptyCopy.hashCode());
+        Assert.assertNotSame(sut, emptyCopy);
     }
     
     /**
@@ -644,35 +639,35 @@ public class BigMatrixTest {
         sut = new BigMatrix(0.884, 2, 1.1, -9.3, 1.61, 8, -0.77, 5.06, 4.4);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("4.4"), new BigDecimal("5.06"), new BigDecimal("-0.77"), new BigDecimal("8.0"), new BigDecimal("1.61"), new BigDecimal("-9.3"), new BigDecimal("1.1"), new BigDecimal("2.0"), new BigDecimal("0.884")}, reversed.getRawComponents());
         
         sut = new BigMatrix(4.4, 5.06, -0.77, 8, 1.61, -9.3, 1.1, 2, 0.884);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2.0"), new BigDecimal("1.1"), new BigDecimal("-9.3"), new BigDecimal("1.61"), new BigDecimal("8.0"), new BigDecimal("-0.77"), new BigDecimal("5.06"), new BigDecimal("4.4")}, reversed.getRawComponents());
         
         sut = new BigMatrix(0, 1, 0, 1);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("1.0"), new BigDecimal("0.0"), new BigDecimal("1.0"), new BigDecimal("0.0")}, reversed.getRawComponents());
         
         sut = new BigMatrix(5.501);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.501")}, reversed.getRawComponents());
         
         sut = new BigMatrix();
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {}, reversed.getRawComponents());
         
@@ -681,7 +676,7 @@ public class BigMatrixTest {
         sut = new BigMatrix(new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"));
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("5.50104550454564410654564549828941987897287189798208908")}, reversed.getRawComponents());
     }

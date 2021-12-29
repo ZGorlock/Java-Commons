@@ -7,12 +7,6 @@
 
 package commons.math.component.vector;
 
-import java.io.File;
-import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import commons.math.component.BaseComponent;
 import commons.math.component.ComponentInterface;
 import commons.math.component.handler.error.ComponentErrorHandlerInterface;
@@ -23,18 +17,19 @@ import commons.math.component.matrix.IntMatrix;
 import commons.math.component.matrix.Matrix;
 import commons.math.component.matrix.RawMatrix;
 import commons.test.TestUtils;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.Mockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.math.BigDecimal;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * JUnit test of IntVector.
@@ -511,7 +506,7 @@ public class IntVectorTest {
         IntVector clone = sut.cloned();
         Assert.assertNotNull(clone);
         Assert.assertArrayEquals(sut.getRawComponents(), clone.getRawComponents());
-        Assert.assertNotEquals(sut.hashCode(), clone.hashCode());
+        Assert.assertNotSame(sut, clone);
     }
     
     /**
@@ -527,7 +522,7 @@ public class IntVectorTest {
         IntVector emptyCopy = sut.emptyCopy();
         Assert.assertNotNull(emptyCopy);
         Assert.assertArrayEquals(IntVector.origin(sut.getDimensionality()).getRawComponents(), emptyCopy.getRawComponents());
-        Assert.assertNotEquals(sut.hashCode(), emptyCopy.hashCode());
+        Assert.assertNotSame(sut, emptyCopy);
     }
     
     /**
@@ -572,35 +567,35 @@ public class IntVectorTest {
         sut = new IntVector(9, -2, 3, 8, 6);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new Integer[] {6, 8, 3, -2, 9}, reversed.getRawComponents());
         
         sut = new IntVector(6, 8, 3, -2, 9);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new Integer[] {9, -2, 3, 8, 6}, reversed.getRawComponents());
         
         sut = new IntVector(0, 1, 0, 1);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new Integer[] {1, 0, 1, 0}, reversed.getRawComponents());
         
         sut = new IntVector(new int[] {6});
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new Integer[] {6}, reversed.getRawComponents());
         
         sut = new IntVector();
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
-        Assert.assertNotEquals(sut.hashCode(), reversed.hashCode());
+        Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
         Assert.assertArrayEquals(new Integer[] {}, reversed.getRawComponents());
     }

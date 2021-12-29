@@ -769,7 +769,7 @@ public class ImageUtilityTest {
         });
         clipboardImage = ImageUtility.copyImageFromClipboard();
         Assert.assertNotNull(clipboardImage);
-        Assert.assertEquals(image.hashCode(), clipboardImage.hashCode());
+        Assert.assertSame(image, clipboardImage);
         
         image = ImageUtility.loadImage(new File(testResources, "test.gif"));
         transferableImage.set(image);
@@ -777,7 +777,7 @@ public class ImageUtilityTest {
         });
         clipboardImage = ImageUtility.copyImageFromClipboard();
         Assert.assertNotNull(clipboardImage);
-        Assert.assertEquals(image.hashCode(), clipboardImage.hashCode());
+        Assert.assertSame(image, clipboardImage);
         
         image = ImageUtility.loadImage(new File(testResources, "test.jpg"));
         transferableImage.set(image);
@@ -785,7 +785,7 @@ public class ImageUtilityTest {
         });
         clipboardImage = ImageUtility.copyImageFromClipboard();
         Assert.assertNotNull(clipboardImage);
-        Assert.assertEquals(image.hashCode(), clipboardImage.hashCode());
+        Assert.assertSame(image, clipboardImage);
         
         image = ImageUtility.loadImage(new File(testResources, "test.png"));
         transferableImage.set(image);
@@ -793,7 +793,7 @@ public class ImageUtilityTest {
         });
         clipboardImage = ImageUtility.copyImageFromClipboard();
         Assert.assertNotNull(clipboardImage);
-        Assert.assertEquals(image.hashCode(), clipboardImage.hashCode());
+        Assert.assertSame(image, clipboardImage);
         
         //invalid
         
@@ -829,7 +829,7 @@ public class ImageUtilityTest {
         Assert.assertEquals(DataFlavor.imageFlavor, transferable.getTransferDataFlavors()[0]);
         clipboardImage = (BufferedImage) transferable.getTransferData(DataFlavor.imageFlavor);
         Assert.assertNotNull(clipboardImage);
-        Assert.assertEquals(image.hashCode(), clipboardImage.hashCode());
+        Assert.assertSame(image, clipboardImage);
         
         image = ImageUtility.loadImage(new File(testResources, "test.gif"));
         Assert.assertTrue(ImageUtility.copyImageToClipboard(image));
@@ -839,7 +839,7 @@ public class ImageUtilityTest {
         Assert.assertEquals(DataFlavor.imageFlavor, transferable.getTransferDataFlavors()[0]);
         clipboardImage = (BufferedImage) transferable.getTransferData(DataFlavor.imageFlavor);
         Assert.assertNotNull(clipboardImage);
-        Assert.assertEquals(image.hashCode(), clipboardImage.hashCode());
+        Assert.assertSame(image, clipboardImage);
         
         image = ImageUtility.loadImage(new File(testResources, "test.jpg"));
         Assert.assertTrue(ImageUtility.copyImageToClipboard(image));
@@ -849,7 +849,7 @@ public class ImageUtilityTest {
         Assert.assertEquals(DataFlavor.imageFlavor, transferable.getTransferDataFlavors()[0]);
         clipboardImage = (BufferedImage) transferable.getTransferData(DataFlavor.imageFlavor);
         Assert.assertNotNull(clipboardImage);
-        Assert.assertEquals(image.hashCode(), clipboardImage.hashCode());
+        Assert.assertSame(image, clipboardImage);
         
         image = ImageUtility.loadImage(new File(testResources, "test.png"));
         Assert.assertTrue(ImageUtility.copyImageToClipboard(image));
@@ -859,7 +859,7 @@ public class ImageUtilityTest {
         Assert.assertEquals(DataFlavor.imageFlavor, transferable.getTransferDataFlavors()[0]);
         clipboardImage = (BufferedImage) transferable.getTransferData(DataFlavor.imageFlavor);
         Assert.assertNotNull(clipboardImage);
-        Assert.assertEquals(image.hashCode(), clipboardImage.hashCode());
+        Assert.assertSame(image, clipboardImage);
         
         //invalid
         

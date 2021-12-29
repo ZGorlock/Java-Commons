@@ -7,23 +7,13 @@
 
 package commons.access;
 
-import java.awt.Desktop;
-import java.io.File;
-import java.net.URI;
-import java.util.regex.Pattern;
-
 import commons.log.CommonsLogging;
 import commons.math.BoundUtility;
 import commons.string.StringUtility;
 import commons.test.TestUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
@@ -32,6 +22,11 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.awt.*;
+import java.io.File;
+import java.net.URI;
+import java.util.regex.Pattern;
 
 /**
  * JUnit test of Internet.
