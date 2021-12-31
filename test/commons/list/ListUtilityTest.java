@@ -11,8 +11,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import commons.test.TestUtils;
+import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -96,6 +98,366 @@ public class ListUtilityTest {
     @SuppressWarnings("EmptyMethod")
     @Test
     public void testConstants() throws Exception {
+    }
+    
+    /**
+     * JUnit test of create.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#create(Class, Object, int)
+     * @see ListUtility#create(Class, int)
+     * @see ListUtility#create(Object, int)
+     * @see ListUtility#create(Class)
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Test
+    public void testCreate() throws Exception {
+        //boolean
+        List<Boolean> booleanList = ListUtility.create(Boolean.class, 5);
+        Assert.assertNotNull(booleanList);
+        Assert.assertEquals(5, booleanList.size());
+        Assert.assertTrue(booleanList.stream().allMatch(Objects::isNull));
+        booleanList = ListUtility.create(true, 5);
+        Assert.assertNotNull(booleanList);
+        Assert.assertEquals(5, booleanList.size());
+        Assert.assertTrue(booleanList.stream().allMatch(e -> (Objects.equals(e, true))));
+        booleanList = ListUtility.create(Boolean.class);
+        Assert.assertNotNull(booleanList);
+        Assert.assertEquals(0, booleanList.size());
+        
+        //int
+        List<Integer> integerList = ListUtility.create(Integer.class, 7);
+        Assert.assertNotNull(integerList);
+        Assert.assertEquals(7, integerList.size());
+        Assert.assertTrue(integerList.stream().allMatch(Objects::isNull));
+        integerList = ListUtility.create(18, 7);
+        Assert.assertNotNull(integerList);
+        Assert.assertEquals(7, integerList.size());
+        Assert.assertTrue(integerList.stream().allMatch(e -> (Objects.equals(e, 18))));
+        integerList = ListUtility.create(Integer.class);
+        Assert.assertNotNull(integerList);
+        Assert.assertEquals(0, integerList.size());
+        
+        //float
+        List<Float> floatList = ListUtility.create(Float.class, 8);
+        Assert.assertNotNull(floatList);
+        Assert.assertEquals(8, floatList.size());
+        Assert.assertTrue(floatList.stream().allMatch(Objects::isNull));
+        floatList = ListUtility.create(6.847f, 8);
+        Assert.assertNotNull(floatList);
+        Assert.assertEquals(8, floatList.size());
+        Assert.assertTrue(floatList.stream().allMatch(e -> (Objects.equals(e, 6.847f))));
+        floatList = ListUtility.create(Float.class);
+        Assert.assertNotNull(floatList);
+        Assert.assertEquals(0, floatList.size());
+        
+        //double
+        List<Double> doubleList = ListUtility.create(Double.class, 8);
+        Assert.assertNotNull(doubleList);
+        Assert.assertEquals(8, doubleList.size());
+        Assert.assertTrue(doubleList.stream().allMatch(Objects::isNull));
+        doubleList = ListUtility.create(117.4984560456d, 8);
+        Assert.assertNotNull(doubleList);
+        Assert.assertEquals(8, doubleList.size());
+        Assert.assertTrue(doubleList.stream().allMatch(e -> (Objects.equals(e, 117.4984560456d))));
+        doubleList = ListUtility.create(Double.class);
+        Assert.assertNotNull(doubleList);
+        Assert.assertEquals(0, doubleList.size());
+        
+        //long
+        List<Long> longList = ListUtility.create(Long.class, 7);
+        Assert.assertNotNull(longList);
+        Assert.assertEquals(7, longList.size());
+        Assert.assertTrue(longList.stream().allMatch(Objects::isNull));
+        longList = ListUtility.create(178984654231545L, 7);
+        Assert.assertNotNull(longList);
+        Assert.assertEquals(7, longList.size());
+        Assert.assertTrue(longList.stream().allMatch(e -> (Objects.equals(e, 178984654231545L))));
+        longList = ListUtility.create(Long.class);
+        Assert.assertNotNull(longList);
+        Assert.assertEquals(0, longList.size());
+        
+        //object
+        final Object testObject = new StringBuilder();
+        List<Object> objectList = ListUtility.create(Object.class, 5);
+        Assert.assertNotNull(objectList);
+        Assert.assertEquals(5, objectList.size());
+        Assert.assertTrue(objectList.stream().allMatch(Objects::isNull));
+        objectList = ListUtility.create(testObject, 5);
+        Assert.assertNotNull(objectList);
+        Assert.assertEquals(5, objectList.size());
+        Assert.assertTrue(objectList.stream().allMatch(e -> (Objects.equals(e, testObject))));
+        objectList = ListUtility.create(Object.class);
+        Assert.assertNotNull(objectList);
+        Assert.assertEquals(0, objectList.size());
+        
+        //invalid
+        TestUtils.assertException(IllegalArgumentException.class, "Illegal Capacity: -1", () ->
+                ListUtility.create(Object.class, -1));
+        TestUtils.assertException(IllegalArgumentException.class, "Illegal Capacity: -1", () ->
+                ListUtility.create(18, -1));
+        TestUtils.assertNoException(() ->
+                ListUtility.create((Class<?>) null, 6));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.create((Object) null, 6));
+        TestUtils.assertNoException(() ->
+                ListUtility.create(null));
+    }
+    
+    /**
+     * JUnit test of create2D.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#create2D(Class, Object, int, int)
+     * @see ListUtility#create2D(Class, int, int)
+     * @see ListUtility#create2D(Object, int, int)
+     * @see ListUtility#create2D(Class)
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Test
+    public void testCreate2D() throws Exception {
+        //boolean
+        List<List<Boolean>> booleanList = ListUtility.create2D(Boolean.class, 5, 4);
+        Assert.assertNotNull(booleanList);
+        Assert.assertEquals(5, booleanList.size());
+        Assert.assertTrue(booleanList.stream().allMatch(e -> (e.size() == 4)));
+        Assert.assertTrue(booleanList.stream().flatMap(List::stream).allMatch(Objects::isNull));
+        booleanList = ListUtility.create2D(true, 5, 4);
+        Assert.assertNotNull(booleanList);
+        Assert.assertEquals(5, booleanList.size());
+        Assert.assertTrue(booleanList.stream().allMatch(e -> (e.size() == 4)));
+        Assert.assertTrue(booleanList.stream().flatMap(List::stream).allMatch(e -> (Objects.equals(e, true))));
+        booleanList = ListUtility.create2D(Boolean.class);
+        Assert.assertNotNull(booleanList);
+        Assert.assertEquals(0, booleanList.size());
+        
+        //int
+        List<List<Integer>> integerList = ListUtility.create2D(Integer.class, 7, 6);
+        Assert.assertNotNull(integerList);
+        Assert.assertEquals(7, integerList.size());
+        Assert.assertTrue(integerList.stream().allMatch(e -> (e.size() == 6)));
+        Assert.assertTrue(integerList.stream().flatMap(List::stream).allMatch(Objects::isNull));
+        integerList = ListUtility.create2D(18, 7, 6);
+        Assert.assertNotNull(integerList);
+        Assert.assertEquals(7, integerList.size());
+        Assert.assertTrue(integerList.stream().allMatch(e -> (e.size() == 6)));
+        Assert.assertTrue(integerList.stream().flatMap(List::stream).allMatch(e -> (Objects.equals(e, 18))));
+        integerList = ListUtility.create2D(Integer.class);
+        Assert.assertNotNull(integerList);
+        Assert.assertEquals(0, integerList.size());
+        
+        //float
+        List<List<Float>> floatList = ListUtility.create2D(Float.class, 8, 7);
+        Assert.assertNotNull(floatList);
+        Assert.assertEquals(8, floatList.size());
+        Assert.assertTrue(floatList.stream().allMatch(e -> (e.size() == 7)));
+        Assert.assertTrue(floatList.stream().flatMap(List::stream).allMatch(Objects::isNull));
+        floatList = ListUtility.create2D(6.847f, 8, 7);
+        Assert.assertNotNull(floatList);
+        Assert.assertEquals(8, floatList.size());
+        Assert.assertTrue(floatList.stream().allMatch(e -> (e.size() == 7)));
+        Assert.assertTrue(floatList.stream().flatMap(List::stream).allMatch(e -> (Objects.equals(e, 6.847f))));
+        floatList = ListUtility.create2D(Float.class);
+        Assert.assertNotNull(floatList);
+        Assert.assertEquals(0, floatList.size());
+        
+        //double
+        List<List<Double>> doubleList = ListUtility.create2D(Double.class, 8, 7);
+        Assert.assertNotNull(doubleList);
+        Assert.assertEquals(8, doubleList.size());
+        Assert.assertTrue(doubleList.stream().allMatch(e -> (e.size() == 7)));
+        Assert.assertTrue(doubleList.stream().flatMap(List::stream).allMatch(Objects::isNull));
+        doubleList = ListUtility.create2D(117.4984560456d, 8, 7);
+        Assert.assertNotNull(doubleList);
+        Assert.assertEquals(8, doubleList.size());
+        Assert.assertTrue(doubleList.stream().allMatch(e -> (e.size() == 7)));
+        Assert.assertTrue(doubleList.stream().flatMap(List::stream).allMatch(e -> (Objects.equals(e, 117.4984560456d))));
+        doubleList = ListUtility.create2D(Double.class);
+        Assert.assertNotNull(doubleList);
+        Assert.assertEquals(0, doubleList.size());
+        
+        //long
+        List<List<Long>> longList = ListUtility.create2D(Long.class, 7, 6);
+        Assert.assertNotNull(longList);
+        Assert.assertEquals(7, longList.size());
+        Assert.assertTrue(longList.stream().allMatch(e -> (e.size() == 6)));
+        Assert.assertTrue(longList.stream().flatMap(List::stream).allMatch(Objects::isNull));
+        longList = ListUtility.create2D(178984654231545L, 7, 6);
+        Assert.assertNotNull(longList);
+        Assert.assertEquals(7, longList.size());
+        Assert.assertTrue(longList.stream().allMatch(e -> (e.size() == 6)));
+        Assert.assertTrue(longList.stream().flatMap(List::stream).allMatch(e -> (Objects.equals(e, 178984654231545L))));
+        longList = ListUtility.create2D(Long.class);
+        Assert.assertNotNull(longList);
+        Assert.assertEquals(0, longList.size());
+        
+        //object
+        final Object testObject = new StringBuilder();
+        List<List<Object>> objectList = ListUtility.create2D(Object.class, 5, 4);
+        Assert.assertNotNull(objectList);
+        Assert.assertEquals(5, objectList.size());
+        Assert.assertTrue(objectList.stream().allMatch(e -> (e.size() == 4)));
+        Assert.assertTrue(objectList.stream().flatMap(List::stream).allMatch(Objects::isNull));
+        objectList = ListUtility.create2D(testObject, 5, 4);
+        Assert.assertNotNull(objectList);
+        Assert.assertEquals(5, objectList.size());
+        Assert.assertTrue(objectList.stream().allMatch(e -> (e.size() == 4)));
+        Assert.assertTrue(objectList.stream().flatMap(List::stream).allMatch(e -> (Objects.equals(e, testObject))));
+        objectList = ListUtility.create2D(Object.class);
+        Assert.assertNotNull(objectList);
+        Assert.assertEquals(0, objectList.size());
+        
+        //invalid
+        TestUtils.assertException(IllegalArgumentException.class, "Illegal Capacity: -1", () ->
+                ListUtility.create2D(Object.class, -1, 5));
+        TestUtils.assertException(IllegalArgumentException.class, "Illegal Capacity: -1", () ->
+                ListUtility.create2D(Object.class, 5, -1));
+        TestUtils.assertException(IllegalArgumentException.class, "Illegal Capacity: -1", () ->
+                ListUtility.create2D(18, -1, 5));
+        TestUtils.assertException(IllegalArgumentException.class, "Illegal Capacity: -1", () ->
+                ListUtility.create2D(18, 5, -1));
+        TestUtils.assertNoException(() ->
+                ListUtility.create2D((Class<?>) null, 6, 6));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.create2D((Object) null, 6, 6));
+        TestUtils.assertNoException(() ->
+                ListUtility.create2D(null));
+    }
+    
+    /**
+     * JUnit test of create3D.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#create3D(Class, Object, int, int, int)
+     * @see ListUtility#create3D(Class, int, int, int)
+     * @see ListUtility#create3D(Object, int, int, int)
+     * @see ListUtility#create3D(Class)
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Test
+    public void testCreate3D() throws Exception {
+        //boolean
+        List<List<List<Boolean>>> booleanList = ListUtility.create3D(Boolean.class, 5, 4, 3);
+        Assert.assertNotNull(booleanList);
+        Assert.assertEquals(5, booleanList.size());
+        Assert.assertTrue(booleanList.stream().allMatch(e -> (e.size() == 4)));
+        booleanList.stream().flatMap(List::stream).allMatch(e -> (e.size() == 3));
+        Assert.assertTrue(booleanList.stream().flatMap(List::stream).flatMap(List::stream).allMatch(Objects::isNull));
+        booleanList = ListUtility.create3D(true, 5, 4, 3);
+        Assert.assertNotNull(booleanList);
+        Assert.assertEquals(5, booleanList.size());
+        Assert.assertTrue(booleanList.stream().allMatch(e -> (e.size() == 4)));
+        booleanList.stream().flatMap(List::stream).allMatch(e -> (e.size() == 3));
+        Assert.assertTrue(booleanList.stream().flatMap(List::stream).flatMap(List::stream).allMatch(e -> (Objects.equals(e, true))));
+        booleanList = ListUtility.create3D(Boolean.class);
+        Assert.assertNotNull(booleanList);
+        Assert.assertEquals(0, booleanList.size());
+        
+        //int
+        List<List<List<Integer>>> integerList = ListUtility.create3D(Integer.class, 7, 6, 5);
+        Assert.assertNotNull(integerList);
+        Assert.assertEquals(7, integerList.size());
+        Assert.assertTrue(integerList.stream().allMatch(e -> (e.size() == 6)));
+        integerList.stream().flatMap(List::stream).allMatch(e -> (e.size() == 5));
+        Assert.assertTrue(integerList.stream().flatMap(List::stream).flatMap(List::stream).allMatch(Objects::isNull));
+        integerList = ListUtility.create3D(18, 7, 6, 5);
+        Assert.assertNotNull(integerList);
+        Assert.assertEquals(7, integerList.size());
+        Assert.assertTrue(integerList.stream().allMatch(e -> (e.size() == 6)));
+        integerList.stream().flatMap(List::stream).allMatch(e -> (e.size() == 5));
+        Assert.assertTrue(integerList.stream().flatMap(List::stream).flatMap(List::stream).allMatch(e -> (Objects.equals(e, 18))));
+        integerList = ListUtility.create3D(Integer.class);
+        Assert.assertNotNull(integerList);
+        Assert.assertEquals(0, integerList.size());
+        
+        //float
+        List<List<List<Float>>> floatList = ListUtility.create3D(Float.class, 8, 7, 6);
+        Assert.assertNotNull(floatList);
+        Assert.assertEquals(8, floatList.size());
+        Assert.assertTrue(floatList.stream().allMatch(e -> (e.size() == 7)));
+        floatList.stream().flatMap(List::stream).allMatch(e -> (e.size() == 6));
+        Assert.assertTrue(floatList.stream().flatMap(List::stream).flatMap(List::stream).allMatch(Objects::isNull));
+        floatList = ListUtility.create3D(6.847f, 8, 7, 6);
+        Assert.assertNotNull(floatList);
+        Assert.assertEquals(8, floatList.size());
+        Assert.assertTrue(floatList.stream().allMatch(e -> (e.size() == 7)));
+        floatList.stream().flatMap(List::stream).allMatch(e -> (e.size() == 6));
+        Assert.assertTrue(floatList.stream().flatMap(List::stream).flatMap(List::stream).allMatch(e -> (Objects.equals(e, 6.847f))));
+        floatList = ListUtility.create3D(Float.class);
+        Assert.assertNotNull(floatList);
+        Assert.assertEquals(0, floatList.size());
+        
+        //double
+        List<List<List<Double>>> doubleList = ListUtility.create3D(Double.class, 8, 7, 6);
+        Assert.assertNotNull(doubleList);
+        Assert.assertEquals(8, doubleList.size());
+        Assert.assertTrue(doubleList.stream().allMatch(e -> (e.size() == 7)));
+        doubleList.stream().flatMap(List::stream).allMatch(e -> (e.size() == 6));
+        Assert.assertTrue(doubleList.stream().flatMap(List::stream).flatMap(List::stream).allMatch(Objects::isNull));
+        doubleList = ListUtility.create3D(117.4984560456d, 8, 7, 6);
+        Assert.assertNotNull(doubleList);
+        Assert.assertEquals(8, doubleList.size());
+        Assert.assertTrue(doubleList.stream().allMatch(e -> (e.size() == 7)));
+        doubleList.stream().flatMap(List::stream).allMatch(e -> (e.size() == 6));
+        Assert.assertTrue(doubleList.stream().flatMap(List::stream).flatMap(List::stream).allMatch(e -> (Objects.equals(e, 117.4984560456d))));
+        doubleList = ListUtility.create3D(Double.class);
+        Assert.assertNotNull(doubleList);
+        Assert.assertEquals(0, doubleList.size());
+        
+        //long
+        List<List<List<Long>>> longList = ListUtility.create3D(Long.class, 7, 6, 5);
+        Assert.assertNotNull(longList);
+        Assert.assertEquals(7, longList.size());
+        Assert.assertTrue(longList.stream().allMatch(e -> (e.size() == 6)));
+        longList.stream().flatMap(List::stream).allMatch(e -> (e.size() == 5));
+        Assert.assertTrue(longList.stream().flatMap(List::stream).flatMap(List::stream).allMatch(Objects::isNull));
+        longList = ListUtility.create3D(178984654231545L, 7, 6, 5);
+        Assert.assertNotNull(longList);
+        Assert.assertEquals(7, longList.size());
+        Assert.assertTrue(longList.stream().allMatch(e -> (e.size() == 6)));
+        longList.stream().flatMap(List::stream).allMatch(e -> (e.size() == 5));
+        Assert.assertTrue(longList.stream().flatMap(List::stream).flatMap(List::stream).allMatch(e -> (Objects.equals(e, 178984654231545L))));
+        longList = ListUtility.create3D(Long.class);
+        Assert.assertNotNull(longList);
+        Assert.assertEquals(0, longList.size());
+        
+        //object
+        final Object testObject = new StringBuilder();
+        List<List<List<Object>>> objectList = ListUtility.create3D(Object.class, 5, 4, 3);
+        Assert.assertNotNull(objectList);
+        Assert.assertEquals(5, objectList.size());
+        Assert.assertTrue(objectList.stream().allMatch(e -> (e.size() == 4)));
+        objectList.stream().flatMap(List::stream).allMatch(e -> (e.size() == 3));
+        Assert.assertTrue(objectList.stream().flatMap(List::stream).flatMap(List::stream).allMatch(Objects::isNull));
+        objectList = ListUtility.create3D(testObject, 7, 6, 5);
+        Assert.assertNotNull(objectList);
+        Assert.assertEquals(7, objectList.size());
+        Assert.assertTrue(objectList.stream().allMatch(e -> (e.size() == 6)));
+        objectList.stream().flatMap(List::stream).allMatch(e -> (e.size() == 5));
+        Assert.assertTrue(objectList.stream().flatMap(List::stream).flatMap(List::stream).allMatch(e -> (Objects.equals(e, testObject))));
+        objectList = ListUtility.create3D(Object.class);
+        Assert.assertNotNull(objectList);
+        Assert.assertEquals(0, objectList.size());
+        
+        //invalid
+        TestUtils.assertException(IllegalArgumentException.class, "Illegal Capacity: -1", () ->
+                ListUtility.create3D(Object.class, -1, 5, 5));
+        TestUtils.assertException(IllegalArgumentException.class, "Illegal Capacity: -1", () ->
+                ListUtility.create3D(Object.class, 5, -1, 5));
+        TestUtils.assertException(IllegalArgumentException.class, "Illegal Capacity: -1", () ->
+                ListUtility.create3D(Object.class, 5, 5, -1));
+        TestUtils.assertException(IllegalArgumentException.class, "Illegal Capacity: -1", () ->
+                ListUtility.create3D(18, -1, 5, 5));
+        TestUtils.assertException(IllegalArgumentException.class, "Illegal Capacity: -1", () ->
+                ListUtility.create3D(18, 5, -1, 5));
+        TestUtils.assertException(IllegalArgumentException.class, "Illegal Capacity: -1", () ->
+                ListUtility.create3D(18, 5, 5, -1));
+        TestUtils.assertNoException(() ->
+                ListUtility.create3D((Class<?>) null, 6, 6, 6));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.create3D((Object) null, 6, 6, 6));
+        TestUtils.assertNoException(() ->
+                ListUtility.create3D(null));
     }
     
     /**
@@ -639,6 +1001,147 @@ public class ListUtilityTest {
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 ListUtility.indexOf(null, new Object()));
+    }
+    
+    /**
+     * JUnit test of getOrDefault.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#getOrDefault(List, int, Object)
+     */
+    @Test
+    public void testGetOrDefault() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        Assert.assertEquals(false, ListUtility.getOrDefault(booleanList, 1, true));
+        Assert.assertEquals(true, ListUtility.getOrDefault(booleanList, 3, false));
+        Assert.assertEquals(true, ListUtility.getOrDefault(booleanList, 12, true));
+        Assert.assertEquals(true, ListUtility.getOrDefault(booleanList, -1, true));
+        Assert.assertEquals(true, ListUtility.getOrDefault(booleanList, 3, null));
+        Assert.assertNull(ListUtility.getOrDefault(booleanList, 12, null));
+        Assert.assertEquals(true, ListUtility.getOrDefault(null, 2, true));
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        Assert.assertEquals(312, ListUtility.getOrDefault(integerList, 1, 100).intValue());
+        Assert.assertEquals(5, ListUtility.getOrDefault(integerList, 3, 100).intValue());
+        Assert.assertEquals(100, ListUtility.getOrDefault(integerList, 12, 100).intValue());
+        Assert.assertEquals(100, ListUtility.getOrDefault(integerList, -1, 100).intValue());
+        Assert.assertEquals(5, ListUtility.getOrDefault(integerList, 3, null).intValue());
+        Assert.assertNull(ListUtility.getOrDefault(integerList, 12, null));
+        Assert.assertEquals(100, ListUtility.getOrDefault(null, 2, 100).intValue());
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        List<Float> floatList = ListUtility.toList(floatArray);
+        Assert.assertEquals(312.91f, ListUtility.getOrDefault(floatList, 1, 100.0f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(5.45f, ListUtility.getOrDefault(floatList, 3, 100.0f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(100.0f, ListUtility.getOrDefault(floatList, 12, 100.0f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(100.0f, ListUtility.getOrDefault(floatList, -1, 100.0f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(5.45f, ListUtility.getOrDefault(floatList, 3, null), TestUtils.DELTA_FLOAT);
+        Assert.assertNull(ListUtility.getOrDefault(floatList, 12, null));
+        Assert.assertEquals(100.0f, ListUtility.getOrDefault(null, 2, 100.0f), TestUtils.DELTA_FLOAT);
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        Assert.assertEquals(312.9113874d, ListUtility.getOrDefault(doubleList, 1, 100.0d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(5.457894511d, ListUtility.getOrDefault(doubleList, 3, 100.0d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(100.0d, ListUtility.getOrDefault(doubleList, 12, 100.0d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(100.0d, ListUtility.getOrDefault(doubleList, -1, 100.0d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(5.457894511d, ListUtility.getOrDefault(doubleList, 3, null), TestUtils.DELTA_DOUBLE);
+        Assert.assertNull(ListUtility.getOrDefault(doubleList, 12, null));
+        Assert.assertEquals(100.0d, ListUtility.getOrDefault(null, 2, 100.0d), TestUtils.DELTA_DOUBLE);
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        List<Long> longList = ListUtility.toList(longArray);
+        Assert.assertEquals(3129113874L, ListUtility.getOrDefault(longList, 1, 100L).longValue());
+        Assert.assertEquals(5457894511L, ListUtility.getOrDefault(longList, 3, 100L).longValue());
+        Assert.assertEquals(100L, ListUtility.getOrDefault(longList, 12, 100L).longValue());
+        Assert.assertEquals(100L, ListUtility.getOrDefault(longList, -1, 100L).longValue());
+        Assert.assertEquals(5457894511L, ListUtility.getOrDefault(longList, 3, null).longValue());
+        Assert.assertNull(ListUtility.getOrDefault(longList, 12, null));
+        Assert.assertEquals(100L, ListUtility.getOrDefault(null, 2, 100L).longValue());
+        
+        //object
+        final Object testObject = new HashMap<>();
+        final Object testObject2 = new JSONObject();
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), testObject, new Object()};
+        List<Object> objectList = ListUtility.toList(objectArray);
+        Assert.assertEquals(54, ListUtility.getOrDefault(objectList, 1, testObject2));
+        Assert.assertEquals(testObject, ListUtility.getOrDefault(objectList, 3, testObject2));
+        Assert.assertEquals(testObject2, ListUtility.getOrDefault(objectList, 12, testObject2));
+        Assert.assertEquals(testObject2, ListUtility.getOrDefault(objectList, -1, testObject2));
+        Assert.assertEquals(testObject, ListUtility.getOrDefault(objectList, 3, null));
+        Assert.assertNull(ListUtility.getOrDefault(objectList, 12, null));
+        Assert.assertEquals(testObject2, ListUtility.getOrDefault(null, 2, testObject2));
+    }
+    
+    /**
+     * JUnit test of getOrNull.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#getOrNull(List, int)
+     */
+    @Test
+    public void testGetOrNull() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        Assert.assertEquals(false, ListUtility.getOrNull(booleanList, 1));
+        Assert.assertEquals(true, ListUtility.getOrNull(booleanList, 3));
+        Assert.assertNull(ListUtility.getOrNull(booleanList, 12));
+        Assert.assertNull(ListUtility.getOrNull(booleanList, -1));
+        Assert.assertNull(ListUtility.getOrNull(null, 2));
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        Assert.assertEquals(312, ListUtility.getOrNull(integerList, 1).intValue());
+        Assert.assertEquals(5, ListUtility.getOrNull(integerList, 3).intValue());
+        Assert.assertNull(ListUtility.getOrNull(integerList, 12));
+        Assert.assertNull(ListUtility.getOrNull(integerList, -1));
+        Assert.assertNull(ListUtility.getOrNull(null, 2));
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        List<Float> floatList = ListUtility.toList(floatArray);
+        Assert.assertEquals(312.91f, ListUtility.getOrNull(floatList, 1), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(5.45f, ListUtility.getOrNull(floatList, 3), TestUtils.DELTA_FLOAT);
+        Assert.assertNull(ListUtility.getOrNull(floatList, 12));
+        Assert.assertNull(ListUtility.getOrNull(floatList, -1));
+        Assert.assertNull(ListUtility.getOrNull(null, 2));
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        Assert.assertEquals(312.9113874d, ListUtility.getOrNull(doubleList, 1), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(5.457894511d, ListUtility.getOrNull(doubleList, 3), TestUtils.DELTA_DOUBLE);
+        Assert.assertNull(ListUtility.getOrNull(doubleList, 12));
+        Assert.assertNull(ListUtility.getOrNull(doubleList, -1));
+        Assert.assertNull(ListUtility.getOrNull(null, 2));
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        List<Long> longList = ListUtility.toList(longArray);
+        Assert.assertEquals(3129113874L, ListUtility.getOrNull(longList, 1).longValue());
+        Assert.assertEquals(5457894511L, ListUtility.getOrNull(longList, 3).longValue());
+        Assert.assertNull(ListUtility.getOrNull(longList, 12));
+        Assert.assertNull(ListUtility.getOrNull(longList, -1));
+        Assert.assertNull(ListUtility.getOrNull(null, 2));
+        
+        //object
+        final Object testObject = new HashMap<>();
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), testObject, new Object()};
+        List<Object> objectList = ListUtility.toList(objectArray);
+        Assert.assertEquals(54, ListUtility.getOrNull(objectList, 1));
+        Assert.assertEquals(testObject, ListUtility.getOrNull(objectList, 3));
+        Assert.assertNull(ListUtility.getOrNull(objectList, 12));
+        Assert.assertNull(ListUtility.getOrNull(objectList, -1));
+        Assert.assertNull(ListUtility.getOrNull(null, 2));
     }
     
     /**

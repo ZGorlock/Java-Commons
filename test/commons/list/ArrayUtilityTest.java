@@ -8,10 +8,13 @@
 package commons.list;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import commons.test.TestUtils;
+import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -95,6 +98,366 @@ public class ArrayUtilityTest {
     @SuppressWarnings("EmptyMethod")
     @Test
     public void testConstants() throws Exception {
+    }
+    
+    /**
+     * JUnit test of create.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#create(Class, Object, int)
+     * @see ArrayUtility#create(Class, int)
+     * @see ArrayUtility#create(Object, int)
+     * @see ArrayUtility#create(Class)
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Test
+    public void testCreate() throws Exception {
+        //boolean
+        Boolean[] booleanArray = ArrayUtility.create(Boolean.class, 5);
+        Assert.assertNotNull(booleanArray);
+        Assert.assertEquals(5, booleanArray.length);
+        Assert.assertTrue(Arrays.stream(booleanArray).allMatch(Objects::isNull));
+        booleanArray = ArrayUtility.create(true, 5);
+        Assert.assertNotNull(booleanArray);
+        Assert.assertEquals(5, booleanArray.length);
+        Assert.assertTrue(Arrays.stream(booleanArray).allMatch(e -> (Objects.equals(e, true))));
+        booleanArray = ArrayUtility.create(Boolean.class);
+        Assert.assertNotNull(booleanArray);
+        Assert.assertEquals(0, booleanArray.length);
+        
+        //int
+        Integer[] integerArray = ArrayUtility.create(Integer.class, 7);
+        Assert.assertNotNull(integerArray);
+        Assert.assertEquals(7, integerArray.length);
+        Assert.assertTrue(Arrays.stream(integerArray).allMatch(Objects::isNull));
+        integerArray = ArrayUtility.create(18, 7);
+        Assert.assertNotNull(integerArray);
+        Assert.assertEquals(7, integerArray.length);
+        Assert.assertTrue(Arrays.stream(integerArray).allMatch(e -> (Objects.equals(e, 18))));
+        integerArray = ArrayUtility.create(Integer.class);
+        Assert.assertNotNull(integerArray);
+        Assert.assertEquals(0, integerArray.length);
+        
+        //float
+        Float[] floatArray = ArrayUtility.create(Float.class, 8);
+        Assert.assertNotNull(floatArray);
+        Assert.assertEquals(8, floatArray.length);
+        Assert.assertTrue(Arrays.stream(floatArray).allMatch(Objects::isNull));
+        floatArray = ArrayUtility.create(6.847f, 8);
+        Assert.assertNotNull(floatArray);
+        Assert.assertEquals(8, floatArray.length);
+        Assert.assertTrue(Arrays.stream(floatArray).allMatch(e -> (Objects.equals(e, 6.847f))));
+        floatArray = ArrayUtility.create(Float.class);
+        Assert.assertNotNull(floatArray);
+        Assert.assertEquals(0, floatArray.length);
+        
+        //double
+        Double[] doubleArray = ArrayUtility.create(Double.class, 8);
+        Assert.assertNotNull(doubleArray);
+        Assert.assertEquals(8, doubleArray.length);
+        Assert.assertTrue(Arrays.stream(doubleArray).allMatch(Objects::isNull));
+        doubleArray = ArrayUtility.create(117.4984560456d, 8);
+        Assert.assertNotNull(doubleArray);
+        Assert.assertEquals(8, doubleArray.length);
+        Assert.assertTrue(Arrays.stream(doubleArray).allMatch(e -> (Objects.equals(e, 117.4984560456d))));
+        doubleArray = ArrayUtility.create(Double.class);
+        Assert.assertNotNull(doubleArray);
+        Assert.assertEquals(0, doubleArray.length);
+        
+        //long
+        Long[] longArray = ArrayUtility.create(Long.class, 7);
+        Assert.assertNotNull(longArray);
+        Assert.assertEquals(7, longArray.length);
+        Assert.assertTrue(Arrays.stream(longArray).allMatch(Objects::isNull));
+        longArray = ArrayUtility.create(178984654231545L, 7);
+        Assert.assertNotNull(longArray);
+        Assert.assertEquals(7, longArray.length);
+        Assert.assertTrue(Arrays.stream(longArray).allMatch(e -> (Objects.equals(e, 178984654231545L))));
+        longArray = ArrayUtility.create(Long.class);
+        Assert.assertNotNull(longArray);
+        Assert.assertEquals(0, longArray.length);
+        
+        //object
+        final Object testObject = new StringBuilder();
+        Object[] objectArray = ArrayUtility.create(Object.class, 5);
+        Assert.assertNotNull(objectArray);
+        Assert.assertEquals(5, objectArray.length);
+        Assert.assertTrue(Arrays.stream(objectArray).allMatch(Objects::isNull));
+        objectArray = ArrayUtility.create(testObject, 5);
+        Assert.assertNotNull(objectArray);
+        Assert.assertEquals(5, objectArray.length);
+        Assert.assertTrue(Arrays.stream(objectArray).allMatch(e -> (Objects.equals(e, testObject))));
+        objectArray = ArrayUtility.create(Object.class);
+        Assert.assertNotNull(objectArray);
+        Assert.assertEquals(0, objectArray.length);
+        
+        //invalid
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create(Object.class, -1));
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create(18, -1));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.create((Class<?>) null, 6));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.create((Object) null, 6));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.create(null));
+    }
+    
+    /**
+     * JUnit test of create2D.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#create2D(Class, Object, int, int)
+     * @see ArrayUtility#create2D(Class, int, int)
+     * @see ArrayUtility#create2D(Object, int, int)
+     * @see ArrayUtility#create2D(Class)
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Test
+    public void testCreate2D() throws Exception {
+        //boolean
+        Boolean[][] booleanArray = ArrayUtility.create2D(Boolean.class, 5, 4);
+        Assert.assertNotNull(booleanArray);
+        Assert.assertEquals(5, booleanArray.length);
+        Assert.assertTrue(Arrays.stream(booleanArray).allMatch(e -> (e.length == 4)));
+        Assert.assertTrue(Arrays.stream(booleanArray).flatMap(Arrays::stream).allMatch(Objects::isNull));
+        booleanArray = ArrayUtility.create2D(true, 5, 4);
+        Assert.assertNotNull(booleanArray);
+        Assert.assertEquals(5, booleanArray.length);
+        Assert.assertTrue(Arrays.stream(booleanArray).allMatch(e -> (e.length == 4)));
+        Assert.assertTrue(Arrays.stream(booleanArray).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, true))));
+        booleanArray = ArrayUtility.create2D(Boolean.class);
+        Assert.assertNotNull(booleanArray);
+        Assert.assertEquals(0, booleanArray.length);
+        
+        //int
+        Integer[][] integerArray = ArrayUtility.create2D(Integer.class, 7, 6);
+        Assert.assertNotNull(integerArray);
+        Assert.assertEquals(7, integerArray.length);
+        Assert.assertTrue(Arrays.stream(integerArray).allMatch(e -> (e.length == 6)));
+        Assert.assertTrue(Arrays.stream(integerArray).flatMap(Arrays::stream).allMatch(Objects::isNull));
+        integerArray = ArrayUtility.create2D(18, 7, 6);
+        Assert.assertNotNull(integerArray);
+        Assert.assertEquals(7, integerArray.length);
+        Assert.assertTrue(Arrays.stream(integerArray).allMatch(e -> (e.length == 6)));
+        Assert.assertTrue(Arrays.stream(integerArray).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 18))));
+        integerArray = ArrayUtility.create2D(Integer.class);
+        Assert.assertNotNull(integerArray);
+        Assert.assertEquals(0, integerArray.length);
+        
+        //float
+        Float[][] floatArray = ArrayUtility.create2D(Float.class, 8, 7);
+        Assert.assertNotNull(floatArray);
+        Assert.assertEquals(8, floatArray.length);
+        Assert.assertTrue(Arrays.stream(floatArray).allMatch(e -> (e.length == 7)));
+        Assert.assertTrue(Arrays.stream(floatArray).flatMap(Arrays::stream).allMatch(Objects::isNull));
+        floatArray = ArrayUtility.create2D(6.847f, 8, 7);
+        Assert.assertNotNull(floatArray);
+        Assert.assertEquals(8, floatArray.length);
+        Assert.assertTrue(Arrays.stream(floatArray).allMatch(e -> (e.length == 7)));
+        Assert.assertTrue(Arrays.stream(floatArray).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 6.847f))));
+        floatArray = ArrayUtility.create2D(Float.class);
+        Assert.assertNotNull(floatArray);
+        Assert.assertEquals(0, floatArray.length);
+        
+        //double
+        Double[][] doubleArray = ArrayUtility.create2D(Double.class, 8, 7);
+        Assert.assertNotNull(doubleArray);
+        Assert.assertEquals(8, doubleArray.length);
+        Assert.assertTrue(Arrays.stream(doubleArray).allMatch(e -> (e.length == 7)));
+        Assert.assertTrue(Arrays.stream(doubleArray).flatMap(Arrays::stream).allMatch(Objects::isNull));
+        doubleArray = ArrayUtility.create2D(117.4984560456d, 8, 7);
+        Assert.assertNotNull(doubleArray);
+        Assert.assertEquals(8, doubleArray.length);
+        Assert.assertTrue(Arrays.stream(doubleArray).allMatch(e -> (e.length == 7)));
+        Assert.assertTrue(Arrays.stream(doubleArray).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 117.4984560456d))));
+        doubleArray = ArrayUtility.create2D(Double.class);
+        Assert.assertNotNull(doubleArray);
+        Assert.assertEquals(0, doubleArray.length);
+        
+        //long
+        Long[][] longArray = ArrayUtility.create2D(Long.class, 7, 6);
+        Assert.assertNotNull(longArray);
+        Assert.assertEquals(7, longArray.length);
+        Assert.assertTrue(Arrays.stream(longArray).allMatch(e -> (e.length == 6)));
+        Assert.assertTrue(Arrays.stream(longArray).flatMap(Arrays::stream).allMatch(Objects::isNull));
+        longArray = ArrayUtility.create2D(178984654231545L, 7, 6);
+        Assert.assertNotNull(longArray);
+        Assert.assertEquals(7, longArray.length);
+        Assert.assertTrue(Arrays.stream(longArray).allMatch(e -> (e.length == 6)));
+        Assert.assertTrue(Arrays.stream(longArray).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 178984654231545L))));
+        longArray = ArrayUtility.create2D(Long.class);
+        Assert.assertNotNull(longArray);
+        Assert.assertEquals(0, longArray.length);
+        
+        //object
+        final Object testObject = new StringBuilder();
+        Object[][] objectArray = ArrayUtility.create2D(Object.class, 5, 4);
+        Assert.assertNotNull(objectArray);
+        Assert.assertEquals(5, objectArray.length);
+        Assert.assertTrue(Arrays.stream(objectArray).allMatch(e -> (e.length == 4)));
+        Assert.assertTrue(Arrays.stream(objectArray).flatMap(Arrays::stream).allMatch(Objects::isNull));
+        objectArray = ArrayUtility.create2D(testObject, 5, 4);
+        Assert.assertNotNull(objectArray);
+        Assert.assertEquals(5, objectArray.length);
+        Assert.assertTrue(Arrays.stream(objectArray).allMatch(e -> (e.length == 4)));
+        Assert.assertTrue(Arrays.stream(objectArray).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, testObject))));
+        objectArray = ArrayUtility.create2D(Object.class);
+        Assert.assertNotNull(objectArray);
+        Assert.assertEquals(0, objectArray.length);
+        
+        //invalid
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create2D(Object.class, -1, 5));
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create2D(Object.class, 5, -1));
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create2D(18, -1, 5));
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create2D(18, 5, -1));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.create2D((Class<?>) null, 6, 6));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.create2D((Object) null, 6, 6));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.create2D(null));
+    }
+    
+    /**
+     * JUnit test of create3D.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#create3D(Class, Object, int, int, int)
+     * @see ArrayUtility#create3D(Class, int, int, int)
+     * @see ArrayUtility#create3D(Object, int, int, int)
+     * @see ArrayUtility#create3D(Class)
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Test
+    public void testCreate3D() throws Exception {
+        //boolean
+        Boolean[][][] booleanArray = ArrayUtility.create3D(Boolean.class, 5, 4, 3);
+        Assert.assertNotNull(booleanArray);
+        Assert.assertEquals(5, booleanArray.length);
+        Assert.assertTrue(Arrays.stream(booleanArray).allMatch(e -> (e.length == 4)));
+        Arrays.stream(booleanArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 3));
+        Assert.assertTrue(Arrays.stream(booleanArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(Objects::isNull));
+        booleanArray = ArrayUtility.create3D(true, 5, 4, 3);
+        Assert.assertNotNull(booleanArray);
+        Assert.assertEquals(5, booleanArray.length);
+        Assert.assertTrue(Arrays.stream(booleanArray).allMatch(e -> (e.length == 4)));
+        Arrays.stream(booleanArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 3));
+        Assert.assertTrue(Arrays.stream(booleanArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, true))));
+        booleanArray = ArrayUtility.create3D(Boolean.class);
+        Assert.assertNotNull(booleanArray);
+        Assert.assertEquals(0, booleanArray.length);
+        
+        //int
+        Integer[][][] integerArray = ArrayUtility.create3D(Integer.class, 7, 6, 5);
+        Assert.assertNotNull(integerArray);
+        Assert.assertEquals(7, integerArray.length);
+        Assert.assertTrue(Arrays.stream(integerArray).allMatch(e -> (e.length == 6)));
+        Arrays.stream(integerArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 5));
+        Assert.assertTrue(Arrays.stream(integerArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(Objects::isNull));
+        integerArray = ArrayUtility.create3D(18, 7, 6, 5);
+        Assert.assertNotNull(integerArray);
+        Assert.assertEquals(7, integerArray.length);
+        Assert.assertTrue(Arrays.stream(integerArray).allMatch(e -> (e.length == 6)));
+        Arrays.stream(integerArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 5));
+        Assert.assertTrue(Arrays.stream(integerArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 18))));
+        integerArray = ArrayUtility.create3D(Integer.class);
+        Assert.assertNotNull(integerArray);
+        Assert.assertEquals(0, integerArray.length);
+        
+        //float
+        Float[][][] floatArray = ArrayUtility.create3D(Float.class, 8, 7, 6);
+        Assert.assertNotNull(floatArray);
+        Assert.assertEquals(8, floatArray.length);
+        Assert.assertTrue(Arrays.stream(floatArray).allMatch(e -> (e.length == 7)));
+        Arrays.stream(floatArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 6));
+        Assert.assertTrue(Arrays.stream(floatArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(Objects::isNull));
+        floatArray = ArrayUtility.create3D(6.847f, 8, 7, 6);
+        Assert.assertNotNull(floatArray);
+        Assert.assertEquals(8, floatArray.length);
+        Assert.assertTrue(Arrays.stream(floatArray).allMatch(e -> (e.length == 7)));
+        Arrays.stream(floatArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 6));
+        Assert.assertTrue(Arrays.stream(floatArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 6.847f))));
+        floatArray = ArrayUtility.create3D(Float.class);
+        Assert.assertNotNull(floatArray);
+        Assert.assertEquals(0, floatArray.length);
+        
+        //double
+        Double[][][] doubleArray = ArrayUtility.create3D(Double.class, 8, 7, 6);
+        Assert.assertNotNull(doubleArray);
+        Assert.assertEquals(8, doubleArray.length);
+        Assert.assertTrue(Arrays.stream(doubleArray).allMatch(e -> (e.length == 7)));
+        Arrays.stream(doubleArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 6));
+        Assert.assertTrue(Arrays.stream(doubleArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(Objects::isNull));
+        doubleArray = ArrayUtility.create3D(117.4984560456d, 8, 7, 6);
+        Assert.assertNotNull(doubleArray);
+        Assert.assertEquals(8, doubleArray.length);
+        Assert.assertTrue(Arrays.stream(doubleArray).allMatch(e -> (e.length == 7)));
+        Arrays.stream(doubleArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 6));
+        Assert.assertTrue(Arrays.stream(doubleArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 117.4984560456d))));
+        doubleArray = ArrayUtility.create3D(Double.class);
+        Assert.assertNotNull(doubleArray);
+        Assert.assertEquals(0, doubleArray.length);
+        
+        //long
+        Long[][][] longArray = ArrayUtility.create3D(Long.class, 7, 6, 5);
+        Assert.assertNotNull(longArray);
+        Assert.assertEquals(7, longArray.length);
+        Assert.assertTrue(Arrays.stream(longArray).allMatch(e -> (e.length == 6)));
+        Arrays.stream(longArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 5));
+        Assert.assertTrue(Arrays.stream(longArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(Objects::isNull));
+        longArray = ArrayUtility.create3D(178984654231545L, 7, 6, 5);
+        Assert.assertNotNull(longArray);
+        Assert.assertEquals(7, longArray.length);
+        Assert.assertTrue(Arrays.stream(longArray).allMatch(e -> (e.length == 6)));
+        Arrays.stream(longArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 5));
+        Assert.assertTrue(Arrays.stream(longArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 178984654231545L))));
+        longArray = ArrayUtility.create3D(Long.class);
+        Assert.assertNotNull(longArray);
+        Assert.assertEquals(0, longArray.length);
+        
+        //object
+        final Object testObject = new StringBuilder();
+        Object[][][] objectArray = ArrayUtility.create3D(Object.class, 5, 4, 3);
+        Assert.assertNotNull(objectArray);
+        Assert.assertEquals(5, objectArray.length);
+        Assert.assertTrue(Arrays.stream(objectArray).allMatch(e -> (e.length == 4)));
+        Arrays.stream(objectArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 3));
+        Assert.assertTrue(Arrays.stream(objectArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(Objects::isNull));
+        objectArray = ArrayUtility.create3D(testObject, 7, 6, 5);
+        Assert.assertNotNull(objectArray);
+        Assert.assertEquals(7, objectArray.length);
+        Assert.assertTrue(Arrays.stream(objectArray).allMatch(e -> (e.length == 6)));
+        Arrays.stream(objectArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 5));
+        Assert.assertTrue(Arrays.stream(objectArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, testObject))));
+        objectArray = ArrayUtility.create3D(Object.class);
+        Assert.assertNotNull(objectArray);
+        Assert.assertEquals(0, objectArray.length);
+        
+        //invalid
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create3D(Object.class, -1, 5, 5));
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create3D(Object.class, 5, -1, 5));
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create3D(Object.class, 5, 5, -1));
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create3D(18, -1, 5, 5));
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create3D(18, 5, -1, 5));
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create3D(18, 5, 5, -1));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.create3D((Class<?>) null, 6, 6, 6));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.create3D((Object) null, 6, 6, 6));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.create3D(null));
     }
     
     /**
@@ -598,6 +961,135 @@ public class ArrayUtilityTest {
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 ArrayUtility.indexOf(null, new Object()));
+    }
+    
+    /**
+     * JUnit test of getOrDefault.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#getOrDefault(Object[], int, Object)
+     */
+    @Test
+    public void testGetOrDefault() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        Assert.assertEquals(false, ArrayUtility.getOrDefault(booleanArray, 1, true));
+        Assert.assertEquals(true, ArrayUtility.getOrDefault(booleanArray, 3, false));
+        Assert.assertEquals(true, ArrayUtility.getOrDefault(booleanArray, 12, true));
+        Assert.assertEquals(true, ArrayUtility.getOrDefault(booleanArray, -1, true));
+        Assert.assertEquals(true, ArrayUtility.getOrDefault(booleanArray, 3, null));
+        Assert.assertNull(ArrayUtility.getOrDefault(booleanArray, 12, null));
+        Assert.assertEquals(true, ArrayUtility.getOrDefault(null, 2, true));
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        Assert.assertEquals(312, ArrayUtility.getOrDefault(integerArray, 1, 100).intValue());
+        Assert.assertEquals(5, ArrayUtility.getOrDefault(integerArray, 3, 100).intValue());
+        Assert.assertEquals(100, ArrayUtility.getOrDefault(integerArray, 12, 100).intValue());
+        Assert.assertEquals(100, ArrayUtility.getOrDefault(integerArray, -1, 100).intValue());
+        Assert.assertEquals(5, ArrayUtility.getOrDefault(integerArray, 3, null).intValue());
+        Assert.assertNull(ArrayUtility.getOrDefault(integerArray, 12, null));
+        Assert.assertEquals(100, ArrayUtility.getOrDefault(null, 2, 100).intValue());
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        Assert.assertEquals(312.91f, ArrayUtility.getOrDefault(floatArray, 1, 100.0f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(5.45f, ArrayUtility.getOrDefault(floatArray, 3, 100.0f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(100.0f, ArrayUtility.getOrDefault(floatArray, 12, 100.0f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(100.0f, ArrayUtility.getOrDefault(floatArray, -1, 100.0f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(5.45f, ArrayUtility.getOrDefault(floatArray, 3, null), TestUtils.DELTA_FLOAT);
+        Assert.assertNull(ArrayUtility.getOrDefault(floatArray, 12, null));
+        Assert.assertEquals(100.0f, ArrayUtility.getOrDefault(null, 2, 100.0f), TestUtils.DELTA_FLOAT);
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        Assert.assertEquals(312.9113874d, ArrayUtility.getOrDefault(doubleArray, 1, 100.0d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(5.457894511d, ArrayUtility.getOrDefault(doubleArray, 3, 100.0d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(100.0d, ArrayUtility.getOrDefault(doubleArray, 12, 100.0d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(100.0d, ArrayUtility.getOrDefault(doubleArray, -1, 100.0d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(5.457894511d, ArrayUtility.getOrDefault(doubleArray, 3, null), TestUtils.DELTA_DOUBLE);
+        Assert.assertNull(ArrayUtility.getOrDefault(doubleArray, 12, null));
+        Assert.assertEquals(100.0d, ArrayUtility.getOrDefault(null, 2, 100.0d), TestUtils.DELTA_DOUBLE);
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        Assert.assertEquals(3129113874L, ArrayUtility.getOrDefault(longArray, 1, 100L).longValue());
+        Assert.assertEquals(5457894511L, ArrayUtility.getOrDefault(longArray, 3, 100L).longValue());
+        Assert.assertEquals(100L, ArrayUtility.getOrDefault(longArray, 12, 100L).longValue());
+        Assert.assertEquals(100L, ArrayUtility.getOrDefault(longArray, -1, 100L).longValue());
+        Assert.assertEquals(5457894511L, ArrayUtility.getOrDefault(longArray, 3, null).longValue());
+        Assert.assertNull(ArrayUtility.getOrDefault(longArray, 12, null));
+        Assert.assertEquals(100L, ArrayUtility.getOrDefault(null, 2, 100L).longValue());
+        
+        //object
+        final Object testObject = new HashMap<>();
+        final Object testObject2 = new JSONObject();
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), testObject, new Object()};
+        Assert.assertEquals(54, ArrayUtility.getOrDefault(objectArray, 1, testObject2));
+        Assert.assertEquals(testObject, ArrayUtility.getOrDefault(objectArray, 3, testObject2));
+        Assert.assertEquals(testObject2, ArrayUtility.getOrDefault(objectArray, 12, testObject2));
+        Assert.assertEquals(testObject2, ArrayUtility.getOrDefault(objectArray, -1, testObject2));
+        Assert.assertEquals(testObject, ArrayUtility.getOrDefault(objectArray, 3, null));
+        Assert.assertNull(ArrayUtility.getOrDefault(objectArray, 12, null));
+        Assert.assertEquals(testObject2, ArrayUtility.getOrDefault(null, 2, testObject2));
+    }
+    
+    /**
+     * JUnit test of getOrNull.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#getOrNull(Object[], int)
+     */
+    @Test
+    public void testGetOrNull() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        Assert.assertEquals(false, ArrayUtility.getOrNull(booleanArray, 1));
+        Assert.assertEquals(true, ArrayUtility.getOrNull(booleanArray, 3));
+        Assert.assertNull(ArrayUtility.getOrNull(booleanArray, 12));
+        Assert.assertNull(ArrayUtility.getOrNull(booleanArray, -1));
+        Assert.assertNull(ArrayUtility.getOrNull(null, 2));
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        Assert.assertEquals(312, ArrayUtility.getOrNull(integerArray, 1).intValue());
+        Assert.assertEquals(5, ArrayUtility.getOrNull(integerArray, 3).intValue());
+        Assert.assertNull(ArrayUtility.getOrNull(integerArray, 12));
+        Assert.assertNull(ArrayUtility.getOrNull(integerArray, -1));
+        Assert.assertNull(ArrayUtility.getOrNull(null, 2));
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        Assert.assertEquals(312.91f, ArrayUtility.getOrNull(floatArray, 1), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(5.45f, ArrayUtility.getOrNull(floatArray, 3), TestUtils.DELTA_FLOAT);
+        Assert.assertNull(ArrayUtility.getOrNull(floatArray, 12));
+        Assert.assertNull(ArrayUtility.getOrNull(floatArray, -1));
+        Assert.assertNull(ArrayUtility.getOrNull(null, 2));
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        Assert.assertEquals(312.9113874d, ArrayUtility.getOrNull(doubleArray, 1), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(5.457894511d, ArrayUtility.getOrNull(doubleArray, 3), TestUtils.DELTA_DOUBLE);
+        Assert.assertNull(ArrayUtility.getOrNull(doubleArray, 12));
+        Assert.assertNull(ArrayUtility.getOrNull(doubleArray, -1));
+        Assert.assertNull(ArrayUtility.getOrNull(null, 2));
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        Assert.assertEquals(3129113874L, ArrayUtility.getOrNull(longArray, 1).longValue());
+        Assert.assertEquals(5457894511L, ArrayUtility.getOrNull(longArray, 3).longValue());
+        Assert.assertNull(ArrayUtility.getOrNull(longArray, 12));
+        Assert.assertNull(ArrayUtility.getOrNull(longArray, -1));
+        Assert.assertNull(ArrayUtility.getOrNull(null, 2));
+        
+        //object
+        final Object testObject = new HashMap<>();
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), testObject, new Object()};
+        Assert.assertEquals(54, ArrayUtility.getOrNull(objectArray, 1));
+        Assert.assertEquals(testObject, ArrayUtility.getOrNull(objectArray, 3));
+        Assert.assertNull(ArrayUtility.getOrNull(objectArray, 12));
+        Assert.assertNull(ArrayUtility.getOrNull(objectArray, -1));
+        Assert.assertNull(ArrayUtility.getOrNull(null, 2));
     }
     
     /**
