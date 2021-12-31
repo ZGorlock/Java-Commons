@@ -88,7 +88,7 @@ public class NumberUtility {
      */
     public static String extractNumberChars(String str) {
         return str.chars().boxed()
-                .map(e -> (char) e.intValue())
+                .map(i -> (char) i.intValue())
                 .filter(NumberUtility::isNumberChar)
                 .map(String::valueOf)
                 .collect(Collectors.joining());

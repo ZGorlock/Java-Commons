@@ -115,12 +115,9 @@ public abstract class BaseComponent<T extends Number, I extends BaseComponent<?,
         }
         BaseComponent other = (BaseComponent) o;
         
-        if (!dimensionalityEqual(other) || !lengthEqual(other)) {
-            return false;
-        }
-        
-        return IntStream.range(0, getLength()).boxed().allMatch(e ->
-                getHandler().isEqual(getRawComponents()[e], other.getRawComponents()[e]));
+        return dimensionalityEqual(other) && lengthEqual(other) &&
+                IntStream.range(0, getLength()).boxed().allMatch(i ->
+                        getHandler().isEqual(getRawComponents()[i], other.getRawComponents()[i]));
     }
     
     /**

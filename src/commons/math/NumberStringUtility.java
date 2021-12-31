@@ -145,7 +145,7 @@ public final class NumberStringUtility {
      */
     private static final List<String> VALID_LATIN_POWER_NAME_TOKENS = Stream.of(
                     IntStream.rangeClosed(NumberNameSet.LATIN_SPECIAL.ordinal(), NumberNameSet.LATIN_THOUSANDS_SEPARATORS.ordinal()).boxed()
-                            .map(e -> NUMBER_NAMES[e]).flatMap(Arrays::stream).filter(e -> !e.isEmpty())
+                            .map(i -> NUMBER_NAMES[i]).flatMap(Arrays::stream).filter(e -> !e.isEmpty())
                             .sorted((o1, o2) -> Integer.compare(o2.length(), o1.length())).toArray(),
                     Arrays.stream(NUMBER_NAMES[NumberNameSet.SUFFIXES.ordinal()])
                             .sorted((o1, o2) -> Integer.compare(o2.length(), o1.length())).toArray())
@@ -197,7 +197,7 @@ public final class NumberStringUtility {
      */
     public static final Pattern LATIN_POWER_NAME_PATTERN = Pattern.compile("^" +
             IntStream.rangeClosed(NumberNameSet.LATIN_SPECIAL.ordinal(), NumberNameSet.SUFFIXES.ordinal()).boxed()
-                    .map(e -> NUMBER_NAMES[e]).flatMap(Arrays::stream).filter(e -> !e.isEmpty())
+                    .map(i -> NUMBER_NAMES[i]).flatMap(Arrays::stream).filter(e -> !e.isEmpty())
                     .collect(Collectors.joining("|", "(?:", ")")) + "+$"
     );
     
@@ -945,7 +945,7 @@ public final class NumberStringUtility {
                         final long powerOffset = (latinPowers.get(0) * 3) + components.get(latinPowers.get(0)).toPlainString().length() - 1;
                         final String baseNumber = LongStream.rangeClosed(((latinPowers.size() > 1) ? latinPowers.get(latinPowers.size() - 1) : latinPowers.get(0)), latinPowers.get(0))
                                 .boxed().sorted(Collections.reverseOrder())
-                                .map(e -> StringUtility.padZero((components.containsKey(e) ? components.get(e).toPlainString() : ""), 3))
+                                .map(l -> StringUtility.padZero((components.containsKey(l) ? components.get(l).toPlainString() : ""), 3))
                                 .collect(Collectors.joining()).replaceAll("(?:^0+)|(?:0+$)", "");
                         final long zeroCount = Math.max(((powerOffset >= 0) ? (powerOffset - baseNumber.length() + 1) : (-powerOffset - 1)), 0);
                         final long numberSize = (powerOffset >= 0) ? powerOffset : (baseNumber.length() + zeroCount);
