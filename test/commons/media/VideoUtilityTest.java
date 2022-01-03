@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 import commons.access.Filesystem;
@@ -36,6 +37,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -49,7 +52,7 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({VideoUtility.class, FFmpeg.class, CommonsLogging.class})
+@PrepareForTest({VideoUtility.class, FFmpeg.class, FFmpeg.Identifier.class, FFmpeg.Identifier.Stream.class, CommonsLogging.class})
 public class VideoUtilityTest {
     
     //Logger
@@ -99,6 +102,8 @@ public class VideoUtilityTest {
     public void setup() throws Exception {
         PowerMockito.mockStatic(CommonsLogging.class);
         PowerMockito.doReturn(true).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
+        
+        FFmpeg.setMaxMuxingQueueSize(1024);
     }
     
     /**
@@ -150,7 +155,7 @@ public class VideoUtilityTest {
         final File testOutput7 = new File(testDir, "test1.avi");
         final File fakeSource = new File(testResources, "fakeTest.mkv");
         final File fakeOutput = new File(testDir, "fakeTest.mp4");
-        List<FFmpeg.StreamMetadata> streams;
+        List<FFmpeg.MediaInfo.Stream> streams;
         
         //initial
         Assert.assertTrue(testSourceInitial.exists());
@@ -158,24 +163,24 @@ public class VideoUtilityTest {
         Assert.assertEquals(15, FFmpeg.getStreamCount(testSourceInitial));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testSourceInitial));
         streams = FFmpeg.getStreams(testSourceInitial);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
         }
         Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.removeSubtitles(testSourceInitial, testSource);
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
+        VideoUtility.removeSubtitleStreams(testSourceInitial, testSource);
         Assert.assertTrue(testSource.exists());
         Assert.assertFalse(Filesystem.isEmpty(testSource));
         Assert.assertEquals(9, FFmpeg.getStreamCount(testSource));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testSource));
         streams = FFmpeg.getStreams(testSource);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
         }
         Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //standard
         VideoUtility.convertVideo(testSource, testOutput1);
@@ -184,47 +189,47 @@ public class VideoUtilityTest {
         Assert.assertEquals(10, FFmpeg.getStreamCount(testOutput1));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput1));
         streams = FFmpeg.getStreams(testOutput1);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
         }
         Assert.assertEquals("h264|h264|h264|aac|aac|aac|aac|aac|aac|bin_data",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         VideoUtility.convertVideo(testSource, testOutput2);
         Assert.assertTrue(testOutput2.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput2));
         Assert.assertEquals(10, FFmpeg.getStreamCount(testOutput2));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput2));
         streams = FFmpeg.getStreams(testOutput2);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNull(stream.getTitle());
         }
         Assert.assertEquals("h264|h264|h264|aac|aac|aac|aac|aac|aac|bin_data",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         VideoUtility.convertVideo(testSource, testOutput3);
         Assert.assertTrue(testOutput3.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput3));
         Assert.assertEquals(9, FFmpeg.getStreamCount(testOutput3));
         Assert.assertEquals(0, FFmpeg.getChapterCount(testOutput3));
         streams = FFmpeg.getStreams(testOutput3);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNull(stream.getLanguage());
         }
         Assert.assertEquals("mpeg4|mpeg4|mpeg4|mp3|mp3|mp3|mp3|mp3|mp3",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         VideoUtility.convertVideo(testSource, testOutput4);
         Assert.assertTrue(testOutput4.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput4));
         Assert.assertEquals(9, FFmpeg.getStreamCount(testOutput4));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput4));
         streams = FFmpeg.getStreams(testOutput4);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
         }
         Assert.assertEquals("h264|h264|h264|vorbis|vorbis|vorbis|vorbis|vorbis|vorbis",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //file type
         VideoUtility.convertVideo(testOutput4, "mp4");
@@ -233,35 +238,35 @@ public class VideoUtilityTest {
         Assert.assertEquals(10, FFmpeg.getStreamCount(testOutput5));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput5));
         streams = FFmpeg.getStreams(testOutput5);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
         }
         Assert.assertEquals("h264|h264|h264|aac|aac|aac|aac|aac|aac|bin_data",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         VideoUtility.convertVideo(testOutput4, "mov");
         Assert.assertTrue(testOutput6.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput6));
         Assert.assertEquals(10, FFmpeg.getStreamCount(testOutput6));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput6));
         streams = FFmpeg.getStreams(testOutput6);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNull(stream.getTitle());
         }
         Assert.assertEquals("h264|h264|h264|aac|aac|aac|aac|aac|aac|bin_data",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         VideoUtility.convertVideo(testOutput4, "avi");
         Assert.assertTrue(testOutput7.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput7));
         Assert.assertEquals(9, FFmpeg.getStreamCount(testOutput7));
         Assert.assertEquals(0, FFmpeg.getChapterCount(testOutput7));
         streams = FFmpeg.getStreams(testOutput7);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNull(stream.getLanguage());
         }
         Assert.assertEquals("mpeg4|mpeg4|mpeg4|mp3|mp3|mp3|mp3|mp3|mp3",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //invalid
         Assert.assertTrue(VideoUtility.convertVideo(testSourceInitial, testOutput1).contains(
@@ -304,7 +309,7 @@ public class VideoUtilityTest {
         final File testOutput3 = new File(testDir, "test.mp4");
         final File fakeSource = new File(testResources, "fakeTest.mkv");
         final File fakeOutput = new File(testDir, "fakeTest.mp4");
-        List<FFmpeg.StreamMetadata> streams;
+        List<FFmpeg.MediaInfo.Stream> streams;
         
         //initial
         Assert.assertTrue(testSource.exists());
@@ -312,12 +317,12 @@ public class VideoUtilityTest {
         Assert.assertEquals(15, FFmpeg.getStreamCount(testSource));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testSource));
         streams = FFmpeg.getStreams(testSource);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
         }
         Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //default
         VideoUtility.transcodeVideo(testSource, new HashMap<>(), testOutput1);
@@ -326,52 +331,52 @@ public class VideoUtilityTest {
         Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput1));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput1));
         streams = FFmpeg.getStreams(testOutput1);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
         }
         Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //standard
         VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-            put("v:0", "libx265");
-            put("v:1", "libx264");
-            put("v:2", "mpeg4");
-            put("a", "aac");
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 0), "libx265");
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), "libx264");
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 2), "mpeg4");
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), "aac");
         }}, testOutput2);
         Assert.assertTrue(testOutput2.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput2));
         Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput2));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput2));
         streams = FFmpeg.getStreams(testOutput2);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
         }
         Assert.assertEquals("hevc|h264|mpeg4|aac|aac|aac|aac|aac|aac|subrip|subrip|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //to mp4
         VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-            put("v:0", "libx265");
-            put("v:1", "libx264");
-            put("v:2", "mpeg4");
-            put("a:2", "libvorbis");
-            put("a:4", "mp3");
-            put("s", "mov_text");
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 0), "libx265");
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), "libx264");
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 2), "mpeg4");
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), "libvorbis");
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 4), "mp3");
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.SUBTITLE), "mov_text");
         }}, testOutput3);
         Assert.assertTrue(testOutput3.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput3));
         Assert.assertEquals(16, FFmpeg.getStreamCount(testOutput3));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput3));
         streams = FFmpeg.getStreams(testOutput3);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
         }
         Assert.assertEquals("hevc|h264|mpeg4|mp3|aac|vorbis|aac|mp3|vorbis|mov_text|mov_text|mov_text|mov_text|mov_text|mov_text|bin_data",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //invalid
         Assert.assertEquals("[*]" + fakeSource.getAbsolutePath() + ": No such file or directory",
@@ -379,25 +384,37 @@ public class VideoUtilityTest {
         Assert.assertTrue(VideoUtility.transcodeVideo(testSource, new HashMap<>(), fakeOutput).contains(
                 "[*]Could not write header for output file #0 (incorrect codec parameters ?): Invalid argument"));
         Assert.assertTrue(VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-            put("test", "libx265");
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 3), "libx265");
         }}, fakeOutput).contains(
-                "Invalid stream specifier: test."));
+                "[*]Could not write header for output file #0 (incorrect codec parameters ?): Invalid argument"));
         Assert.assertTrue(VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-            put("v:1", "test");
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, -1), "libx265");
+        }}, fakeOutput).contains(
+                "Invalid stream specifier: v:-1."));
+        Assert.assertTrue(VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), "test");
         }}, fakeOutput).contains(
                 "[*]Unknown encoder 'test'"));
         Assert.assertTrue(VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-            put("v:1", "");
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), "");
         }}, fakeOutput).contains(
-                "[*]0: Invalid argument"));
+                "[*]At least one output file must be specified"));
         Assert.assertTrue(VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-            put("v:1", null);
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), null);
         }}, fakeOutput).contains(
                 "[*]Unknown encoder 'null'"));
         Assert.assertTrue(VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-            put(null, null);
+            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), null);
         }}, fakeOutput).contains(
-                "Invalid stream specifier: null."));
+                "[*]Unknown encoder 'null'"));
+        TestUtils.assertException(NullPointerException.class, () ->
+                VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
+                    put(null, "libx264");
+                }}, fakeOutput));
+        TestUtils.assertException(NullPointerException.class, () ->
+                VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
+                    put(null, null);
+                }}, fakeOutput));
         TestUtils.assertException(NullPointerException.class, () ->
                 VideoUtility.transcodeVideo(testSource, null, fakeOutput));
         TestUtils.assertException(NullPointerException.class, () ->
@@ -409,13 +426,13 @@ public class VideoUtilityTest {
     }
     
     /**
-     * JUnit test of mergeStreams.
+     * JUnit test of mergeVideos.
      *
      * @throws Exception When there is an exception.
-     * @see VideoUtility#mergeStreams(List, File)
+     * @see VideoUtility#mergeVideos(List, File)
      */
     @Test
-    public void testMergeStreams() throws Exception {
+    public void testMergeVideos() throws Exception {
         if (!FFmpeg.ffmpegExists()) {
             logger.warn("ffmpeg is not installed... skipping test");
             return;
@@ -433,22 +450,22 @@ public class VideoUtilityTest {
         final File testOutput2 = new File(testDir, "test2.mkv");
         final File fakeSource = new File(testResources, "fakeTest.mkv");
         final File fakeOutput = new File(testDir, "fakeTest.mp4");
-        VideoUtility.extractStream(testSource, 1, testSource1);
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(1), testSource1);
         Assert.assertTrue(testSource1.exists());
         Assert.assertFalse(Filesystem.isEmpty(testSource1));
-        VideoUtility.extractStream(testSource, 2, testSource2);
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(2), testSource2);
         Assert.assertTrue(testSource2.exists());
         Assert.assertFalse(Filesystem.isEmpty(testSource2));
-        VideoUtility.extractStream(testSource, 3, testSource3);
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(3), testSource3);
         Assert.assertTrue(testSource3.exists());
         Assert.assertFalse(Filesystem.isEmpty(testSource3));
-        VideoUtility.extractStream(testSource, 6, testSource4);
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(6), testSource4);
         Assert.assertTrue(testSource4.exists());
         Assert.assertFalse(Filesystem.isEmpty(testSource4));
-        VideoUtility.extractStream(testSource, 8, testSource5);
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(8), testSource5);
         Assert.assertTrue(testSource5.exists());
         Assert.assertFalse(Filesystem.isEmpty(testSource5));
-        VideoUtility.extractStream(testSource, 12, testSource6);
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(12), testSource6);
         Assert.assertTrue(testSource6.exists());
         Assert.assertFalse(Filesystem.isEmpty(testSource6));
         
@@ -458,57 +475,53 @@ public class VideoUtilityTest {
         Assert.assertEquals(15, FFmpeg.getStreamCount(testSource));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testSource));
         Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                FFmpeg.getStreams(testSource).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.mergeStreams(Arrays.asList(testSource, testSource1, testSource3), testOutput1);
+                FFmpeg.getStreams(testSource).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
+        VideoUtility.mergeVideos(Arrays.asList(testSource, testSource1, testSource3), testOutput1);
         Assert.assertTrue(testOutput1.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput1));
         Assert.assertEquals(17, FFmpeg.getStreamCount(testOutput1));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput1));
         Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip|hevc|mp3",
-                FFmpeg.getStreams(testOutput1).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                FFmpeg.getStreams(testOutput1).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //from scratch
-        VideoUtility.mergeStreams(Arrays.asList(testSource1, testSource2, testSource3, testSource4, testSource5, testSource6), testOutput2);
+        VideoUtility.mergeVideos(Arrays.asList(testSource1, testSource2, testSource3, testSource4, testSource5, testSource6), testOutput2);
         Assert.assertTrue(testOutput2.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput2));
         Assert.assertEquals(6, FFmpeg.getStreamCount(testOutput2));
         Assert.assertEquals(0, FFmpeg.getChapterCount(testOutput2));
         Assert.assertEquals("hevc|mpeg4|mp3|aac|vorbis|subrip",
-                FFmpeg.getStreams(testOutput2).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                FFmpeg.getStreams(testOutput2).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //invalid
         Assert.assertEquals("[*]" + fakeSource.getAbsolutePath() + ": No such file or directory",
-                VideoUtility.mergeStreams(Arrays.asList(fakeSource, testSource1, testSource2), fakeOutput));
+                VideoUtility.mergeVideos(Arrays.asList(fakeSource, testSource1, testSource2), fakeOutput));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.mergeStreams(Arrays.asList(testSource1, testSource2, null), fakeOutput));
+                VideoUtility.mergeVideos(Arrays.asList(testSource1, testSource2, null), fakeOutput));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.mergeStreams(Arrays.asList(testSource1, testSource2, testSource3), null));
+                VideoUtility.mergeVideos(Arrays.asList(testSource1, testSource2, testSource3), null));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.mergeStreams(null, fakeOutput));
+                VideoUtility.mergeVideos(null, fakeOutput));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.mergeStreams(null, null));
+                VideoUtility.mergeVideos(null, null));
     }
     
     /**
-     * JUnit test of addStream.
+     * JUnit test of addStreams.
      *
      * @throws Exception When there is an exception.
-     * @see VideoUtility#addStream(File, File, FFmpeg.StreamType, int, File)
-     * @see VideoUtility#addStream(File, File, FFmpeg.StreamType, File)
-     * @see VideoUtility#addStream(File, File, int, File)
+     * @see VideoUtility#addStreams(File, File, List, File)
      */
     @Test
-    public void testAddStream() throws Exception {
+    public void testAddStreams() throws Exception {
         if (!FFmpeg.ffmpegExists()) {
             logger.warn("ffmpeg is not installed... skipping test");
             return;
         }
         
         final File testDir = Filesystem.createTemporaryDirectory();
-        final File testSource = new File(testResources, "test.mkv");
-        final File testSource1 = new File(testDir, "source.mkv");
-        final File testSource2 = new File(testDir, "source.mp4");
-        final File testSource3 = new File(testDir, "source.mp3");
+        final File testStreamSource = new File(testResources, "test.mkv");
+        final File testSource = new File(testDir, "test.mkv");
         final File testOutput1 = new File(testDir, "test1.mkv");
         final File testOutput2 = new File(testDir, "test2.mkv");
         final File testOutput3 = new File(testDir, "test3.mkv");
@@ -517,165 +530,167 @@ public class VideoUtilityTest {
         final File testOutput6 = new File(testDir, "test6.mkv");
         final File testOutput7 = new File(testDir, "test7.mkv");
         final File testOutput8 = new File(testDir, "test8.mkv");
-        final File testOutput9 = new File(testDir, "test9.mkv");
-        final File testOutput10 = new File(testDir, "test10.mkv");
-        final File testOutput11 = new File(testDir, "test11.mkv");
-        final File testOutput12 = new File(testDir, "test12.mkv");
         final File fakeSource = new File(testResources, "fakeTest.mkv");
         final File fakeOutput = new File(testDir, "fakeTest.mp4");
-        VideoUtility.extractStream(testSource, 1, testSource1);
-        Assert.assertTrue(testSource1.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testSource1));
-        VideoUtility.extractStream(testSource, 2, testSource2);
-        Assert.assertTrue(testSource2.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testSource2));
-        VideoUtility.extractStream(testSource, 3, testSource3);
-        Assert.assertTrue(testSource3.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testSource3));
+        VideoUtility.extractStream(testStreamSource, FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), testSource);
         
-        //merge, stream type and index
-        VideoUtility.addStream(testSource, testSource, FFmpeg.StreamType.VIDEO, 1, testOutput1);
+        //initial
+        Assert.assertTrue(testStreamSource.exists());
+        Assert.assertFalse(Filesystem.isEmpty(testStreamSource));
+        Assert.assertEquals(15, FFmpeg.getStreamCount(testStreamSource));
+        Assert.assertEquals(3, FFmpeg.getChapterCount(testStreamSource));
+        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
+                FFmpeg.getStreams(testStreamSource).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
+        Assert.assertTrue(testSource.exists());
+        Assert.assertFalse(Filesystem.isEmpty(testSource));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(testSource));
+        Assert.assertEquals(0, FFmpeg.getChapterCount(testSource));
+        Assert.assertEquals("h264",
+                FFmpeg.getStreams(testSource).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
+        
+        //merge
+        VideoUtility.addStreams(testStreamSource, testStreamSource, List.of(
+                FFmpeg.Identifier.Stream.of("v:2")
+        ), testOutput1);
         Assert.assertTrue(testOutput1.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput1));
         Assert.assertEquals(16, FFmpeg.getStreamCount(testOutput1));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput1));
-        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip|hevc",
-                FFmpeg.getStreams(testOutput1).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.addStream(testSource, testSource, FFmpeg.StreamType.SUBTITLE, 3, testOutput2);
+        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip|mpeg4",
+                FFmpeg.getStreams(testOutput1).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
+        VideoUtility.addStreams(testStreamSource, testStreamSource, Arrays.asList(
+                FFmpeg.Identifier.Stream.of("0:2"),
+                FFmpeg.Identifier.Stream.of("0:5")
+        ), testOutput2);
         Assert.assertTrue(testOutput2.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput2));
-        Assert.assertEquals(16, FFmpeg.getStreamCount(testOutput2));
+        Assert.assertEquals(17, FFmpeg.getStreamCount(testOutput2));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput2));
-        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip|subrip",
-                FFmpeg.getStreams(testOutput2).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        
-        //merge, stream type
-        VideoUtility.addStream(testSource, testSource, FFmpeg.StreamType.VIDEO, testOutput3);
+        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip|mpeg4|flac",
+                FFmpeg.getStreams(testOutput2).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
+        VideoUtility.addStreams(testStreamSource, testStreamSource, Arrays.asList(
+                FFmpeg.Identifier.Stream.of("0:2"),
+                FFmpeg.Identifier.Stream.of("a:2"),
+                FFmpeg.Identifier.Stream.of("s")
+        ), testOutput3);
         Assert.assertTrue(testOutput3.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput3));
-        Assert.assertEquals(16, FFmpeg.getStreamCount(testOutput3));
+        Assert.assertEquals(23, FFmpeg.getStreamCount(testOutput3));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput3));
-        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip|h264",
-                FFmpeg.getStreams(testOutput3).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.addStream(testSource, testSource, FFmpeg.StreamType.AUDIO, testOutput4);
+        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip|mpeg4|flac|subrip|subrip|subrip|subrip|subrip|subrip",
+                FFmpeg.getStreams(testOutput3).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
+        VideoUtility.addStreams(testStreamSource, testStreamSource, Collections.emptyList(), testOutput4);
         Assert.assertTrue(testOutput4.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput4));
-        Assert.assertEquals(16, FFmpeg.getStreamCount(testOutput4));
+        Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput4));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput4));
-        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip|mp3",
-                FFmpeg.getStreams(testOutput4).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
+                FFmpeg.getStreams(testOutput4).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
-        //merge, index
-        VideoUtility.addStream(testSource, testSource, 2, testOutput5);
+        //from scratch
+        VideoUtility.addStreams(testSource, testStreamSource, List.of(
+                FFmpeg.Identifier.Stream.of("v:2")
+        ), testOutput5);
         Assert.assertTrue(testOutput5.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput5));
-        Assert.assertEquals(16, FFmpeg.getStreamCount(testOutput5));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput5));
-        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip|mpeg4",
-                FFmpeg.getStreams(testOutput5).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.addStream(testSource, testSource, 5, testOutput6);
+        Assert.assertEquals(2, FFmpeg.getStreamCount(testOutput5));
+        Assert.assertEquals(0, FFmpeg.getChapterCount(testOutput5));
+        Assert.assertEquals("h264|mpeg4",
+                FFmpeg.getStreams(testOutput5).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
+        VideoUtility.addStreams(testSource, testStreamSource, Arrays.asList(
+                FFmpeg.Identifier.Stream.of("0:2"),
+                FFmpeg.Identifier.Stream.of("0:5")
+        ), testOutput6);
         Assert.assertTrue(testOutput6.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput6));
-        Assert.assertEquals(16, FFmpeg.getStreamCount(testOutput6));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput6));
-        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip|flac",
-                FFmpeg.getStreams(testOutput6).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        
-        //from scratch, stream type and index
-        VideoUtility.addStream(testSource1, testSource, FFmpeg.StreamType.VIDEO, 2, testOutput7);
+        Assert.assertEquals(3, FFmpeg.getStreamCount(testOutput6));
+        Assert.assertEquals(0, FFmpeg.getChapterCount(testOutput6));
+        Assert.assertEquals("h264|mpeg4|flac",
+                FFmpeg.getStreams(testOutput6).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
+        VideoUtility.addStreams(testSource, testStreamSource, Arrays.asList(
+                FFmpeg.Identifier.Stream.of("0:2"),
+                FFmpeg.Identifier.Stream.of("a:2"),
+                FFmpeg.Identifier.Stream.of("s")
+        ), testOutput7);
         Assert.assertTrue(testOutput7.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput7));
-        Assert.assertEquals(2, FFmpeg.getStreamCount(testOutput7));
+        Assert.assertEquals(9, FFmpeg.getStreamCount(testOutput7));
         Assert.assertEquals(0, FFmpeg.getChapterCount(testOutput7));
-        Assert.assertEquals("hevc|mpeg4",
-                FFmpeg.getStreams(testOutput7).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.addStream(testSource1, testSource2, FFmpeg.StreamType.VIDEO, 0, testOutput8);
+        Assert.assertEquals("h264|mpeg4|flac|subrip|subrip|subrip|subrip|subrip|subrip",
+                FFmpeg.getStreams(testOutput7).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
+        VideoUtility.addStreams(testSource, testStreamSource, Collections.emptyList(), testOutput8);
         Assert.assertTrue(testOutput8.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput8));
-        Assert.assertEquals(2, FFmpeg.getStreamCount(testOutput8));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(testOutput8));
         Assert.assertEquals(0, FFmpeg.getChapterCount(testOutput8));
-        Assert.assertEquals("hevc|mpeg4",
-                FFmpeg.getStreams(testOutput8).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        
-        //from scratch, stream type
-        VideoUtility.addStream(testSource2, testSource, FFmpeg.StreamType.AUDIO, testOutput9);
-        Assert.assertTrue(testOutput9.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput9));
-        Assert.assertEquals(2, FFmpeg.getStreamCount(testOutput9));
-        Assert.assertEquals(0, FFmpeg.getChapterCount(testOutput9));
-        Assert.assertEquals("mpeg4|mp3",
-                FFmpeg.getStreams(testOutput9).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.addStream(testSource2, testSource3, FFmpeg.StreamType.AUDIO, testOutput10);
-        Assert.assertTrue(testOutput10.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput10));
-        Assert.assertEquals(2, FFmpeg.getStreamCount(testOutput10));
-        Assert.assertEquals(0, FFmpeg.getChapterCount(testOutput10));
-        Assert.assertEquals("mpeg4|mp3",
-                FFmpeg.getStreams(testOutput10).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        
-        //from scratch, index
-        VideoUtility.addStream(testSource3, testSource, 6, testOutput11);
-        Assert.assertTrue(testOutput11.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput11));
-        Assert.assertEquals(2, FFmpeg.getStreamCount(testOutput11));
-        Assert.assertEquals(0, FFmpeg.getChapterCount(testOutput11));
-        Assert.assertEquals("mp3|aac",
-                FFmpeg.getStreams(testOutput11).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.addStream(testSource3, testSource1, 0, testOutput12);
-        Assert.assertTrue(testOutput12.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput12));
-        Assert.assertEquals(2, FFmpeg.getStreamCount(testOutput12));
-        Assert.assertEquals(0, FFmpeg.getChapterCount(testOutput12));
-        Assert.assertEquals("mp3|hevc",
-                FFmpeg.getStreams(testOutput12).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+        Assert.assertEquals("h264",
+                FFmpeg.getStreams(testOutput8).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //invalid
-        Assert.assertTrue(VideoUtility.addStream(testSource, testSource1, FFmpeg.StreamType.VIDEO, 2, testOutput1).contains(
-                "[*]Stream map '1:v:2' matches no streams."));
-        Assert.assertTrue(VideoUtility.addStream(testSource, testSource1, FFmpeg.StreamType.AUDIO, testOutput1).contains(
-                "[*]Stream map '1:a:0' matches no streams."));
-        Assert.assertTrue(VideoUtility.addStream(testSource, testSource1, 3, fakeOutput).contains(
-                "[*]Stream map '1:3' matches no streams."));
-        Assert.assertTrue(VideoUtility.addStream(testSource, testSource1, null, 2, testOutput1).contains(
-                "[*]Stream map '1:2' matches no streams."));
-        Assert.assertTrue(VideoUtility.addStream(testSource, fakeSource, null, testOutput1).contains(
-                "fakeTest.mkv: No such file or directory"));
-        Assert.assertTrue(VideoUtility.addStream(testSource, fakeSource, FFmpeg.StreamType.VIDEO, 2, testOutput1).contains(
-                "fakeTest.mkv: No such file or directory"));
-        Assert.assertTrue(VideoUtility.addStream(testSource, fakeSource, FFmpeg.StreamType.AUDIO, testOutput1).contains(
-                "fakeTest.mkv: No such file or directory"));
-        Assert.assertTrue(VideoUtility.addStream(testSource, fakeSource, 3, testOutput1).contains(
-                "fakeTest.mkv: No such file or directory"));
-        Assert.assertTrue(VideoUtility.addStream(testSource, testSource, FFmpeg.StreamType.VIDEO, 2, fakeOutput).contains(
+        Assert.assertTrue(VideoUtility.addStreams(testSource, testStreamSource, Arrays.asList(
+                FFmpeg.Identifier.Stream.of("v:3"),
+                FFmpeg.Identifier.Stream.of("a:6"),
+                FFmpeg.Identifier.Stream.of("s:6")
+        ), fakeOutput).contains(
+                "[*]Stream map '1:v:3' matches no streams."));
+        TestUtils.assertException(NullPointerException.class, () ->
+                VideoUtility.addStreams(testSource, testStreamSource, Arrays.asList(
+                        FFmpeg.Identifier.Stream.of("v:-1"),
+                        FFmpeg.Identifier.Stream.of("a:-1"),
+                        FFmpeg.Identifier.Stream.of("s:-1")
+                ), fakeOutput));
+        Assert.assertTrue(VideoUtility.addStreams(testSource, testStreamSource, Arrays.asList(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.SUBTITLE)), fakeOutput).contains(
                 "[*]Could not write header for output file #0 (incorrect codec parameters ?): Invalid argument"));
-        Assert.assertTrue(VideoUtility.addStream(testSource, testSource, FFmpeg.StreamType.AUDIO, fakeOutput).contains(
-                "[*]Could not write header for output file #0 (incorrect codec parameters ?): Invalid argument"));
-        Assert.assertTrue(VideoUtility.addStream(testSource, testSource, 3, fakeOutput).contains(
-                "[*]Could not write header for output file #0 (incorrect codec parameters ?): Invalid argument"));
+        Assert.assertTrue(VideoUtility.addStreams(fakeSource, testStreamSource, Arrays.asList(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.SUBTITLE)), testOutput1).contains(
+                "fakeTest.mkv: No such file or directory"));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.addStream(testSource, null, FFmpeg.StreamType.VIDEO, 2, testOutput1));
+                VideoUtility.addStreams(testSource, testStreamSource, Arrays.asList(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.SUBTITLE), null), testOutput1));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.addStream(testSource, null, FFmpeg.StreamType.AUDIO, testOutput1));
+                VideoUtility.addStreams(testSource, testStreamSource, null, testOutput1));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.addStream(testSource, null, 3, testOutput1));
+                VideoUtility.addStreams(testSource, testStreamSource, Arrays.asList(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.SUBTITLE)), null));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.addStream(testSource, testSource, FFmpeg.StreamType.VIDEO, 2, null));
+                VideoUtility.addStreams(null, testStreamSource, Arrays.asList(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.SUBTITLE)), testOutput1));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.addStream(testSource, testSource, FFmpeg.StreamType.AUDIO, null));
+                VideoUtility.addStreams(testSource, null, Arrays.asList(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.SUBTITLE)), testOutput1));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.addStream(testSource, testSource, 3, null));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.addStream(null, testSource, FFmpeg.StreamType.VIDEO, 2, testOutput1));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.addStream(null, testSource, FFmpeg.StreamType.AUDIO, testOutput1));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.addStream(null, testSource, 3, testOutput1));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.addStream(null, null, FFmpeg.StreamType.VIDEO, 2, null));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.addStream(null, null, FFmpeg.StreamType.AUDIO, null));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.addStream(null, null, 3, null));
+                VideoUtility.addStreams(null, null, Arrays.asList(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.SUBTITLE)), null));
+    }
+    
+    /**
+     * JUnit test of addStream.
+     *
+     * @throws Exception When there is an exception.
+     * @see VideoUtility#addStream(File, File, FFmpeg.Identifier.Stream, File)
+     */
+    @Test
+    public void testAddStream() throws Exception {
+        PowerMockito.mockStatic(VideoUtility.class);
+        PowerMockito.doCallRealMethod().when(VideoUtility.class, "addStream", ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class), ArgumentMatchers.any(FFmpeg.Identifier.Stream.class), ArgumentMatchers.any(File.class));
+        final File testSource = new File(testResources, "test.mkv");
+        final File testStream = new File(Filesystem.createTemporaryDirectory(), "video.mkv");
+        final File testOutput = new File(Filesystem.createTemporaryDirectory(), "test.mkv");
+        VideoUtility.addStream(testSource, testStream, FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), testOutput);
+        PowerMockito.verifyStatic(VideoUtility.class);
+        VideoUtility.addStreams(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(testStream), ArgumentMatchers.eq(Collections.singletonList(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO))), ArgumentMatchers.eq(testOutput));
+    }
+    
+    /**
+     * JUnit test of addStreamOfType.
+     *
+     * @throws Exception When there is an exception.
+     * @see VideoUtility#addStreamOfType(File, File, FFmpeg.StreamType, File)
+     */
+    @Test
+    public void testAddStreamOfType() throws Exception {
+        PowerMockito.mockStatic(VideoUtility.class);
+        PowerMockito.doCallRealMethod().when(VideoUtility.class, "addStreamOfType", ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class), ArgumentMatchers.any(FFmpeg.StreamType.class), ArgumentMatchers.any(File.class));
+        final File testSource = new File(testResources, "test.mkv");
+        final File testStream = new File(Filesystem.createTemporaryDirectory(), "video.mkv");
+        final File testOutput = new File(Filesystem.createTemporaryDirectory(), "test.mkv");
+        VideoUtility.addStreamOfType(testSource, testStream, FFmpeg.StreamType.VIDEO, testOutput);
+        PowerMockito.verifyStatic(VideoUtility.class);
+        VideoUtility.addStream(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(testStream), ArgumentMatchers.eq(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO)), ArgumentMatchers.eq(testOutput));
     }
     
     /**
@@ -693,7 +708,7 @@ public class VideoUtilityTest {
         final File testOutput = new File(Filesystem.createTemporaryDirectory(), "test.mkv");
         VideoUtility.addVideoStream(testSource, testStream, testOutput);
         PowerMockito.verifyStatic(VideoUtility.class);
-        VideoUtility.addStream(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(testStream), ArgumentMatchers.eq(FFmpeg.StreamType.VIDEO), ArgumentMatchers.eq(testOutput));
+        VideoUtility.addStreamOfType(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(testStream), ArgumentMatchers.eq(FFmpeg.StreamType.VIDEO), ArgumentMatchers.eq(testOutput));
     }
     
     /**
@@ -711,25 +726,25 @@ public class VideoUtilityTest {
         final File testOutput = new File(Filesystem.createTemporaryDirectory(), "test.mkv");
         VideoUtility.addAudioStream(testSource, testStream, testOutput);
         PowerMockito.verifyStatic(VideoUtility.class);
-        VideoUtility.addStream(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(testStream), ArgumentMatchers.eq(FFmpeg.StreamType.AUDIO), ArgumentMatchers.eq(testOutput));
+        VideoUtility.addStreamOfType(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(testStream), ArgumentMatchers.eq(FFmpeg.StreamType.AUDIO), ArgumentMatchers.eq(testOutput));
     }
     
     /**
-     * JUnit test of addSubtitles.
+     * JUnit test of addSubtitleStream.
      *
      * @throws Exception When there is an exception.
-     * @see VideoUtility#addSubtitles(File, File, File)
+     * @see VideoUtility#addSubtitleStream(File, File, File)
      */
     @Test
-    public void testAddSubtitles() throws Exception {
+    public void testAddSubtitleStream() throws Exception {
         PowerMockito.mockStatic(VideoUtility.class);
-        PowerMockito.doCallRealMethod().when(VideoUtility.class, "addSubtitles", ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class));
+        PowerMockito.doCallRealMethod().when(VideoUtility.class, "addSubtitleStream", ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class));
         final File testSource = new File(testResources, "test.mkv");
         final File testStream = new File(Filesystem.createTemporaryDirectory(), "subtitle.srt");
         final File testOutput = new File(Filesystem.createTemporaryDirectory(), "test.mkv");
-        VideoUtility.addSubtitles(testSource, testStream, testOutput);
+        VideoUtility.addSubtitleStream(testSource, testStream, testOutput);
         PowerMockito.verifyStatic(VideoUtility.class);
-        VideoUtility.addStream(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(testStream), ArgumentMatchers.eq(FFmpeg.StreamType.SUBTITLE), ArgumentMatchers.eq(testOutput));
+        VideoUtility.addStreamOfType(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(testStream), ArgumentMatchers.eq(FFmpeg.StreamType.SUBTITLE), ArgumentMatchers.eq(testOutput));
     }
     
     /**
@@ -747,18 +762,107 @@ public class VideoUtilityTest {
         final File testOutput = new File(Filesystem.createTemporaryDirectory(), "test.mkv");
         VideoUtility.addDataStream(testSource, testStream, testOutput);
         PowerMockito.verifyStatic(VideoUtility.class);
-        VideoUtility.addStream(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(testStream), ArgumentMatchers.eq(FFmpeg.StreamType.DATA), ArgumentMatchers.eq(testOutput));
+        VideoUtility.addStreamOfType(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(testStream), ArgumentMatchers.eq(FFmpeg.StreamType.DATA), ArgumentMatchers.eq(testOutput));
     }
     
     /**
-     * JUnit test of removeStream.
+     * JUnit test of addAllStreamsOfType.
      *
      * @throws Exception When there is an exception.
-     * @see VideoUtility#removeStream(File, FFmpeg.StreamType, int, File)
-     * @see VideoUtility#removeStream(File, int, File)
+     * @see VideoUtility#addAllStreamsOfType(File, File, FFmpeg.StreamType, File)
      */
     @Test
-    public void testRemoveStream() throws Exception {
+    public void testAddAllStreamsOfType() throws Exception {
+        PowerMockito.mockStatic(VideoUtility.class);
+        PowerMockito.doCallRealMethod().when(VideoUtility.class, "addAllStreamsOfType", ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class), ArgumentMatchers.any(FFmpeg.StreamType.class), ArgumentMatchers.any(File.class));
+        final File testSource = new File(testResources, "test.mkv");
+        final File testStream = new File(Filesystem.createTemporaryDirectory(), "video.mkv");
+        final File testOutput = new File(Filesystem.createTemporaryDirectory(), "test.mkv");
+        VideoUtility.addAllStreamsOfType(testSource, testStream, FFmpeg.StreamType.VIDEO, testOutput);
+        PowerMockito.verifyStatic(VideoUtility.class);
+        VideoUtility.addStream(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(testStream), ArgumentMatchers.eq(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO)), ArgumentMatchers.eq(testOutput));
+    }
+    
+    /**
+     * JUnit test of addAllVideoStreams.
+     *
+     * @throws Exception When there is an exception.
+     * @see VideoUtility#addAllVideoStreams(File, File, File)
+     */
+    @Test
+    public void testAddAllVideoStreams() throws Exception {
+        PowerMockito.mockStatic(VideoUtility.class);
+        PowerMockito.doCallRealMethod().when(VideoUtility.class, "addAllVideoStreams", ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class));
+        final File testSource = new File(testResources, "test.mkv");
+        final File testStream = new File(Filesystem.createTemporaryDirectory(), "video.mkv");
+        final File testOutput = new File(Filesystem.createTemporaryDirectory(), "test.mkv");
+        VideoUtility.addAllVideoStreams(testSource, testStream, testOutput);
+        PowerMockito.verifyStatic(VideoUtility.class);
+        VideoUtility.addAllStreamsOfType(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(testStream), ArgumentMatchers.eq(FFmpeg.StreamType.VIDEO), ArgumentMatchers.eq(testOutput));
+    }
+    
+    /**
+     * JUnit test of addAllAudioStreams.
+     *
+     * @throws Exception When there is an exception.
+     * @see VideoUtility#addAllAudioStreams(File, File, File)
+     */
+    @Test
+    public void testAddAllAudioStreams() throws Exception {
+        PowerMockito.mockStatic(VideoUtility.class);
+        PowerMockito.doCallRealMethod().when(VideoUtility.class, "addAllAudioStreams", ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class));
+        final File testSource = new File(testResources, "test.mkv");
+        final File testStream = new File(Filesystem.createTemporaryDirectory(), "audio.aac");
+        final File testOutput = new File(Filesystem.createTemporaryDirectory(), "test.mkv");
+        VideoUtility.addAllAudioStreams(testSource, testStream, testOutput);
+        PowerMockito.verifyStatic(VideoUtility.class);
+        VideoUtility.addAllStreamsOfType(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(testStream), ArgumentMatchers.eq(FFmpeg.StreamType.AUDIO), ArgumentMatchers.eq(testOutput));
+    }
+    
+    /**
+     * JUnit test of addAllSubtitleStreams.
+     *
+     * @throws Exception When there is an exception.
+     * @see VideoUtility#addAllSubtitleStreams(File, File, File)
+     */
+    @Test
+    public void testAddAllSubtitleStreams() throws Exception {
+        PowerMockito.mockStatic(VideoUtility.class);
+        PowerMockito.doCallRealMethod().when(VideoUtility.class, "addAllSubtitleStreams", ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class));
+        final File testSource = new File(testResources, "test.mkv");
+        final File testStream = new File(Filesystem.createTemporaryDirectory(), "subtitle.srt");
+        final File testOutput = new File(Filesystem.createTemporaryDirectory(), "test.mkv");
+        VideoUtility.addAllSubtitleStreams(testSource, testStream, testOutput);
+        PowerMockito.verifyStatic(VideoUtility.class);
+        VideoUtility.addAllStreamsOfType(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(testStream), ArgumentMatchers.eq(FFmpeg.StreamType.SUBTITLE), ArgumentMatchers.eq(testOutput));
+    }
+    
+    /**
+     * JUnit test of addAllDataStreams.
+     *
+     * @throws Exception When there is an exception.
+     * @see VideoUtility#addAllDataStreams(File, File, File)
+     */
+    @Test
+    public void testAddAllDataStreams() throws Exception {
+        PowerMockito.mockStatic(VideoUtility.class);
+        PowerMockito.doCallRealMethod().when(VideoUtility.class, "addAllDataStreams", ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class));
+        final File testSource = new File(testResources, "test.mkv");
+        final File testStream = new File(Filesystem.createTemporaryDirectory(), "data.bin");
+        final File testOutput = new File(Filesystem.createTemporaryDirectory(), "test.mkv");
+        VideoUtility.addAllDataStreams(testSource, testStream, testOutput);
+        PowerMockito.verifyStatic(VideoUtility.class);
+        VideoUtility.addAllStreamsOfType(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(testStream), ArgumentMatchers.eq(FFmpeg.StreamType.DATA), ArgumentMatchers.eq(testOutput));
+    }
+    
+    /**
+     * JUnit test of removeStreams.
+     *
+     * @throws Exception When there is an exception.
+     * @see VideoUtility#removeStreams(File, List, File)
+     */
+    @Test
+    public void testRemoveStreams() throws Exception {
         if (!FFmpeg.ffmpegExists()) {
             logger.warn("ffmpeg is not installed... skipping test");
             return;
@@ -772,171 +876,99 @@ public class VideoUtilityTest {
         final File testOutput4 = new File(testDir, "test4.mkv");
         final File testOutput5 = new File(testDir, "test5.mkv");
         final File testOutput6 = new File(testDir, "test6.mkv");
-        final File fakeOutput = new File(testDir, "fakeTest.mkv");
-        List<FFmpeg.StreamMetadata> streams;
+        final File fakeSource = new File(testResources, "fakeTest.mkv");
+        final File fakeOutput = new File(testDir, "fakeTest.mp4");
         
-        //initial
-        Assert.assertTrue(testSource.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testSource));
-        Assert.assertEquals(15, FFmpeg.getStreamCount(testSource));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testSource));
-        streams = FFmpeg.getStreams(testSource);
-        for (FFmpeg.StreamMetadata stream : streams) {
-            Assert.assertNotNull(stream.getTitle());
-            Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
-        }
-        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        
-        //stream and index
-        VideoUtility.removeStream(testSource, FFmpeg.StreamType.VIDEO, 1, testOutput1);
+        //standard
+        VideoUtility.removeStreams(testSource, Arrays.asList(
+                FFmpeg.Identifier.Stream.of("v:2"),
+                FFmpeg.Identifier.Stream.of("a:2"),
+                FFmpeg.Identifier.Stream.of("s")
+        ), testOutput1);
         Assert.assertTrue(testOutput1.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput1));
-        Assert.assertEquals(14, FFmpeg.getStreamCount(testOutput1));
+        Assert.assertEquals(7, FFmpeg.getStreamCount(testOutput1));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput1));
-        streams = FFmpeg.getStreams(testOutput1);
-        for (FFmpeg.StreamMetadata stream : streams) {
-            Assert.assertNotNull(stream.getTitle());
-            Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
-        }
-        Assert.assertEquals("h264|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.removeStream(testOutput1, FFmpeg.StreamType.AUDIO, 4, testOutput2);
+        Assert.assertEquals("h264|hevc|mp3|aac|aac|opus|vorbis",
+                FFmpeg.getStreams(testOutput1).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
+        VideoUtility.removeStreams(testSource, Arrays.asList(
+                FFmpeg.Identifier.Stream.of("0:2"),
+                FFmpeg.Identifier.Stream.of("0:5")
+        ), testOutput2);
         Assert.assertTrue(testOutput2.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput2));
         Assert.assertEquals(13, FFmpeg.getStreamCount(testOutput2));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput2));
-        streams = FFmpeg.getStreams(testOutput2);
-        for (FFmpeg.StreamMetadata stream : streams) {
-            Assert.assertNotNull(stream.getTitle());
-            Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
-        }
-        Assert.assertEquals("h264|mpeg4|mp3|aac|flac|aac|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.removeStream(testOutput2, FFmpeg.StreamType.SUBTITLE, 2, testOutput3);
+        Assert.assertEquals("h264|hevc|mp3|aac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
+                FFmpeg.getStreams(testOutput2).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
+        VideoUtility.removeStreams(testSource, Arrays.asList(
+                FFmpeg.Identifier.Stream.of("0:2"),
+                FFmpeg.Identifier.Stream.of("a:2"),
+                FFmpeg.Identifier.Stream.of("s")
+        ), testOutput3);
         Assert.assertTrue(testOutput3.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput3));
-        Assert.assertEquals(12, FFmpeg.getStreamCount(testOutput3));
+        Assert.assertEquals(7, FFmpeg.getStreamCount(testOutput3));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput3));
-        streams = FFmpeg.getStreams(testOutput3);
-        for (FFmpeg.StreamMetadata stream : streams) {
-            Assert.assertNotNull(stream.getTitle());
-            Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
-        }
-        Assert.assertEquals("h264|mpeg4|mp3|aac|flac|aac|vorbis|subrip|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        
-        //index
-        VideoUtility.removeStream(testOutput3, 9, testOutput4);
+        Assert.assertEquals("h264|hevc|mp3|aac|aac|opus|vorbis",
+                FFmpeg.getStreams(testOutput3).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
+        VideoUtility.removeStreams(testSource, Collections.emptyList(), testOutput4);
         Assert.assertTrue(testOutput4.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput4));
-        Assert.assertEquals(11, FFmpeg.getStreamCount(testOutput4));
+        Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput4));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput4));
-        streams = FFmpeg.getStreams(testOutput4);
-        for (FFmpeg.StreamMetadata stream : streams) {
-            Assert.assertNotNull(stream.getTitle());
-            Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
-        }
-        Assert.assertEquals("h264|mpeg4|mp3|aac|flac|aac|vorbis|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.removeStream(testOutput4, 4, testOutput5);
-        Assert.assertTrue(testOutput5.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput5));
-        Assert.assertEquals(10, FFmpeg.getStreamCount(testOutput5));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput5));
-        streams = FFmpeg.getStreams(testOutput5);
-        for (FFmpeg.StreamMetadata stream : streams) {
-            Assert.assertNotNull(stream.getTitle());
-            Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
-        }
-        Assert.assertEquals("h264|mpeg4|mp3|aac|aac|vorbis|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.removeStream(testOutput5, 1, testOutput6);
-        Assert.assertTrue(testOutput6.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput6));
-        Assert.assertEquals(9, FFmpeg.getStreamCount(testOutput6));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput6));
-        streams = FFmpeg.getStreams(testOutput6);
-        for (FFmpeg.StreamMetadata stream : streams) {
-            Assert.assertNotNull(stream.getTitle());
-            Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
-        }
-        Assert.assertEquals("h264|mp3|aac|aac|vorbis|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
+                FFmpeg.getStreams(testOutput4).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //invalid
-        streams = FFmpeg.getStreams(testSource);
-        VideoUtility.removeStream(testSource, FFmpeg.StreamType.VIDEO, 3, fakeOutput);
-        Assert.assertEquals(streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")),
-                FFmpeg.getStreams(fakeOutput).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        Assert.assertTrue(Filesystem.deleteFile(fakeOutput));
-        VideoUtility.removeStream(testSource, FFmpeg.StreamType.VIDEO, -1, fakeOutput);
-        Assert.assertEquals(streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")),
-                FFmpeg.getStreams(fakeOutput).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        Assert.assertTrue(Filesystem.deleteFile(fakeOutput));
-        VideoUtility.removeStream(testSource, FFmpeg.StreamType.AUDIO, 6, fakeOutput);
-        Assert.assertEquals(streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")),
-                FFmpeg.getStreams(fakeOutput).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        Assert.assertTrue(Filesystem.deleteFile(fakeOutput));
-        VideoUtility.removeStream(testSource, FFmpeg.StreamType.AUDIO, -1, fakeOutput);
-        Assert.assertEquals(streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")),
-                FFmpeg.getStreams(fakeOutput).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        Assert.assertTrue(Filesystem.deleteFile(fakeOutput));
-        VideoUtility.removeStream(testSource, FFmpeg.StreamType.SUBTITLE, 6, fakeOutput);
-        Assert.assertEquals(streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")),
-                FFmpeg.getStreams(fakeOutput).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        Assert.assertTrue(Filesystem.deleteFile(fakeOutput));
-        VideoUtility.removeStream(testSource, FFmpeg.StreamType.SUBTITLE, -1, fakeOutput);
-        Assert.assertEquals(streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")),
-                FFmpeg.getStreams(fakeOutput).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        Assert.assertTrue(Filesystem.deleteFile(fakeOutput));
-        VideoUtility.removeStream(testSource, FFmpeg.StreamType.DATA, 0, fakeOutput);
-        Assert.assertEquals(streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")),
-                FFmpeg.getStreams(fakeOutput).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        Assert.assertTrue(Filesystem.deleteFile(fakeOutput));
-        VideoUtility.removeStream(testSource, FFmpeg.StreamType.DATA, -1, fakeOutput);
-        Assert.assertEquals(streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")),
-                FFmpeg.getStreams(fakeOutput).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        Assert.assertTrue(Filesystem.deleteFile(fakeOutput));
-        VideoUtility.removeStream(testSource, null, 15, fakeOutput);
-        Assert.assertEquals(streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")),
-                FFmpeg.getStreams(fakeOutput).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        Assert.assertTrue(Filesystem.deleteFile(fakeOutput));
-        VideoUtility.removeStream(testSource, null, -1, fakeOutput);
-        Assert.assertEquals(streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")),
-                FFmpeg.getStreams(fakeOutput).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        Assert.assertTrue(Filesystem.deleteFile(fakeOutput));
-        VideoUtility.removeStream(testSource, 15, fakeOutput);
-        Assert.assertEquals(streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")),
-                FFmpeg.getStreams(fakeOutput).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        Assert.assertTrue(Filesystem.deleteFile(fakeOutput));
-        VideoUtility.removeStream(testSource, -1, fakeOutput);
-        Assert.assertEquals(streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")),
-                FFmpeg.getStreams(fakeOutput).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        Assert.assertTrue(Filesystem.deleteFile(fakeOutput));
-        Assert.assertTrue(VideoUtility.removeStream(new File(testResources, "fakeVideo.mp4"), FFmpeg.StreamType.VIDEO, 0, fakeOutput).contains(
-                "fakeVideo.mp4: No such file or directory"));
-        Assert.assertTrue(VideoUtility.removeStream(new File(testResources, "fakeVideo.mp4"), 0, fakeOutput).contains(
-                "fakeVideo.mp4: No such file or directory"));
+        VideoUtility.removeStreams(testSource, Arrays.asList(
+                FFmpeg.Identifier.Stream.of("v:3"),
+                FFmpeg.Identifier.Stream.of("a:6"),
+                FFmpeg.Identifier.Stream.of("s:6")
+        ), testOutput5);
+        Assert.assertTrue(testOutput5.exists());
+        Assert.assertFalse(Filesystem.isEmpty(testOutput5));
+        Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput5));
+        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput5));
+        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
+                FFmpeg.getStreams(testOutput5).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.removeStream(null, FFmpeg.StreamType.SUBTITLE, 0, fakeOutput));
+                VideoUtility.removeStreams(testSource, Arrays.asList(
+                        FFmpeg.Identifier.Stream.of("v:-1"),
+                        FFmpeg.Identifier.Stream.of("a:-1"),
+                        FFmpeg.Identifier.Stream.of("s:-1")
+                ), testOutput6));
+        Assert.assertTrue(VideoUtility.removeStreams(testSource, Arrays.asList(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.AUDIO)), fakeOutput).contains(
+                "[*]Could not write header for output file #0 (incorrect codec parameters ?): Invalid argument"));
+        Assert.assertTrue(VideoUtility.removeStreams(fakeSource, Arrays.asList(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.AUDIO)), testOutput1).contains(
+                "fakeTest.mkv: No such file or directory"));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.removeStream(null, 1, fakeOutput));
+                VideoUtility.removeStreams(testSource, Arrays.asList(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.AUDIO), null), testOutput1));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.removeStream(testSource, FFmpeg.StreamType.SUBTITLE, 0, null));
+                VideoUtility.removeStreams(testSource, null, testOutput1));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.removeStream(testSource, 1, null));
+                VideoUtility.removeStreams(testSource, Arrays.asList(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.AUDIO)), null));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.removeStream(null, FFmpeg.StreamType.SUBTITLE, 0, null));
+                VideoUtility.removeStreams(null, Arrays.asList(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.AUDIO)), testOutput1));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.removeStream(null, 1, null));
+                VideoUtility.removeStreams(null, Arrays.asList(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.AUDIO)), null));
+    }
+    
+    /**
+     * JUnit test of removeStream.
+     *
+     * @throws Exception When there is an exception.
+     * @see VideoUtility#removeStream(File, FFmpeg.Identifier.Stream, File)
+     */
+    @Test
+    public void testRemoveStream() throws Exception {
+        PowerMockito.mockStatic(VideoUtility.class);
+        PowerMockito.doCallRealMethod().when(VideoUtility.class, "removeStream", ArgumentMatchers.any(File.class), ArgumentMatchers.any(FFmpeg.Identifier.Stream.class), ArgumentMatchers.any(File.class));
+        final File testSource = new File(testResources, "test.mkv");
+        final File testOutput = new File(Filesystem.createTemporaryDirectory(), "test.mkv");
+        VideoUtility.removeStream(testSource, FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), testOutput);
+        PowerMockito.verifyStatic(VideoUtility.class);
+        VideoUtility.removeStreams(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(Collections.singletonList(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO))), ArgumentMatchers.eq(testOutput));
     }
     
     /**
@@ -947,99 +979,13 @@ public class VideoUtilityTest {
      */
     @Test
     public void testRemoveStreamType() throws Exception {
-        if (!FFmpeg.ffmpegExists()) {
-            logger.warn("ffmpeg is not installed... skipping test");
-            return;
-        }
-        
-        final File testDir = Filesystem.createTemporaryDirectory();
+        PowerMockito.mockStatic(VideoUtility.class);
+        PowerMockito.doCallRealMethod().when(VideoUtility.class, "removeStreamType", ArgumentMatchers.any(File.class), ArgumentMatchers.any(FFmpeg.StreamType.class), ArgumentMatchers.any(File.class));
         final File testSource = new File(testResources, "test.mkv");
-        final File testOutput1 = new File(testDir, "test1.mkv");
-        final File testOutput2 = new File(testDir, "test2.mkv");
-        final File testOutput3 = new File(testDir, "test3.mkv");
-        final File testOutput4 = new File(testDir, "test4.mkv");
-        final File fakeOutput = new File(testDir, "fakeTest.mkv");
-        List<FFmpeg.StreamMetadata> streams;
-        
-        //initial
-        Assert.assertTrue(testSource.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testSource));
-        Assert.assertEquals(15, FFmpeg.getStreamCount(testSource));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testSource));
-        streams = FFmpeg.getStreams(testSource);
-        for (FFmpeg.StreamMetadata stream : streams) {
-            Assert.assertNotNull(stream.getTitle());
-            Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
-        }
-        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        
-        //stream and index
-        VideoUtility.removeStreamType(testSource, FFmpeg.StreamType.DATA, testOutput1);
-        Assert.assertTrue(testOutput1.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput1));
-        Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput1));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput1));
-        streams = FFmpeg.getStreams(testOutput1);
-        for (FFmpeg.StreamMetadata stream : streams) {
-            Assert.assertNotNull(stream.getTitle());
-            Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
-        }
-        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.removeStreamType(testOutput1, FFmpeg.StreamType.SUBTITLE, testOutput2);
-        Assert.assertTrue(testOutput2.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput2));
-        Assert.assertEquals(9, FFmpeg.getStreamCount(testOutput2));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput2));
-        streams = FFmpeg.getStreams(testOutput2);
-        for (FFmpeg.StreamMetadata stream : streams) {
-            Assert.assertNotNull(stream.getTitle());
-            Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
-        }
-        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.removeStreamType(testOutput2, FFmpeg.StreamType.AUDIO, testOutput3);
-        Assert.assertTrue(testOutput3.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput3));
-        Assert.assertEquals(3, FFmpeg.getStreamCount(testOutput3));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput3));
-        streams = FFmpeg.getStreams(testOutput3);
-        for (FFmpeg.StreamMetadata stream : streams) {
-            Assert.assertNotNull(stream.getTitle());
-            Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
-        }
-        Assert.assertEquals("h264|hevc|mpeg4",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.removeStreamType(testSource, FFmpeg.StreamType.VIDEO, testOutput4);
-        Assert.assertTrue(testOutput4.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput4));
-        Assert.assertEquals(12, FFmpeg.getStreamCount(testOutput4));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput4));
-        streams = FFmpeg.getStreams(testOutput4);
-        for (FFmpeg.StreamMetadata stream : streams) {
-            Assert.assertNotNull(stream.getTitle());
-            Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
-        }
-        Assert.assertEquals("mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        
-        //invalid
-        Assert.assertTrue(VideoUtility.removeStreamType(testOutput3, FFmpeg.StreamType.VIDEO, fakeOutput).contains(
-                "[*]Output file #0 does not contain any stream"));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.removeStreamType(testSource, null, fakeOutput));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.removeStreamType(null, FFmpeg.StreamType.SUBTITLE, fakeOutput));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.removeStreamType(testSource, FFmpeg.StreamType.SUBTITLE, null));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.removeStreamType(null, FFmpeg.StreamType.SUBTITLE, null));
+        final File testOutput = new File(Filesystem.createTemporaryDirectory(), "test.mkv");
+        VideoUtility.removeStreamType(testSource, FFmpeg.StreamType.VIDEO, testOutput);
+        PowerMockito.verifyStatic(VideoUtility.class);
+        VideoUtility.removeStream(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO)), ArgumentMatchers.eq(testOutput));
     }
     
     /**
@@ -1077,18 +1023,18 @@ public class VideoUtilityTest {
     }
     
     /**
-     * JUnit test of removeSubtitles.
+     * JUnit test of removeSubtitleStreams.
      *
      * @throws Exception When there is an exception.
-     * @see VideoUtility#removeSubtitles(File, File)
+     * @see VideoUtility#removeSubtitleStreams(File, File)
      */
     @Test
-    public void testRemoveSubtitles() throws Exception {
+    public void testRemoveSubtitleStreams() throws Exception {
         PowerMockito.mockStatic(VideoUtility.class);
-        PowerMockito.doCallRealMethod().when(VideoUtility.class, "removeSubtitles", ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class));
+        PowerMockito.doCallRealMethod().when(VideoUtility.class, "removeSubtitleStreams", ArgumentMatchers.any(File.class), ArgumentMatchers.any(File.class));
         final File testSource = new File(testResources, "test.mkv");
         final File testOutput = new File(Filesystem.createTemporaryDirectory(), "test.mkv");
-        VideoUtility.removeSubtitles(testSource, testOutput);
+        VideoUtility.removeSubtitleStreams(testSource, testOutput);
         PowerMockito.verifyStatic(VideoUtility.class);
         VideoUtility.removeStreamType(ArgumentMatchers.eq(testSource), ArgumentMatchers.eq(FFmpeg.StreamType.SUBTITLE), ArgumentMatchers.eq(testOutput));
     }
@@ -1111,13 +1057,13 @@ public class VideoUtilityTest {
     }
     
     /**
-     * JUnit test of removeStreams.
+     * JUnit test of extractStream.
      *
      * @throws Exception When there is an exception.
-     * @see VideoUtility#removeStreams(File, List, File)
+     * @see VideoUtility#extractStream(File, FFmpeg.Identifier.Stream, File)
      */
     @Test
-    public void testRemoveStreams() throws Exception {
+    public void testExtractStream() throws Exception {
         if (!FFmpeg.ffmpegExists()) {
             logger.warn("ffmpeg is not installed... skipping test");
             return;
@@ -1125,153 +1071,228 @@ public class VideoUtilityTest {
         
         final File testDir = Filesystem.createTemporaryDirectory();
         final File testSource = new File(testResources, "test.mkv");
-        final File testOutput1 = new File(testDir, "test1.mkv");
-        final File testOutput2 = new File(testDir, "test2.mkv");
-        final File testOutput3 = new File(testDir, "test3.mkv");
-        final File testOutput4 = new File(testDir, "test4.mkv");
-        final File testOutput5 = new File(testDir, "test5.mkv");
-        final File testOutput6 = new File(testDir, "test6.mkv");
-        final File fakeSource = new File(testResources, "fakeTest.mkv");
-        final File fakeOutput = new File(testDir, "fakeTest.mp4");
-        
-        //standard
-        VideoUtility.removeStreams(testSource, Arrays.asList("v:2", "a:2", "s"), testOutput1);
-        Assert.assertTrue(testOutput1.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput1));
-        Assert.assertEquals(7, FFmpeg.getStreamCount(testOutput1));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput1));
-        Assert.assertEquals("h264|hevc|mp3|aac|aac|opus|vorbis",
-                FFmpeg.getStreams(testOutput1).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.removeStreams(testSource, Arrays.asList("0:2", "0:5"), testOutput2);
-        Assert.assertTrue(testOutput2.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput2));
-        Assert.assertEquals(13, FFmpeg.getStreamCount(testOutput2));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput2));
-        Assert.assertEquals("h264|hevc|mp3|aac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                FFmpeg.getStreams(testOutput2).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.removeStreams(testSource, Arrays.asList("0:2", "a:2", "s"), testOutput3);
-        Assert.assertTrue(testOutput3.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput3));
-        Assert.assertEquals(7, FFmpeg.getStreamCount(testOutput3));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput3));
-        Assert.assertEquals("h264|hevc|mp3|aac|aac|opus|vorbis",
-                FFmpeg.getStreams(testOutput3).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.removeStreams(testSource, Collections.emptyList(), testOutput4);
-        Assert.assertTrue(testOutput4.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput4));
-        Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput4));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput4));
-        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                FFmpeg.getStreams(testOutput4).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        
-        //invalid
-        VideoUtility.removeStreams(testSource, Arrays.asList("v:3", "a:6", "s:6"), testOutput5);
-        Assert.assertTrue(testOutput5.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput5));
-        Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput5));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput5));
-        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                FFmpeg.getStreams(testOutput5).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.removeStreams(testSource, Arrays.asList("v:-1", "a:-1", "s:-1"), testOutput6);
-        Assert.assertTrue(testOutput6.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput6));
-        Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput6));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput6));
-        Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                FFmpeg.getStreams(testOutput6).stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
-        Assert.assertTrue(VideoUtility.removeStreams(testSource, Arrays.asList("v:0", "a:0"), fakeOutput).contains(
-                "[*]Could not write header for output file #0 (incorrect codec parameters ?): Invalid argument"));
-        Assert.assertTrue(VideoUtility.removeStreams(fakeSource, Arrays.asList("v:0", "a:0"), testOutput1).contains(
-                "fakeTest.mkv: No such file or directory"));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.removeStreams(testSource, Arrays.asList("v:0", "a:0"), null));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.removeStreams(null, Arrays.asList("v:0", "a:0"), testOutput1));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.removeStreams(null, Arrays.asList("v:0", "a:0"), null));
-    }
-    
-    /**
-     * JUnit test of stripMetadataAndChapters.
-     *
-     * @throws Exception When there is an exception.
-     * @see VideoUtility#stripMetadataAndChapters(File, boolean, boolean, File)
-     */
-    @Test
-    public void testStripMetadataAndChapters() throws Exception {
-        if (!FFmpeg.ffmpegExists()) {
-            logger.warn("ffmpeg is not installed... skipping test");
-            return;
-        }
-        
-        final File testDir = Filesystem.createTemporaryDirectory();
-        final File testSource = new File(testResources, "test.mkv");
-        final File testOutput1 = new File(testDir, "test1.mkv");
-        final File testOutput2 = new File(testDir, "test2.mkv");
-        final File testOutput3 = new File(testDir, "test3.mkv");
-        final File fakeSource = new File(testResources, "fakeTest.mkv");
-        final File fakeOutput = new File(testDir, "fakeTest.mp4");
+        final List<FFmpeg.MediaInfo.Stream> sourceStreams = FFmpeg.getStreams(testSource);
+        FFmpeg.MediaInfo.Stream sourceStream;
+        File output;
+        List<FFmpeg.MediaInfo.Stream> outputStreams;
+        FFmpeg.MediaInfo.Stream outputStream;
+        final File fakeOutput = new File(testDir, "fakeTest.mkv");
         
         //initial
-        Assert.assertTrue(testSource.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testSource));
         Assert.assertEquals(15, FFmpeg.getStreamCount(testSource));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testSource));
-        for (FFmpeg.StreamMetadata stream : FFmpeg.getStreams(testSource)) {
-            Assert.assertNotNull(stream.getTitle());
-            Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
+        
+        //index
+        for (int i = 0; i < sourceStreams.size(); i++) {
+            output = new File(testDir, i + "test.mkv");
+            VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(i), output);
+            Assert.assertTrue(output.exists());
+            Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+            Assert.assertEquals(0, FFmpeg.getChapterCount(output));
+            sourceStream = sourceStreams.get(i);
+            outputStream = FFmpeg.getStream(output, FFmpeg.Identifier.Stream.ofIndex(0));
+            Assert.assertEquals(sourceStream.getCodecName(), outputStream.getCodecName());
+            Assert.assertEquals(sourceStream.getTitle(), outputStream.getTitle());
+            Assert.assertEquals(sourceStream.getLanguage(), outputStream.getLanguage());
         }
         
-        //metadata
-        VideoUtility.stripMetadataAndChapters(testSource, true, false, testOutput1);
-        Assert.assertTrue(testOutput1.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput1));
-        Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput1));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput1));
-        for (FFmpeg.StreamMetadata stream : FFmpeg.getStreams(testOutput1)) {
-            Assert.assertNull(stream.getTitle());
-            Assert.assertNull(stream.getLanguage());
-            Assert.assertEquals(1, stream.getTags().size());
-            Assert.assertTrue(stream.containsTag("duration"));
+        //stream type
+        for (int i = -1; i < FFmpeg.getStreamCount(testSource, FFmpeg.StreamType.VIDEO); i++) {
+            output = new File(testDir, "v" + i + "test.mkv");
+            if (i >= 0) {
+                VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, i), output);
+            } else {
+                VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO), output);
+            }
+            Assert.assertTrue(output.exists());
+            Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+            Assert.assertEquals(0, FFmpeg.getChapterCount(output));
+            sourceStream = FFmpeg.getStream(testSource, FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, Math.max(i, 0)));
+            outputStream = FFmpeg.getStream(output, FFmpeg.Identifier.Stream.ofIndex(0));
+            Assert.assertEquals(sourceStream.getCodecName(), outputStream.getCodecName());
+            Assert.assertEquals(sourceStream.getTitle(), outputStream.getTitle());
+            Assert.assertEquals(sourceStream.getLanguage(), outputStream.getLanguage());
+        }
+        for (int i = -1; i < FFmpeg.getStreamCount(testSource, FFmpeg.StreamType.AUDIO); i++) {
+            output = new File(testDir, "a" + i + "test.mkv");
+            if (i >= 0) {
+                VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, i), output);
+            } else {
+                VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.AUDIO), output);
+            }
+            Assert.assertTrue(output.exists());
+            Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+            Assert.assertEquals(0, FFmpeg.getChapterCount(output));
+            sourceStream = FFmpeg.getStream(testSource, FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, Math.max(i, 0)));
+            outputStream = FFmpeg.getStream(output, FFmpeg.Identifier.Stream.ofIndex(0));
+            Assert.assertEquals(sourceStream.getCodecName(), outputStream.getCodecName());
+            Assert.assertEquals(sourceStream.getTitle(), outputStream.getTitle());
+            Assert.assertEquals(sourceStream.getLanguage(), outputStream.getLanguage());
+        }
+        for (int i = -1; i < FFmpeg.getStreamCount(testSource, FFmpeg.StreamType.SUBTITLE); i++) {
+            output = new File(testDir, "s" + i + "test.mkv");
+            if (i >= 0) {
+                VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.SUBTITLE, i), output);
+            } else {
+                VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.SUBTITLE), output);
+            }
+            Assert.assertTrue(output.exists());
+            Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+            Assert.assertEquals(0, FFmpeg.getChapterCount(output));
+            sourceStream = FFmpeg.getStream(testSource, FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.SUBTITLE, Math.max(i, 0)));
+            outputStream = FFmpeg.getStream(output, FFmpeg.Identifier.Stream.ofIndex(0));
+            Assert.assertEquals(sourceStream.getCodecName(), outputStream.getCodecName());
+            Assert.assertEquals(sourceStream.getTitle(), outputStream.getTitle());
+            Assert.assertEquals(sourceStream.getLanguage(), outputStream.getLanguage());
         }
         
-        //chapters
-        VideoUtility.stripMetadataAndChapters(testSource, false, true, testOutput2);
-        Assert.assertTrue(testOutput2.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput2));
-        Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput2));
-        Assert.assertEquals(0, FFmpeg.getChapterCount(testOutput2));
-        for (FFmpeg.StreamMetadata stream : FFmpeg.getStreams(testOutput2)) {
-            Assert.assertNotNull(stream.getTitle());
-            Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
-        }
-        
-        //metadata and chapters
-        VideoUtility.stripMetadataAndChapters(testSource, true, true, testOutput2);
-        Assert.assertTrue(testOutput2.exists());
-        Assert.assertFalse(Filesystem.isEmpty(testOutput2));
-        Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput2));
-        Assert.assertEquals(0, FFmpeg.getChapterCount(testOutput2));
-        for (FFmpeg.StreamMetadata stream : FFmpeg.getStreams(testOutput2)) {
-            Assert.assertNull(stream.getTitle());
-            Assert.assertNull(stream.getLanguage());
-            Assert.assertEquals(1, stream.getTags().size());
-            Assert.assertTrue(stream.containsTag("duration"));
-        }
+        //to file type
+        output = new File(testDir, "test.mp4");
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(0), output);
+        Assert.assertTrue(output.exists());
+        Assert.assertFalse(Filesystem.isEmpty(output));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+        Assert.assertEquals(0, FFmpeg.getChapterCount(output));
+        outputStreams = FFmpeg.getStreams(output);
+        Assert.assertEquals("h264", outputStreams.get(0).getCodecName());
+        Assert.assertNull(outputStreams.get(0).getTitle());
+        Assert.assertEquals("eng", outputStreams.get(0).getLanguage());
+        output = new File(testDir, "test.avi");
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(1), output);
+        Assert.assertTrue(output.exists());
+        Assert.assertFalse(Filesystem.isEmpty(output));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+        Assert.assertEquals(0, FFmpeg.getChapterCount(output));
+        outputStreams = FFmpeg.getStreams(output);
+        Assert.assertEquals("rawvideo", outputStreams.get(0).getCodecName());
+        Assert.assertEquals("Green", outputStreams.get(0).getTitle());
+        Assert.assertNull(outputStreams.get(0).getLanguage());
+        output = new File(testDir, "test.m4v");
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(2), output);
+        Assert.assertTrue(output.exists());
+        Assert.assertFalse(Filesystem.isEmpty(output));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+        Assert.assertEquals(0, FFmpeg.getChapterCount(output));
+        outputStreams = FFmpeg.getStreams(output);
+        Assert.assertEquals("mpeg4", outputStreams.get(0).getCodecName());
+        Assert.assertNull(outputStreams.get(0).getTitle());
+        Assert.assertEquals("rus", outputStreams.get(0).getLanguage());
+        output = new File(testDir, "test.mp3");
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(3), output);
+        Assert.assertTrue(output.exists());
+        Assert.assertFalse(Filesystem.isEmpty(output));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+        outputStreams = FFmpeg.getStreams(output);
+        Assert.assertEquals("mp3", outputStreams.get(0).getCodecName());
+        output = new File(testDir, "test.aac");
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(4), output);
+        Assert.assertTrue(output.exists());
+        Assert.assertFalse(Filesystem.isEmpty(output));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+        outputStreams = FFmpeg.getStreams(output);
+        Assert.assertEquals("aac", outputStreams.get(0).getCodecName());
+        output = new File(testDir, "test.flac");
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(5), output);
+        Assert.assertTrue(output.exists());
+        Assert.assertFalse(Filesystem.isEmpty(output));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+        outputStreams = FFmpeg.getStreams(output);
+        Assert.assertEquals("flac", outputStreams.get(0).getCodecName());
+        output = new File(testDir, "test.m4a");
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(6), output);
+        Assert.assertTrue(output.exists());
+        Assert.assertFalse(Filesystem.isEmpty(output));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+        outputStreams = FFmpeg.getStreams(output);
+        Assert.assertEquals("aac", outputStreams.get(0).getCodecName());
+        output = new File(testDir, "test.opus");
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(7), output);
+        Assert.assertTrue(output.exists());
+        Assert.assertFalse(Filesystem.isEmpty(output));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+        outputStreams = FFmpeg.getStreams(output);
+        Assert.assertEquals("opus", outputStreams.get(0).getCodecName());
+        output = new File(testDir, "test.ogg");
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(8), output);
+        Assert.assertTrue(output.exists());
+        Assert.assertFalse(Filesystem.isEmpty(output));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+        outputStreams = FFmpeg.getStreams(output);
+        Assert.assertEquals("vorbis", outputStreams.get(0).getCodecName());
+        output = new File(testDir, "test1.srt");
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(9), output);
+        Assert.assertTrue(output.exists());
+        Assert.assertFalse(Filesystem.isEmpty(output));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+        outputStreams = FFmpeg.getStreams(output);
+        Assert.assertEquals("subrip", outputStreams.get(0).getCodecName());
+        output = new File(testDir, "test2.srt");
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(10), output);
+        Assert.assertTrue(output.exists());
+        Assert.assertFalse(Filesystem.isEmpty(output));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+        outputStreams = FFmpeg.getStreams(output);
+        Assert.assertEquals("subrip", outputStreams.get(0).getCodecName());
+        output = new File(testDir, "test3.srt");
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(11), output);
+        Assert.assertTrue(output.exists());
+        Assert.assertFalse(Filesystem.isEmpty(output));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+        outputStreams = FFmpeg.getStreams(output);
+        Assert.assertEquals("subrip", outputStreams.get(0).getCodecName());
+        output = new File(testDir, "test4.srt");
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(12), output);
+        Assert.assertTrue(output.exists());
+        Assert.assertFalse(Filesystem.isEmpty(output));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+        outputStreams = FFmpeg.getStreams(output);
+        Assert.assertEquals("subrip", outputStreams.get(0).getCodecName());
+        output = new File(testDir, "test5.srt");
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(13), output);
+        Assert.assertTrue(output.exists());
+        Assert.assertFalse(Filesystem.isEmpty(output));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+        outputStreams = FFmpeg.getStreams(output);
+        Assert.assertEquals("subrip", outputStreams.get(0).getCodecName());
+        output = new File(testDir, "test6.srt");
+        VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(14), output);
+        Assert.assertTrue(output.exists());
+        Assert.assertFalse(Filesystem.isEmpty(output));
+        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
+        outputStreams = FFmpeg.getStreams(output);
+        Assert.assertEquals("subrip", outputStreams.get(0).getCodecName());
         
         //invalid
-        Assert.assertEquals("[*]" + fakeSource.getAbsolutePath() + ": No such file or directory",
-                VideoUtility.stripMetadataAndChapters(fakeSource, true, true, fakeOutput));
-        Assert.assertTrue(VideoUtility.stripMetadataAndChapters(testSource, true, true, fakeOutput).contains(
-                "[*]Could not write header for output file #0 (incorrect codec parameters ?): Invalid argument"));
+        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 3), fakeOutput).contains(
+                "[*]Stream map '0:v:3' matches no streams."));
+        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, -1), fakeOutput).contains(
+                "[*]Stream map '0:v:-1' matches no streams."));
+        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 6), fakeOutput).contains(
+                "[*]Stream map '0:a:6' matches no streams."));
+        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, -1), fakeOutput).contains(
+                "[*]Stream map '0:a:-1' matches no streams."));
+        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.SUBTITLE, 6), fakeOutput).contains(
+                "[*]Stream map '0:s:6' matches no streams."));
+        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.SUBTITLE, -1), fakeOutput).contains(
+                "[*]Stream map '0:s:-1' matches no streams."));
+        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.DATA), fakeOutput).contains(
+                "[*]Stream map '0:d:0' matches no streams."));
+        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.of(null, 15), fakeOutput).contains(
+                "[*]Stream map '0:15' matches no streams."));
+        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.of(null, -1), fakeOutput).contains(
+                "[*]Stream map '0:-1' matches no streams."));
+        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(15), fakeOutput).contains(
+                "[*]Stream map '0:15' matches no streams."));
+        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.ofIndex(-1), fakeOutput).contains(
+                "[*]Stream map '0:-1' matches no streams."));
+        Assert.assertTrue(VideoUtility.extractStream(new File(testResources, "fakeVideo.mp4"), FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 0), fakeOutput).contains(
+                "fakeVideo.mp4: No such file or directory"));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.stripMetadataAndChapters(testSource, true, true, null));
+                VideoUtility.extractStream(null, FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.SUBTITLE, 0), fakeOutput));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.stripMetadataAndChapters(null, true, true, fakeOutput));
+                VideoUtility.extractStream(testSource, FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.SUBTITLE, 0), null));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.stripMetadataAndChapters(null, true, true, null));
+                VideoUtility.extractStream(null, FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.SUBTITLE, 0), null));
     }
     
     /**
@@ -1286,7 +1307,7 @@ public class VideoUtilityTest {
         final File testVideo = new File(testResources, "test.mkv");
         VideoUtility.getDuration(testVideo);
         PowerMockito.verifyStatic(FFmpeg.class);
-        FFmpeg.getStreamDuration(ArgumentMatchers.eq(testVideo), ArgumentMatchers.eq(FFmpeg.StreamType.VIDEO));
+        FFmpeg.getStreamDuration(ArgumentMatchers.eq(testVideo), ArgumentMatchers.eq(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO)));
     }
     
     /**
@@ -1301,7 +1322,7 @@ public class VideoUtilityTest {
         final File testVideo = new File(testResources, "test.mkv");
         VideoUtility.getBitrate(testVideo);
         PowerMockito.verifyStatic(FFmpeg.class);
-        FFmpeg.getStreamBitrate(ArgumentMatchers.eq(testVideo), ArgumentMatchers.eq(FFmpeg.StreamType.VIDEO));
+        FFmpeg.getStreamBitrate(ArgumentMatchers.eq(testVideo), ArgumentMatchers.eq(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO)));
     }
     
     /**
@@ -1316,7 +1337,7 @@ public class VideoUtilityTest {
         final File testVideo = new File(testResources, "test.mkv");
         VideoUtility.getEncoding(testVideo);
         PowerMockito.verifyStatic(FFmpeg.class);
-        FFmpeg.getEncoding(ArgumentMatchers.eq(testVideo), ArgumentMatchers.eq(FFmpeg.StreamType.VIDEO));
+        FFmpeg.getStreamEncoding(ArgumentMatchers.eq(testVideo), ArgumentMatchers.eq(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO)));
     }
     
     /**
@@ -1331,7 +1352,7 @@ public class VideoUtilityTest {
         final File testVideo = new File(testResources, "test.mkv");
         VideoUtility.getFrameCount(testVideo);
         PowerMockito.verifyStatic(FFmpeg.class);
-        FFmpeg.getFrameCount(ArgumentMatchers.eq(testVideo), ArgumentMatchers.eq(FFmpeg.StreamType.VIDEO));
+        FFmpeg.getFrameCount(ArgumentMatchers.eq(testVideo), ArgumentMatchers.eq(FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO)));
     }
     
     /**
@@ -1407,6 +1428,31 @@ public class VideoUtilityTest {
                 VideoUtility.cutVideo(testSource, "00:00:00.000", "00:00:01.000", null));
         TestUtils.assertException(NullPointerException.class, () ->
                 VideoUtility.cutVideo(null, "00:00:00.000", "00:00:01.000", null));
+        
+        //progress bar
+        PowerMockito.mockStatic(FFmpeg.class, Mockito.CALLS_REAL_METHODS);
+        final AtomicReference<Long> expectedProgressBarTotal = new AtomicReference<>(0L);
+        PowerMockito.doAnswer((Answer<String>) invocation -> {
+            if (expectedProgressBarTotal.get() != null) {
+                Assert.assertEquals(expectedProgressBarTotal.get().longValue(), ((FFmpeg.FFmpegProgressBar) invocation.getArgument(3)).getTotal());
+            } else {
+                Assert.assertNull(invocation.getArgument(3));
+            }
+            return "";
+        }).when(FFmpeg.class);
+        FFmpeg.ffmpeg(ArgumentMatchers.eq(fakeSource), ArgumentMatchers.anyString(), ArgumentMatchers.eq(fakeOutput), ArgumentMatchers.any(FFmpeg.FFmpegProgressBar.class));
+        expectedProgressBarTotal.set(1L);
+        VideoUtility.cutVideo(fakeSource, "00:00:00.000", "00:00:01.000", fakeOutput);
+        expectedProgressBarTotal.set(61L);
+        VideoUtility.cutVideo(fakeSource, "00:00:00.000", "00:01:01.000", fakeOutput);
+        expectedProgressBarTotal.set(1L);
+        VideoUtility.cutVideo(fakeSource, "00:00:00.600", "00:00:01.200", fakeOutput);
+        expectedProgressBarTotal.set(9368L);
+        VideoUtility.cutVideo(fakeSource, "00:18:33.172", "02:54:40.806", fakeOutput);
+        PowerMockito.doReturn(false).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
+        expectedProgressBarTotal.set(null);
+        VideoUtility.cutVideo(fakeSource, "00:00:00.000", "00:00:01.000", fakeOutput);
+        PowerMockito.doReturn(true).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
     }
     
     /**
@@ -1429,7 +1475,7 @@ public class VideoUtilityTest {
         final File testOutput3 = new File(testDir, "test3.mkv");
         final File fakeSource = new File(testResources, "fakeTest.mkv");
         final File fakeOutput = new File(testDir, "fakeTest.mp4");
-        List<FFmpeg.StreamMetadata> streams;
+        List<FFmpeg.MediaInfo.Stream> streams;
         
         //initial
         Assert.assertTrue(testSource.exists());
@@ -1437,17 +1483,17 @@ public class VideoUtilityTest {
         Assert.assertEquals(15, FFmpeg.getStreamCount(testSource));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testSource));
         streams = FFmpeg.getStreams(testSource);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
+            Assert.assertTrue(stream.getMetadata().size() >= 3);
             if (stream.getStreamType() == FFmpeg.StreamType.VIDEO) {
-                Assert.assertEquals(320, stream.getVideoMetadata().getWidth());
-                Assert.assertEquals(240, stream.getVideoMetadata().getHeight());
+                Assert.assertEquals(320, stream.getVideoInfo().getWidth());
+                Assert.assertEquals(240, stream.getVideoInfo().getHeight());
             }
         }
         Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //scale down
         VideoUtility.scaleVideo(testSource, 120, 100, testOutput1);
@@ -1456,17 +1502,17 @@ public class VideoUtilityTest {
         Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput1));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput1));
         streams = FFmpeg.getStreams(testOutput1);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
+            Assert.assertTrue(stream.getMetadata().size() >= 3);
             if (stream.getStreamType() == FFmpeg.StreamType.VIDEO) {
-                Assert.assertEquals(120, stream.getVideoMetadata().getWidth());
-                Assert.assertEquals(100, stream.getVideoMetadata().getHeight());
+                Assert.assertEquals(120, stream.getVideoInfo().getWidth());
+                Assert.assertEquals(100, stream.getVideoInfo().getHeight());
             }
         }
         Assert.assertEquals("h264|h264|h264|vorbis|vorbis|vorbis|vorbis|vorbis|vorbis|ass|ass|ass|ass|ass|ass",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //scale up
         VideoUtility.scaleVideo(testSource, 1600, 1200, testOutput2);
@@ -1475,25 +1521,25 @@ public class VideoUtilityTest {
         Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput2));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput2));
         streams = FFmpeg.getStreams(testOutput2);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
+            Assert.assertTrue(stream.getMetadata().size() >= 3);
             if (stream.getStreamType() == FFmpeg.StreamType.VIDEO) {
-                Assert.assertEquals(1600, stream.getVideoMetadata().getWidth());
-                Assert.assertEquals(1200, stream.getVideoMetadata().getHeight());
+                Assert.assertEquals(1600, stream.getVideoInfo().getWidth());
+                Assert.assertEquals(1200, stream.getVideoInfo().getHeight());
             }
         }
         Assert.assertEquals("h264|h264|h264|vorbis|vorbis|vorbis|vorbis|vorbis|vorbis|ass|ass|ass|ass|ass|ass",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //invalid
         VideoUtility.scaleVideo(testSource, -1, -1, testOutput3);
         Assert.assertTrue(testOutput3.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput3));
         FFmpeg.getStreams(testOutput3).stream().filter(e -> e.getStreamType() == FFmpeg.StreamType.VIDEO).forEach(e -> {
-            Assert.assertEquals(320, e.getVideoMetadata().getWidth());
-            Assert.assertEquals(240, e.getVideoMetadata().getHeight());
+            Assert.assertEquals(320, e.getVideoInfo().getWidth());
+            Assert.assertEquals(240, e.getVideoInfo().getHeight());
         });
         Assert.assertTrue(VideoUtility.scaleVideo(testSource, 120, 100, fakeOutput).contains(
                 "Error selecting an encoder for stream 0:9"));
@@ -1530,7 +1576,7 @@ public class VideoUtilityTest {
         final File testOutput6 = new File(testDir, "test6.mkv");
         final File fakeSource = new File(testResources, "fakeTest.mkv");
         final File fakeOutput = new File(testDir, "fakeTest.mp4");
-        List<FFmpeg.StreamMetadata> streams;
+        List<FFmpeg.MediaInfo.Stream> streams;
         
         //initial
         Assert.assertTrue(testSource.exists());
@@ -1538,13 +1584,13 @@ public class VideoUtilityTest {
         Assert.assertEquals(15, FFmpeg.getStreamCount(testSource));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testSource));
         streams = FFmpeg.getStreams(testSource);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
+            Assert.assertTrue(stream.getMetadata().size() >= 3);
         }
         Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //low quality
         VideoUtility.adjustQuality(testSource, 40, testOutput1);
@@ -1554,13 +1600,13 @@ public class VideoUtilityTest {
         Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput1));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput1));
         streams = FFmpeg.getStreams(testOutput1);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
+            Assert.assertTrue(stream.getMetadata().size() >= 3);
         }
         Assert.assertEquals("h264|h264|h264|vorbis|vorbis|vorbis|vorbis|vorbis|vorbis|ass|ass|ass|ass|ass|ass",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //high quality
         VideoUtility.adjustQuality(testSource, 4, testOutput2);
@@ -1571,13 +1617,13 @@ public class VideoUtilityTest {
         Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput2));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput2));
         streams = FFmpeg.getStreams(testOutput2);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
+            Assert.assertTrue(stream.getMetadata().size() >= 3);
         }
         Assert.assertEquals("h264|h264|h264|vorbis|vorbis|vorbis|vorbis|vorbis|vorbis|ass|ass|ass|ass|ass|ass",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //limits
         VideoUtility.adjustQuality(testSource, 0, testOutput3);
@@ -1587,13 +1633,13 @@ public class VideoUtilityTest {
         Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput3));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput3));
         streams = FFmpeg.getStreams(testOutput3);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
+            Assert.assertTrue(stream.getMetadata().size() >= 3);
         }
         Assert.assertEquals("h264|h264|h264|vorbis|vorbis|vorbis|vorbis|vorbis|vorbis|ass|ass|ass|ass|ass|ass",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         VideoUtility.adjustQuality(testSource, 51, testOutput4);
         Assert.assertTrue(testOutput4.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput4));
@@ -1601,13 +1647,13 @@ public class VideoUtilityTest {
         Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput4));
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput4));
         streams = FFmpeg.getStreams(testOutput4);
-        for (FFmpeg.StreamMetadata stream : streams) {
+        for (FFmpeg.MediaInfo.Stream stream : streams) {
             Assert.assertNotNull(stream.getTitle());
             Assert.assertNotNull(stream.getLanguage());
-            Assert.assertTrue(stream.getTags().size() >= 3);
+            Assert.assertTrue(stream.getMetadata().size() >= 3);
         }
         Assert.assertEquals("h264|h264|h264|vorbis|vorbis|vorbis|vorbis|vorbis|vorbis|ass|ass|ass|ass|ass|ass",
-                streams.stream().map(FFmpeg.StreamMetadata::getCodecName).collect(Collectors.joining("|")));
+                streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //invalid
         TestUtils.assertNoException(() ->
@@ -1628,263 +1674,6 @@ public class VideoUtilityTest {
                 VideoUtility.adjustQuality(null, 24, fakeOutput));
         TestUtils.assertException(NullPointerException.class, () ->
                 VideoUtility.adjustQuality(null, 24, null));
-    }
-    
-    /**
-     * JUnit test of extractStream.
-     *
-     * @throws Exception When there is an exception.
-     * @see VideoUtility#extractStream(File, FFmpeg.StreamType, int, File)
-     * @see VideoUtility#extractStream(File, FFmpeg.StreamType, File)
-     * @see VideoUtility#extractStream(File, int, File)
-     */
-    @Test
-    public void testExtractStream() throws Exception {
-        if (!FFmpeg.ffmpegExists()) {
-            logger.warn("ffmpeg is not installed... skipping test");
-            return;
-        }
-        
-        final File testDir = Filesystem.createTemporaryDirectory();
-        final File testSource = new File(testResources, "test.mkv");
-        final List<FFmpeg.StreamMetadata> sourceStreams = FFmpeg.getStreams(testSource);
-        FFmpeg.StreamMetadata sourceStream;
-        File output;
-        List<FFmpeg.StreamMetadata> outputStreams;
-        FFmpeg.StreamMetadata outputStream;
-        final File fakeOutput = new File(testDir, "fakeTest.mkv");
-        
-        //initial
-        Assert.assertEquals(15, FFmpeg.getStreamCount(testSource));
-        Assert.assertEquals(3, FFmpeg.getChapterCount(testSource));
-        
-        //index
-        for (int i = 0; i < sourceStreams.size(); i++) {
-            output = new File(testDir, i + "test.mkv");
-            VideoUtility.extractStream(testSource, i, output);
-            Assert.assertTrue(output.exists());
-            Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-            Assert.assertEquals(0, FFmpeg.getChapterCount(output));
-            sourceStream = sourceStreams.get(i);
-            outputStream = FFmpeg.getStream(output, 0);
-            Assert.assertEquals(sourceStream.getCodecName(), outputStream.getCodecName());
-            Assert.assertEquals(sourceStream.getTitle(), outputStream.getTitle());
-            Assert.assertEquals(sourceStream.getLanguage(), outputStream.getLanguage());
-        }
-        
-        //stream type
-        for (int i = -1; i < FFmpeg.getStreamCount(testSource, FFmpeg.StreamType.VIDEO); i++) {
-            output = new File(testDir, "v" + i + "test.mkv");
-            if (i >= 0) {
-                VideoUtility.extractStream(testSource, FFmpeg.StreamType.VIDEO, i, output);
-            } else {
-                VideoUtility.extractStream(testSource, FFmpeg.StreamType.VIDEO, output);
-            }
-            Assert.assertTrue(output.exists());
-            Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-            Assert.assertEquals(0, FFmpeg.getChapterCount(output));
-            sourceStream = FFmpeg.getStream(testSource, FFmpeg.StreamType.VIDEO, Math.max(i, 0));
-            outputStream = FFmpeg.getStream(output, 0);
-            Assert.assertEquals(sourceStream.getCodecName(), outputStream.getCodecName());
-            Assert.assertEquals(sourceStream.getTitle(), outputStream.getTitle());
-            Assert.assertEquals(sourceStream.getLanguage(), outputStream.getLanguage());
-        }
-        for (int i = -1; i < FFmpeg.getStreamCount(testSource, FFmpeg.StreamType.AUDIO); i++) {
-            output = new File(testDir, "a" + i + "test.mkv");
-            if (i >= 0) {
-                VideoUtility.extractStream(testSource, FFmpeg.StreamType.AUDIO, i, output);
-            } else {
-                VideoUtility.extractStream(testSource, FFmpeg.StreamType.AUDIO, output);
-            }
-            Assert.assertTrue(output.exists());
-            Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-            Assert.assertEquals(0, FFmpeg.getChapterCount(output));
-            sourceStream = FFmpeg.getStream(testSource, FFmpeg.StreamType.AUDIO, Math.max(i, 0));
-            outputStream = FFmpeg.getStream(output, 0);
-            Assert.assertEquals(sourceStream.getCodecName(), outputStream.getCodecName());
-            Assert.assertEquals(sourceStream.getTitle(), outputStream.getTitle());
-            Assert.assertEquals(sourceStream.getLanguage(), outputStream.getLanguage());
-        }
-        for (int i = -1; i < FFmpeg.getStreamCount(testSource, FFmpeg.StreamType.SUBTITLE); i++) {
-            output = new File(testDir, "s" + i + "test.mkv");
-            if (i >= 0) {
-                VideoUtility.extractStream(testSource, FFmpeg.StreamType.SUBTITLE, i, output);
-            } else {
-                VideoUtility.extractStream(testSource, FFmpeg.StreamType.SUBTITLE, output);
-            }
-            Assert.assertTrue(output.exists());
-            Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-            Assert.assertEquals(0, FFmpeg.getChapterCount(output));
-            sourceStream = FFmpeg.getStream(testSource, FFmpeg.StreamType.SUBTITLE, Math.max(i, 0));
-            outputStream = FFmpeg.getStream(output, 0);
-            Assert.assertEquals(sourceStream.getCodecName(), outputStream.getCodecName());
-            Assert.assertEquals(sourceStream.getTitle(), outputStream.getTitle());
-            Assert.assertEquals(sourceStream.getLanguage(), outputStream.getLanguage());
-        }
-        
-        //to file type
-        output = new File(testDir, "test.mp4");
-        VideoUtility.extractStream(testSource, 0, output);
-        Assert.assertTrue(output.exists());
-        Assert.assertFalse(Filesystem.isEmpty(output));
-        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-        Assert.assertEquals(0, FFmpeg.getChapterCount(output));
-        outputStreams = FFmpeg.getStreams(output);
-        Assert.assertEquals("h264", outputStreams.get(0).getCodecName());
-        Assert.assertNull(outputStreams.get(0).getTitle());
-        Assert.assertEquals("eng", outputStreams.get(0).getLanguage());
-        output = new File(testDir, "test.avi");
-        VideoUtility.extractStream(testSource, 1, output);
-        Assert.assertTrue(output.exists());
-        Assert.assertFalse(Filesystem.isEmpty(output));
-        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-        Assert.assertEquals(0, FFmpeg.getChapterCount(output));
-        outputStreams = FFmpeg.getStreams(output);
-        Assert.assertEquals("rawvideo", outputStreams.get(0).getCodecName());
-        Assert.assertEquals("Green", outputStreams.get(0).getTitle());
-        Assert.assertNull(outputStreams.get(0).getLanguage());
-        output = new File(testDir, "test.m4v");
-        VideoUtility.extractStream(testSource, 2, output);
-        Assert.assertTrue(output.exists());
-        Assert.assertFalse(Filesystem.isEmpty(output));
-        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-        Assert.assertEquals(0, FFmpeg.getChapterCount(output));
-        outputStreams = FFmpeg.getStreams(output);
-        Assert.assertEquals("mpeg4", outputStreams.get(0).getCodecName());
-        Assert.assertNull(outputStreams.get(0).getTitle());
-        Assert.assertEquals("rus", outputStreams.get(0).getLanguage());
-        output = new File(testDir, "test.mp3");
-        VideoUtility.extractStream(testSource, 3, output);
-        Assert.assertTrue(output.exists());
-        Assert.assertFalse(Filesystem.isEmpty(output));
-        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-        outputStreams = FFmpeg.getStreams(output);
-        Assert.assertEquals("mp3", outputStreams.get(0).getCodecName());
-        output = new File(testDir, "test.aac");
-        VideoUtility.extractStream(testSource, 4, output);
-        Assert.assertTrue(output.exists());
-        Assert.assertFalse(Filesystem.isEmpty(output));
-        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-        outputStreams = FFmpeg.getStreams(output);
-        Assert.assertEquals("aac", outputStreams.get(0).getCodecName());
-        output = new File(testDir, "test.flac");
-        VideoUtility.extractStream(testSource, 5, output);
-        Assert.assertTrue(output.exists());
-        Assert.assertFalse(Filesystem.isEmpty(output));
-        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-        outputStreams = FFmpeg.getStreams(output);
-        Assert.assertEquals("flac", outputStreams.get(0).getCodecName());
-        output = new File(testDir, "test.m4a");
-        VideoUtility.extractStream(testSource, 6, output);
-        Assert.assertTrue(output.exists());
-        Assert.assertFalse(Filesystem.isEmpty(output));
-        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-        outputStreams = FFmpeg.getStreams(output);
-        Assert.assertEquals("aac", outputStreams.get(0).getCodecName());
-        output = new File(testDir, "test.opus");
-        VideoUtility.extractStream(testSource, 7, output);
-        Assert.assertTrue(output.exists());
-        Assert.assertFalse(Filesystem.isEmpty(output));
-        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-        outputStreams = FFmpeg.getStreams(output);
-        Assert.assertEquals("opus", outputStreams.get(0).getCodecName());
-        output = new File(testDir, "test.ogg");
-        VideoUtility.extractStream(testSource, 8, output);
-        Assert.assertTrue(output.exists());
-        Assert.assertFalse(Filesystem.isEmpty(output));
-        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-        outputStreams = FFmpeg.getStreams(output);
-        Assert.assertEquals("vorbis", outputStreams.get(0).getCodecName());
-        output = new File(testDir, "test1.srt");
-        VideoUtility.extractStream(testSource, 9, output);
-        Assert.assertTrue(output.exists());
-        Assert.assertFalse(Filesystem.isEmpty(output));
-        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-        outputStreams = FFmpeg.getStreams(output);
-        Assert.assertEquals("subrip", outputStreams.get(0).getCodecName());
-        output = new File(testDir, "test2.srt");
-        VideoUtility.extractStream(testSource, 10, output);
-        Assert.assertTrue(output.exists());
-        Assert.assertFalse(Filesystem.isEmpty(output));
-        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-        outputStreams = FFmpeg.getStreams(output);
-        Assert.assertEquals("subrip", outputStreams.get(0).getCodecName());
-        output = new File(testDir, "test3.srt");
-        VideoUtility.extractStream(testSource, 11, output);
-        Assert.assertTrue(output.exists());
-        Assert.assertFalse(Filesystem.isEmpty(output));
-        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-        outputStreams = FFmpeg.getStreams(output);
-        Assert.assertEquals("subrip", outputStreams.get(0).getCodecName());
-        output = new File(testDir, "test4.srt");
-        VideoUtility.extractStream(testSource, 12, output);
-        Assert.assertTrue(output.exists());
-        Assert.assertFalse(Filesystem.isEmpty(output));
-        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-        outputStreams = FFmpeg.getStreams(output);
-        Assert.assertEquals("subrip", outputStreams.get(0).getCodecName());
-        output = new File(testDir, "test5.srt");
-        VideoUtility.extractStream(testSource, 13, output);
-        Assert.assertTrue(output.exists());
-        Assert.assertFalse(Filesystem.isEmpty(output));
-        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-        outputStreams = FFmpeg.getStreams(output);
-        Assert.assertEquals("subrip", outputStreams.get(0).getCodecName());
-        output = new File(testDir, "test6.srt");
-        VideoUtility.extractStream(testSource, 14, output);
-        Assert.assertTrue(output.exists());
-        Assert.assertFalse(Filesystem.isEmpty(output));
-        Assert.assertEquals(1, FFmpeg.getStreamCount(output));
-        outputStreams = FFmpeg.getStreams(output);
-        Assert.assertEquals("subrip", outputStreams.get(0).getCodecName());
-        
-        //invalid
-        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.StreamType.VIDEO, 3, fakeOutput).contains(
-                "[*]Stream map '0:v:3' matches no streams."));
-        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.StreamType.VIDEO, -1, fakeOutput).contains(
-                "[*]Stream map '0:v:-1' matches no streams."));
-        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.StreamType.AUDIO, 6, fakeOutput).contains(
-                "[*]Stream map '0:a:6' matches no streams."));
-        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.StreamType.AUDIO, -1, fakeOutput).contains(
-                "[*]Stream map '0:a:-1' matches no streams."));
-        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.StreamType.SUBTITLE, 6, fakeOutput).contains(
-                "[*]Stream map '0:s:6' matches no streams."));
-        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.StreamType.SUBTITLE, -1, fakeOutput).contains(
-                "[*]Stream map '0:s:-1' matches no streams."));
-        Assert.assertTrue(VideoUtility.extractStream(testSource, FFmpeg.StreamType.DATA, fakeOutput).contains(
-                "[*]Stream map '0:d:0' matches no streams."));
-        Assert.assertTrue(VideoUtility.extractStream(testSource, null, 15, fakeOutput).contains(
-                "[*]Stream map '0:15' matches no streams."));
-        Assert.assertTrue(VideoUtility.extractStream(testSource, null, -1, fakeOutput).contains(
-                "[*]Stream map '0:-1' matches no streams."));
-        Assert.assertTrue(VideoUtility.extractStream(testSource, 15, fakeOutput).contains(
-                "[*]Stream map '0:15' matches no streams."));
-        Assert.assertTrue(VideoUtility.extractStream(testSource, -1, fakeOutput).contains(
-                "[*]Stream map '0:-1' matches no streams."));
-        Assert.assertTrue(VideoUtility.extractStream(new File(testResources, "fakeVideo.mp4"), FFmpeg.StreamType.VIDEO, 0, fakeOutput).contains(
-                "fakeVideo.mp4: No such file or directory"));
-        Assert.assertTrue(VideoUtility.extractStream(new File(testResources, "fakeVideo.mp4"), FFmpeg.StreamType.VIDEO, fakeOutput).contains(
-                "fakeVideo.mp4: No such file or directory"));
-        Assert.assertTrue(VideoUtility.extractStream(new File(testResources, "fakeVideo.mp4"), 0, fakeOutput).contains(
-                "fakeVideo.mp4: No such file or directory"));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.extractStream(null, FFmpeg.StreamType.SUBTITLE, 0, fakeOutput));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.extractStream(null, FFmpeg.StreamType.SUBTITLE, fakeOutput));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.extractStream(null, 1, fakeOutput));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.extractStream(testSource, FFmpeg.StreamType.SUBTITLE, 0, null));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.extractStream(testSource, FFmpeg.StreamType.SUBTITLE, null));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.extractStream(testSource, 1, null));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.extractStream(null, FFmpeg.StreamType.SUBTITLE, 0, null));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.extractStream(null, FFmpeg.StreamType.SUBTITLE, null));
-        TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.extractStream(null, 1, null));
     }
     
     /**
@@ -1973,8 +1762,6 @@ public class VideoUtilityTest {
         Assert.assertTrue(testOutput5.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput5));
         Assert.assertEquals(15L, VideoUtility.getFrameCount(testOutput5));
-        System.out.println(totalBadDuration);
-        System.out.println(FFmpeg.getDuration(testOutput5));
         Assert.assertTrue(Math.abs(totalBadDuration - FFmpeg.getDuration(testOutput5)) < (totalBadDuration * 0.01));
         
         //invalid
@@ -1998,6 +1785,33 @@ public class VideoUtilityTest {
                 VideoUtility.encodeFramesToVideo(frameDir, "frame_%03d.png", 10, null));
         TestUtils.assertException(NullPointerException.class, () ->
                 VideoUtility.encodeFramesToVideo(null, "frame_%03d.png", 10, null));
+        
+        //progress bar
+        PowerMockito.mockStatic(FFmpeg.class, Mockito.CALLS_REAL_METHODS);
+        final AtomicReference<Long> expectedProgressBarTotal = new AtomicReference<>(0L);
+        PowerMockito.doAnswer((Answer<String>) invocation -> {
+            if (expectedProgressBarTotal.get() != null) {
+                Assert.assertEquals(expectedProgressBarTotal.get().longValue(), ((FFmpeg.FFmpegProgressBar) invocation.getArgument(4)).getTotal());
+            } else {
+                Assert.assertNull(invocation.getArgument(4));
+            }
+            return "";
+        }).when(FFmpeg.class);
+        FFmpeg.ffmpeg(ArgumentMatchers.anyString(), ArgumentMatchers.any(File.class), ArgumentMatchers.anyString(), ArgumentMatchers.any(File.class), ArgumentMatchers.any(FFmpeg.FFmpegProgressBar.class));
+        expectedProgressBarTotal.set(totalDuration / 1000);
+        VideoUtility.encodeFramesToVideo(frames, durations, testOutput3);
+        expectedProgressBarTotal.set(3L);
+        VideoUtility.encodeFramesToVideo(frameDir, "frame_%03d.png", 10, testOutput1);
+        expectedProgressBarTotal.set(30L);
+        VideoUtility.encodeFramesToVideo(frameDir, "frame_%03d.png", 1, testOutput1);
+        expectedProgressBarTotal.set(3L);
+        VideoUtility.encodeFramesToVideo(frames, 10, testOutput1);
+        expectedProgressBarTotal.set(10L);
+        VideoUtility.encodeFramesToVideo(frames, 3, testOutput1);
+        PowerMockito.doReturn(false).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
+        expectedProgressBarTotal.set(null);
+        VideoUtility.encodeFramesToVideo(frames, durations, testOutput3);
+        PowerMockito.doReturn(true).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
     }
     
     /**
@@ -2024,6 +1838,7 @@ public class VideoUtilityTest {
         final File testOutput3 = Filesystem.createTemporaryDirectory();
         final File testOutput4 = Filesystem.createTemporaryDirectory();
         final File testOutput5 = Filesystem.createTemporaryDirectory();
+        final File testOutput6 = Filesystem.getTemporaryDirectory();
         final File fakeSource = new File(testDir, "fakeTest.mkv");
         final File fakeOutput = Filesystem.createTemporaryDirectory();
         
@@ -2042,7 +1857,7 @@ public class VideoUtilityTest {
         VideoUtility.encodeFramesToVideo(frameDir, "frame1_%03d.png", 10, testSourceRed);
         VideoUtility.encodeFramesToVideo(frameDir, "frame2_%03d.png", 10, testSourceGreen);
         VideoUtility.encodeFramesToVideo(frameDir, "frame3_%03d.png", 10, testSourceBlue);
-        VideoUtility.mergeStreams(Arrays.asList(testSourceRed, testSourceGreen, testSourceBlue), testSource);
+        VideoUtility.mergeVideos(Arrays.asList(testSourceRed, testSourceGreen, testSourceBlue), testSource);
         
         //default
         VideoUtility.decodeFramesFromVideo(testSourceRed, 10, testOutput1, "frame_%03d.png");
@@ -2081,6 +1896,18 @@ public class VideoUtilityTest {
             Assert.assertTrue(Math.abs(
                     new Color(ImageUtility.loadImage(new File(frameDir, "frame3_" + StringUtility.padZero(i, 3) + ".png")).getRGB(160, 120)).getBlue() -
                             new Color(ImageUtility.loadImage(new File(testOutput5, "frame_" + StringUtility.padZero(i, 3) + ".png")).getRGB(160, 120)).getBlue()) <= 1);
+        }
+        
+        //create directory
+        Assert.assertFalse(testOutput6.exists());
+        VideoUtility.decodeFramesFromVideo(testSource, 0, 10, testOutput6, "frame_%03d.png");
+        VideoUtility.decodeFramesFromVideo(testSource, 0, 10, testOutput6, "frame_%03d.png");
+        Assert.assertTrue(testOutput6.exists());
+        Assert.assertEquals(30, Filesystem.getFiles(testOutput6).size());
+        for (int i = 1; i <= 30; i++) {
+            Assert.assertTrue(Math.abs(
+                    new Color(ImageUtility.loadImage(new File(frameDir, "frame1_" + StringUtility.padZero(i, 3) + ".png")).getRGB(160, 120)).getRed() -
+                            new Color(ImageUtility.loadImage(new File(testOutput6, "frame_" + StringUtility.padZero(i, 3) + ".png")).getRGB(160, 120)).getRed()) <= 1);
         }
         
         //invalid
@@ -2153,7 +1980,7 @@ public class VideoUtilityTest {
         VideoUtility.encodeFramesToVideo(frameDir, "frame1_%03d.png", 10, testSourceRed);
         VideoUtility.encodeFramesToVideo(frameDir, "frame2_%03d.png", 10, testSourceGreen);
         VideoUtility.encodeFramesToVideo(frameDir, "frame3_%03d.png", 10, testSourceBlue);
-        VideoUtility.mergeStreams(Arrays.asList(testSourceRed, testSourceGreen, testSourceBlue), testSource);
+        VideoUtility.mergeVideos(Arrays.asList(testSourceRed, testSourceGreen, testSourceBlue), testSource);
         
         //default
         VideoUtility.extractFrameFromVideo(testSourceRed, 1100, testOutput1);
@@ -2236,6 +2063,13 @@ public class VideoUtilityTest {
                 VideoUtility.extractFrameFromVideo(null, 0, 1100, fakeOutput));
         TestUtils.assertException(NullPointerException.class, () ->
                 VideoUtility.extractFrameFromVideo(null, 0, 1100, null));
+        
+        //no progress bar
+        PowerMockito.mockStatic(FFmpeg.class);
+        VideoUtility.extractFrameFromVideo(testSourceRed, 1100, testOutput1);
+        PowerMockito.verifyStatic(FFmpeg.class);
+        FFmpeg.ffmpeg(ArgumentMatchers.any(File.class), ArgumentMatchers.anyString(), ArgumentMatchers.any(File.class), ArgumentMatchers.eq(false));
+        PowerMockito.verifyNoMoreInteractions(FFmpeg.class);
     }
     
 }

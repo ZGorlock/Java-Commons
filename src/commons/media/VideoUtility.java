@@ -9,12 +9,15 @@ package commons.media;
 
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import commons.access.Filesystem;
+import commons.log.CommonsLogging;
 import commons.string.StringUtility;
 import commons.time.DateTimeUtility;
 import org.slf4j.Logger;
@@ -46,8 +49,10 @@ public class VideoUtility {
      */
     public static String convertVideo(File source, File output) {
         return FFmpeg.ffmpeg(source,
-                "-y -strict -2 -max_muxing_queue_size 1024" +
-                        " -map 0 -map_metadata 0 -map_chapters 0 -movflags use_metadata_tags",
+                "-y -strict -2" +
+                        ((FFmpeg.maxMuxingQueueSize >= 0) ? (" -max_muxing_queue_size " + FFmpeg.maxMuxingQueueSize) : "") +
+                        " -map 0 -map_metadata 0 -map_chapters 0" +
+                        " -movflags use_metadata_tags -id3v2_version 3 -write_id3v2 1 -write_apetag 1",
                 output);
     }
     
@@ -70,17 +75,18 @@ public class VideoUtility {
      * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
      *
      * @param source   The video file.
-     * @param encoders A map from stream identifiers to the encoders to use; example: 'v:1'->'libx264', 's'->'mov_text'; streams not present in the map will have their current encoding copied.
+     * @param encoders A map from stream identifiers to the encoders to use; streams not present in the map will have their current encoding copied.
      * @param output   The output video file.
      * @return The response from the ffmpeg process.
      * @see FFmpeg#ffmpeg(File, String, File)
      */
-    public static String transcodeVideo(File source, Map<String, String> encoders, File output) {
+    public static String transcodeVideo(File source, Map<FFmpeg.Identifier.Stream<?>, String> encoders, File output) {
         return FFmpeg.ffmpeg(source,
-                "-y -strict -2 -max_muxing_queue_size 1024" +
-                        " -map 0 -c copy " +
-                        encoders.entrySet().stream().map(e -> (" -c:" + e.getKey() + ' ' + e.getValue())).collect(Collectors.joining()) +
-                        " -map_metadata 0 -map_chapters 0 -movflags use_metadata_tags",
+                "-y -strict -2" +
+                        ((FFmpeg.maxMuxingQueueSize >= 0) ? (" -max_muxing_queue_size " + FFmpeg.maxMuxingQueueSize) : "") +
+                        " -map 0 -c copy -map_metadata 0 -map_chapters 0" +
+                        " -movflags use_metadata_tags -id3v2_version 3 -write_id3v2 1 -write_apetag 1" +
+                        encoders.entrySet().stream().map(e -> (" -c:" + e.getKey().specifier() + ' ' + e.getValue())).collect(Collectors.joining()),
                 output);
     }
     
@@ -93,62 +99,65 @@ public class VideoUtility {
      * @return The response from the ffmpeg process.
      * @see FFmpeg#ffmpeg(List, String, File)
      */
-    public static String mergeStreams(List<File> sources, File output) {
+    public static String mergeVideos(List<File> sources, File output) {
         return FFmpeg.ffmpeg(sources,
-                "-y -strict -2 -max_muxing_queue_size 1024" +
+                "-y -strict -2" +
+                        ((FFmpeg.maxMuxingQueueSize >= 0) ? (" -max_muxing_queue_size " + FFmpeg.maxMuxingQueueSize) : "") +
                         IntStream.range(0, sources.size()).boxed().map(i -> (" -map " + i)).collect(Collectors.joining()) +
-                        " -c copy -map_metadata 0 -map_chapters 0 -movflags use_metadata_tags",
+                        " -c copy -map_metadata 0 -map_chapters 0" +
+                        " -movflags use_metadata_tags -id3v2_version 3 -write_id3v2 1 -write_apetag 1",
                 output);
     }
     
     /**
-     * Adds a stream to a video file.<br>
+     * Adds the specified streams to a video file.<br>
      * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
      *
      * @param source       The video file.
-     * @param streamSource The file containing the stream to add.
-     * @param streamType   The type of the stream being added from the file.
-     * @param streamIndex  The index of the stream of the specified stream type being added from the file.
+     * @param streamSource The file containing the streams to add.
+     * @param streamIds    A list of stream identifiers to remove.
      * @param output       The output video file.
      * @return The response from the ffmpeg process.
-     * @see FFmpeg#ffmpeg(List, String, File)
+     * @see FFmpeg#ffmpeg(File, String, File)
      */
-    public static String addStream(File source, File streamSource, FFmpeg.StreamType streamType, int streamIndex, File output) {
+    public static String addStreams(File source, File streamSource, List<FFmpeg.Identifier.Stream<?>> streamIds, File output) {
         return FFmpeg.ffmpeg(Arrays.asList(source, streamSource),
-                "-y -strict -2 -max_muxing_queue_size 1024" +
-                        " -map 0 -map 1:" + ((streamType != null) ? (StringUtility.lSnip(streamType.name().toLowerCase(), 1) + ":") : "") + streamIndex +
-                        " -c copy -map_metadata 0 -map_chapters 0 -movflags use_metadata_tags",
+                "-y -strict -2" +
+                        ((FFmpeg.maxMuxingQueueSize >= 0) ? (" -max_muxing_queue_size " + FFmpeg.maxMuxingQueueSize) : "") +
+                        " -map 0" + streamIds.stream().map(e -> " -map 1:" + e.specifier()).collect(Collectors.joining()) +
+                        " -c copy -map_metadata 0 -map_chapters 0" +
+                        " -movflags use_metadata_tags -id3v2_version 3 -write_id3v2 1 -write_apetag 1",
                 output);
     }
     
     /**
-     * Adds a stream to a video file.<br>
+     * Adds the specified stream to a video file.<br>
      * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
      *
      * @param source       The video file.
      * @param streamSource The file containing the stream to add.
-     * @param streamType   The type of the stream being added.
+     * @param streamId     The stream identifier of the stream from the stream source to add to the source.
      * @param output       The output video file.
      * @return The response from the ffmpeg process.
-     * @see #addStream(File, File, FFmpeg.StreamType, int, File)
+     * @see #addStreams(File, File, List, File)
      */
-    public static String addStream(File source, File streamSource, FFmpeg.StreamType streamType, File output) {
-        return addStream(source, streamSource, streamType, 0, output);
+    public static String addStream(File source, File streamSource, FFmpeg.Identifier.Stream<?> streamId, File output) {
+        return addStreams(source, streamSource, Collections.singletonList(streamId), output);
     }
     
     /**
-     * Adds a stream to a video file.<br>
+     * Adds a stream of a certain type to a video file.<br>
      * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
      *
      * @param source       The video file.
      * @param streamSource The file containing the stream to add.
-     * @param streamIndex  The index of the stream being added from the file.
+     * @param streamType   The type of stream.
      * @param output       The output video file.
      * @return The response from the ffmpeg process.
-     * @see #addStream(File, File, FFmpeg.StreamType, int, File)
+     * @see #addStream(File, File, FFmpeg.Identifier.Stream, File)
      */
-    public static String addStream(File source, File streamSource, int streamIndex, File output) {
-        return addStream(source, streamSource, null, streamIndex, output);
+    public static String addStreamOfType(File source, File streamSource, FFmpeg.StreamType streamType, File output) {
+        return addStream(source, streamSource, FFmpeg.Identifier.Stream.ofFirst(streamType), output);
     }
     
     /**
@@ -159,10 +168,10 @@ public class VideoUtility {
      * @param video  The video stream to add.
      * @param output The output video file.
      * @return The response from the ffmpeg process.
-     * @see #addStream(File, File, FFmpeg.StreamType, File)
+     * @see #addStreamOfType(File, File, FFmpeg.StreamType, File)
      */
     public static String addVideoStream(File source, File video, File output) {
-        return addStream(source, video, FFmpeg.StreamType.VIDEO, output);
+        return addStreamOfType(source, video, FFmpeg.StreamType.VIDEO, output);
     }
     
     /**
@@ -173,10 +182,10 @@ public class VideoUtility {
      * @param audio  The audio stream to add.
      * @param output The output video file.
      * @return The response from the ffmpeg process.
-     * @see #addStream(File, File, FFmpeg.StreamType, File)
+     * @see #addStreamOfType(File, File, FFmpeg.StreamType, File)
      */
     public static String addAudioStream(File source, File audio, File output) {
-        return addStream(source, audio, FFmpeg.StreamType.AUDIO, output);
+        return addStreamOfType(source, audio, FFmpeg.StreamType.AUDIO, output);
     }
     
     /**
@@ -187,10 +196,10 @@ public class VideoUtility {
      * @param subtitles The subtitles to add.
      * @param output    The output video file.
      * @return The response from the ffmpeg process.
-     * @see #addStream(File, File, FFmpeg.StreamType, File)
+     * @see #addStreamOfType(File, File, FFmpeg.StreamType, File)
      */
-    public static String addSubtitles(File source, File subtitles, File output) {
-        return addStream(source, subtitles, FFmpeg.StreamType.SUBTITLE, output);
+    public static String addSubtitleStream(File source, File subtitles, File output) {
+        return addStreamOfType(source, subtitles, FFmpeg.StreamType.SUBTITLE, output);
     }
     
     /**
@@ -201,43 +210,115 @@ public class VideoUtility {
      * @param dataStream The data stream to add.
      * @param output     The output video file.
      * @return The response from the ffmpeg process.
-     * @see #addStream(File, File, FFmpeg.StreamType, File)
+     * @see #addStreamOfType(File, File, FFmpeg.StreamType, File)
      */
     public static String addDataStream(File source, File dataStream, File output) {
-        return addStream(source, dataStream, FFmpeg.StreamType.DATA, output);
+        return addStreamOfType(source, dataStream, FFmpeg.StreamType.DATA, output);
     }
     
     /**
-     * Removes a stream from a video file.<br>
+     * Adds all streams of a certain type to a video file.<br>
      * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
      *
-     * @param source     The video file.
-     * @param streamType The type of stream.
-     * @param index      The index of the stream from the specified type of stream.
-     * @param output     The output video file.
+     * @param source       The video file.
+     * @param streamSource The file containing the streams to add.
+     * @param streamType   The type of stream.
+     * @param output       The output video file.
+     * @return The response from the ffmpeg process.
+     * @see #addStream(File, File, FFmpeg.Identifier.Stream, File)
+     */
+    public static String addAllStreamsOfType(File source, File streamSource, FFmpeg.StreamType streamType, File output) {
+        return addStream(source, streamSource, FFmpeg.Identifier.Stream.of(streamType), output);
+    }
+    
+    /**
+     * Adds all video streams from a stream source to a video file.<br>
+     * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
+     *
+     * @param source       The video file.
+     * @param streamSource The file containing the stream to add.
+     * @param output       The output video file.
+     * @return The response from the ffmpeg process.
+     * @see #addAllStreamsOfType(File, File, FFmpeg.StreamType, File)
+     */
+    public static String addAllVideoStreams(File source, File streamSource, File output) {
+        return addAllStreamsOfType(source, streamSource, FFmpeg.StreamType.VIDEO, output);
+    }
+    
+    /**
+     * Adds all audio streams from a stream source to a video file.<br>
+     * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
+     *
+     * @param source       The video file.
+     * @param streamSource The file containing the stream to add.
+     * @param output       The output video file.
+     * @return The response from the ffmpeg process.
+     * @see #addAllStreamsOfType(File, File, FFmpeg.StreamType, File)
+     */
+    public static String addAllAudioStreams(File source, File streamSource, File output) {
+        return addAllStreamsOfType(source, streamSource, FFmpeg.StreamType.AUDIO, output);
+    }
+    
+    /**
+     * Adds all subtitles from a stream source to a video file.<br>
+     * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
+     *
+     * @param source       The video file.
+     * @param streamSource The file containing the stream to add.
+     * @param output       The output video file.
+     * @return The response from the ffmpeg process.
+     * @see #addAllStreamsOfType(File, File, FFmpeg.StreamType, File)
+     */
+    public static String addAllSubtitleStreams(File source, File streamSource, File output) {
+        return addAllStreamsOfType(source, streamSource, FFmpeg.StreamType.SUBTITLE, output);
+    }
+    
+    /**
+     * Adds all data streams from a stream source to a video file.<br>
+     * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
+     *
+     * @param source       The video file.
+     * @param streamSource The file containing the stream to add.
+     * @param output       The output video file.
+     * @return The response from the ffmpeg process.
+     * @see #addAllStreamsOfType(File, File, FFmpeg.StreamType, File)
+     */
+    public static String addAllDataStreams(File source, File streamSource, File output) {
+        return addAllStreamsOfType(source, streamSource, FFmpeg.StreamType.DATA, output);
+    }
+    
+    /**
+     * Removes the specified streams from a video file.<br>
+     * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
+     *
+     * @param source    The video file.
+     * @param streamIds A list of stream identifiers to remove.
+     * @param output    The output video file.
      * @return The response from the ffmpeg process.
      * @see FFmpeg#ffmpeg(File, String, File)
      */
-    public static String removeStream(File source, FFmpeg.StreamType streamType, int index, File output) {
+    public static String removeStreams(File source, List<FFmpeg.Identifier.Stream<?>> streamIds, File output) {
         return FFmpeg.ffmpeg(source,
-                "-y -strict -2 -max_muxing_queue_size 1024" +
-                        " -map 0 -map -0:" + ((streamType != null) ? (StringUtility.lSnip(streamType.name().toLowerCase(), 1) + ":") : "") + index +
-                        " -c copy -map_metadata 0 -map_chapters 0 -movflags use_metadata_tags",
+                "-y -strict -2" +
+                        ((FFmpeg.maxMuxingQueueSize >= 0) ? (" -max_muxing_queue_size " + FFmpeg.maxMuxingQueueSize) : "") +
+                        " -map 0" + streamIds.stream().map(e -> " -map -0:" + e.specifier()).collect(Collectors.joining()) +
+                        " -c copy -map_metadata 0 -map_chapters 0" +
+                        " -movflags use_metadata_tags -id3v2_version 3 -write_id3v2 1 -write_apetag 1",
                 output);
     }
     
     /**
-     * Removes a stream from a video file.<br>
+     * Removes the specified stream from a video file.<br>
      * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
      *
-     * @param source The video file.
-     * @param index  The index of the stream.
-     * @param output The output video file.
+     * @param source   The video file.
+     * @param streamId The stream identifier.
+     * @param output   The output video file.
      * @return The response from the ffmpeg process.
-     * @see #removeStream(File, FFmpeg.StreamType, int, File)
+     * @see #removeStreams(File, List, File)
      */
-    public static String removeStream(File source, int index, File output) {
-        return removeStream(source, null, index, output);
+    public static String removeStream(File source, FFmpeg.Identifier.Stream<?> streamId, File output) {
+        return removeStreams(source, Collections.singletonList(streamId), output);
     }
     
     /**
@@ -248,103 +329,81 @@ public class VideoUtility {
      * @param streamType The type of stream.
      * @param output     The output video file.
      * @return The response from the ffmpeg process.
-     * @see FFmpeg#ffmpeg(File, String, File)
+     * @see #removeStream(File, FFmpeg.Identifier.Stream, File)
      */
     public static String removeStreamType(File source, FFmpeg.StreamType streamType, File output) {
-        return FFmpeg.ffmpeg(source,
-                "-y -strict -2 -max_muxing_queue_size 1024" +
-                        " -map 0 -map -0:" + StringUtility.lSnip(streamType.name().toLowerCase(), 1) +
-                        " -c copy -map_metadata 0 -map_chapters 0 -movflags use_metadata_tags",
-                output);
+        return removeStream(source, FFmpeg.Identifier.Stream.of(streamType), output);
     }
     
     /**
-     * Removes the video streams from a video file.<br>
+     * Removes all video streams from a video file.<br>
      * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
      *
      * @param source The video file.
      * @param output The output video file.
      * @return The response from the ffmpeg process.
-     * @see #removeVideoStreams(File, File)
+     * @see #removeStreamType(File, FFmpeg.StreamType, File)
      */
     public static String removeVideoStreams(File source, File output) {
         return removeStreamType(source, FFmpeg.StreamType.VIDEO, output);
     }
     
     /**
-     * Removes the audio streams from a video file.<br>
+     * Removes all audio streams from a video file.<br>
      * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
      *
      * @param source The video file.
      * @param output The output video file.
      * @return The response from the ffmpeg process.
-     * @see #removeVideoStreams(File, File)
+     * @see #removeStreamType(File, FFmpeg.StreamType, File)
      */
     public static String removeAudioStreams(File source, File output) {
         return removeStreamType(source, FFmpeg.StreamType.AUDIO, output);
     }
     
     /**
-     * Removes the subtitles from a video file.<br>
+     * Removes all subtitles from a video file.<br>
      * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
      *
      * @param source The video file.
      * @param output The output video file.
      * @return The response from the ffmpeg process.
-     * @see #removeVideoStreams(File, File)
+     * @see #removeStreamType(File, FFmpeg.StreamType, File)
      */
-    public static String removeSubtitles(File source, File output) {
+    public static String removeSubtitleStreams(File source, File output) {
         return removeStreamType(source, FFmpeg.StreamType.SUBTITLE, output);
     }
     
     /**
-     * Removes the data streams from a video file.<br>
+     * Removes all data streams from a video file.<br>
      * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
      *
      * @param source The video file.
      * @param output The output video file.
      * @return The response from the ffmpeg process.
-     * @see #removeVideoStreams(File, File)
+     * @see #removeStreamType(File, FFmpeg.StreamType, File)
      */
     public static String removeDataStreams(File source, File output) {
         return removeStreamType(source, FFmpeg.StreamType.DATA, output);
     }
     
     /**
-     * Removes a stream from a video file.<br>
+     * Extracts a stream from a video file.<br>
      * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
      *
-     * @param source  The video file.
-     * @param streams A list of stream identifiers to remove; example 'v:1', '0:3'.
-     * @param output  The output video file.
+     * @param source   The video file.
+     * @param streamId The stream identifier.
+     * @param output   The output file.
      * @return The response from the ffmpeg process.
      * @see FFmpeg#ffmpeg(File, String, File)
      */
-    public static String removeStreams(File source, List<String> streams, File output) {
+    public static String extractStream(File source, FFmpeg.Identifier.Stream<FFmpeg.Identifier.Scope.Singular> streamId, File output) {
         return FFmpeg.ffmpeg(source,
-                "-y -strict -2 -max_muxing_queue_size 1024" +
-                        " -map 0" + streams.stream().map(e -> " -map -" + e).collect(Collectors.joining()) +
-                        " -c copy -map_metadata 0 -map_chapters 0 -movflags use_metadata_tags",
-                output);
-    }
-    
-    /**
-     * Strips the metadata and/or chapters from a video file.<br>
-     * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
-     *
-     * @param source        The video file.
-     * @param stripMetadata Whether or not to strip metadata.
-     * @param stripChapters Whether or not to strip chapters.
-     * @param output        The output video file.
-     * @return The response from the ffmpeg process.
-     * @see FFmpeg#ffmpeg(File, String, File)
-     */
-    public static String stripMetadataAndChapters(File source, boolean stripMetadata, boolean stripChapters, File output) {
-        return FFmpeg.ffmpeg(source,
-                "-y -strict -2 -max_muxing_queue_size 1024" +
-                        " -map 0 -c copy -movflags use_metadata_tags" +
-                        " -map_metadata " + (stripMetadata ? "-1" : "0") +
-                        " -map_chapters " + (stripChapters ? "-1" : "0"),
+                "-y -strict -2" +
+                        ((FFmpeg.maxMuxingQueueSize >= 0) ? (" -max_muxing_queue_size " + FFmpeg.maxMuxingQueueSize) : "") +
+                        " -map 0:" + streamId.specifier() +
+                        " -c copy -map_metadata 0 -map_chapters -1" +
+                        " -movflags use_metadata_tags -id3v2_version 3 -write_id3v2 1 -write_apetag 1",
                 output);
     }
     
@@ -354,10 +413,10 @@ public class VideoUtility {
      *
      * @param videoFile The video file.
      * @return The duration of the video stream in milliseconds, or -1 if the video file does not exist or cannot be read, or if the video file does not contain a video stream, or if the video stream duration is not specified.
-     * @see FFmpeg#getStreamDuration(File, FFmpeg.StreamType)
+     * @see FFmpeg#getStreamDuration(File, FFmpeg.Identifier.Stream)
      */
     public static long getDuration(File videoFile) {
-        return FFmpeg.getStreamDuration(videoFile, FFmpeg.StreamType.VIDEO);
+        return FFmpeg.getStreamDuration(videoFile, FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO));
     }
     
     /**
@@ -366,10 +425,10 @@ public class VideoUtility {
      *
      * @param videoFile The video file.
      * @return The bitrate of the video stream in bits per second, or -1 if the video file does not exist or cannot be read, or if the video file does not contain a video stream, or if the video stream bitrate is not specified.
-     * @see FFmpeg#getStreamBitrate(File, FFmpeg.StreamType)
+     * @see FFmpeg#getStreamBitrate(File, FFmpeg.Identifier.Stream)
      */
     public static long getBitrate(File videoFile) {
-        return FFmpeg.getStreamBitrate(videoFile, FFmpeg.StreamType.VIDEO);
+        return FFmpeg.getStreamBitrate(videoFile, FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO));
     }
     
     /**
@@ -378,10 +437,10 @@ public class VideoUtility {
      *
      * @param videoFile The video file.
      * @return The encoding of the video stream, or null if the video file does not exist or cannot be read, or if the video file does not contain a video stream.
-     * @see FFmpeg#getEncoding(File, FFmpeg.StreamType)
+     * @see FFmpeg#getStreamEncoding(File, FFmpeg.Identifier.Stream)
      */
     public static String getEncoding(File videoFile) {
-        return FFmpeg.getEncoding(videoFile, FFmpeg.StreamType.VIDEO);
+        return FFmpeg.getStreamEncoding(videoFile, FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO));
     }
     
     /**
@@ -390,10 +449,10 @@ public class VideoUtility {
      *
      * @param videoFile The video file.
      * @return The encoding of the video stream, or -1 if the video file does not exist or cannot be read, or if the video file does not contain a video stream, or if the video stream frame count can not be determined.
-     * @see FFmpeg#getFrameCount(File, FFmpeg.StreamType)
+     * @see FFmpeg#getFrameCount(File, FFmpeg.Identifier.Stream)
      */
     public static long getFrameCount(File videoFile) {
-        return FFmpeg.getFrameCount(videoFile, FFmpeg.StreamType.VIDEO);
+        return FFmpeg.getFrameCount(videoFile, FFmpeg.Identifier.Stream.ofFirst(FFmpeg.StreamType.VIDEO));
     }
     
     /**
@@ -413,7 +472,8 @@ public class VideoUtility {
         return FFmpeg.ffmpeg(source,
                 "-y -strict -2 -max_muxing_queue_size 1024" +
                         " -ss " + startTimestamp.toString() + " -to " + endTimestamp.toString() +
-                        " -map 0 -c copy -map_metadata 0 -map_chapters 0 -movflags use_metadata_tags",
+                        " -map 0 -c copy -map_metadata 0 -map_chapters 0" +
+                        " -movflags use_metadata_tags -id3v2_version 3 -write_id3v2 1 -write_apetag 1",
                 output);
     }
     
@@ -448,9 +508,11 @@ public class VideoUtility {
      */
     public static String scaleVideo(File source, int width, int height, File output) {
         return FFmpeg.ffmpeg(source,
-                "-y -strict -2 -max_muxing_queue_size 1024" +
+                "-y -strict -2" +
+                        ((FFmpeg.maxMuxingQueueSize >= 0) ? (" -max_muxing_queue_size " + FFmpeg.maxMuxingQueueSize) : "") +
                         " -vf scale=" + width + ':' + height +
-                        " -map 0 -map_metadata 0 -map_chapters 0 -movflags use_metadata_tags",
+                        " -map 0 -map_metadata 0 -map_chapters 0" +
+                        " -movflags use_metadata_tags -id3v2_version 3 -write_id3v2 1 -write_apetag 1",
                 output);
     }
     
@@ -466,57 +528,12 @@ public class VideoUtility {
      */
     public static String adjustQuality(File source, int crf, File output) {
         return FFmpeg.ffmpeg(source,
-                "-y -strict -2 -max_muxing_queue_size 1024" +
+                "-y -strict -2" +
+                        ((FFmpeg.maxMuxingQueueSize >= 0) ? (" -max_muxing_queue_size " + FFmpeg.maxMuxingQueueSize) : "") +
                         " -crf " + crf +
-                        " -map 0 -map_metadata 0 -map_chapters 0 -movflags use_metadata_tags",
+                        " -map 0 -map_metadata 0 -map_chapters 0" +
+                        " -movflags use_metadata_tags -id3v2_version 3 -write_id3v2 1 -write_apetag 1",
                 output);
-    }
-    
-    /**
-     * Extracts a stream from a video file.<br>
-     * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
-     *
-     * @param source     The video file.
-     * @param streamType The type of stream.
-     * @param index      The index of the stream from the specified type of stream.
-     * @param output     The output file.
-     * @return The response from the ffmpeg process.
-     * @see FFmpeg#ffmpeg(File, String, File)
-     */
-    public static String extractStream(File source, FFmpeg.StreamType streamType, int index, File output) {
-        return FFmpeg.ffmpeg(source,
-                "-y -strict -2 -max_muxing_queue_size 1024" +
-                        " -map 0:" + ((streamType != null) ? (StringUtility.lSnip(streamType.name().toLowerCase(), 1) + ":") : "") + index +
-                        " -c copy -map_metadata 0 -map_chapters -1 -movflags use_metadata_tags",
-                output);
-    }
-    
-    /**
-     * Extracts a stream from a video file.<br>
-     * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
-     *
-     * @param source     The video file.
-     * @param streamType The type of stream.
-     * @param output     The output file.
-     * @return The response from the ffmpeg process.
-     * @see #extractStream(File, FFmpeg.StreamType, int, File)
-     */
-    public static String extractStream(File source, FFmpeg.StreamType streamType, File output) {
-        return extractStream(source, streamType, 0, output);
-    }
-    
-    /**
-     * Extracts a stream from a video file.<br>
-     * This method is for a specific purpose, if the ffmpeg parameters or method parameters do not fit your needs then see the FFmpeg.ffmpeg() methods.
-     *
-     * @param source The video file.
-     * @param index  The index of the stream.
-     * @param output The output file.
-     * @return The response from the ffmpeg process.
-     * @see #extractStream(File, FFmpeg.StreamType, int, File)
-     */
-    public static String extractStream(File source, int index, File output) {
-        return extractStream(source, null, index, output);
     }
     
     /**
@@ -528,7 +545,7 @@ public class VideoUtility {
      * @param frameDurations The list of durations for each frame in the corresponding frame list, in order, in milliseconds.
      * @param output         The output video file.
      * @return The response from the ffmpeg process, or an empty string if there was an error generating the concat demuxer.
-     * @see FFmpeg#ffmpeg(String, File, String, File)
+     * @see FFmpeg#ffmpeg(String, File, String, File, FFmpeg.FFmpegProgressBar)
      */
     public static String encodeFramesToVideo(List<File> frames, List<Long> frameDurations, File output) {
         final File concatDemuxer = Filesystem.getTemporaryFile("txt");
@@ -539,8 +556,12 @@ public class VideoUtility {
         
         return FFmpeg.ffmpeg("-f concat -safe 0",
                 concatDemuxer,
-                "-y -strict -2 -max_muxing_queue_size 1024 -vsync vfr",
-                output);
+                "-y -strict -2" +
+                        ((FFmpeg.maxMuxingQueueSize >= 0) ? (" -max_muxing_queue_size " + FFmpeg.maxMuxingQueueSize) : "") +
+                        " -vsync vfr",
+                output,
+                (CommonsLogging.showFfmpegProgressBarsByDefault() ? new FFmpeg.FFmpegProgressBar(concatDemuxer, output,
+                        (frameDurations.stream().mapToLong(Long::valueOf).sum() / 1000)) : null));
     }
     
     /**
@@ -552,13 +573,17 @@ public class VideoUtility {
      * @param fps              The number of frames per second in the output video.
      * @param output           The output video file.
      * @return The response from the ffmpeg process.
-     * @see FFmpeg#ffmpeg(String, File, String, File)
+     * @see FFmpeg#ffmpeg(String, File, String, File, FFmpeg.FFmpegProgressBar)
      */
     public static String encodeFramesToVideo(File frameDir, String frameNamePattern, double fps, File output) {
         return FFmpeg.ffmpeg("-framerate " + fps,
                 new File(frameDir, frameNamePattern),
-                "-y -strict -2 -max_muxing_queue_size 1024",
-                output);
+                "-y -strict -2" +
+                        ((FFmpeg.maxMuxingQueueSize >= 0) ? (" -max_muxing_queue_size " + FFmpeg.maxMuxingQueueSize) : ""),
+                output,
+                (CommonsLogging.showFfmpegProgressBarsByDefault() ? new FFmpeg.FFmpegProgressBar(frameDir, output,
+                        (long) (Optional.ofNullable(FFmpeg.getStream(new File(frameDir, frameNamePattern), FFmpeg.Identifier.Stream.ofIndex(0)))
+                                .map(e -> e.get("duration_ts")).map(Long.class::cast).orElse(0L) / fps)) : null));
     }
     
     /**
@@ -591,11 +616,16 @@ public class VideoUtility {
      * @param outputFrameDir   The output directory for the decoded frames.
      * @param frameNamePattern The name pattern of the resulting frame images; example: 'frame_%03d.png'.
      * @return The response from the ffmpeg process.
-     * @see FFmpeg#ffmpeg(File, String, File)
+     * @see FFmpeg#ffmpeg(File, String, File, FFmpeg.FFmpegProgressBar)
      */
     public static String decodeFramesFromVideo(File source, int videoStreamIndex, double fps, File outputFrameDir, String frameNamePattern) {
+        if (!outputFrameDir.exists()) {
+            Filesystem.createDirectory(outputFrameDir);
+        }
+        
         return FFmpeg.ffmpeg(source,
-                "-y -strict -2 -max_muxing_queue_size 1024" +
+                "-y -strict -2" +
+                        ((FFmpeg.maxMuxingQueueSize >= 0) ? (" -max_muxing_queue_size " + FFmpeg.maxMuxingQueueSize) : "") +
                         " -map 0:v:" + videoStreamIndex + " -filter:v fps=fps=" + fps,
                 new File(outputFrameDir, frameNamePattern));
     }
@@ -624,13 +654,14 @@ public class VideoUtility {
      * @param timestamp        The timestamp to extract a frame from.
      * @param outputFrame      The output file to write the frame to.
      * @return The response from the ffmpeg process.
-     * @see FFmpeg#ffmpeg(File, String, File)
+     * @see FFmpeg#ffmpeg(File, String, File, boolean)
      */
     public static String extractFrameFromVideo(File source, int videoStreamIndex, String timestamp, File outputFrame) {
         return FFmpeg.ffmpeg(source,
-                "-y -strict -2 -max_muxing_queue_size 1024" +
+                "-y -strict -2" +
+                        ((FFmpeg.maxMuxingQueueSize >= 0) ? (" -max_muxing_queue_size " + FFmpeg.maxMuxingQueueSize) : "") +
                         " -map 0:v:" + videoStreamIndex + " -ss " + timestamp,
-                outputFrame);
+                outputFrame, false);
     }
     
     /**
