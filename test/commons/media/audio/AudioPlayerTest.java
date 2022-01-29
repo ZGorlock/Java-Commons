@@ -1,11 +1,11 @@
 /*
- * File:    AudioUtilityTest.java
- * Package: commons.media
+ * File:    AudioPlayerTest.java
+ * Package: commons.media.audio
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.media;
+package commons.media.audio;
 
 import java.io.File;
 
@@ -21,21 +21,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of AudioUtility.
+ * JUnit test of AudioPlayer.
  *
- * @see AudioUtility
+ * @see AudioPlayer
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({AudioUtility.class})
-public class AudioUtilityTest {
+@PrepareForTest({AudioPlayer.class})
+public class AudioPlayerTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(AudioUtilityTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(AudioPlayerTest.class);
     
     
     //Initialization
@@ -99,7 +99,7 @@ public class AudioUtilityTest {
      * JUnit test of playMp3.
      *
      * @throws Exception When there is an exception.
-     * @see AudioUtility#playMp3(File)
+     * @see AudioPlayer#playMp3(File)
      */
     @SuppressWarnings("EmptyMethod")
     @Test

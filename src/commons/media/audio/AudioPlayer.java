@@ -1,11 +1,11 @@
 /*
- * File:    AudioUtility.java
- * Package: commons.media
+ * File:    AudioPlayer.java
+ * Package: commons.media.audio
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.media;
+package commons.media.audio;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -17,16 +17,16 @@ import uk.co.caprica.vlcj.player.base.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.component.AudioPlayerComponent;
 
 /**
- * Handles audio operations.
+ * Plays audio.
  */
-public final class AudioUtility {
+public final class AudioPlayer {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(AudioUtility.class);
+    private static final Logger logger = LoggerFactory.getLogger(AudioPlayer.class);
     
     
     //Functions
