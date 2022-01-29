@@ -1,11 +1,11 @@
 /*
  * File:    VideoUtility.java
- * Package: commons.media.video
+ * Package: commons.file.media.video
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.media.video;
+package commons.file.media.video;
 
 import java.io.File;
 import java.util.Arrays;
@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import commons.access.Filesystem;
+import commons.file.media.FFmpeg;
 import commons.log.CommonsLogging;
-import commons.media.FFmpeg;
 import commons.object.string.StringUtility;
 import commons.time.DateTimeUtility;
 import org.slf4j.Logger;

@@ -1,11 +1,11 @@
 /*
  * File:    ImageUtility.java
- * Package: commons.media.image
+ * Package: commons.file.media.image
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.media.image;
+package commons.file.media.image;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;

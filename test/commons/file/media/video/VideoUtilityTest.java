@@ -1,11 +1,11 @@
 /*
  * File:    VideoUtilityTest.java
- * Package: commons.media.video
+ * Package: commons.file.media.video
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.media.video;
+package commons.file.media.video;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -23,12 +23,12 @@ import java.util.stream.Collectors;
 
 import commons.access.Filesystem;
 import commons.access.Project;
+import commons.file.media.FFmpeg;
+import commons.file.media.image.ImageUtility;
 import commons.graphics.DrawUtility;
 import commons.log.CommonsLogging;
 import commons.math.MathUtility;
 import commons.math.component.vector.IntVector;
-import commons.media.FFmpeg;
-import commons.media.image.ImageUtility;
 import commons.object.string.StringUtility;
 import commons.test.TestUtils;
 import org.junit.After;

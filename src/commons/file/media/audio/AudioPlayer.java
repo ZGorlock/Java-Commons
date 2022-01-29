@@ -1,11 +1,11 @@
 /*
  * File:    AudioPlayer.java
- * Package: commons.media.audio
+ * Package: commons.file.media.audio
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.media.audio;
+package commons.file.media.audio;
 
 import java.io.File;
 import java.util.concurrent.atomic.AtomicBoolean;

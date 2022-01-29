@@ -16,9 +16,9 @@ import java.util.List;
 
 import commons.access.Filesystem;
 import commons.access.Project;
+import commons.file.media.image.ImageUtility;
 import commons.math.component.matrix.Matrix;
 import commons.math.component.vector.Vector;
-import commons.media.image.ImageUtility;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;

@@ -1,10 +1,10 @@
 /*
  * File:    package-info.java
- * Package: commons.media.image
+ * Package: commons.file.media
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  *
- * Contains common image resource classes.
+ * Contains common media resource classes.
  */
 
-package commons.media.image;
+package commons.file.media;

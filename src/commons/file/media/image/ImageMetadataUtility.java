@@ -1,11 +1,11 @@
 /*
  * File:    ImageMetadataUtility.java
- * Package: commons.media.image
+ * Package: commons.file.media.image
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.media.image;
+package commons.file.media.image;
 
 import java.io.File;
 import java.util.ArrayList;

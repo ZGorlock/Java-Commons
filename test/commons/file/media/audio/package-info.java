@@ -1,10 +1,10 @@
 /*
  * File:    package-info.java
- * Package: commons.media.audio
+ * Package: commons.file.media.audio
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  *
  * Contains common audio resource classes.
  */
 
-package commons.media.audio;
+package commons.file.media.audio;

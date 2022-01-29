@@ -1,11 +1,11 @@
 /*
  * File:    FFmpegTest.java
- * Package: commons.media
+ * Package: commons.file.media
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.media;
+package commons.file.media;
 
 import java.io.File;
 import java.util.ArrayList;
