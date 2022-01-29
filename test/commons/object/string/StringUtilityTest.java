@@ -2126,10 +2126,31 @@ public class StringUtilityTest {
                 StringUtility.methodString(StringUtility.class, "", Class.class, String.class, Class[].class));
         Assert.assertEquals("StringUtility::null(Class, String, Class[])",
                 StringUtility.methodString(StringUtility.class, null, Class.class, String.class, Class[].class));
+        Assert.assertEquals("null::methodString(Class, null, Class[])",
+                StringUtility.methodString(null, "methodString", Class.class, null, Class[].class));
+        Assert.assertEquals("null::null(null)",
+                StringUtility.methodString(null, null, (Class<?>) null));
+    }
+    
+    /**
+     * JUnit test of fieldString.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#fieldString(Class, String)
+     */
+    @Test
+    public void testFieldString() throws Exception {
+        //valid
+        Assert.assertEquals("StringUtility::fieldString",
+                StringUtility.fieldString(StringUtility.class, "fieldString"));
         
-        //invalid
-        TestUtils.assertException(NullPointerException.class, () ->
-                StringUtility.methodString(null, "methodString", Class.class, String.class, Class[].class));
+        //edge case
+        Assert.assertEquals("StringUtility::null",
+                StringUtility.fieldString(StringUtility.class, null));
+        Assert.assertEquals("null::fieldString",
+                StringUtility.fieldString(null, "fieldString"));
+        Assert.assertEquals("null::null",
+                StringUtility.fieldString(null, null));
     }
     
     /**

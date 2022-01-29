@@ -1284,8 +1284,19 @@ public final class StringUtility {
      * @return The method string.
      */
     public static String methodString(Class<?> clazz, String methodName, Class<?>... argumentClasses) {
-        return clazz.getSimpleName() + "::" + methodName +
+        return ((clazz == null) ? "null" : clazz.getSimpleName()) + "::" + methodName +
                 '(' + Arrays.stream(argumentClasses).sequential().map(e -> (e == null) ? "null" : e.getSimpleName()).collect(Collectors.joining(", ")) + ')';
+    }
+    
+    /**
+     * Returns a string representing a field.
+     *
+     * @param clazz     The class that has the field.
+     * @param fieldName The name of the field.
+     * @return The field string.
+     */
+    public static String fieldString(Class<?> clazz, String fieldName) {
+        return ((clazz == null) ? "null" : clazz.getSimpleName()) + "::" + fieldName;
     }
     
     /**
