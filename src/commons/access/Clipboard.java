@@ -13,7 +13,7 @@ import java.awt.datatransfer.StringSelection;
 import java.awt.image.BufferedImage;
 
 import commons.log.CommonsLogging;
-import commons.media.ImageUtility;
+import commons.media.image.ImageUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

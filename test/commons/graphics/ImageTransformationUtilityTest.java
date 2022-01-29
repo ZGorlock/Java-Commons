@@ -18,7 +18,7 @@ import commons.access.Filesystem;
 import commons.access.Project;
 import commons.math.component.matrix.Matrix;
 import commons.math.component.vector.Vector;
-import commons.media.ImageUtility;
+import commons.media.image.ImageUtility;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;

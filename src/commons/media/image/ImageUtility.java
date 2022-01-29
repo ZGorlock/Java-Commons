@@ -1,11 +1,11 @@
 /*
  * File:    ImageUtility.java
- * Package: commons.media
+ * Package: commons.media.image
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.media;
+package commons.media.image;
 
 import java.awt.Dimension;
 import java.awt.Graphics2D;
@@ -49,6 +49,7 @@ import commons.graphics.DrawUtility;
 import commons.math.BoundUtility;
 import commons.math.component.vector.IntVector;
 import commons.math.component.vector.Vector;
+import commons.media.MetadataUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

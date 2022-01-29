@@ -10,7 +10,7 @@ package commons.access;
 import java.awt.image.BufferedImage;
 
 import commons.log.CommonsLogging;
-import commons.media.ImageUtility;
+import commons.media.image.ImageUtility;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
