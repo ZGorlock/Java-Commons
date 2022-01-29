@@ -96,7 +96,7 @@ public class FFmpeg {
     /**
      * The maximum muxing queue size to allow ffmpeg to use, or -1 for default.
      */
-    static int maxMuxingQueueSize = -1;
+    public static int maxMuxingQueueSize = -1;
     
     
     //Functions
