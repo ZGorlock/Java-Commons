@@ -49,7 +49,6 @@ import commons.graphics.DrawUtility;
 import commons.math.BoundUtility;
 import commons.math.component.vector.IntVector;
 import commons.math.component.vector.Vector;
-import commons.media.MetadataUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -193,11 +192,11 @@ public class ImageUtility {
             return null;
         }
         
-        MetadataUtility.MetadataTag dateTaken;
+        ImageMetadataUtility.MetadataTag dateTaken;
         switch (Filesystem.getFileType(image).toLowerCase()) {
             case "jpg":
             case "jpeg":
-                dateTaken = MetadataUtility.getMetadataTag(image, "Date/Time Original");
+                dateTaken = ImageMetadataUtility.getMetadataTag(image, "Date/Time Original");
                 if (dateTaken != null) {
                     break;
                 }
@@ -207,7 +206,7 @@ public class ImageUtility {
             case "tif":
             case "tiff":
             case "wbmp":
-                dateTaken = MetadataUtility.getMetadata(image).stream()
+                dateTaken = ImageMetadataUtility.getMetadata(image).stream()
                         .filter(e -> e.name.equals("Textual Data") && e.value.startsWith("Creation Time: "))
                         .findFirst().orElse(null);
                 if (dateTaken != null) {

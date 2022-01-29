@@ -1,11 +1,11 @@
 /*
- * File:    MetadataUtilityTest.java
- * Package: commons.media
+ * File:    ImageMetadataUtilityTest.java
+ * Package: commons.media.image
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.media;
+package commons.media.image;
 
 import java.io.File;
 import java.util.List;
@@ -25,21 +25,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of MetadataUtility.
+ * JUnit test of ImageMetadataUtility.
  *
- * @see MetadataUtility
+ * @see ImageMetadataUtility
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({MetadataUtility.class})
-public class MetadataUtilityTest {
+@PrepareForTest({ImageMetadataUtility.class})
+public class ImageMetadataUtilityTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(MetadataUtilityTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ImageMetadataUtilityTest.class);
     
     
     //Constants
@@ -47,7 +47,7 @@ public class MetadataUtilityTest {
     /**
      * The directory containing resources for this test class.
      */
-    private static final File testResources = Project.testResourcesDir(MetadataUtility.class);
+    private static final File testResources = Project.testResourcesDir(ImageMetadataUtility.class);
     
     
     //Initialization
@@ -109,115 +109,115 @@ public class MetadataUtilityTest {
      * JUnit test of getMetadata.
      *
      * @throws Exception When there is an exception.
-     * @see MetadataUtility#getMetadata(File, String)
-     * @see MetadataUtility#getMetadata(File)
+     * @see ImageMetadataUtility#getMetadata(File, String)
+     * @see ImageMetadataUtility#getMetadata(File)
      */
     @Test
     public void testGetMetadata() throws Exception {
-        List<MetadataUtility.MetadataTag> metadata;
+        List<ImageMetadataUtility.MetadataTag> metadata;
         
         //jpg
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"));
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"));
         Assert.assertNotNull(metadata);
         Assert.assertEquals(143, metadata.size());
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"), "JPEG");
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"), "JPEG");
         Assert.assertNotNull(metadata);
         Assert.assertEquals(8, metadata.size());
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"), "JFIF");
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"), "JFIF");
         Assert.assertNotNull(metadata);
         Assert.assertEquals(6, metadata.size());
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"), "Exif IFD0");
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"), "Exif IFD0");
         Assert.assertNotNull(metadata);
         Assert.assertEquals(13, metadata.size());
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"), "Exif SubIFD");
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"), "Exif SubIFD");
         Assert.assertNotNull(metadata);
         Assert.assertEquals(24, metadata.size());
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"), "GPS");
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"), "GPS");
         Assert.assertNotNull(metadata);
         Assert.assertEquals(7, metadata.size());
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"), "Exif Thumbnail");
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"), "Exif Thumbnail");
         Assert.assertNotNull(metadata);
         Assert.assertEquals(6, metadata.size());
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"), "XMP");
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"), "XMP");
         Assert.assertNotNull(metadata);
         Assert.assertEquals(1, metadata.size());
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"), "ICC Profile");
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"), "ICC Profile");
         Assert.assertNotNull(metadata);
         Assert.assertEquals(30, metadata.size());
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"), "Photoshop");
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"), "Photoshop");
         Assert.assertNotNull(metadata);
         Assert.assertEquals(18, metadata.size());
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"), "IPTC");
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"), "IPTC");
         Assert.assertNotNull(metadata);
         Assert.assertEquals(18, metadata.size());
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"), "Adobe JPEG");
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"), "Adobe JPEG");
         Assert.assertNotNull(metadata);
         Assert.assertEquals(4, metadata.size());
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"), "Huffman");
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"), "Huffman");
         Assert.assertNotNull(metadata);
         Assert.assertEquals(1, metadata.size());
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"), "File Type");
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"), "File Type");
         Assert.assertNotNull(metadata);
         Assert.assertEquals(4, metadata.size());
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"), "File");
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"), "File");
         Assert.assertNotNull(metadata);
         Assert.assertEquals(3, metadata.size());
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.jpg"), "Missing");
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.jpg"), "Missing");
         Assert.assertNotNull(metadata);
         Assert.assertEquals(0, metadata.size());
         
         //png
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.png"));
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.png"));
         Assert.assertNotNull(metadata);
         Assert.assertEquals(16, metadata.size());
         
         //gif
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.gif"));
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.gif"));
         Assert.assertNotNull(metadata);
         Assert.assertEquals(27, metadata.size());
         
         //bmp
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.bmp"));
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.bmp"));
         Assert.assertNotNull(metadata);
         Assert.assertEquals(18, metadata.size());
         
         //ico
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.ico"));
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.ico"));
         Assert.assertNotNull(metadata);
         Assert.assertEquals(15, metadata.size());
         
         //text
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.txt"));
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.txt"));
         Assert.assertNotNull(metadata);
         Assert.assertEquals(0, metadata.size());
         
         //invalid
         
-        metadata = MetadataUtility.getMetadata(new File(testResources, "test.missing"));
+        metadata = ImageMetadataUtility.getMetadata(new File(testResources, "test.missing"));
         Assert.assertNull(metadata);
         
-        metadata = MetadataUtility.getMetadata(null);
+        metadata = ImageMetadataUtility.getMetadata(null);
         Assert.assertNull(metadata);
     }
     
@@ -225,69 +225,69 @@ public class MetadataUtilityTest {
      * JUnit test of getMetadataTag.
      *
      * @throws Exception When there is an exception.
-     * @see MetadataUtility#getMetadataTag(File, String, String)
-     * @see MetadataUtility#getMetadataTag(File, String)
+     * @see ImageMetadataUtility#getMetadataTag(File, String, String)
+     * @see ImageMetadataUtility#getMetadataTag(File, String)
      */
     @Test
     public void testGetMetadataTag() throws Exception {
-        MetadataUtility.MetadataTag metadata;
+        ImageMetadataUtility.MetadataTag metadata;
         
         //standard
         
-        metadata = MetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "JPEG", "Image Width");
+        metadata = ImageMetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "JPEG", "Image Width");
         Assert.assertNotNull(metadata);
         Assert.assertEquals("JPEG", metadata.directory);
         Assert.assertEquals("Image Width", metadata.name);
         Assert.assertEquals("600 pixels", metadata.value);
-        Assert.assertEquals(metadata, MetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "Image Width"));
-        Assert.assertEquals(metadata, MetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), null, "Image Width"));
+        Assert.assertEquals(metadata, ImageMetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "Image Width"));
+        Assert.assertEquals(metadata, ImageMetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), null, "Image Width"));
         
-        metadata = MetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "GPS", "GPS Latitude");
+        metadata = ImageMetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "GPS", "GPS Latitude");
         Assert.assertNotNull(metadata);
         Assert.assertEquals("GPS", metadata.directory);
         Assert.assertEquals("GPS Latitude", metadata.name);
         Assert.assertEquals("54° 59' 22.8\"", metadata.value);
-        Assert.assertEquals(metadata, MetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "GPS Latitude"));
-        Assert.assertEquals(metadata, MetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), null, "GPS Latitude"));
+        Assert.assertEquals(metadata, ImageMetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "GPS Latitude"));
+        Assert.assertEquals(metadata, ImageMetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), null, "GPS Latitude"));
         
-        metadata = MetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "IPTC", "Date Created");
+        metadata = ImageMetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "IPTC", "Date Created");
         Assert.assertNotNull(metadata);
         Assert.assertEquals("IPTC", metadata.directory);
         Assert.assertEquals("Date Created", metadata.name);
         Assert.assertEquals("2002:06:20", metadata.value);
-        Assert.assertEquals(metadata, MetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "Date Created"));
-        Assert.assertEquals(metadata, MetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), null, "Date Created"));
+        Assert.assertEquals(metadata, ImageMetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "Date Created"));
+        Assert.assertEquals(metadata, ImageMetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), null, "Date Created"));
         
         //invalid
         
-        metadata = MetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "Missing", "Image Height");
+        metadata = ImageMetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "Missing", "Image Height");
         Assert.assertNull(metadata);
         
-        metadata = MetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "JPEG", "Missing");
+        metadata = ImageMetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "JPEG", "Missing");
         Assert.assertNull(metadata);
         
-        metadata = MetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "JPEG", null);
+        metadata = ImageMetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), "JPEG", null);
         Assert.assertNull(metadata);
         
-        metadata = MetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), null);
+        metadata = ImageMetadataUtility.getMetadataTag(new File(testResources, "test.jpg"), null);
         Assert.assertNull(metadata);
         
         TestUtils.assertException(NullPointerException.class, () ->
-                MetadataUtility.getMetadataTag(null, "Image Height"));
+                ImageMetadataUtility.getMetadataTag(null, "Image Height"));
     }
     
     /**
      * JUnit test of MetadataTag.
      *
      * @throws Exception When there is an exception.
-     * @see MetadataUtility.MetadataTag
+     * @see ImageMetadataUtility.MetadataTag
      */
     @Test
     public void testMetadataTag() throws Exception {
-        MetadataUtility.MetadataTag testTag1 = new MetadataUtility.MetadataTag(
+        ImageMetadataUtility.MetadataTag testTag1 = new ImageMetadataUtility.MetadataTag(
                 "Test Dir", "Test Tag", "The Value", 3);
         
-        MetadataUtility.MetadataTag testTag2 = new MetadataUtility.MetadataTag();
+        ImageMetadataUtility.MetadataTag testTag2 = new ImageMetadataUtility.MetadataTag();
         testTag2.directory = "Test Dir";
         testTag2.name = "Test Tag";
         testTag2.value = "The Value";

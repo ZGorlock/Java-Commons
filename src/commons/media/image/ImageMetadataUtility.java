@@ -1,11 +1,11 @@
 /*
- * File:    MetadataUtility.java
- * Package: commons.media
+ * File:    ImageMetadataUtility.java
+ * Package: commons.media.image
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.media;
+package commons.media.image;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -19,16 +19,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Provides access to media metadata.
+ * Provides access to image metadata.
  */
-public class MetadataUtility {
+public class ImageMetadataUtility {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(MetadataUtility.class);
+    private static final Logger logger = LoggerFactory.getLogger(ImageMetadataUtility.class);
     
     
     //Functions
