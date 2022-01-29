@@ -13,11 +13,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import commons.list.ListUtility;
 import commons.math.BoundUtility;
 import commons.math.component.ComponentInterface;
 import commons.math.component.handler.error.ComponentErrorHandlerProvider;
 import commons.math.component.vector.VectorInterface;
+import commons.object.collection.ListUtility;
 import commons.object.string.StringUtility;
 
 /**

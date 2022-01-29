@@ -1,11 +1,11 @@
 /*
  * File:    ArrayUtility.java
- * Package: commons.list
+ * Package: commons.object.collection
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.list;
+package commons.object.collection;
 
 import java.lang.reflect.Array;
 import java.util.ArrayList;

@@ -12,10 +12,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import commons.list.ArrayUtility;
 import commons.math.component.handler.error.ComponentErrorHandlerInterface;
 import commons.math.component.handler.error.ComponentErrorHandlerProvider;
 import commons.math.component.handler.math.ComponentMathHandlerInterface;
+import commons.object.collection.ArrayUtility;
 import org.apache.commons.lang3.ArrayUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

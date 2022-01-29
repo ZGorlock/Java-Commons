@@ -23,8 +23,8 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import commons.list.ArrayUtility;
-import commons.list.ListUtility;
+import commons.object.collection.ArrayUtility;
+import commons.object.collection.ListUtility;
 import commons.object.string.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
