@@ -8,6 +8,7 @@
 package commons.access;
 
 import java.io.File;
+import java.util.regex.Matcher;
 
 /**
  * Defines directories for the project.
@@ -78,12 +79,12 @@ public final class Project {
         return ((Filesystem.exists(SOURCE_DIR) || Filesystem.createDirectory(SOURCE_DIR)) &&
                 (Filesystem.exists(TEST_DIR) || Filesystem.createDirectory(TEST_DIR)) &&
                 (Filesystem.exists(DATA_DIR) || Filesystem.createDirectory(DATA_DIR)) &&
+                (Filesystem.exists(RESOURCES_DIR) || Filesystem.createDirectory(RESOURCES_DIR)) &&
+                (Filesystem.exists(TEST_RESOURCES_DIR) || Filesystem.createDirectory(TEST_RESOURCES_DIR)) &&
                 (Filesystem.exists(OUTPUT_DIR) || Filesystem.createDirectory(OUTPUT_DIR)) &&
                 (Filesystem.exists(SOURCE_CLASSES_DIR) || Filesystem.createDirectory(SOURCE_CLASSES_DIR)) &&
                 (Filesystem.exists(TEST_CLASSES_DIR) || Filesystem.createDirectory(TEST_CLASSES_DIR)) &&
                 (Filesystem.exists(LOG_DIR) || Filesystem.createDirectory(LOG_DIR)) &&
-                (Filesystem.exists(RESOURCES_DIR) || Filesystem.createDirectory(RESOURCES_DIR)) &&
-                (Filesystem.exists(TEST_RESOURCES_DIR) || Filesystem.createDirectory(TEST_RESOURCES_DIR)) &&
                 (Filesystem.exists(TMP_DIR) || Filesystem.createDirectory(TMP_DIR)) && Filesystem.clearDirectory(TMP_DIR));
     }
     
@@ -224,19 +225,20 @@ public final class Project {
     }
     
     /**
-     * Returns an outer style class directory for a particular project dir.
+     * Returns class directory for a particular project dir.
      *
      * @param projectDir The project directory.
      * @param prefix     The prefix within the project directory
      * @param clazz      The class.
+     * @param classOwned Whether the class directory is private to the class or not.
      * @return The class directory for the specified project dir.
      */
-    private static File classDir(File projectDir, String prefix, Class<?> clazz, boolean privateDirectory) {
-        String justifiedPrefix = prefix.replace("\\", File.separator).replace("/", File.separator);
+    private static File classDir(File projectDir, String prefix, Class<?> clazz, boolean classOwned) {
+        String justifiedPrefix = prefix.replaceAll("[\\\\/]+", Matcher.quoteReplacement(File.separator));
         String classPath = justifiedPrefix + (justifiedPrefix.endsWith(File.separator) ? "" : File.separator) +
                 clazz.getPackage().getName().replace(".", File.separator) +
-                (privateDirectory ? (File.separator + clazz.getSimpleName()) : "");
-        return new File(projectDir, classPath);
+                (classOwned ? (File.separator + clazz.getSimpleName()) : "");
+        return new File(projectDir.getPath(), classPath);
     }
     
 }

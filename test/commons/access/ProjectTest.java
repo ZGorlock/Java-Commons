@@ -10,11 +10,9 @@ package commons.access;
 import java.io.File;
 
 import commons.io.speech.SpeechSynthesizer;
-import commons.io.speech.SpeechSynthesizerTest;
 import commons.math.component.handler.math.BigComponentMathHandler;
-import commons.math.component.handler.math.BigComponentMathHandlerTest;
 import commons.object.string.StringUtility;
-import commons.object.string.StringUtilityTest;
+import commons.security.CryptoUtility;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -38,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Project.class, Filesystem.class})
+@PrepareForTest({Project.class, Filesystem.class, TestUtils.AssertWrapper.class})
 public class ProjectTest {
     
     //Logger
@@ -101,12 +99,12 @@ public class ProjectTest {
      * @see Project#SOURCE_DIR
      * @see Project#TEST_DIR
      * @see Project#DATA_DIR
+     * @see Project#RESOURCES_DIR
+     * @see Project#TEST_RESOURCES_DIR
      * @see Project#OUTPUT_DIR
      * @see Project#SOURCE_CLASSES_DIR
      * @see Project#TEST_CLASSES_DIR
      * @see Project#LOG_DIR
-     * @see Project#RESOURCES_DIR
-     * @see Project#TEST_RESOURCES_DIR
      * @see Project#TMP_DIR
      */
     @Test
@@ -114,12 +112,12 @@ public class ProjectTest {
         Assert.assertEquals("src", StringUtility.fileString(Project.SOURCE_DIR, false));
         Assert.assertEquals("test", StringUtility.fileString(Project.TEST_DIR, false));
         Assert.assertEquals("data", StringUtility.fileString(Project.DATA_DIR, false));
+        Assert.assertEquals("resources", StringUtility.fileString(Project.RESOURCES_DIR, false));
+        Assert.assertEquals("test-resources", StringUtility.fileString(Project.TEST_RESOURCES_DIR, false));
         Assert.assertEquals("bin", StringUtility.fileString(Project.OUTPUT_DIR, false));
         Assert.assertEquals("bin/classes", StringUtility.fileString(Project.SOURCE_CLASSES_DIR, false));
         Assert.assertEquals("bin/test-classes", StringUtility.fileString(Project.TEST_CLASSES_DIR, false));
         Assert.assertEquals("log", StringUtility.fileString(Project.LOG_DIR, false));
-        Assert.assertEquals("resources", StringUtility.fileString(Project.RESOURCES_DIR, false));
-        Assert.assertEquals("test-resources", StringUtility.fileString(Project.TEST_RESOURCES_DIR, false));
         Assert.assertEquals("tmp", StringUtility.fileString(Project.TMP_DIR, false));
     }
     
@@ -173,10 +171,14 @@ public class ProjectTest {
     @Test
     public void testSourceDir() throws Exception {
         //standard
-        Assert.assertEquals("src/commons/access", StringUtility.fileString(Project.sourceDir(Project.class), false));
-        Assert.assertEquals("src/commons/string", StringUtility.fileString(Project.sourceDir(StringUtility.class), false));
-        Assert.assertEquals("src/commons/io/speech", StringUtility.fileString(Project.sourceDir(SpeechSynthesizer.class), false));
-        Assert.assertEquals("src/commons/math/component/handler/math", StringUtility.fileString(Project.sourceDir(BigComponentMathHandler.class), false));
+        Assert.assertEquals("src/commons/access",
+                StringUtility.fileString(Project.sourceDir(Project.class), false));
+        Assert.assertEquals("src/commons/security",
+                StringUtility.fileString(Project.sourceDir(CryptoUtility.class), false));
+        Assert.assertEquals("src/commons/io/speech",
+                StringUtility.fileString(Project.sourceDir(SpeechSynthesizer.class), false));
+        Assert.assertEquals("src/commons/math/component/handler/math",
+                StringUtility.fileString(Project.sourceDir(BigComponentMathHandler.class), false));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -192,10 +194,14 @@ public class ProjectTest {
     @Test
     public void testTestDir() throws Exception {
         //standard
-        Assert.assertEquals("test/commons/access", StringUtility.fileString(Project.testDir(ProjectTest.class), false));
-        Assert.assertEquals("test/commons/string", StringUtility.fileString(Project.testDir(StringUtilityTest.class), false));
-        Assert.assertEquals("test/commons/io/speech", StringUtility.fileString(Project.testDir(SpeechSynthesizerTest.class), false));
-        Assert.assertEquals("test/commons/math/component/handler/math", StringUtility.fileString(Project.testDir(BigComponentMathHandlerTest.class), false));
+        Assert.assertEquals("test/commons/access",
+                StringUtility.fileString(Project.testDir(Project.class), false));
+        Assert.assertEquals("test/commons/security",
+                StringUtility.fileString(Project.testDir(CryptoUtility.class), false));
+        Assert.assertEquals("test/commons/io/speech",
+                StringUtility.fileString(Project.testDir(SpeechSynthesizer.class), false));
+        Assert.assertEquals("test/commons/math/component/handler/math",
+                StringUtility.fileString(Project.testDir(BigComponentMathHandler.class), false));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -212,16 +218,24 @@ public class ProjectTest {
     @Test
     public void testDataDir() throws Exception {
         //standard
-        Assert.assertEquals("data/commons/access/Project", StringUtility.fileString(Project.dataDir(Project.class), false));
-        Assert.assertEquals("data/commons/string/StringUtility", StringUtility.fileString(Project.dataDir(StringUtility.class), false));
-        Assert.assertEquals("data/commons/io/speech/SpeechSynthesizer", StringUtility.fileString(Project.dataDir(SpeechSynthesizer.class), false));
-        Assert.assertEquals("data/commons/math/component/handler/math/BigComponentMathHandler", StringUtility.fileString(Project.dataDir(BigComponentMathHandler.class), false));
+        Assert.assertEquals("data/commons/access/Project",
+                StringUtility.fileString(Project.dataDir(Project.class), false));
+        Assert.assertEquals("data/commons/security/CryptoUtility",
+                StringUtility.fileString(Project.dataDir(CryptoUtility.class), false));
+        Assert.assertEquals("data/commons/io/speech/SpeechSynthesizer",
+                StringUtility.fileString(Project.dataDir(SpeechSynthesizer.class), false));
+        Assert.assertEquals("data/commons/math/component/handler/math/BigComponentMathHandler",
+                StringUtility.fileString(Project.dataDir(BigComponentMathHandler.class), false));
         
         //prefix
-        Assert.assertEquals("data/test/dir1/dir2/commons/access/Project", StringUtility.fileString(Project.dataDir(Project.class, "test\\dir1/dir2"), false));
-        Assert.assertEquals("data/test/dir1/dir2/commons/string/StringUtility", StringUtility.fileString(Project.dataDir(StringUtility.class, "test\\dir1/dir2"), false));
-        Assert.assertEquals("data/test/dir1/dir2/commons/io/speech/SpeechSynthesizer", StringUtility.fileString(Project.dataDir(SpeechSynthesizer.class, "test\\dir1/dir2"), false));
-        Assert.assertEquals("data/test/dir1/dir2/commons/math/component/handler/math/BigComponentMathHandler", StringUtility.fileString(Project.dataDir(BigComponentMathHandler.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("data/test/dir1/dir2/commons/access/Project",
+                StringUtility.fileString(Project.dataDir(Project.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("data/test/dir1/dir2/commons/security/CryptoUtility",
+                StringUtility.fileString(Project.dataDir(CryptoUtility.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("data/test/dir1/dir2/commons/io/speech/SpeechSynthesizer",
+                StringUtility.fileString(Project.dataDir(SpeechSynthesizer.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("data/test/dir1/dir2/commons/math/component/handler/math/BigComponentMathHandler",
+                StringUtility.fileString(Project.dataDir(BigComponentMathHandler.class, "test\\dir1/dir2"), false));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -242,16 +256,24 @@ public class ProjectTest {
     @Test
     public void testResourcesDir() throws Exception {
         //standard
-        Assert.assertEquals("resources/commons/access/Project", StringUtility.fileString(Project.resourcesDir(Project.class), false));
-        Assert.assertEquals("resources/commons/string/StringUtility", StringUtility.fileString(Project.resourcesDir(StringUtility.class), false));
-        Assert.assertEquals("resources/commons/io/speech/SpeechSynthesizer", StringUtility.fileString(Project.resourcesDir(SpeechSynthesizer.class), false));
-        Assert.assertEquals("resources/commons/math/component/handler/math/BigComponentMathHandler", StringUtility.fileString(Project.resourcesDir(BigComponentMathHandler.class), false));
+        Assert.assertEquals("resources/commons/access/Project",
+                StringUtility.fileString(Project.resourcesDir(Project.class), false));
+        Assert.assertEquals("resources/commons/security/CryptoUtility",
+                StringUtility.fileString(Project.resourcesDir(CryptoUtility.class), false));
+        Assert.assertEquals("resources/commons/io/speech/SpeechSynthesizer",
+                StringUtility.fileString(Project.resourcesDir(SpeechSynthesizer.class), false));
+        Assert.assertEquals("resources/commons/math/component/handler/math/BigComponentMathHandler",
+                StringUtility.fileString(Project.resourcesDir(BigComponentMathHandler.class), false));
         
         //prefix
-        Assert.assertEquals("resources/test/dir1/dir2/commons/access/Project", StringUtility.fileString(Project.resourcesDir(Project.class, "test\\dir1/dir2"), false));
-        Assert.assertEquals("resources/test/dir1/dir2/commons/string/StringUtility", StringUtility.fileString(Project.resourcesDir(StringUtility.class, "test\\dir1/dir2"), false));
-        Assert.assertEquals("resources/test/dir1/dir2/commons/io/speech/SpeechSynthesizer", StringUtility.fileString(Project.resourcesDir(SpeechSynthesizer.class, "test\\dir1/dir2"), false));
-        Assert.assertEquals("resources/test/dir1/dir2/commons/math/component/handler/math/BigComponentMathHandler", StringUtility.fileString(Project.resourcesDir(BigComponentMathHandler.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("resources/test/dir1/dir2/commons/access/Project",
+                StringUtility.fileString(Project.resourcesDir(Project.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("resources/test/dir1/dir2/commons/security/CryptoUtility",
+                StringUtility.fileString(Project.resourcesDir(CryptoUtility.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("resources/test/dir1/dir2/commons/io/speech/SpeechSynthesizer",
+                StringUtility.fileString(Project.resourcesDir(SpeechSynthesizer.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("resources/test/dir1/dir2/commons/math/component/handler/math/BigComponentMathHandler",
+                StringUtility.fileString(Project.resourcesDir(BigComponentMathHandler.class, "test\\dir1/dir2"), false));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -272,16 +294,24 @@ public class ProjectTest {
     @Test
     public void testTestResourcesDir() throws Exception {
         //standard
-        Assert.assertEquals("test-resources/commons/access/Project", StringUtility.fileString(Project.testResourcesDir(Project.class), false));
-        Assert.assertEquals("test-resources/commons/string/StringUtility", StringUtility.fileString(Project.testResourcesDir(StringUtility.class), false));
-        Assert.assertEquals("test-resources/commons/io/speech/SpeechSynthesizer", StringUtility.fileString(Project.testResourcesDir(SpeechSynthesizer.class), false));
-        Assert.assertEquals("test-resources/commons/math/component/handler/math/BigComponentMathHandler", StringUtility.fileString(Project.testResourcesDir(BigComponentMathHandler.class), false));
+        Assert.assertEquals("test-resources/commons/access/Project",
+                StringUtility.fileString(Project.testResourcesDir(Project.class), false));
+        Assert.assertEquals("test-resources/commons/security/CryptoUtility",
+                StringUtility.fileString(Project.testResourcesDir(CryptoUtility.class), false));
+        Assert.assertEquals("test-resources/commons/io/speech/SpeechSynthesizer",
+                StringUtility.fileString(Project.testResourcesDir(SpeechSynthesizer.class), false));
+        Assert.assertEquals("test-resources/commons/math/component/handler/math/BigComponentMathHandler",
+                StringUtility.fileString(Project.testResourcesDir(BigComponentMathHandler.class), false));
         
         //prefix
-        Assert.assertEquals("test-resources/test/dir1/dir2/commons/access/Project", StringUtility.fileString(Project.testResourcesDir(Project.class, "test\\dir1/dir2"), false));
-        Assert.assertEquals("test-resources/test/dir1/dir2/commons/string/StringUtility", StringUtility.fileString(Project.testResourcesDir(StringUtility.class, "test\\dir1/dir2"), false));
-        Assert.assertEquals("test-resources/test/dir1/dir2/commons/io/speech/SpeechSynthesizer", StringUtility.fileString(Project.testResourcesDir(SpeechSynthesizer.class, "test\\dir1/dir2"), false));
-        Assert.assertEquals("test-resources/test/dir1/dir2/commons/math/component/handler/math/BigComponentMathHandler", StringUtility.fileString(Project.testResourcesDir(BigComponentMathHandler.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("test-resources/test/dir1/dir2/commons/access/Project",
+                StringUtility.fileString(Project.testResourcesDir(Project.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("test-resources/test/dir1/dir2/commons/security/CryptoUtility",
+                StringUtility.fileString(Project.testResourcesDir(CryptoUtility.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("test-resources/test/dir1/dir2/commons/io/speech/SpeechSynthesizer",
+                StringUtility.fileString(Project.testResourcesDir(SpeechSynthesizer.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("test-resources/test/dir1/dir2/commons/math/component/handler/math/BigComponentMathHandler",
+                StringUtility.fileString(Project.testResourcesDir(BigComponentMathHandler.class, "test\\dir1/dir2"), false));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -301,10 +331,14 @@ public class ProjectTest {
     @Test
     public void testSourceClassesDir() throws Exception {
         //standard
-        Assert.assertEquals("bin/classes/commons/access", StringUtility.fileString(Project.sourceClassesDir(Project.class), false));
-        Assert.assertEquals("bin/classes/commons/string", StringUtility.fileString(Project.sourceClassesDir(StringUtility.class), false));
-        Assert.assertEquals("bin/classes/commons/io/speech", StringUtility.fileString(Project.sourceClassesDir(SpeechSynthesizer.class), false));
-        Assert.assertEquals("bin/classes/commons/math/component/handler/math", StringUtility.fileString(Project.sourceClassesDir(BigComponentMathHandler.class), false));
+        Assert.assertEquals("bin/classes/commons/access",
+                StringUtility.fileString(Project.sourceClassesDir(Project.class), false));
+        Assert.assertEquals("bin/classes/commons/security",
+                StringUtility.fileString(Project.sourceClassesDir(CryptoUtility.class), false));
+        Assert.assertEquals("bin/classes/commons/io/speech",
+                StringUtility.fileString(Project.sourceClassesDir(SpeechSynthesizer.class), false));
+        Assert.assertEquals("bin/classes/commons/math/component/handler/math",
+                StringUtility.fileString(Project.sourceClassesDir(BigComponentMathHandler.class), false));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -320,10 +354,14 @@ public class ProjectTest {
     @Test
     public void testTestClassesDir() throws Exception {
         //standard
-        Assert.assertEquals("bin/test-classes/commons/access", StringUtility.fileString(Project.testClassesDir(Project.class), false));
-        Assert.assertEquals("bin/test-classes/commons/string", StringUtility.fileString(Project.testClassesDir(StringUtility.class), false));
-        Assert.assertEquals("bin/test-classes/commons/io/speech", StringUtility.fileString(Project.testClassesDir(SpeechSynthesizer.class), false));
-        Assert.assertEquals("bin/test-classes/commons/math/component/handler/math", StringUtility.fileString(Project.testClassesDir(BigComponentMathHandler.class), false));
+        Assert.assertEquals("bin/test-classes/commons/access",
+                StringUtility.fileString(Project.testClassesDir(Project.class), false));
+        Assert.assertEquals("bin/test-classes/commons/security",
+                StringUtility.fileString(Project.testClassesDir(CryptoUtility.class), false));
+        Assert.assertEquals("bin/test-classes/commons/io/speech",
+                StringUtility.fileString(Project.testClassesDir(SpeechSynthesizer.class), false));
+        Assert.assertEquals("bin/test-classes/commons/math/component/handler/math",
+                StringUtility.fileString(Project.testClassesDir(BigComponentMathHandler.class), false));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -340,16 +378,24 @@ public class ProjectTest {
     @Test
     public void testLogDir() throws Exception {
         //standard
-        Assert.assertEquals("log/commons/access/Project", StringUtility.fileString(Project.logDir(Project.class), false));
-        Assert.assertEquals("log/commons/string/StringUtility", StringUtility.fileString(Project.logDir(StringUtility.class), false));
-        Assert.assertEquals("log/commons/io/speech/SpeechSynthesizer", StringUtility.fileString(Project.logDir(SpeechSynthesizer.class), false));
-        Assert.assertEquals("log/commons/math/component/handler/math/BigComponentMathHandler", StringUtility.fileString(Project.logDir(BigComponentMathHandler.class), false));
+        Assert.assertEquals("log/commons/access/Project",
+                StringUtility.fileString(Project.logDir(Project.class), false));
+        Assert.assertEquals("log/commons/security/CryptoUtility",
+                StringUtility.fileString(Project.logDir(CryptoUtility.class), false));
+        Assert.assertEquals("log/commons/io/speech/SpeechSynthesizer",
+                StringUtility.fileString(Project.logDir(SpeechSynthesizer.class), false));
+        Assert.assertEquals("log/commons/math/component/handler/math/BigComponentMathHandler",
+                StringUtility.fileString(Project.logDir(BigComponentMathHandler.class), false));
         
         //prefix
-        Assert.assertEquals("log/test/dir1/dir2/commons/access/Project", StringUtility.fileString(Project.logDir(Project.class, "test\\dir1/dir2"), false));
-        Assert.assertEquals("log/test/dir1/dir2/commons/string/StringUtility", StringUtility.fileString(Project.logDir(StringUtility.class, "test\\dir1/dir2"), false));
-        Assert.assertEquals("log/test/dir1/dir2/commons/io/speech/SpeechSynthesizer", StringUtility.fileString(Project.logDir(SpeechSynthesizer.class, "test\\dir1/dir2"), false));
-        Assert.assertEquals("log/test/dir1/dir2/commons/math/component/handler/math/BigComponentMathHandler", StringUtility.fileString(Project.logDir(BigComponentMathHandler.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("log/test/dir1/dir2/commons/access/Project",
+                StringUtility.fileString(Project.logDir(Project.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("log/test/dir1/dir2/commons/security/CryptoUtility",
+                StringUtility.fileString(Project.logDir(CryptoUtility.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("log/test/dir1/dir2/commons/io/speech/SpeechSynthesizer",
+                StringUtility.fileString(Project.logDir(SpeechSynthesizer.class, "test\\dir1/dir2"), false));
+        Assert.assertEquals("log/test/dir1/dir2/commons/math/component/handler/math/BigComponentMathHandler",
+                StringUtility.fileString(Project.logDir(BigComponentMathHandler.class, "test\\dir1/dir2"), false));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -358,6 +404,49 @@ public class ProjectTest {
                 Project.logDir(Project.class, null));
         TestUtils.assertException(NullPointerException.class, () ->
                 Project.logDir(null, null));
+    }
+    
+    /**
+     * JUnit test of classDir.
+     *
+     * @throws Exception When there is an exception.
+     * @see Project#classDir(File, String, Class, boolean)
+     */
+    @Test
+    public void testClassDir() throws Exception {
+        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        
+        //standard
+        Assert.assertEquals(String.join(File.separator, "src", "commons", "access", "Project"),
+                TestUtils.invokeMethod(Project.class, "classDir", Project.SOURCE_DIR, "", Project.class, true).toString());
+        Assert.assertEquals(String.join(File.separator, "test", "commons", "access"),
+                TestUtils.invokeMethod(Project.class, "classDir", Project.TEST_DIR, "", Project.class, false).toString());
+        Assert.assertEquals(String.join(File.separator, "data", "commons", "security", "CryptoUtility"),
+                TestUtils.invokeMethod(Project.class, "classDir", Project.DATA_DIR, "", CryptoUtility.class, true).toString());
+        Assert.assertEquals(String.join(File.separator, "resources", "test", "dir1", "dir2", "commons", "security", "CryptoUtility"),
+                TestUtils.invokeMethod(Project.class, "classDir", Project.RESOURCES_DIR, "test\\dir1/dir2", CryptoUtility.class, true).toString());
+        Assert.assertEquals(String.join(File.separator, "test-resources", "test", "dir1", "dir2", "commons", "security"),
+                TestUtils.invokeMethod(Project.class, "classDir", Project.TEST_RESOURCES_DIR, "test\\dir1/dir2", CryptoUtility.class, false).toString());
+        Assert.assertEquals(String.join(File.separator, "bin", "commons", "io", "speech"),
+                TestUtils.invokeMethod(Project.class, "classDir", Project.OUTPUT_DIR, "", SpeechSynthesizer.class, false).toString());
+        Assert.assertEquals(String.join(File.separator, "bin", "classes", "test", "dir1", "dir2", "commons", "io", "speech", "SpeechSynthesizer"),
+                TestUtils.invokeMethod(Project.class, "classDir", Project.SOURCE_CLASSES_DIR, "test\\dir1/dir2", SpeechSynthesizer.class, true).toString());
+        Assert.assertEquals(String.join(File.separator, "bin", "test-classes", "test", "dir1", "dir2", "commons", "io", "speech"),
+                TestUtils.invokeMethod(Project.class, "classDir", Project.TEST_CLASSES_DIR, "test\\dir1/dir2", SpeechSynthesizer.class, false).toString());
+        Assert.assertEquals(String.join(File.separator, "log", "commons", "math", "component", "handler", "math", "BigComponentMathHandler"),
+                TestUtils.invokeMethod(Project.class, "classDir", Project.LOG_DIR, "", BigComponentMathHandler.class, true).toString());
+        Assert.assertEquals(String.join(File.separator, "tmp", "commons", "math", "component", "handler", "math"),
+                TestUtils.invokeMethod(Project.class, "classDir", Project.TMP_DIR, "", BigComponentMathHandler.class, false).toString());
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                TestUtils.invokeMethod(Project.class, "classDir", null, "", Project.class, true));
+        TestUtils.assertException(NullPointerException.class, () ->
+                TestUtils.invokeMethod(Project.class, "classDir", Project.SOURCE_DIR, null, Project.class, true));
+        TestUtils.assertException(NullPointerException.class, () ->
+                TestUtils.invokeMethod(Project.class, "classDir", Project.SOURCE_DIR, "", null, true));
+        TestUtils.assertException(NullPointerException.class, () ->
+                TestUtils.invokeMethod(Project.class, "classDir", null, null, null, true));
     }
     
 }
