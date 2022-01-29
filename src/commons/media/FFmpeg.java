@@ -35,7 +35,7 @@ import commons.log.CommonsLogging;
 import commons.math.BoundUtility;
 import commons.math.EquationUtility;
 import commons.math.NumberUtility;
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 import commons.time.DateTimeUtility;
 import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;

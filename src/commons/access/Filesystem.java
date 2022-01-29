@@ -30,7 +30,7 @@ import java.util.UUID;
 import java.util.regex.Pattern;
 
 import commons.log.CommonsLogging;
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 import org.apache.commons.io.FileUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;

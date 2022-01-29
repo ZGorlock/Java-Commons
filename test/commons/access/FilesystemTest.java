@@ -23,7 +23,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import commons.log.CommonsLogging;
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 import commons.test.TestUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;

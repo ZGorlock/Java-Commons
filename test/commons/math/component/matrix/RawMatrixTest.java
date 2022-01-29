@@ -22,7 +22,7 @@ import commons.math.component.vector.IntVector;
 import commons.math.component.vector.RawVector;
 import commons.math.component.vector.Vector;
 import commons.math.component.vector.VectorInterface;
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;

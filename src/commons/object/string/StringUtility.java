@@ -1,11 +1,11 @@
 /*
  * File:    StringUtility.java
- * Package: commons.string
+ * Package: commons.object.string
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.string;
+package commons.object.string;
 
 import java.io.File;
 import java.nio.charset.StandardCharsets;

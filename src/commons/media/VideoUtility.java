@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 
 import commons.access.Filesystem;
 import commons.log.CommonsLogging;
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 import commons.time.DateTimeUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

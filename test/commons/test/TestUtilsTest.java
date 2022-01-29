@@ -14,7 +14,7 @@ import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 import org.json.simple.JSONObject;
 import org.junit.After;
 import org.junit.AfterClass;

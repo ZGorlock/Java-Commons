@@ -26,7 +26,7 @@ import java.util.stream.Stream;
 
 import commons.console.ProgressBar;
 import commons.math.MathUtility;
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;

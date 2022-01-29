@@ -34,7 +34,7 @@ import commons.io.WaveRecorder;
 import commons.io.hotkey.HotKey;
 import commons.io.hotkey.HotKeyManager;
 import commons.math.BoundUtility;
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;

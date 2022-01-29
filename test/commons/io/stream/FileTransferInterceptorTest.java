@@ -19,7 +19,7 @@ import javax.ws.rs.ext.ReaderInterceptorContext;
 import javax.ws.rs.ext.WriterInterceptorContext;
 
 import commons.console.ProgressBar;
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 import commons.test.TestUtils;
 import org.glassfish.jersey.media.multipart.BodyPart;
 import org.glassfish.jersey.media.multipart.ContentDisposition;

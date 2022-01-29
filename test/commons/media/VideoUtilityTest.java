@@ -27,7 +27,7 @@ import commons.graphics.DrawUtility;
 import commons.log.CommonsLogging;
 import commons.math.MathUtility;
 import commons.math.component.vector.IntVector;
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;

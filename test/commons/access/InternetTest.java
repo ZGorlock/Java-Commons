@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 import commons.log.CommonsLogging;
 import commons.math.BoundUtility;
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 import commons.test.TestUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.IntStream;
 
 import commons.math.BoundUtility;
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 import commons.time.DateTimeUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

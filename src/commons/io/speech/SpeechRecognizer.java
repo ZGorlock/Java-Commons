@@ -26,7 +26,7 @@ import commons.io.SystemIn;
 import commons.io.WaveRecorder;
 import commons.io.hotkey.HotKey;
 import commons.io.hotkey.HotKeyManager;
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

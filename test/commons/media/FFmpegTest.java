@@ -30,7 +30,7 @@ import commons.access.Project;
 import commons.console.Console;
 import commons.console.ProgressBar;
 import commons.log.CommonsLogging;
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 import commons.test.TestUtils;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;

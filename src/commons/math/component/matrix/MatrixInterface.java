@@ -18,7 +18,7 @@ import commons.math.BoundUtility;
 import commons.math.component.ComponentInterface;
 import commons.math.component.handler.error.ComponentErrorHandlerProvider;
 import commons.math.component.vector.VectorInterface;
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 
 /**
  * Defines an additional contract for Matrix classes.

@@ -1,11 +1,11 @@
 /*
  * File:    StringComparisonUtilityTest.java
- * Package: string
+ * Package: commons.object.string
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.string;
+package commons.object.string;
 
 import java.util.ArrayList;
 import java.util.Arrays;

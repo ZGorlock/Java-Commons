@@ -18,7 +18,7 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Objects;
 
-import commons.string.StringUtility;
+import commons.object.string.StringUtility;
 import org.junit.Assert;
 import org.powermock.reflect.Whitebox;
 import org.powermock.reflect.exceptions.MethodInvocationException;
