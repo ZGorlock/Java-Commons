@@ -1,11 +1,11 @@
 /*
- * File:    Archive.java
- * Package: commons.access
+ * File:    ArchiveUtility.java
+ * Package: commons.file
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.access;
+package commons.file;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -30,21 +30,22 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
 
+import commons.access.Filesystem;
 import commons.object.string.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A resource class that provides access to archive files.
+ * Handles archive operations.
  */
-public final class Archive {
+public final class ArchiveUtility {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(Archive.class);
+    private static final Logger logger = LoggerFactory.getLogger(ArchiveUtility.class);
     
     
     //Enums

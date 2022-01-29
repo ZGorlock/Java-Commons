@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import commons.file.ArchiveUtility;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -121,7 +122,7 @@ public class FilesystemMacroTest {
         //recursion
         
         Filesystem.deleteDirectory(testDir);
-        Archive.extract(testResource, testDir);
+        ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(20, Filesystem.getFilesAndDirsRecursively(testDir).size());
         Assert.assertTrue(FilesystemMacro.deleteEmptyDirectoriesInDirectory(testDir, true));
         Assert.assertEquals(16, Filesystem.getFilesAndDirsRecursively(testDir).size());
@@ -134,7 +135,7 @@ public class FilesystemMacroTest {
         //no recursion
         
         Filesystem.deleteDirectory(testDir);
-        Archive.extract(testResource, testDir);
+        ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(20, Filesystem.getFilesAndDirsRecursively(testDir).size());
         Assert.assertTrue(FilesystemMacro.deleteEmptyDirectoriesInDirectory(testDir, false));
         Assert.assertEquals(19, Filesystem.getFilesAndDirsRecursively(testDir).size());
@@ -162,7 +163,7 @@ public class FilesystemMacroTest {
         File testDir = Filesystem.createTemporaryDirectory("deleteListOfFilesFromFile");
         
         Filesystem.deleteDirectory(testDir);
-        Archive.extract(testResource, testDir);
+        ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(13, Filesystem.getFilesAndDirsRecursively(testDir).size());
         File list = new File(testDir, "list.txt");
         Assert.assertTrue(FilesystemMacro.prependLinesInFile(list, (testDir.getAbsolutePath().replace("\\", "/") + '/')));
@@ -189,7 +190,7 @@ public class FilesystemMacroTest {
         //recursion
         
         Filesystem.deleteDirectory(testDir);
-        Archive.extract(testResource, testDir);
+        ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(40, Filesystem.getFilesAndDirsRecursively(testDir).size());
         Assert.assertTrue(FilesystemMacro.deleteDirectoriesInDirectoryThatDoNotContainFileType(testDir, "docx", true));
         Assert.assertEquals(25, Filesystem.getFilesAndDirsRecursively(testDir).size());
@@ -203,7 +204,7 @@ public class FilesystemMacroTest {
         //no recursion
         
         Filesystem.deleteDirectory(testDir);
-        Archive.extract(testResource, testDir);
+        ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(40, Filesystem.getFilesAndDirsRecursively(testDir).size());
         Assert.assertTrue(FilesystemMacro.deleteDirectoriesInDirectoryThatDoNotContainFileType(testDir, "docx", false));
         Assert.assertEquals(27, Filesystem.getFilesAndDirsRecursively(testDir).size());
@@ -235,7 +236,7 @@ public class FilesystemMacroTest {
         //recursion
         
         Filesystem.deleteDirectory(testDir);
-        Archive.extract(testResource, testDir);
+        ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(40, Filesystem.getFilesAndDirsRecursively(testDir).size());
         Assert.assertFalse(FilesystemMacro.directoryContainsFileType(new File(testDir, "d1"), "docx", true));
         Assert.assertTrue(FilesystemMacro.directoryContainsFileType(new File(testDir, "d2"), "txt", true));
@@ -249,7 +250,7 @@ public class FilesystemMacroTest {
         //no recursion
         
         Filesystem.deleteDirectory(testDir);
-        Archive.extract(testResource, testDir);
+        ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(40, Filesystem.getFilesAndDirsRecursively(testDir).size());
         Assert.assertFalse(FilesystemMacro.directoryContainsFileType(new File(testDir, "d1"), "docx", false));
         Assert.assertTrue(FilesystemMacro.directoryContainsFileType(new File(testDir, "d2"), "txt", false));
@@ -285,7 +286,7 @@ public class FilesystemMacroTest {
         //check
         
         Filesystem.deleteDirectory(testDir);
-        Archive.extract(testResource, testDir);
+        ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(1, Filesystem.getFilesAndDirsRecursively(testDir).size());
         Assert.assertArrayEquals(new String[] {
                         "test1", "test2", "test3", "tester", "another test",
@@ -301,7 +302,7 @@ public class FilesystemMacroTest {
         //no check
         
         Filesystem.deleteDirectory(testDir);
-        Archive.extract(testResource, testDir);
+        ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(1, Filesystem.getFilesAndDirsRecursively(testDir).size());
         Assert.assertArrayEquals(new String[] {
                         "test1", "test2", "test3", "tester", "another test",
@@ -338,7 +339,7 @@ public class FilesystemMacroTest {
         //check
         
         Filesystem.deleteDirectory(testDir);
-        Archive.extract(testResource, testDir);
+        ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(1, Filesystem.getFilesAndDirsRecursively(testDir).size());
         Assert.assertArrayEquals(new String[] {
                         "test1", "test2", "test3", "tester", "another test",
@@ -367,7 +368,7 @@ public class FilesystemMacroTest {
         //check
         
         Filesystem.deleteDirectory(testDir);
-        Archive.extract(testResource, testDir);
+        ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(1, Filesystem.getFilesAndDirsRecursively(testDir).size());
         Assert.assertArrayEquals(new String[] {
                         "test1", "test2", "test3", "tester", "another test",
@@ -398,7 +399,7 @@ public class FilesystemMacroTest {
         //check
         
         Filesystem.deleteDirectory(testDir);
-        Archive.extract(testResource, testDir);
+        ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(1, Filesystem.getFilesAndDirsRecursively(testDir).size());
         Assert.assertArrayEquals(new String[] {
                         "test1", "test2", "test3", "tester", "another test",
@@ -426,7 +427,7 @@ public class FilesystemMacroTest {
         File testDir = Filesystem.createTemporaryDirectory("copyPlaylistToDirectory");
         
         Filesystem.deleteDirectory(testDir);
-        Archive.extract(testResource, testDir);
+        ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(277, Filesystem.getFilesAndDirsRecursively(testDir).size());
         File playlist = new File(testDir, "playlist.m3u");
         List<String> originalPlaylist = Filesystem.readLines(playlist);
@@ -459,7 +460,7 @@ public class FilesystemMacroTest {
         File testDir = Filesystem.createTemporaryDirectory("findJarsInDirectoryThatContainFolder");
         
         Filesystem.deleteDirectory(testDir);
-        Archive.extract(testResource, testDir);
+        ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(16, Filesystem.getFilesAndDirsRecursively(testDir).size());
         List<File> jars = FilesystemMacro.findJarsInDirectoryThatContainFolder(testDir, "testDir");
         Assert.assertEquals(4, jars.size());

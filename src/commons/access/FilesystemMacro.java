@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import commons.file.ArchiveUtility;
 import commons.object.string.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -288,7 +289,7 @@ public final class FilesystemMacro {
         
         for (File jar : Filesystem.getFilesRecursively(directory, (File file) -> file.getName().toLowerCase().endsWith(".jar"))) {
             File extractDir = Filesystem.createTemporaryDirectory();
-            Archive.extract(jar, extractDir);
+            ArchiveUtility.extract(jar, extractDir);
             File finding = new File(extractDir, folderName);
             if (finding.exists()) {
                 found.add(jar);
