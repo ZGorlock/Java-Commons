@@ -29,7 +29,6 @@ import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.powermock.reflect.Whitebox;
-import org.powermock.reflect.exceptions.MethodInvocationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -401,6 +400,7 @@ public class TestUtilsTest {
      */
     @Test
     public void testGetField() throws Exception {
+        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
         TestClass testClass = new TestClass();
         TestSubClass subClass = new TestSubClass();
         TestClass mockClass = Mockito.mock(TestClass.class);
@@ -439,25 +439,29 @@ public class TestUtilsTest {
         
         //invalid
         
-        Assert.assertNull(TestUtils.getField(TestClass.class, "missingField"));
-        TestUtils.assertException(NullPointerException.class, () ->
-                Assert.assertNull(TestUtils.getField(TestClass.class, null)));
-        TestUtils.assertException(NullPointerException.class, () ->
-                Assert.assertNull(TestUtils.getField(null, "field0")));
+        TestUtils.assertException(AssertionError.class, "java.lang.NoSuchFieldException: missingField", () ->
+                TestUtils.getField(TestClass.class, "missingField"));
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+                TestUtils.getField(TestClass.class, null));
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+                TestUtils.getField(null, "field0"));
         
-        Assert.assertNull(TestUtils.getField(TestSubClass.class, "missingField"));
-        TestUtils.assertException(NullPointerException.class, () ->
-                Assert.assertNull(TestUtils.getField(TestSubClass.class, null)));
+        TestUtils.assertException(AssertionError.class, "java.lang.NoSuchFieldException: missingField", () ->
+                TestUtils.getField(TestSubClass.class, "missingField"));
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+                TestUtils.getField(TestSubClass.class, null));
         
-        Assert.assertNull(TestUtils.getField(testClass, "missingField"));
-        TestUtils.assertException(NullPointerException.class, () ->
-                Assert.assertNull(TestUtils.getField((Object) null, "field5")));
-        TestUtils.assertException(NullPointerException.class, () ->
-                Assert.assertNull(TestUtils.getField(testClass, null)));
+        TestUtils.assertException(AssertionError.class, "java.lang.NoSuchFieldException: missingField", () ->
+                TestUtils.getField(testClass, "missingField"));
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+                TestUtils.getField((Object) null, "field5"));
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+                TestUtils.getField(testClass, null));
         
-        Assert.assertNull(TestUtils.getField(subClass, "missingField"));
-        TestUtils.assertException(NullPointerException.class, () ->
-                Assert.assertNull(TestUtils.getField(subClass, null)));
+        TestUtils.assertException(AssertionError.class, "java.lang.NoSuchFieldException: missingField", () ->
+                TestUtils.getField(subClass, "missingField"));
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+                TestUtils.getField(subClass, null));
     }
     
     /**
@@ -470,6 +474,7 @@ public class TestUtilsTest {
      */
     @Test
     public void testSetField() throws Exception {
+        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
         TestClass testClass = new TestClass();
         TestSubClass subClass = new TestSubClass();
         TestClass mockClass = Mockito.mock(TestClass.class, Mockito.CALLS_REAL_METHODS);
@@ -603,44 +608,48 @@ public class TestUtilsTest {
         //invalid
         
         Assert.assertEquals(10, (int) Whitebox.getInternalState(TestClass.class, "field0"));
-        TestUtils.assertException(IllegalArgumentException.class, "Can not set static int field commons.test.TestUtilsTest$TestClass.field0 to java.lang.Boolean", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.IllegalArgumentException: Can not set static int field commons.test.TestUtilsTest$TestClass.field0 to java.lang.Boolean", () ->
                 TestUtils.setField(TestClass.class, "field0", false));
         Assert.assertEquals(10, (int) Whitebox.getInternalState(TestClass.class, "field0"));
         
         Assert.assertEquals(true, Whitebox.getInternalState(TestClass.class, "field3"));
-        TestUtils.assertException(IllegalArgumentException.class, "Can not set static boolean field commons.test.TestUtilsTest$TestClass.field3 to java.lang.Integer", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.IllegalArgumentException: Can not set static boolean field commons.test.TestUtilsTest$TestClass.field3 to java.lang.Integer", () ->
                 TestUtils.setField(TestClass.class, "field3", 103));
         Assert.assertEquals(true, Whitebox.getInternalState(TestClass.class, "field3"));
         
         Assert.assertEquals("an even other test", Whitebox.getInternalState(testClass, "field6"));
-        TestUtils.assertException(IllegalArgumentException.class, "Can not set final java.lang.String field commons.test.TestUtilsTest$TestClass.field6 to java.math.BigDecimal", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.IllegalArgumentException: Can not set final java.lang.String field commons.test.TestUtilsTest$TestClass.field6 to java.math.BigDecimal", () ->
                 TestUtils.setField(testClass, "field6", BigDecimal.ZERO));
         Assert.assertEquals("an even other test", Whitebox.getInternalState(testClass, "field6"));
         
         Assert.assertEquals(false, Whitebox.getInternalState(testClass, "field10"));
-        TestUtils.assertException(IllegalArgumentException.class, "Can not set final boolean field commons.test.TestUtilsTest$TestClass.field10 to null value", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.IllegalArgumentException: Can not set final boolean field commons.test.TestUtilsTest$TestClass.field10 to null value", () ->
                 TestUtils.setField(testClass, "field10", null));
         Assert.assertEquals(false, Whitebox.getInternalState(testClass, "field10"));
         
-        Assert.assertFalse(TestUtils.setField(TestClass.class, "missingField", false));
-        TestUtils.assertException(NullPointerException.class, () ->
-                Assert.assertFalse(TestUtils.setField(TestClass.class, null, 11)));
-        TestUtils.assertException(NullPointerException.class, () ->
-                Assert.assertFalse(TestUtils.setField(null, "field0", 11)));
+        TestUtils.assertException(AssertionError.class, "java.lang.NoSuchFieldException: missingField", () ->
+                TestUtils.setField(TestClass.class, "missingField", false));
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+                TestUtils.setField(TestClass.class, null, 11));
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+                TestUtils.setField(null, "field0", 11));
         
-        Assert.assertFalse(TestUtils.setField(TestSubClass.class, "missingField", false));
-        TestUtils.assertException(NullPointerException.class, () ->
-                Assert.assertFalse(TestUtils.setField(TestSubClass.class, null, 11)));
+        TestUtils.assertException(AssertionError.class, "java.lang.NoSuchFieldException: missingField", () ->
+                TestUtils.setField(TestSubClass.class, "missingField", false));
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+                TestUtils.setField(TestSubClass.class, null, 11));
         
-        Assert.assertFalse(TestUtils.setField(testClass, "missingField", false));
-        TestUtils.assertException(NullPointerException.class, () ->
-                Assert.assertFalse(TestUtils.setField((Object) null, "field7", 11)));
-        TestUtils.assertException(NullPointerException.class, () ->
-                Assert.assertFalse(TestUtils.setField(testClass, null, 11)));
+        TestUtils.assertException(AssertionError.class, "java.lang.NoSuchFieldException: missingField", () ->
+                TestUtils.setField(testClass, "missingField", false));
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+                TestUtils.setField((Object) null, "field7", 11));
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+                TestUtils.setField(testClass, null, 11));
         
-        Assert.assertFalse(TestUtils.setField(subClass, "missingField", false));
-        TestUtils.assertException(NullPointerException.class, () ->
-                Assert.assertFalse(TestUtils.setField(subClass, null, 11)));
+        TestUtils.assertException(AssertionError.class, "java.lang.NoSuchFieldException: missingField", () ->
+                TestUtils.setField(subClass, "missingField", false));
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+                TestUtils.setField(subClass, null, 11));
     }
     
     /**
@@ -651,6 +660,7 @@ public class TestUtilsTest {
      */
     @Test
     public void testGetEnum() throws Exception {
+        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
         Class<?> retrievedEnum;
         Object[] enumValues;
         
@@ -674,23 +684,16 @@ public class TestUtilsTest {
         
         //invalid
         
-        TestUtils.assertNoException(() ->
+        TestUtils.assertException(AssertionError.class, "java.lang.ClassNotFoundException: commons.test.TestUtilsTest$TestClass$MissingEnum", () ->
                 TestUtils.getEnum(TestClass.class, "MissingEnum"));
-        retrievedEnum = TestUtils.getEnum(TestClass.class, "MissingEnum");
-        Assert.assertNull(retrievedEnum);
-        
-        TestUtils.assertNoException(() ->
+        TestUtils.assertException(AssertionError.class, "java.lang.ClassNotFoundException: commons.test.TestUtilsTest$TestClass$", () ->
                 TestUtils.getEnum(TestClass.class, ""));
-        retrievedEnum = TestUtils.getEnum(TestClass.class, "");
-        Assert.assertNull(retrievedEnum);
-        
-        TestUtils.assertNoException(() ->
+        TestUtils.assertException(AssertionError.class, "java.lang.ClassNotFoundException: commons.test.TestUtilsTest$TestClass$null", () ->
                 TestUtils.getEnum(TestClass.class, null));
-        retrievedEnum = TestUtils.getEnum(TestClass.class, null);
-        Assert.assertNull(retrievedEnum);
-        
-        TestUtils.assertException(NullPointerException.class, () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
                 TestUtils.getEnum(null, "Enum0"));
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+                TestUtils.getEnum(null, null));
     }
     
     /**
@@ -770,52 +773,52 @@ public class TestUtilsTest {
         Assert.assertNull(TestUtils.invokeMethod(mockClass, "method11", true, "testing", 19.41f, new char[] {'t', 'e', 's', 't'}));
         
         //invalid
-        TestUtils.assertException(MethodInvocationException.class, "java.lang.IllegalArgumentException", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.IllegalArgumentException", () ->
                 Assert.assertNull(TestUtils.invokeMethod(TestClass.class, "staticVoidMethod", null, (long) 1966, new StringBuilder()))
         );
-        TestUtils.assertException(MethodInvocationException.class, "org.powermock.reflect.exceptions.MethodNotFoundException: No method found with name 'method1' with parameter types: [ java.lang.String ] in class commons.test.TestUtilsTest$TestClass.", () ->
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: No method found with name 'method1' with parameter types: [ java.lang.String ] in class commons.test.TestUtilsTest$TestClass.", () ->
                 TestUtils.invokeMethod(TestClass.class, "method1", "invalid argument"));
-        TestUtils.assertException(MethodInvocationException.class, "org.powermock.reflect.exceptions.MethodNotFoundException: No method found with name 'method3' with parameter types: [ java.lang.Integer ] in class commons.test.TestUtilsTest$TestClass.", () ->
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: No method found with name 'method3' with parameter types: [ java.lang.Integer ] in class commons.test.TestUtilsTest$TestClass.", () ->
                 TestUtils.invokeMethod(TestClass.class, "method3", 76));
-        TestUtils.assertException(MethodInvocationException.class, "org.powermock.reflect.exceptions.MethodNotFoundException: No method found with name 'method3' with parameter types: [ <none> ] in class commons.test.TestUtilsTest$TestClass.", () ->
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: No method found with name 'method3' with parameter types: [ <none> ] in class commons.test.TestUtilsTest$TestClass.", () ->
                 TestUtils.invokeMethod(TestClass.class, "method3"));
         
-        TestUtils.assertException(MethodInvocationException.class, "org.powermock.reflect.exceptions.MethodNotFoundException: No method found with name 'missingMethod' with parameter types: [ <none> ] in class commons.test.TestUtilsTest$TestClass.", () ->
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: No method found with name 'missingMethod' with parameter types: [ <none> ] in class commons.test.TestUtilsTest$TestClass.", () ->
                 TestUtils.invokeMethod(TestClass.class, "missingMethod"));
-        TestUtils.assertException(MethodInvocationException.class, "java.lang.NullPointerException", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
                 TestUtils.invokeMethod(TestClass.class, null));
         TestUtils.assertException(NullPointerException.class, () ->
                 TestUtils.invokeMethod(null, "method1"));
         
-        TestUtils.assertException(MethodInvocationException.class, "java.lang.IllegalArgumentException", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.IllegalArgumentException", () ->
                 Assert.assertNull(TestUtils.invokeMethod(TestSubClass.class, "staticVoidMethod", null, 1966L, new StringBuilder()))
         );
-        TestUtils.assertException(MethodInvocationException.class, "org.powermock.reflect.exceptions.MethodNotFoundException: No method found with name 'missingMethod' with parameter types: [ <none> ] in class commons.test.TestUtilsTest$TestSubClass.", () ->
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: No method found with name 'missingMethod' with parameter types: [ <none> ] in class commons.test.TestUtilsTest$TestSubClass.", () ->
                 TestUtils.invokeMethod(TestSubClass.class, "missingMethod"));
-        TestUtils.assertException(MethodInvocationException.class, "java.lang.NullPointerException", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
                 TestUtils.invokeMethod(TestSubClass.class, null));
         TestUtils.assertException(NullPointerException.class, () ->
                 TestUtils.invokeMethod(null, "method1"));
         
-        TestUtils.assertException(MethodInvocationException.class, "java.lang.IllegalArgumentException", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.IllegalArgumentException", () ->
                 Assert.assertNull(TestUtils.invokeMethod(testClass, "voidMethod", null, 150L, new StringBuilder()))
         );
-        TestUtils.assertException(MethodInvocationException.class, "org.powermock.reflect.exceptions.MethodNotFoundException: No method found with name 'missingMethod' with parameter types: [ <none> ] in class commons.test.TestUtilsTest$TestClass.", () ->
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: No method found with name 'missingMethod' with parameter types: [ <none> ] in class commons.test.TestUtilsTest$TestClass.", () ->
                 TestUtils.invokeMethod(testClass, "missingMethod"));
-        TestUtils.assertException(MethodInvocationException.class, () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
                 TestUtils.invokeMethod(testClass, null));
         TestUtils.assertException(NullPointerException.class, () ->
                 TestUtils.invokeMethod(null, "method7"));
         
-        TestUtils.assertException(MethodInvocationException.class, "java.lang.IllegalArgumentException", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.IllegalArgumentException", () ->
                 Assert.assertNull(TestUtils.invokeMethod(subClass, "voidMethod", null, Long.valueOf(150), new StringBuilder()))
         );
-        TestUtils.assertException(MethodInvocationException.class, "org.powermock.reflect.exceptions.MethodNotFoundException: No method found with name 'missingMethod' with parameter types: [ <none> ] in class commons.test.TestUtilsTest$TestSubClass.", () ->
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: No method found with name 'missingMethod' with parameter types: [ <none> ] in class commons.test.TestUtilsTest$TestSubClass.", () ->
                 TestUtils.invokeMethod(subClass, "missingMethod"));
-        TestUtils.assertException(MethodInvocationException.class, "java.lang.IllegalMonitorStateException", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
                 TestUtils.invokeMethod(subClass, null));
         
-        TestUtils.assertException(MethodInvocationException.class, "java.lang.IllegalArgumentException", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.IllegalArgumentException", () ->
                 Assert.assertNull(TestUtils.invokeMethod(mockClass, "voidMethod", null, 844L, new StringBuilder()))
         );
     }
@@ -871,22 +874,21 @@ public class TestUtilsTest {
         
         //invalid
         
-        TestUtils.assertException(MethodInvocationException.class, "org.powermock.reflect.exceptions.ConstructorNotFoundException: Could not lookup the constructor", () ->
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.ConstructorNotFoundException: Could not lookup the constructor", () ->
                 TestUtils.invokeConstructor(TestClass.class, jsonObjectArgument, null, longArgument, booleanArgument, stringArgument));
         
-        TestUtils.assertException(MethodInvocationException.class, "org.powermock.reflect.exceptions.ConstructorNotFoundException: Could not lookup the constructor", () ->
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.ConstructorNotFoundException: Could not lookup the constructor", () ->
                 TestUtils.invokeConstructor(TestClass.class, stringArgument, jsonObjectArgument, intArgument, longArgument));
-        TestUtils.assertException(MethodInvocationException.class, "org.powermock.reflect.exceptions.ConstructorNotFoundException: Could not lookup the constructor", () ->
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.ConstructorNotFoundException: Could not lookup the constructor", () ->
                 TestUtils.invokeConstructor(TestClass.class, intArgument));
-        TestUtils.assertException(NullPointerException.class, () ->
-                TestUtils.invokeConstructor(null));
         
-        TestUtils.assertException(MethodInvocationException.class, "org.powermock.reflect.exceptions.ConstructorNotFoundException: Could not lookup the constructor", () ->
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.ConstructorNotFoundException: Could not lookup the constructor", () ->
                 TestUtils.invokeConstructor(TestSubClass.class, stringArgument, jsonObjectArgument, intArgument, longArgument, booleanArgument));
-        TestUtils.assertException(MethodInvocationException.class, "org.powermock.reflect.exceptions.ConstructorNotFoundException: Could not lookup the constructor", () ->
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.ConstructorNotFoundException: Could not lookup the constructor", () ->
                 TestUtils.invokeConstructor(TestSubClass.class, intArgument));
-        TestUtils.assertException(MethodInvocationException.class, "org.powermock.reflect.exceptions.ConstructorNotFoundException: Could not lookup the constructor", () ->
-                TestUtils.invokeConstructor(TestSubClass.class));
+        
+        TestUtils.assertException(AssertionError.class, "java.lang.IllegalArgumentException: The class should contain the constructor cannot be null.", () ->
+                TestUtils.invokeConstructor(null));
     }
     
     /**
@@ -899,21 +901,19 @@ public class TestUtilsTest {
     public void testInvokeInterfaceDefaultMethod() throws Exception {
         PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
         
-        Assert.assertNull(
-                TestUtils.invokeInterfaceDefaultMethod(TestInterface.class, "thisMethod"));
-        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class);
-        TestUtils.AssertWrapper.fail(
-                "Attempted to invoke the method TestInterface::thisMethod() but an exception occurred");
-        
-        Assert.assertNull(
-                TestUtils.invokeInterfaceDefaultMethod(TestInterface.class, "thatMethod", "test", 5, 9));
-        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class);
-        TestUtils.AssertWrapper.fail(
-                "Attempted to invoke the method TestInterface::thatMethod(String, Integer, Integer) but an exception occurred");
-        
+        //standard
         Assert.assertEquals("TestInterface",
                 TestUtils.invokeInterfaceDefaultMethod(TestInterface.class, "getName"));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        
+        //invalid
+        TestUtils.assertException(AssertionError.class, "java.lang.NoSuchMethodException: commons.test.TestUtilsTest$TestInterface.thisMethod()", () ->
+                TestUtils.invokeInterfaceDefaultMethod(TestInterface.class, "thisMethod"));
+        TestUtils.assertException(AssertionError.class, "java.lang.NoSuchMethodException: commons.test.TestUtilsTest$TestInterface.thatMethod()", () ->
+                TestUtils.invokeInterfaceDefaultMethod(TestInterface.class, "thatMethod", "test", 5, 9));
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+                TestUtils.invokeInterfaceDefaultMethod(TestInterface.class, null));
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+                TestUtils.invokeInterfaceDefaultMethod(null, "getName"));
     }
     
     /**

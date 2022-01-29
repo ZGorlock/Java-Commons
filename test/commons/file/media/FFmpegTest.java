@@ -48,7 +48,6 @@ import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
-import org.powermock.reflect.exceptions.MethodInvocationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -2487,49 +2486,49 @@ public class FFmpegTest {
                 FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
                 fakeOutput, true, true)).contains(
                 "[*]Could not write header for output file #0 (incorrect codec parameters ?): Invalid argument"));
-        TestUtils.assertException(MethodInvocationException.class, "java.lang.NullPointerException", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         null,
                         testOutput1, true, true));
-        TestUtils.assertException(MethodInvocationException.class, "java.lang.NullPointerException", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         FFmpeg.Identifier.Global.get(), null,
                         testOutput1, true, true));
-        TestUtils.assertException(MethodInvocationException.class, "java.lang.NullPointerException", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         null, new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
                         testOutput1, true, true));
-        TestUtils.assertException(MethodInvocationException.class, "java.lang.NullPointerException", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         null, null,
                         testOutput1, true, true));
-        TestUtils.assertException(MethodInvocationException.class, () -> //NullPointerException
+        TestUtils.assertException(AssertionError.class, () -> //NullPointerException
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null,
                         new LinkedHashMap<>() {{
                             put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")));
                         }},
                         fakeOutput, true, true));
-        TestUtils.assertException(MethodInvocationException.class, () -> //NullPointerException
+        TestUtils.assertException(AssertionError.class, () -> //NullPointerException
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null,
                         FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
                         fakeOutput, true, true));
-        TestUtils.assertException(MethodInvocationException.class, () -> //NullPointerException
+        TestUtils.assertException(AssertionError.class, () -> //NullPointerException
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         new LinkedHashMap<>() {{
                             put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")));
                         }},
                         null, true, true));
-        TestUtils.assertException(MethodInvocationException.class, () -> //NullPointerException
+        TestUtils.assertException(AssertionError.class, () -> //NullPointerException
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
                         null, true, true));
-        TestUtils.assertException(MethodInvocationException.class, () -> //NullPointerException
+        TestUtils.assertException(AssertionError.class, () -> //NullPointerException
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null,
                         new LinkedHashMap<>() {{
                             put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")));
                         }},
                         null, true, true));
-        TestUtils.assertException(MethodInvocationException.class, () -> //NullPointerException
+        TestUtils.assertException(AssertionError.class, () -> //NullPointerException
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null,
                         FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
                         null, true, true));
@@ -6661,7 +6660,7 @@ public class FFmpegTest {
         Assert.assertEquals("0:s:s", streamId.fullSpecifier());
         Assert.assertEquals("0:s:s", streamId.toString());
         PowerMockito.doNothing().when(TestUtils.AssertWrapper.class, "fail", ArgumentMatchers.anyString());
-        TestUtils.assertException(MethodInvocationException.class, "java.lang.NullPointerException: Invalid Stream Type for Stream Type Specifier: null", () ->
+        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException: Invalid Stream Type for Stream Type Specifier: null", () ->
                 TestUtils.invokeConstructor(FFmpeg.Identifier.Stream.StreamTypeSpecifier.class, (FFmpeg.StreamType) null));
         PowerMockito.doCallRealMethod().when(TestUtils.AssertWrapper.class, "fail", ArgumentMatchers.anyString());
         
