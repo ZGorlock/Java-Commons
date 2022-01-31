@@ -391,12 +391,7 @@ public final class ArrayUtility {
      * @return Whether or not any element in the array is null.
      */
     public static <T> boolean anyNull(T[] array) {
-        for (T entry : array) {
-            if (entry == null) {
-                return true;
-            }
-        }
-        return false;
+        return Arrays.stream(array).anyMatch(Objects::isNull);
     }
     
     /**

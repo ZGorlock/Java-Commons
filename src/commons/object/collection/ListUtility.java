@@ -11,9 +11,12 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Stack;
+import java.util.Vector;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -35,21 +38,92 @@ public final class ListUtility {
     private static final Logger logger = LoggerFactory.getLogger(ListUtility.class);
     
     
+    //Constants
+    
+    /**
+     * The default list class to use when one is not specified.
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    private static final Class<? extends List<?>> DEFAULT_LIST_CLASS = (Class) ArrayList.class;
+    
+    
     //Functions
     
     /**
-     * Creates a new list of a certain type and length, filled with a default value or null.
+     * Creates a new list of a certain class, type, and length, filled with a default value or null.
      *
+     * @param clazz  The class of the list.
      * @param type   The type of the list.
      * @param fill   The object to fill the list with, or null.
      * @param length The length of the list.
      * @param <T>    The type of the list.
+     * @param <L>    The class of the list.
      * @return The created list.
      */
-    private static <T> List<T> create(Class<T> type, T fill, int length) {
-        List<T> list = new ArrayList<>(length);
+    private static <T, L extends List<?>> List<T> create(Class<L> clazz, Class<T> type, T fill, int length) {
+        List<T> list;
+        switch (clazz.getSimpleName()) {
+            case "ArrayList":
+            default:
+                list = new ArrayList<>(length);
+                break;
+            case "LinkedList":
+                list = new LinkedList<>();
+                break;
+            case "Stack":
+                list = new Stack<>();
+                break;
+            case "Vector":
+                list = new Vector<>(length);
+                break;
+        }
         IntStream.range(0, length).boxed().forEach(i -> list.add(fill));
         return list;
+    }
+    
+    /**
+     * Creates a new list of a certain class, type, and length, filled with null.
+     *
+     * @param clazz  The class of the list.
+     * @param type   The type of the list.
+     * @param length The length of the list.
+     * @param <T>    The type of the list.
+     * @param <L>    The class of the list.
+     * @return The created list.
+     * @see #create(Class, Class, Object, int)
+     */
+    public static <T, L extends List<?>> List<T> create(Class<L> clazz, Class<T> type, int length) {
+        return create(clazz, type, null, length);
+    }
+    
+    /**
+     * Creates a new list of a certain class, type, and length, filled with a default value.
+     *
+     * @param clazz  The class of the list.
+     * @param fill   The object to fill the list with.
+     * @param length The length of the list.
+     * @param <T>    The type of the list.
+     * @param <L>    The class of the list.
+     * @return The created list.
+     * @see #create(Class, Class, Object, int)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T, L extends List<?>> List<T> create(Class<L> clazz, T fill, int length) {
+        return create(clazz, (Class<T>) fill.getClass(), fill, length);
+    }
+    
+    /**
+     * Creates a new list of a certain class and type.
+     *
+     * @param clazz The class of the list.
+     * @param type  The type of the list.
+     * @param <T>   The type of the list.
+     * @param <L>   The class of the list.
+     * @return The created list.
+     * @see #create(Class, Class, int)
+     */
+    public static <T, L extends List<?>> List<T> create(Class<L> clazz, Class<T> type) {
+        return create(clazz, type, 0);
     }
     
     /**
@@ -59,10 +133,10 @@ public final class ListUtility {
      * @param length The length of the list.
      * @param <T>    The type of the list.
      * @return The created list.
-     * @see #create(Class, Object, int)
+     * @see #create(Class, Class, int)
      */
     public static <T> List<T> create(Class<T> type, int length) {
-        return create(type, null, length);
+        return create(DEFAULT_LIST_CLASS, type, length);
     }
     
     /**
@@ -74,9 +148,8 @@ public final class ListUtility {
      * @return The created list.
      * @see #create(Class, Object, int)
      */
-    @SuppressWarnings("unchecked")
     public static <T> List<T> create(T fill, int length) {
-        return create((Class<T>) fill.getClass(), fill, length);
+        return create(DEFAULT_LIST_CLASS, fill, length);
     }
     
     /**
@@ -88,23 +161,73 @@ public final class ListUtility {
      * @see #create(Class, int)
      */
     public static <T> List<T> create(Class<T> type) {
-        return create(type, 0);
+        return create(DEFAULT_LIST_CLASS, type);
     }
     
     /**
-     * Creates a new 2D list of a certain type and dimensions, filled with a default value, or null.
+     * Creates a new 2D list of a certain class, type, and dimensions, filled with a default value or null.
      *
+     * @param clazz  The class of the list.
      * @param type   The type of the list.
      * @param fill   The object to fill the list with, or null.
      * @param width  The width of the list.
      * @param height The height of the list.
      * @param <T>    The type of the list.
+     * @param <L>    The class of the list.
      * @return The created list.
      */
-    private static <T> List<List<T>> create2D(Class<T> type, T fill, int width, int height) {
-        List<List<T>> list = new ArrayList<>(width);
-        IntStream.range(0, width).boxed().forEach(i -> list.add(create(type, fill, height)));
+    @SuppressWarnings("unchecked")
+    private static <T, L extends List<?>> List<List<T>> create2D(Class<L> clazz, Class<T> type, T fill, int width, int height) {
+        List<List<T>> list = (List<List<T>>) create(clazz, clazz, width);
+        IntStream.range(0, width).boxed().forEach(i -> list.set(i, create(clazz, type, fill, height)));
         return list;
+    }
+    
+    /**
+     * Creates a new 2D list of a certain class, type, and dimensions, filled with null.
+     *
+     * @param clazz  The class of the list.
+     * @param type   The type of the list.
+     * @param width  The width of the list.
+     * @param height The height of the list.
+     * @param <T>    The type of the list.
+     * @param <L>    The class of the list.
+     * @return The created list.
+     * @see #create2D(Class, Class, Object, int, int)
+     */
+    public static <T, L extends List<?>> List<List<T>> create2D(Class<L> clazz, Class<T> type, int width, int height) {
+        return create2D(clazz, type, null, width, height);
+    }
+    
+    /**
+     * Creates a new 2D list of a certain class, type, and dimensions, filled with a default value.
+     *
+     * @param clazz  The class of the list.
+     * @param fill   The object to fill the list with.
+     * @param width  The width of the list.
+     * @param height The height of the list.
+     * @param <T>    The type of the list.
+     * @param <L>    The class of the list.
+     * @return The created list.
+     * @see #create2D(Class, Class, Object, int, int)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T, L extends List<?>> List<List<T>> create2D(Class<L> clazz, T fill, int width, int height) {
+        return create2D(clazz, (Class<T>) fill.getClass(), fill, width, height);
+    }
+    
+    /**
+     * Creates a new 2D list of a certain class and type.
+     *
+     * @param clazz The class of the list.
+     * @param type  The type of the list.
+     * @param <T>   The type of the list.
+     * @param <L>   The class of the list.
+     * @return The created list.
+     * @see #create2D(Class, Class, int, int)
+     */
+    public static <T, L extends List<?>> List<List<T>> create2D(Class<L> clazz, Class<T> type) {
+        return create2D(clazz, type, 0, 0);
     }
     
     /**
@@ -115,10 +238,10 @@ public final class ListUtility {
      * @param height The height of the list.
      * @param <T>    The type of the list.
      * @return The created list.
-     * @see #create2D(Class, Object, int, int)
+     * @see #create2D(Class, Class, int, int)
      */
     public static <T> List<List<T>> create2D(Class<T> type, int width, int height) {
-        return create2D(type, null, width, height);
+        return create2D(DEFAULT_LIST_CLASS, type, width, height);
     }
     
     /**
@@ -131,9 +254,8 @@ public final class ListUtility {
      * @return The created list.
      * @see #create2D(Class, Object, int, int)
      */
-    @SuppressWarnings("unchecked")
     public static <T> List<List<T>> create2D(T fill, int width, int height) {
-        return create2D((Class<T>) fill.getClass(), fill, width, height);
+        return create2D(DEFAULT_LIST_CLASS, fill, width, height);
     }
     
     /**
@@ -142,32 +264,83 @@ public final class ListUtility {
      * @param type The type of the list.
      * @param <T>  The type of the list.
      * @return The created list.
-     * @see #create2D(Class, int, int)
+     * @see #create2D(Class, Class)
      */
     public static <T> List<List<T>> create2D(Class<T> type) {
-        return create2D(type, 0, 0);
+        return create2D(DEFAULT_LIST_CLASS, type);
     }
     
     /**
-     * Creates a new 3D list of a certain type and length, filled with a default value or null.
+     * Creates a new 3D list of a certain class, type, and dimensions, filled with a default value or null.
      *
+     * @param clazz  The class of the list.
      * @param type   The type of the list.
      * @param fill   The object to fill the list with, or null.
      * @param width  The width of the list.
      * @param height The height of the list.
      * @param depth  The depth of the list.
      * @param <T>    The type of the list.
+     * @param <L>    The class of the list.
      * @return The created list.
      */
-    @SuppressWarnings("SuspiciousNameCombination")
-    private static <T> List<List<List<T>>> create3D(Class<T> type, T fill, int width, int height, int depth) {
-        List<List<List<T>>> list = new ArrayList<>(width);
-        IntStream.range(0, width).boxed().forEach(i -> list.add(create2D(type, fill, height, depth)));
+    @SuppressWarnings({"SuspiciousNameCombination", "unchecked"})
+    private static <T, L extends List<?>> List<List<List<T>>> create3D(Class<L> clazz, Class<T> type, T fill, int width, int height, int depth) {
+        List<List<List<T>>> list = (List<List<List<T>>>) create(clazz, clazz, width);
+        IntStream.range(0, width).boxed().forEach(i -> list.set(i, create2D(clazz, type, fill, height, depth)));
         return list;
     }
     
     /**
-     * Creates a new 3D list of a certain type and length, filled with null.
+     * Creates a new 3D list of a certain class, type and dimensions, filled with null.
+     *
+     * @param clazz  The class of the list.
+     * @param type   The type of the list.
+     * @param width  The width of the list.
+     * @param height The height of the list.
+     * @param depth  The depth of the list.
+     * @param <T>    The type of the list.
+     * @param <L>    The class of the list.
+     * @return The created list.
+     * @see #create3D(Class, Object, int, int, int)
+     */
+    public static <T, L extends List<?>> List<List<List<T>>> create3D(Class<L> clazz, Class<T> type, int width, int height, int depth) {
+        return create3D(clazz, type, null, width, height, depth);
+    }
+    
+    /**
+     * Creates a new 3D list of a certain class, type, and dimensions, filled with a default value.
+     *
+     * @param clazz  The class of the list.
+     * @param fill   The object to fill the list with.
+     * @param width  The width of the list.
+     * @param height The height of the list.
+     * @param depth  The depth of the list.
+     * @param <T>    The type of the list.
+     * @param <L>    The class of the list.
+     * @return The created list.
+     * @see #create3D(Class, Class, Object, int, int, int)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T, L extends List<?>> List<List<List<T>>> create3D(Class<L> clazz, T fill, int width, int height, int depth) {
+        return create3D(clazz, (Class<T>) fill.getClass(), fill, width, height, depth);
+    }
+    
+    /**
+     * Creates a new 3D list of a certain class and type.
+     *
+     * @param clazz The class of the list.
+     * @param type  The type of the list.
+     * @param <T>   The type of the list.
+     * @param <L>   The class of the list.
+     * @return The created list.
+     * @see #create3D(Class, Class, int, int, int)
+     */
+    public static <T, L extends List<?>> List<List<List<T>>> create3D(Class<L> clazz, Class<T> type) {
+        return create3D(clazz, type, 0, 0, 0);
+    }
+    
+    /**
+     * Creates a new 3D list of a certain type and dimensions, filled with null.
      *
      * @param type   The type of the list.
      * @param width  The width of the list.
@@ -175,14 +348,14 @@ public final class ListUtility {
      * @param depth  The depth of the list.
      * @param <T>    The type of the list.
      * @return The created list.
-     * @see #create3D(Class, Object, int, int, int)
+     * @see #create3D(Class, Class, int, int, int)
      */
     public static <T> List<List<List<T>>> create3D(Class<T> type, int width, int height, int depth) {
-        return create3D(type, null, width, height, depth);
+        return create3D(DEFAULT_LIST_CLASS, type, width, height, depth);
     }
     
     /**
-     * Creates a new 3D list of a certain type and length, filled with a default value.
+     * Creates a new 3D list of a certain type and dimensions, filled with a default value.
      *
      * @param fill   The object to fill the list with.
      * @param width  The width of the list.
@@ -192,9 +365,8 @@ public final class ListUtility {
      * @return The created list.
      * @see #create3D(Class, Object, int, int, int)
      */
-    @SuppressWarnings("unchecked")
     public static <T> List<List<List<T>>> create3D(T fill, int width, int height, int depth) {
-        return create3D((Class<T>) fill.getClass(), fill, width, height, depth);
+        return create3D(DEFAULT_LIST_CLASS, fill, width, height, depth);
     }
     
     /**
@@ -203,10 +375,23 @@ public final class ListUtility {
      * @param type The type of the list.
      * @param <T>  The type of the list.
      * @return The created list.
-     * @see #create3D(Class, Object, int, int, int)
+     * @see #create3D(Class, Class)
      */
     public static <T> List<List<List<T>>> create3D(Class<T> type) {
-        return create3D(type, 0, 0, 0);
+        return create3D(DEFAULT_LIST_CLASS, type);
+    }
+    
+    /**
+     * Converts an array to a list of a certain class.
+     *
+     * @param array The array.
+     * @param clazz The class of the list.
+     * @param <T>   The type of the array.
+     * @param <L>   The class of the list.
+     * @return The list built from the array.
+     */
+    public static <T, L extends List<?>> List<T> toList(T[] array, Class<L> clazz) {
+        return convertTo(Arrays.asList(array), clazz);
     }
     
     /**
@@ -215,9 +400,10 @@ public final class ListUtility {
      * @param array The array.
      * @param <T>   The type of the array.
      * @return The list built from the array.
+     * @see #toList(Object[], Class)
      */
     public static <T> List<T> toList(T[] array) {
-        return clone(Arrays.asList(array));
+        return toList(array, DEFAULT_LIST_CLASS);
     }
     
     /**
@@ -228,7 +414,32 @@ public final class ListUtility {
      * @return The clone of the list.
      */
     public static <T> List<T> clone(List<T> list) {
-        return new ArrayList<>(list);
+        return convertTo(list, list.getClass());
+    }
+    
+    /**
+     * Converts a list to a list of a specific class.
+     *
+     * @param list  The list.
+     * @param clazz The list class to convert to.
+     * @param <T>   The type of the list.
+     * @param <L>   The list class to convert to.
+     * @return The converted list.
+     */
+    public static <T, L extends List<?>> List<T> convertTo(List<T> list, Class<L> clazz) {
+        switch (clazz.getSimpleName()) {
+            case "ArrayList":
+            default:
+                return new ArrayList<>(list);
+            case "LinkedList":
+                return new LinkedList<>(list);
+            case "Stack":
+                final Stack<T> stack = new Stack<>();
+                list.forEach(stack::push);
+                return stack;
+            case "Vector":
+                return new Vector<>(list);
+        }
     }
     
     /**
@@ -242,11 +453,11 @@ public final class ListUtility {
      * @throws IndexOutOfBoundsException When the from or to indices are out of bounds of the list.
      */
     public static <T> List<T> subList(List<T> list, int from, int to) throws IndexOutOfBoundsException {
-        if ((from > to) || (from < 0) || to > list.size()) {
+        if ((from > to) || (from < 0) || (to > list.size())) {
             throw new IndexOutOfBoundsException("The range [" + from + "," + to + ") is out of bounds of the list");
         }
         
-        return clone(list.subList(from, to));
+        return convertTo(list.subList(from, to), list.getClass());
     }
     
     /**
@@ -275,7 +486,7 @@ public final class ListUtility {
         List<T> result = new ArrayList<>();
         result.addAll(list1);
         result.addAll(list2);
-        return result;
+        return convertTo(result, list1.getClass());
     }
     
     /**
@@ -297,7 +508,11 @@ public final class ListUtility {
         for (int i = 0; i < list.size(); i++) {
             result.get(i / length).set((i % length), list.get(i));
         }
-        return result;
+        
+        for (int i = 0; i < result.size(); i++) {
+            result.set(i, convertTo(result.get(i), list.getClass()));
+        }
+        return convertTo(result, list.getClass());
     }
     
     /**
@@ -383,12 +598,7 @@ public final class ListUtility {
      * @return Whether or not any element in the list is null.
      */
     public static <T> boolean anyNull(List<T> list) {
-        for (T entry : list) {
-            if (entry == null) {
-                return true;
-            }
-        }
-        return false;
+        return list.stream().anyMatch(Objects::isNull);
     }
     
     /**
@@ -412,7 +622,7 @@ public final class ListUtility {
      * @return The list with null elements removed.
      */
     public static <T> List<T> removeNull(List<T> list) {
-        return list.stream().filter(Objects::nonNull).collect(Collectors.toList());
+        return convertTo(list.stream().filter(Objects::nonNull).collect(Collectors.toList()), list.getClass());
     }
     
     /**
@@ -423,7 +633,7 @@ public final class ListUtility {
      * @return The list with duplicate elements removed.
      */
     public static <T> List<T> removeDuplicates(List<T> list) {
-        return list.stream().distinct().collect(Collectors.toList());
+        return convertTo(list.stream().distinct().collect(Collectors.toList()), list.getClass());
     }
     
     /**
@@ -466,7 +676,7 @@ public final class ListUtility {
             choices.add(list.get(index));
             previousChoices.add(index);
         }
-        return choices;
+        return convertTo(choices, list.getClass());
     }
     
     /**
@@ -479,7 +689,7 @@ public final class ListUtility {
      */
     public static <T> List<T> duplicateInOrder(List<T> list, int times) {
         if (times <= 0) {
-            return new ArrayList<>();
+            return convertTo(new ArrayList<>(), list.getClass());
         }
         if (times == 1) {
             return clone(list);
@@ -489,7 +699,7 @@ public final class ListUtility {
         for (int time = 0; time < times; time++) {
             finalList.addAll(list);
         }
-        return finalList;
+        return convertTo(finalList, list.getClass());
     }
     
     /**
@@ -536,7 +746,7 @@ public final class ListUtility {
                 }
             });
         }
-        return sorted;
+        return convertTo(sorted, list.getClass());
     }
     
     /**
