@@ -1960,7 +1960,7 @@ public final class Filesystem {
         
         if (d.exists()) {
             for (File f : getFilesRecursively(d)) {
-                String fName = StringUtility.lShear(f.getAbsolutePath().replaceAll("\\\\+", "/"), (d.getAbsolutePath() + '/').length());
+                String fName = StringUtility.lShear(StringUtility.fixFileSeparators(f.getAbsolutePath()), (d.getAbsolutePath() + '/').length());
                 if (fName.endsWith("sync")) {
                     continue;
                 }
@@ -2086,9 +2086,10 @@ public final class Filesystem {
         int index = 0;
         do {
             tmpFile = new File(Project.TMP_DIR,
-                    (((name == null) || name.isEmpty()) ? UUID.randomUUID().toString() : name) +
+                    (StringUtility.isNullOrEmpty(name) ? UUID.randomUUID().toString() : name) +
                             ((index > 0) ? ("_" + index) : "") +
-                            ((extension == null) ? "" : ((extension.isEmpty() || extension.startsWith(".")) ? "" : ".") + extension));
+                            ((StringUtility.isNullOrEmpty(extension) || StringUtility.lTrim(extension).startsWith(".")) ? "" : ".") +
+                            StringUtility.removeWhiteSpace(extension));
             index++;
         } while (tmpFile.exists());
         
@@ -2126,7 +2127,7 @@ public final class Filesystem {
      * @see #getTemporaryFile(String, String)
      */
     public static File createTemporaryFile(String extension, String name) {
-        File tmpFile = getTemporaryFile(extension, name);
+        final File tmpFile = getTemporaryFile(extension, name);
         Filesystem.createFile(tmpFile);
         return tmpFile;
     }
@@ -2163,7 +2164,7 @@ public final class Filesystem {
         int index = 0;
         do {
             tmpDir = new File(Project.TMP_DIR,
-                    (((name == null) || name.isEmpty()) ? UUID.randomUUID().toString() : name) +
+                    (StringUtility.isNullOrEmpty(name) ? UUID.randomUUID().toString() : name) +
                             ((index > 0) ? ("_" + index) : ""));
             index++;
         } while (tmpDir.exists());
@@ -2190,7 +2191,7 @@ public final class Filesystem {
      * @see #getTemporaryDirectory(String)
      */
     public static File createTemporaryDirectory(String name) {
-        File tmpDir = getTemporaryDirectory(name);
+        final File tmpDir = getTemporaryDirectory(name);
         Filesystem.createDirectory(tmpDir);
         return tmpDir;
     }
@@ -2206,21 +2207,20 @@ public final class Filesystem {
     }
     
     /**
-     * Returns the path length of a temporary file.
+     * Returns the path length of a default temporary file with an extension.
      *
      * @param extension The extension of the temporary file.
-     * @return The path length of a temporary file.
+     * @return The path length of a default temporary file with the specified extension.
      */
     public static int getTemporaryFilePathLength(String extension) {
-        String tmpDirPath = generatePath(Project.TMP_DIR.getName(), UUID.randomUUID() +
-                ((extension.isEmpty() || extension.startsWith(".")) ? "" : ".") + extension);
-        return tmpDirPath.length();
+        return generatePath(Project.TMP_DIR.getName(), UUID.randomUUID() +
+                ((extension.isEmpty() || extension.startsWith(".")) ? "" : ".") + extension).length();
     }
     
     /**
-     * Returns the path length of a temporary file.
+     * Returns the path length of a default temporary file.
      *
-     * @return The path length of a temporary file.
+     * @return The path length of a default temporary file.
      * @see #getTemporaryFilePathLength(String)
      */
     public static int getTemporaryFilePathLength() {
@@ -2228,13 +2228,12 @@ public final class Filesystem {
     }
     
     /**
-     * Returns the path length of a temporary directory.
+     * Returns the path length of a default temporary directory.
      *
-     * @return The path length of a temporary directory.
+     * @return The path length of a default temporary directory.
      */
     public static int getTemporaryDirectoryPathLength() {
-        String tmpDirPath = generatePath(Project.TMP_DIR.getName(), UUID.randomUUID().toString());
-        return tmpDirPath.length();
+        return generatePath(Project.TMP_DIR.getName(), UUID.randomUUID().toString()).length();
     }
     
     /**

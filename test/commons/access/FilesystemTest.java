@@ -14431,6 +14431,38 @@ public class FilesystemTest {
         Assert.assertFalse(tmpFile.getName().endsWith("..file"));
         Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(Project.TMP_DIR.getAbsolutePath()));
         
+        //extension, not empty, not formatted
+        tmpFile = Filesystem.getTemporaryFile("   .file ");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
+        Assert.assertFalse(tmpFile.exists());
+        Assert.assertTrue(tmpFile.getName().endsWith(".file"));
+        Assert.assertFalse(tmpFile.getName().endsWith("..file"));
+        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(Project.TMP_DIR.getAbsolutePath()));
+        tmpFile = Filesystem.getTemporaryFile("   .  file ");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
+        Assert.assertFalse(tmpFile.exists());
+        Assert.assertTrue(tmpFile.getName().endsWith(".file"));
+        Assert.assertFalse(tmpFile.getName().endsWith("..file"));
+        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(Project.TMP_DIR.getAbsolutePath()));
+        tmpFile = Filesystem.getTemporaryFile(".  file ");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
+        Assert.assertFalse(tmpFile.exists());
+        Assert.assertTrue(tmpFile.getName().endsWith(".file"));
+        Assert.assertFalse(tmpFile.getName().endsWith("..file"));
+        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(Project.TMP_DIR.getAbsolutePath()));
+        
+        //extension, not empty, no dot, not formatted
+        tmpFile = Filesystem.getTemporaryFile("   file ");
+        filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");
+        Assert.assertTrue(filesystemTmpFiles.contains(tmpFile));
+        Assert.assertFalse(tmpFile.exists());
+        Assert.assertTrue(tmpFile.getName().endsWith(".file"));
+        Assert.assertFalse(tmpFile.getName().endsWith("..file"));
+        Assert.assertTrue(tmpFile.getParentFile().getAbsolutePath().equalsIgnoreCase(Project.TMP_DIR.getAbsolutePath()));
+        
         //default extension
         tmpFile = Filesystem.getTemporaryFile();
         filesystemTmpFiles = (List<File>) TestUtils.getField(Filesystem.class, "tmpFiles");

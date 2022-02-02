@@ -23,6 +23,7 @@ import javax.sound.sampled.LineEvent;
 
 import commons.math.BoundUtility;
 import commons.math.MathUtility;
+import commons.object.string.StringUtility;
 import marytts.LocalMaryInterface;
 import marytts.MaryInterface;
 import marytts.exceptions.MaryConfigurationException;
@@ -514,7 +515,7 @@ public class SpeechSynthesizer {
                 props.load(configStream);
             } catch (IOException ignored) {
             }
-            String workingDirectory = Paths.get(".").toAbsolutePath().normalize().toString().replace("\\", "/") + '/';
+            String workingDirectory = StringUtility.fixFileSeparators(Paths.get(".").toAbsolutePath().normalize().toString()) + '/';
             props.setProperty("log4j.appender.logfile.File", workingDirectory + "log/" + new SimpleDateFormat("yyyy-MM-dd").format(new Date()) + "/marytts.log");
             LogManager.resetConfiguration();
             PropertyConfigurator.configure(props);

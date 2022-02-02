@@ -8,18 +8,17 @@
 package commons.object.string;
 
 import java.io.File;
-import java.nio.charset.StandardCharsets;
 import java.text.Normalizer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,29 +38,21 @@ public final class StringUtility {
     //Constants
     
     /**
-     * A regex pattern for an alphanumeric string.
+     * A string of vowel characters.
      */
-    public static final Pattern ALPHANUMERIC_PATTERN = Pattern.compile("[a-zA-Z0-9]*");
+    @SuppressWarnings("SpellCheckingInspection")
+    public static final String VOWEL_CHARS = "AEIOU";
     
     /**
-     * A regex pattern for an alphabetic string.
+     * A string of consonant characters.
      */
-    public static final Pattern ALPHABETIC_PATTERN = Pattern.compile("[a-zA-Z]*");
+    @SuppressWarnings("SpellCheckingInspection")
+    public static final String CONSONANT_CHARS = "BCDFGHJKLMNPQRSTVWXYZ";
     
     /**
-     * A regex pattern for a numeric string.
+     * A list of operator tokens.
      */
-    public static final Pattern NUMERIC_PATTERN = Pattern.compile("-?(?:[0-9]*\\.)?[0-9]+");
-    
-    /**
-     * A regex pattern for a symbol string.
-     */
-    public static final Pattern SYMBOL_PATTERN = Pattern.compile("[^a-zA-Z0-9]*");
-    
-    /**
-     * A regex pattern for a whitespace string.
-     */
-    public static final Pattern WHITESPACE_PATTERN = Pattern.compile("[\\s\0]*");
+    public static final List<String> OPERATOR_TOKENS = Arrays.asList("+", "-", "*", "/", "\\", "%", ">", "<", "!", "==", "!=", "<>", ">=", "<=");
     
     /**
      * A pattern for extracting the starting indent of a string.
@@ -96,8 +87,7 @@ public final class StringUtility {
      * @return The list of all the tokens from the passed string.
      */
     public static List<String> tokenize(String str, String delim, boolean hard) {
-        String[] lines = str.split(delim, (hard ? -1 : 0));
-        return new ArrayList<>(Arrays.asList(lines));
+        return new ArrayList<>(Arrays.asList(str.split(delim, (hard ? -1 : 0))));
     }
     
     /**
@@ -131,7 +121,7 @@ public final class StringUtility {
      * @return The list of all the tokens from the passed string.
      */
     public static List<String> tokenize(String str, int length) {
-        return Arrays.asList(str.split("(?<=\\G.{" + length + "})"));
+        return new ArrayList<>(Arrays.asList(str.split("(?<=\\G.{" + length + "})")));
     }
     
     /**
@@ -191,14 +181,7 @@ public final class StringUtility {
      * @return The string composed of the tokens in the passed list.
      */
     public static String detokenize(List<String> tokens, String delim) {
-        StringBuilder str = new StringBuilder();
-        for (int i = 0; i < tokens.size(); i++) {
-            str.append(tokens.get(i));
-            if (i != (tokens.size() - 1)) {
-                str.append(delim);
-            }
-        }
-        return str.toString();
+        return String.join(delim, tokens);
     }
     
     /**
@@ -274,6 +257,49 @@ public final class StringUtility {
     }
     
     /**
+     * Determines if a string equals another string.
+     *
+     * @param str1 The first string.
+     * @param str2 The second string.
+     * @return Whether the strings are equal.
+     */
+    public static boolean equals(String str1, String str2) {
+        return Objects.equals(str1, str2);
+    }
+    
+    /**
+     * Determines if a string equals another string, regardless of case.
+     *
+     * @param str1 The first string.
+     * @param str2 The second string.
+     * @return Whether the strings are equal, regardless of case.
+     */
+    public static boolean equalsIgnoreCase(String str1, String str2) {
+        return (str1 == null) ? (str2 == null) :
+               str1.equalsIgnoreCase(str2);
+    }
+    
+    /**
+     * Determines if a string is null or empty.
+     *
+     * @param str The string.
+     * @return Whether the string is null or empty.
+     */
+    public static boolean isNullOrEmpty(String str) {
+        return (str == null) || str.isEmpty();
+    }
+    
+    /**
+     * Determines if a string is null or blank.
+     *
+     * @param str The string.
+     * @return Whether the string is null or blank.
+     */
+    public static boolean isNullOrBlank(String str) {
+        return (str == null) || str.isBlank();
+    }
+    
+    /**
      * Reverses a string.
      *
      * @param str The string.
@@ -281,6 +307,17 @@ public final class StringUtility {
      */
     public static String reverse(String str) {
         return new StringBuilder(str).reverse().toString();
+    }
+    
+    /**
+     * Determines if a string contains a substring, regardless of case.
+     *
+     * @param str    The string.
+     * @param search The substring to search for.
+     * @return Whether or not the string contains the substring, regardless of case.
+     */
+    public static boolean containsIgnoreCase(String str, String search) {
+        return str.toUpperCase().contains(search.toUpperCase());
     }
     
     /**
@@ -295,14 +332,61 @@ public final class StringUtility {
     }
     
     /**
+     * Determines if a string contains any of a set of substrings, regardless of case.
+     *
+     * @param str    The string.
+     * @param search The set of substrings to search for.
+     * @return Whether or not the string contains any of the set of substrings, regardless of case.
+     * @see #containsAny(String, String[])
+     */
+    public static boolean containsAnyIgnoreCase(String str, String[] search) {
+        return containsAny(str.toUpperCase(), Arrays.stream(search).map(String::toUpperCase).toArray(String[]::new));
+    }
+    
+    /**
+     * Determines if a string contains a character.
+     *
+     * @param str    The string.
+     * @param search The character to search for.
+     * @return Whether or not the string contains the character.
+     */
+    public static boolean containsChar(String str, char search) {
+        return (str.indexOf(search) != -1);
+    }
+    
+    /**
+     * Determines if a string contains a character, regardless of case.
+     *
+     * @param str    The string.
+     * @param search The character to search for.
+     * @return Whether or not the string contains the character, regardless of case.
+     * @see #containsChar(String, char)
+     */
+    public static boolean containsCharIgnoreCase(String str, char search) {
+        return containsChar(str.toUpperCase(), Character.toUpperCase(search));
+    }
+    
+    /**
      * Determines if a string contains any of a set of characters.
      *
      * @param str    The string.
      * @param search The set of characters to search for.
      * @return Whether or not the string contains any of the set of characters.
      */
-    public static boolean containsAny(String str, Character[] search) {
-        return Arrays.stream(search).anyMatch(e -> (str.indexOf(e) >= 0));
+    public static boolean containsAnyChar(String str, Character[] search) {
+        return Arrays.stream(search).anyMatch(e -> (str.indexOf(e) != -1));
+    }
+    
+    /**
+     * Determines if a string contains any of a set of characters, regardless of case.
+     *
+     * @param str    The string.
+     * @param search The set of characters to search for.
+     * @return Whether or not the string contains any of the set of characters, regardless of case.
+     * @see #containsAnyChar(String, Character[])
+     */
+    public static boolean containsAnyCharIgnoreCase(String str, Character[] search) {
+        return containsAnyChar(str.toUpperCase(), Arrays.stream(search).map(Character::toUpperCase).toArray(Character[]::new));
     }
     
     /**
@@ -310,11 +394,10 @@ public final class StringUtility {
      *
      * @param c The character.
      * @return Whether the character is alphanumeric or not.
-     * @see Character#isAlphabetic(int)
-     * @see Character#isDigit(char)
+     * @see Character#isLetterOrDigit(int)
      */
     public static boolean isAlphanumeric(char c) {
-        return Character.isAlphabetic(c) || Character.isDigit(c);
+        return Character.isLetterOrDigit(c);
     }
     
     /**
@@ -322,9 +405,10 @@ public final class StringUtility {
      *
      * @param str The string.
      * @return Whether the string is alphanumeric or not.
+     * @see #isAlphanumeric(char)
      */
     public static boolean isAlphanumeric(String str) {
-        return ALPHANUMERIC_PATTERN.matcher(str).matches();
+        return !isNullOrEmpty(str) && str.chars().allMatch(i -> isAlphanumeric((char) i));
     }
     
     /**
@@ -343,9 +427,10 @@ public final class StringUtility {
      *
      * @param str The string.
      * @return Whether the string is alphabetic or not.
+     * @see #isAlphabetic(char)
      */
     public static boolean isAlphabetic(String str) {
-        return ALPHABETIC_PATTERN.matcher(str).matches();
+        return !isNullOrEmpty(str) && str.chars().allMatch(i -> isAlphabetic((char) i));
     }
     
     /**
@@ -353,10 +438,10 @@ public final class StringUtility {
      *
      * @param c The character.
      * @return Whether the character is a vowel or not.
+     * @see #VOWEL_CHARS
      */
-    @SuppressWarnings("SpellCheckingInspection")
     public static boolean isVowel(char c) {
-        return ("AEIOUaeiou".indexOf(c) != -1);
+        return containsCharIgnoreCase(VOWEL_CHARS, c);
     }
     
     /**
@@ -364,10 +449,10 @@ public final class StringUtility {
      *
      * @param c The character.
      * @return Whether the character is a consonant or not.
+     * @see #CONSONANT_CHARS
      */
-    @SuppressWarnings("SpellCheckingInspection")
     public static boolean isConsonant(char c) {
-        return ("BCDFGHJKLMNPQRSTVWXYZbcdfghjklmnpqrstvwxyz".indexOf(c) != -1);
+        return containsCharIgnoreCase(CONSONANT_CHARS, c);
     }
     
     /**
@@ -386,9 +471,10 @@ public final class StringUtility {
      *
      * @param str The string.
      * @return Whether the string is numeric or not.
+     * @see #isNumeric(char)
      */
     public static boolean isNumeric(String str) {
-        return NUMERIC_PATTERN.matcher(str).matches();
+        return !isNullOrEmpty(str) && str.chars().allMatch(i -> isNumeric((char) i));
     }
     
     /**
@@ -396,11 +482,11 @@ public final class StringUtility {
      *
      * @param c The character.
      * @return Whether the character is a symbol or not.
-     * @see Character#isLetterOrDigit(char)
+     * @see #isAlphanumeric(char)
      * @see #isWhitespace(char)
      */
     public static boolean isSymbol(char c) {
-        return !(Character.isLetterOrDigit(c) || isWhitespace(c));
+        return !(isAlphanumeric(c) || isWhitespace(c));
     }
     
     /**
@@ -408,9 +494,10 @@ public final class StringUtility {
      *
      * @param str The string.
      * @return Whether the string is punctuation or not.
+     * @see #isSymbol(char)
      */
     public static boolean isSymbol(String str) {
-        return SYMBOL_PATTERN.matcher(str).matches();
+        return !isNullOrEmpty(str) && str.chars().allMatch(i -> isSymbol((char) i));
     }
     
     /**
@@ -429,9 +516,10 @@ public final class StringUtility {
      *
      * @param str The string.
      * @return Whether the string is whitespace or not.
+     * @see #isWhitespace(char)
      */
     public static boolean isWhitespace(String str) {
-        return WHITESPACE_PATTERN.matcher(str).matches();
+        return !isNullOrEmpty(str) && str.chars().allMatch(i -> isWhitespace((char) i));
     }
     
     /**
@@ -441,7 +529,8 @@ public final class StringUtility {
      * @return The string with all whitespace characters removed.
      */
     public static String removeWhiteSpace(String string) {
-        return string.replaceAll("[\\s\0]+", "");
+        return isNullOrBlank(string) ? "" :
+               string.replaceAll("[\\s\0]+", "");
     }
     
     /**
@@ -451,9 +540,10 @@ public final class StringUtility {
      * @return The string with all diacritical marks removed.
      */
     public static String removeDiacritics(String string) {
-        return Normalizer.normalize(string, Normalizer.Form.NFD)
-                .replaceAll("\\p{InCOMBINING_DIACRITICAL_MARKS}+", "")
-                .replaceAll("\\p{InCOMBINING_DIACRITICAL_MARKS_SUPPLEMENT}+", "");
+        return isNullOrBlank(string) ? "" :
+               Normalizer.normalize(string, Normalizer.Form.NFD)
+                       .replaceAll("\\p{InCOMBINING_DIACRITICAL_MARKS}+", "")
+                       .replaceAll("\\p{InCOMBINING_DIACRITICAL_MARKS_SUPPLEMENT}+", "");
     }
     
     /**
@@ -771,7 +861,7 @@ public final class StringUtility {
      * @return The string converted to title case.
      */
     private static String toTitleCase(String string, boolean filter) {
-        if (StringUtils.isEmpty(string)) {
+        if (isNullOrEmpty(string)) {
             return "";
         }
         final List<String> lowercase = Arrays.asList("a", "an", "the", "and", "but", "for", "of", "at", "by", "from", "is");
@@ -830,11 +920,8 @@ public final class StringUtility {
      * @return The string converted to sentence case.
      */
     public static String toSentenceCase(String string) {
-        if (StringUtils.isEmpty(string)) {
-            return "";
-        }
-        
-        return Character.toUpperCase(string.charAt(0)) + ((string.length() > 1) ? lShear(string, 1).toLowerCase() : "");
+        return isNullOrEmpty(string) ? "" :
+               Character.toUpperCase(string.charAt(0)) + lShear(string, 1).toLowerCase();
     }
     
     /**
@@ -845,9 +932,10 @@ public final class StringUtility {
      * @return The number of occurrences of the pattern in the string.
      */
     public static int numberOfOccurrences(String string, String pattern) {
-        int n = 0;
         Pattern p = Pattern.compile(pattern);
         Matcher m = p.matcher(string);
+        
+        int n = 0;
         while (m.find()) {
             n++;
         }
@@ -882,6 +970,16 @@ public final class StringUtility {
     }
     
     /**
+     * Fixes file separators in a string.
+     *
+     * @param string The string to operate on.
+     * @return The string with file separators standardized.
+     */
+    public static String fixFileSeparators(String string) {
+        return string.replace("\\", "/").replaceAll("/+", "/");
+    }
+    
+    /**
      * Removes the punctuation from a string.
      *
      * @param string The string to operate on.
@@ -891,7 +989,7 @@ public final class StringUtility {
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < string.length(); i++) {
             char current = string.charAt(i);
-            if (Character.isLetterOrDigit(current) || Character.isWhitespace(current)) {
+            if (isAlphanumeric(current) || isWhitespace(current)) {
                 sb.append(string.charAt(i));
             }
         }
@@ -907,13 +1005,11 @@ public final class StringUtility {
      */
     public static String removePunctuationSoft(String string, List<Character> save) {
         StringBuilder depuncted = new StringBuilder();
-        
         for (char c : string.toCharArray()) {
             if (!isSymbol(c) || save.contains(c)) {
                 depuncted.append(c);
             }
         }
-        
         return depuncted.toString();
     }
     
@@ -935,7 +1031,7 @@ public final class StringUtility {
      */
     public static boolean tokenIsNum(String token) {
         try {
-            double d = Double.parseDouble(token);
+            Double.parseDouble(token);
         } catch (NumberFormatException ignored) {
             return false;
         }
@@ -947,16 +1043,10 @@ public final class StringUtility {
      *
      * @param token The token to examine.
      * @return Whether the token represents an operator or not.
+     * @see #OPERATOR_TOKENS
      */
-    @SuppressWarnings("HardcodedFileSeparator")
     public static boolean tokenIsOperator(String token) {
-        String[] operators = new String[] {"+", "-", "*", "/", "\\", "%", ">", "<", "!", "==", "!=", "<>", ">=", "<="};
-        for (String operator : operators) {
-            if (token.equals(operator)) {
-                return true;
-            }
-        }
-        return false;
+        return OPERATOR_TOKENS.contains(token);
     }
     
     /**
@@ -966,17 +1056,11 @@ public final class StringUtility {
      * @param size    The target size of the string.
      * @param padding The character to pad with.
      * @return The padded string.
+     * @see #padLeftAbsolute(String, int, char)
      */
     public static String padLeft(String str, int size, char padding) {
-        if (str.length() >= size) {
-            return str;
-        }
-        
-        int numPad = size - str.length();
-        char[] chars = new char[numPad];
-        Arrays.fill(chars, padding);
-        String pad = new String(chars);
-        return pad + str;
+        return (str.length() >= size) ? str :
+               padLeftAbsolute(str, (size - str.length()), padding);
     }
     
     /**
@@ -1022,17 +1106,11 @@ public final class StringUtility {
      * @param size    The target size of the string.
      * @param padding The character to pad with.
      * @return The padded string.
+     * @see #padRightAbsolute(String, int, char)
      */
     public static String padRight(String str, int size, char padding) {
-        if (str.length() >= size) {
-            return str;
-        }
-        
-        int numPad = size - str.length();
-        char[] chars = new char[numPad];
-        Arrays.fill(chars, padding);
-        String pad = new String(chars);
-        return str + pad;
+        return (str.length() >= size) ? str :
+               padRightAbsolute(str, (size - str.length()), padding);
     }
     
     /**
@@ -1078,13 +1156,11 @@ public final class StringUtility {
      * @param size    The target size of the string.
      * @param padding The character to pad with.
      * @return The padded string.
+     * @see #padAbsolute(String, int, char)
      */
     public static String pad(String str, int size, char padding) {
-        if (str.length() >= size) {
-            return str;
-        }
-        String pad = fillStringOfLength(padding, ((size - str.length()) / 2));
-        return pad + str + pad;
+        return (str.length() >= size) ? str :
+               padAbsolute(str, ((size - str.length()) / 2), padding);
     }
     
     /**
@@ -1108,7 +1184,7 @@ public final class StringUtility {
      * @return The padded string.
      */
     public static String padAbsolute(String str, int size, char padding) {
-        String pad = fillStringOfLength(padding, size);
+        final String pad = fillStringOfLength(padding, size);
         return pad + str + pad;
     }
     
@@ -1130,12 +1206,9 @@ public final class StringUtility {
      * @param str  The number string to pad.
      * @param size The specified size of the final string.
      * @return The padded number string.
+     * @see #padLeft(String, int, char)
      */
     public static String padZero(String str, int size) {
-        if (str.length() >= size) {
-            return str;
-        }
-        
         return padLeft(str, size, '0');
     }
     
@@ -1157,10 +1230,10 @@ public final class StringUtility {
      * @param str          The string to quote.
      * @param singleQuotes Whether to use single quotes, otherwise double quotes will be used.
      * @return The quoted string.
+     * @see #padAbsolute(String, int, char)
      */
     public static String quote(String str, boolean singleQuotes) {
-        final String quote = singleQuotes ? "'" : "\"";
-        return quote + str + quote;
+        return padAbsolute(str, 1, (singleQuotes ? '\'' : '"'));
     }
     
     /**
@@ -1193,7 +1266,9 @@ public final class StringUtility {
      * @return A new string filled with the specified character to the length specified.
      */
     public static String fillStringOfLength(char fill, int size) {
-        return padRight("", size, fill);
+        final char[] chars = new char[Math.max(size, 0)];
+        Arrays.fill(chars, fill);
+        return new String(chars);
     }
     
     /**
@@ -1202,13 +1277,11 @@ public final class StringUtility {
      * @param str The string to repeat.
      * @param num The number of times to repeat the string.
      * @return A string containing the base string repeated a number of times.
+     * @see String#repeat(int)
      */
     public static String repeatString(String str, int num) {
-        if (num <= 0) {
-            return "";
-        }
-        
-        return String.valueOf(str).repeat(num);
+        return (num <= 0) ? "" :
+               String.valueOf(str).repeat(num);
     }
     
     /**
@@ -1219,11 +1292,8 @@ public final class StringUtility {
      * @return '[aA] {str}' or '[aA]n {str}'.
      */
     public static String justifyAOrAn(String str, boolean uppercase) {
-        if (str.isBlank()) {
-            return "";
-        }
-        
-        return (uppercase ? 'A' : 'a') + (isVowel(str.charAt(0)) ? "n" : "") + ' ' + str;
+        return isNullOrBlank(str) ? "" :
+               (uppercase ? 'A' : 'a') + (isVowel(str.charAt(0)) ? "n" : "") + ' ' + str;
     }
     
     /**
@@ -1245,11 +1315,8 @@ public final class StringUtility {
      * @return '{quantity} {unit}' or '{quantity} {unit}s' depending on the quantity
      */
     public static String justifyQuantity(int quantity, String unit) {
-        if (unit.isBlank()) {
-            return String.valueOf(quantity);
-        }
-        
-        return String.valueOf(quantity) + ' ' + unit + ((quantity != 1) ? "s" : "");
+        return isNullOrBlank(unit) ? String.valueOf(quantity) :
+               String.valueOf(quantity) + ' ' + unit + ((quantity != 1) ? "s" : "");
     }
     
     /**
@@ -1260,8 +1327,7 @@ public final class StringUtility {
      * @return The string representing the file.
      */
     public static String fileString(File file, boolean absolute) {
-        String fileString = absolute ? file.getAbsolutePath() : file.getPath();
-        return fileString.replace("\\", "/");
+        return StringUtility.fixFileSeparators((absolute ? file.getAbsolutePath() : file.getPath()));
     }
     
     /**
@@ -1466,9 +1532,6 @@ public final class StringUtility {
                 default:
                     return boxed;
             }
-            
-            String a = "═";
-            String test = new String(a.getBytes(StandardCharsets.ISO_8859_1), StandardCharsets.UTF_8);
             
             for (int i = 0; i < boxed.size(); i++) {
                 boxed.set(i, vertical + boxed.get(i) + vertical);

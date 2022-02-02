@@ -149,8 +149,7 @@ public class NumberUtility {
      * @see #hexToDecimal(String, int)
      */
     public static String hexToDecimal(String hex) {
-        String fraction = hex.contains(".") ? hex.substring(hex.indexOf(".") + 1) : "";
-        return hexToDecimal(hex, fraction.length());
+        return hexToDecimal(hex, (hex.contains(".") ? (hex.length() - hex.indexOf('.') - 1) : 0));
     }
     
 }

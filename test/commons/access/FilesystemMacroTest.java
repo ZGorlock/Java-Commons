@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import commons.file.ArchiveUtility;
+import commons.object.string.StringUtility;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -166,7 +167,7 @@ public class FilesystemMacroTest {
         ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(13, Filesystem.getFilesAndDirsRecursively(testDir).size());
         File list = new File(testDir, "list.txt");
-        Assert.assertTrue(FilesystemMacro.prependLinesInFile(list, (testDir.getAbsolutePath().replace("\\", "/") + '/')));
+        Assert.assertTrue(FilesystemMacro.prependLinesInFile(list, (StringUtility.fixFileSeparators(testDir.getAbsolutePath()) + '/')));
         Filesystem.readLines(list).forEach(e -> Assert.assertTrue(new File(e).exists()));
         Assert.assertTrue(FilesystemMacro.deleteListOfFilesFromFile(list));
         Assert.assertEquals(7, Filesystem.getFilesAndDirsRecursively(testDir).size());
@@ -431,10 +432,10 @@ public class FilesystemMacroTest {
         Assert.assertEquals(277, Filesystem.getFilesAndDirsRecursively(testDir).size());
         File playlist = new File(testDir, "playlist.m3u");
         List<String> originalPlaylist = Filesystem.readLines(playlist);
-        Assert.assertTrue(FilesystemMacro.prependLinesInFile(playlist, (testDir.getAbsolutePath().replace("\\", "/") + '/')));
+        Assert.assertTrue(FilesystemMacro.prependLinesInFile(playlist, (StringUtility.fixFileSeparators(testDir.getAbsolutePath()) + '/')));
         File outputDir = new File(testDir, "output");
         Assert.assertTrue(Filesystem.isEmpty(outputDir));
-        Assert.assertTrue(FilesystemMacro.copyPlaylistToDirectory(playlist, outputDir, (testDir.getAbsolutePath().replace("\\", "/") + "/source")));
+        Assert.assertTrue(FilesystemMacro.copyPlaylistToDirectory(playlist, outputDir, (StringUtility.fixFileSeparators(testDir.getAbsolutePath()) + "/source")));
         Assert.assertEquals(343, Filesystem.getFilesAndDirsRecursively(testDir).size());
         Assert.assertFalse(Filesystem.isEmpty(outputDir));
         Assert.assertEquals(66, Filesystem.getFilesAndDirsRecursively(outputDir).size());

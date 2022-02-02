@@ -37,7 +37,6 @@ import commons.math.NumberUtility;
 import commons.object.collection.ListUtility;
 import commons.object.string.StringUtility;
 import commons.time.DateTimeUtility;
-import org.apache.commons.lang3.StringUtils;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -226,13 +225,13 @@ public class FFmpeg {
     public static String ffmpeg(String inputParams, List<File> sourceFiles, String params, File outputFile, FFmpegProgressBar progressBar) {
         final String cmd = "-hide_banner" +
                 ((progressBar == null) ? "" : " -progress - -nostats") +
-                ((inputParams == null || StringUtility.isWhitespace(inputParams)) ? "" : ' ') + StringUtility.trim(inputParams) +
+                (StringUtility.isNullOrBlank(inputParams) ? "" : ' ') + StringUtility.trim(inputParams) +
                 sourceFiles.stream().map(e -> StringUtility.quote(e.getAbsolutePath()))
                         .collect(Collectors.joining(" -i ", " -i ", "")) +
-                ((params == null || StringUtility.trim(params).isEmpty()) ? "" : ' ') + StringUtility.trim(params) +
+                (StringUtility.isNullOrBlank(params) ? "" : ' ') + StringUtility.trim(params) +
                 ' ' + StringUtility.quote(outputFile.getAbsolutePath());
         
-        if ((progressBar != null) && progressBar.getTitle().isEmpty()) {
+        if ((progressBar != null) && StringUtility.isNullOrEmpty(progressBar.getTitle())) {
             progressBar.updateTitle("FFmpeg " + Console.ConsoleEffect.GREY.apply(cmd));
         }
         return ffmpeg(cmd, progressBar);
@@ -419,10 +418,10 @@ public class FFmpeg {
      */
     public static Process ffmpegAsync(String inputParams, List<File> sourceFiles, String params, File outputFile) {
         return ffmpegAsync("-hide_banner" +
-                ((inputParams == null || StringUtility.isWhitespace(inputParams)) ? "" : ' ') + StringUtility.trim(inputParams) +
+                (StringUtility.isNullOrEmpty(inputParams) ? "" : ' ') + StringUtility.trim(inputParams) +
                 sourceFiles.stream().map(e -> StringUtility.quote(e.getAbsolutePath()))
                         .collect(Collectors.joining(" -i ", " -i ", "")) +
-                ((params == null || StringUtility.isWhitespace(params)) ? "" : ' ') + StringUtility.trim(params) +
+                (StringUtility.isNullOrEmpty(params) ? "" : ' ') + StringUtility.trim(params) +
                 ' ' + StringUtility.quote(outputFile.getAbsolutePath()));
     }
     
@@ -489,7 +488,7 @@ public class FFmpeg {
      */
     public static String ffprobe(String params, File sourceFile) {
         return ffprobe("-hide_banner" +
-                ((params == null || StringUtility.isWhitespace(params)) ? "" : ' ') + StringUtility.trim(params) +
+                (StringUtility.isNullOrEmpty(params) ? "" : ' ') + StringUtility.trim(params) +
                 ' ' + StringUtility.quote(sourceFile.getAbsolutePath()));
     }
     
@@ -527,7 +526,7 @@ public class FFmpeg {
      */
     public static Process ffprobeAsync(String params, File sourceFile) {
         return ffprobeAsync("-hide_banner" +
-                ((params == null || StringUtility.isWhitespace(params)) ? "" : ' ') + StringUtility.trim(params) +
+                (StringUtility.isNullOrEmpty(params) ? "" : ' ') + StringUtility.trim(params) +
                 ' ' + StringUtility.quote(sourceFile.getAbsolutePath()));
     }
     
@@ -565,7 +564,7 @@ public class FFmpeg {
      */
     public static String ffplay(String params, File sourceFile) {
         return ffplay("-hide_banner" +
-                ((params == null || StringUtility.isWhitespace(params)) ? "" : ' ') + StringUtility.trim(params) +
+                (StringUtility.isNullOrEmpty(params) ? "" : ' ') + StringUtility.trim(params) +
                 ' ' + StringUtility.quote(sourceFile.getAbsolutePath()));
     }
     
@@ -603,7 +602,7 @@ public class FFmpeg {
      */
     public static Process ffplayAsync(String params, File sourceFile) {
         return ffplayAsync("-hide_banner" +
-                ((params == null || StringUtility.isWhitespace(params)) ? "" : ' ') + StringUtility.trim(params) +
+                (StringUtility.isNullOrEmpty(params) ? "" : ' ') + StringUtility.trim(params) +
                 ' ' + StringUtility.quote(sourceFile.getAbsolutePath()));
     }
     
@@ -1246,7 +1245,7 @@ public class FFmpeg {
     public static String getContainer(File mediaFile, boolean abbreviated) {
         final String ffprobeResponse = ffprobe("-v quiet" +
                 " -show_entries format=format" + (abbreviated ? "" : "_long") + "_name -of csv=p=0:e=none", mediaFile);
-        return !StringUtility.isWhitespace(ffprobeResponse) ? StringUtility.trim(ffprobeResponse) : null;
+        return !StringUtility.isNullOrBlank(ffprobeResponse) ? StringUtility.trim(ffprobeResponse) : null;
     }
     
     /**
@@ -1344,7 +1343,7 @@ public class FFmpeg {
         final String ffprobeResponse = ffprobe("-v quiet" +
                 " -select_streams " + streamId.specifier() +
                 " -show_entries stream=codec_name -of csv=p=0:e=none", mediaFile);
-        return !StringUtility.isWhitespace(ffprobeResponse) ? StringUtility.trim(ffprobeResponse) : null;
+        return !StringUtility.isNullOrBlank(ffprobeResponse) ? StringUtility.trim(ffprobeResponse) : null;
     }
     
     /**
@@ -2166,7 +2165,7 @@ public class FFmpeg {
              * @return The formatted metadata tag key or value.
              */
             public static String formatString(String string) {
-                return ((string == null) || string.isEmpty()) ? "" :
+                return StringUtility.isNullOrEmpty(string) ? "" :
                        StringUtility.quote(string
                                .replaceAll("[\r\n]+", " - ")
                                .replace("\"", "'")
@@ -3504,7 +3503,7 @@ public class FFmpeg {
          * @see Global#get()
          */
         public static Identifier<?> of(String specifier) {
-            if ((specifier == null) || specifier.isEmpty()) {
+            if (StringUtility.isNullOrEmpty(specifier)) {
                 return null;
             }
             
@@ -3573,7 +3572,7 @@ public class FFmpeg {
             return java.util.stream.Stream.of(
                     Optional.ofNullable(streamType).map(e -> StringUtility.lSnip(e.name().toLowerCase(), 1)).orElse(null),
                     Optional.ofNullable(index).map(Object::toString).orElse(null)
-            ).filter(e -> !StringUtils.isEmpty(e)).collect(Collectors.joining(":"));
+            ).filter(e -> !StringUtility.isNullOrEmpty(e)).collect(Collectors.joining(":"));
         }
         
         /**
@@ -3586,7 +3585,7 @@ public class FFmpeg {
             return java.util.stream.Stream.of(
                     Optional.ofNullable(type).map(e -> StringUtility.lSnip(e.name().toLowerCase(), 1)).orElse(null),
                     specifier()
-            ).filter(e -> !StringUtils.isEmpty(e)).collect(Collectors.joining(":"));
+            ).filter(e -> !StringUtility.isNullOrEmpty(e)).collect(Collectors.joining(":"));
         }
         
         /**
@@ -3599,7 +3598,7 @@ public class FFmpeg {
             return java.util.stream.Stream.of(
                     Optional.ofNullable(sourceIndex).map(Object::toString).orElse(null),
                     classSpecifier()
-            ).filter(e -> !StringUtils.isEmpty(e)).collect(Collectors.joining(":"));
+            ).filter(e -> !StringUtility.isNullOrEmpty(e)).collect(Collectors.joining(":"));
         }
         
         /**
@@ -4513,8 +4512,8 @@ public class FFmpeg {
             boolean first = true;
             for (String line : StringUtility.splitLines(ffmpeg("-hide_banner -" + ffmpegKey + 's'))) {
                 title = line.endsWith(":") ? StringUtility.rShear(line, 1) : title;
-                valid = !first && !StringUtility.isWhitespace(line) && !(line.toUpperCase().equals(line) && NumberUtility.extractNumberChars(line).isEmpty()) &&
-                        (valid || !StringUtility.containsAny(line, new Character[] {':', '='}) && !line.matches("^\\s*-+$"));
+                valid = !first && !line.isBlank() && !(line.toUpperCase().equals(line) && NumberUtility.extractNumberChars(line).isEmpty()) &&
+                        (valid || !StringUtility.containsAnyChar(line, new Character[] {':', '='}) && !line.matches("^\\s*-+$"));
                 first = false;
                 if (!valid) {
                     continue;

@@ -166,7 +166,7 @@ public final class ArchiveUtility {
         String resourceName = resource.contains(ARCHIVE_PATH_SEPARATOR) ? resource.substring(resource.lastIndexOf(ARCHIVE_PATH_SEPARATOR)) : resource;
         
         if ((archive == null) || !archive.exists()) {
-            logger.trace("Unable to extract resource: {} from archive: {} archive does not exist", resource, ((archive == null) ? "null" : archive.getAbsolutePath().replace("\\", "/")));
+            logger.trace("Unable to extract resource: {} from archive: {} archive does not exist", resource, ((archive == null) ? "null" : StringUtility.fixFileSeparators(archive.getAbsolutePath())));
             return false;
         }
         
@@ -224,7 +224,7 @@ public final class ArchiveUtility {
         directory = directory.replaceAll(ARCHIVE_PATH_SEPARATOR + '$', "");
         
         if ((archive == null) || !archive.exists()) {
-            logger.trace("Unable to extract directory: {} from archive: {} archive does not exist", directory, ((archive == null) ? "null" : archive.getAbsolutePath().replace("\\", "/")));
+            logger.trace("Unable to extract directory: {} from archive: {} archive does not exist", directory, ((archive == null) ? "null" : StringUtility.fixFileSeparators(archive.getAbsolutePath())));
             return false;
         }
         
@@ -272,7 +272,7 @@ public final class ArchiveUtility {
      */
     public static boolean extract(File archive, File outputDirectory) {
         if ((archive == null) || !archive.exists()) {
-            logger.trace("Unable to extract archive: {} archive does not exist", ((archive == null) ? "null" : archive.getAbsolutePath().replace("\\", "/")));
+            logger.trace("Unable to extract archive: {} archive does not exist", ((archive == null) ? "null" : StringUtility.fixFileSeparators(archive.getAbsolutePath())));
             return false;
         }
         
@@ -321,7 +321,7 @@ public final class ArchiveUtility {
      */
     public static boolean compileFile(File archive, CompressionMethod method, File file) {
         if (!file.exists()) {
-            logger.trace("Unable to compile archive: {} file: {} does not exist", archive.getAbsolutePath().replace("\\", "/"), file.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to compile archive: {} file: {} does not exist", StringUtility.fixFileSeparators(archive.getAbsolutePath()), StringUtility.fixFileSeparators(file.getAbsolutePath()));
             return false;
         }
         
@@ -378,7 +378,7 @@ public final class ArchiveUtility {
     public static boolean compileFiles(File archive, CompressionMethod method, File... files) {
         for (File file : files) {
             if (!file.exists()) {
-                logger.trace("Unable to compile archive: {} file: {} does not exist", archive.getAbsolutePath().replace("\\", "/"), file.getAbsolutePath().replace("\\", "/"));
+                logger.trace("Unable to compile archive: {} file: {} does not exist", StringUtility.fixFileSeparators(archive.getAbsolutePath()), StringUtility.fixFileSeparators(file.getAbsolutePath()));
                 return false;
             }
         }
@@ -438,7 +438,7 @@ public final class ArchiveUtility {
      */
     public static boolean compile(File archive, CompressionMethod method, File sourceDirectory, boolean includeDir) {
         if (!sourceDirectory.exists()) {
-            logger.trace("Unable to compile archive: {} source directory: {} does not exist", archive.getAbsolutePath().replace("\\", "/"), sourceDirectory.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to compile archive: {} source directory: {} does not exist", StringUtility.fixFileSeparators(archive.getAbsolutePath()), StringUtility.fixFileSeparators(sourceDirectory.getAbsolutePath()));
             return false;
         }
         
@@ -532,7 +532,7 @@ public final class ArchiveUtility {
      */
     public static boolean compress(File archive) {
         if (!archive.exists()) {
-            logger.trace("Unable to compress archive: {} archive does not exist", archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to compress archive: {} archive does not exist", StringUtility.fixFileSeparators(archive.getAbsolutePath()));
             return false;
         }
         
@@ -593,7 +593,7 @@ public final class ArchiveUtility {
      */
     public static boolean decompress(File archive) {
         if (!archive.exists()) {
-            logger.trace("Unable to decompress archive: {} archive does not exist", archive.getAbsolutePath().replace("\\", "/"));
+            logger.trace("Unable to decompress archive: {} archive does not exist", StringUtility.fixFileSeparators(archive.getAbsolutePath()));
             return false;
         }
         

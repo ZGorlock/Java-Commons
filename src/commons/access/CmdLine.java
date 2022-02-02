@@ -176,7 +176,7 @@ public final class CmdLine {
      * @throws RuntimeException When called from an unsupported operating system.
      */
     public static ProcessBuilder buildProcess(String cmd, boolean useScriptCommand) throws RuntimeException {
-        if ((cmd == null) || cmd.isEmpty()) {
+        if (StringUtility.isNullOrEmpty(cmd)) {
             return null;
         }
         

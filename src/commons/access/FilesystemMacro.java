@@ -255,21 +255,21 @@ public final class FilesystemMacro {
      */
     public static boolean copyPlaylistToDirectory(File playlist, File directory, String pathPrefix) {
         boolean success = true;
-        pathPrefix = pathPrefix.replace("\\", "/");
+        pathPrefix = StringUtility.fixFileSeparators(pathPrefix);
         
         List<String> newPlaylist = new ArrayList<>();
         for (String playlistEntry : Filesystem.readLines(playlist)) {
-            File song = new File(playlistEntry.replace("\\", "/"));
+            File song = new File(playlistEntry);
             if (song.exists()) {
-                String outputDirectory = directory.getAbsolutePath().replace("\\", "/");
+                String outputDirectory = StringUtility.fixFileSeparators(directory.getAbsolutePath());
                 if (!outputDirectory.endsWith("/")) {
                     outputDirectory = outputDirectory + '/';
                 }
                 
-                File output = new File(song.getAbsolutePath().replace("\\", "/")
+                File output = new File(StringUtility.fixFileSeparators(song.getAbsolutePath())
                         .replace(pathPrefix, outputDirectory));
                 success &= Filesystem.copyFile(song, output, true);
-                newPlaylist.add(output.getAbsolutePath().replace("\\", "/").replace(outputDirectory, ""));
+                newPlaylist.add(StringUtility.fixFileSeparators(output.getAbsolutePath()).replace(outputDirectory, ""));
             }
         }
         
