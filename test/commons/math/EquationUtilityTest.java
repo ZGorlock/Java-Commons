@@ -91,9 +91,18 @@ public class EquationUtilityTest {
      * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
+     * @see EquationUtility#OPERATORS
+     * @see EquationUtility#SYMBOLS
+     * @see EquationUtility#NUMBER_PATTERN
+     * @see EquationUtility#VARIABLE_PATTERN
+     * @see EquationUtility#ELEMENT_PATTERN
      */
     @Test
     public void testConstants() throws Exception {
+        //constants
+        Assert.assertArrayEquals(new Character[] {'^', '~', '*', '/', '%', '+', '-'}, EquationUtility.OPERATORS.toArray(Character[]::new));
+        Assert.assertEquals("^~*/%+-`()", EquationUtility.SYMBOLS);
+        
         //patterns
         Assert.assertEquals("(?:\\d+\\.?\\d*)", EquationUtility.NUMBER_PATTERN.pattern());
         Assert.assertEquals("(?:[a-zA-Z]+)", EquationUtility.VARIABLE_PATTERN.pattern());
@@ -914,24 +923,6 @@ public class EquationUtilityTest {
         Assert.assertEquals("(5+6)/2.4^2-5~90", EquationUtility.cleanEquation("(five plus six) divided by two point four squared minus the fifth root of ninety"));
         Assert.assertEquals("((5+6)/2.4)^2-5~90", EquationUtility.cleanEquation("begin parenthesis open parenthesis five plus six end paren divided by two point four close paren squared minus the fifth root of ninety"));
         Assert.assertEquals("((5+6)/2.4)^2-5~90", EquationUtility.cleanEquation("begin parenthesis open parenthesis five plus six end paren divided by two and four tenths close paren squared minus the fifth root of ninety"));
-    }
-    
-    /**
-     * JUnit test of symbols.
-     *
-     * @throws Exception When there is an exception.
-     * @see EquationUtility#symbols
-     */
-    @Test
-    public void testSymbols() throws Exception {
-        Assert.assertEquals(7, EquationUtility.symbols.size());
-        Assert.assertEquals('^', EquationUtility.symbols.get(0).charValue());
-        Assert.assertEquals('~', EquationUtility.symbols.get(1).charValue());
-        Assert.assertEquals('*', EquationUtility.symbols.get(2).charValue());
-        Assert.assertEquals('/', EquationUtility.symbols.get(3).charValue());
-        Assert.assertEquals('%', EquationUtility.symbols.get(4).charValue());
-        Assert.assertEquals('+', EquationUtility.symbols.get(5).charValue());
-        Assert.assertEquals('-', EquationUtility.symbols.get(6).charValue());
     }
     
     /**

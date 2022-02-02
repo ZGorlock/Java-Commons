@@ -14,6 +14,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import commons.object.string.StringUtility;
 import org.slf4j.Logger;
@@ -33,24 +35,6 @@ public final class EquationUtility {
      * The logger.
      */
     private static final Logger logger = LoggerFactory.getLogger(EquationUtility.class);
-    
-    
-    //Constants
-    
-    /**
-     * The regex pattern to match a number.
-     */
-    public static final Pattern NUMBER_PATTERN = Pattern.compile("(?:\\d+\\.?\\d*)");
-    
-    /**
-     * The regex pattern to match a number.
-     */
-    public static final Pattern VARIABLE_PATTERN = Pattern.compile("(?:[a-zA-Z]+)");
-    
-    /**
-     * The regex pattern to match a number or variable.
-     */
-    public static final Pattern ELEMENT_PATTERN = Pattern.compile("(?:" + NUMBER_PATTERN.pattern() + '|' + VARIABLE_PATTERN.pattern() + ')');
     
     
     //Enums
@@ -112,12 +96,7 @@ public final class EquationUtility {
          * @return The Operation.
          */
         public static Operation getOperation(char symbol) {
-            for (Operation operation : Operation.values()) {
-                if (operation.getSymbol() == symbol) {
-                    return operation;
-                }
-            }
-            return null;
+            return Arrays.stream(Operation.values()).filter(e -> e.getSymbol() == symbol).findFirst().orElse(null);
         }
         
     }
@@ -168,14 +147,32 @@ public final class EquationUtility {
     }
     
     
-    //Static Fields
+    //Constants
     
     /**
-     * The list of symbols for the Operations that can be applied to operands in the equation.
-     *
-     * @see #collectSymbols()
+     * The list of operators for the Operations that can be applied to operands in the equation.
      */
-    public static List<Character> symbols = collectSymbols();
+    public final static List<Character> OPERATORS = Arrays.stream(Operation.values()).map(Operation::getSymbol).collect(Collectors.toList());
+    
+    /**
+     * A string containing the valid symbols for equations.
+     */
+    public final static String SYMBOLS = Stream.of(OPERATORS, List.of('`', '(', ')')).flatMap(List::stream).map(String::valueOf).collect(Collectors.joining());
+    
+    /**
+     * The regex pattern to match a number.
+     */
+    public static final Pattern NUMBER_PATTERN = Pattern.compile("(?:\\d+\\.?\\d*)");
+    
+    /**
+     * The regex pattern to match a number.
+     */
+    public static final Pattern VARIABLE_PATTERN = Pattern.compile("(?:[a-zA-Z]+)");
+    
+    /**
+     * The regex pattern to match a number or variable.
+     */
+    public static final Pattern ELEMENT_PATTERN = Pattern.compile("(?:" + NUMBER_PATTERN.pattern() + '|' + VARIABLE_PATTERN.pattern() + ')');
     
     
     //Functions
@@ -232,7 +229,7 @@ public final class EquationUtility {
         StringBuilder element = new StringBuilder();
         for (int i = 0; i < equation.length(); i++) {
             char c = equation.charAt(i);
-            if (symbols.contains(c)) {
+            if (OPERATORS.contains(c)) {
                 if (element.length() > 0) {
                     elements.add(element.toString());
                     element = new StringBuilder();
@@ -287,7 +284,7 @@ public final class EquationUtility {
                 continue;
             }
             
-            if ((e.length() == 1) && symbols.contains(e.charAt(0)) && (e.charAt(0) == Operation.SUBTRACT.getSymbol())) {
+            if ((e.length() == 1) && OPERATORS.contains(e.charAt(0)) && (e.charAt(0) == Operation.SUBTRACT.getSymbol())) {
                 if (i == 0) {
                     elements.set(i, "(0-" + e2 + ')');
                     elements.remove(i + 1);
@@ -295,7 +292,7 @@ public final class EquationUtility {
                     continue;
                 } else {
                     String e3 = elements.get(i - 1);
-                    if (symbols.contains(e3.charAt(0))) {
+                    if (OPERATORS.contains(e3.charAt(0))) {
                         elements.set(i, "(0-" + e2 + ')');
                         elements.remove(i + 1);
                         i = -1;
@@ -304,14 +301,14 @@ public final class EquationUtility {
                 }
             }
             
-            if ((e.length() == 1) && symbols.contains(e.charAt(0)) && (e.charAt(0) == Operation.ADD.getSymbol())) {
+            if ((e.length() == 1) && OPERATORS.contains(e.charAt(0)) && (e.charAt(0) == Operation.ADD.getSymbol())) {
                 if (i == 0) {
                     elements.remove(i);
                     i = -1;
                     continue;
                 } else {
                     String e3 = elements.get(i - 1);
-                    if (symbols.contains(e3.charAt(0))) {
+                    if (OPERATORS.contains(e3.charAt(0))) {
                         elements.remove(i);
                         i = -1;
                         continue;
@@ -331,7 +328,7 @@ public final class EquationUtility {
             String e = elements.get(i);
             String e2 = elements.get(i + 1);
             
-            if ((e.length() == 1) && symbols.contains(e.charAt(0)) && (e2.length() == 1) && symbols.contains(e2.charAt(0)) && (e2.charAt(0) != Operation.SUBTRACT.getSymbol())) {
+            if ((e.length() == 1) && OPERATORS.contains(e.charAt(0)) && (e2.length() == 1) && OPERATORS.contains(e2.charAt(0)) && (e2.charAt(0) != Operation.SUBTRACT.getSymbol())) {
                 throw new ParseException("Stacked operators in equation", i);
             }
         }
@@ -361,7 +358,7 @@ public final class EquationUtility {
                 operands.add(operand);
                 elements.set(i, String.valueOf(o++));
                 
-            } else if ((element.length() != 1) || !symbols.contains(element.charAt(0))) {
+            } else if ((element.length() != 1) || !OPERATORS.contains(element.charAt(0))) {
                 MathOperand operand = new MathOperand();
                 try {
                     Number isNumber = NumberStringUtility.numberValueOf(element);
@@ -398,7 +395,7 @@ public final class EquationUtility {
                 
                 for (int i = 0; i < elements.size(); i++) {
                     String element = elements.get(i);
-                    if ((element.length() == 1) && symbols.contains(element.charAt(0))) {
+                    if ((element.length() == 1) && OPERATORS.contains(element.charAt(0))) {
                         if (i == 0) {
                             throw new ParseException("Invalid symbol at start of equation", i);
                         } else if (i == elements.size() - 1) {
@@ -466,10 +463,9 @@ public final class EquationUtility {
         
         List<String> equationParts = new ArrayList<>();
         StringBuilder equationPartBuilder = new StringBuilder();
-        List<Character> operations = Arrays.asList('+', '-', '*', '/', '%', '~', '^', '`', '(', ')');
         for (int i = 0; i < equation.length(); i++) {
             char c = equation.charAt(i);
-            if (operations.contains(c)) {
+            if (StringUtility.containsChar(SYMBOLS, c)) {
                 if (!StringUtility.trim(equationPartBuilder.toString()).isEmpty()) {
                     equationParts.add(StringUtility.trim(equationPartBuilder.toString()));
                     equationPartBuilder = new StringBuilder();
@@ -485,7 +481,7 @@ public final class EquationUtility {
         
         List<String> finalEquationParts = new ArrayList<>();
         for (String equationPart : equationParts) {
-            if ("+-*/%~^`()".contains(equationPart)) {
+            if (SYMBOLS.contains(equationPart)) {
                 finalEquationParts.add(equationPart);
                 continue;
             }
@@ -503,8 +499,8 @@ public final class EquationUtility {
             String second = finalEquationParts.get(i + 1);
             String third = finalEquationParts.get(i + 2);
             
-            if (second.equals("`") && StringUtility.isNumeric(first)) {
-                if (StringUtility.isNumeric(third)) {
+            if (second.equals("`") && NUMBER_PATTERN.matcher(first).matches()) {
+                if (NUMBER_PATTERN.matcher(third).matches()) {
                     finalEquationParts.set(i, third);
                     finalEquationParts.set(i + 1, "^");
                     finalEquationParts.set(i + 2, first);
@@ -528,19 +524,6 @@ public final class EquationUtility {
         equation = equation.replaceAll("(?i)(?<=[\\d\\s])E\\+?(?=[\\d\\s])", "*10^");
         
         return equation;
-    }
-    
-    /**
-     * Populates the list of symbols of operations that can be found in a mathematical equation.
-     *
-     * @return The list of symbols of operations that can be found in a mathematical equation.
-     */
-    private static List<Character> collectSymbols() {
-        List<Character> symbols = new ArrayList<>();
-        for (Operation op : Operation.values()) {
-            symbols.add(op.getSymbol());
-        }
-        return symbols;
     }
     
     
