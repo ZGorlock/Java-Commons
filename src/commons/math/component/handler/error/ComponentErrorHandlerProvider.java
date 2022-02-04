@@ -94,7 +94,7 @@ public final class ComponentErrorHandlerProvider {
      * @throws IndexOutOfBoundsException When the Component does not contain a component at the specified index.
      */
     public static void assertIndexInBounds(ComponentInterface<?, ?, ?> component, int index) throws IndexOutOfBoundsException {
-        if (!BoundUtility.inBounds(index, 0, component.getLength(), true, false)) {
+        if (!BoundUtility.indexInBounds(index, component.getLength())) {
             throw new IndexOutOfBoundsException(errorHandler.componentIndexOutOfBoundsErrorMessage(component, index));
         }
     }
@@ -108,8 +108,7 @@ public final class ComponentErrorHandlerProvider {
      * @throws IndexOutOfBoundsException When the Matrix does not contain a component at the specified coordinate.
      */
     public static void assertCoordinateInBounds(MatrixInterface<?, ?> component, int x, int y) throws IndexOutOfBoundsException {
-        if (!BoundUtility.inBounds(x, 0, component.getWidth(), true, false) ||
-                !BoundUtility.inBounds(y, 0, component.getHeight(), true, false)) {
+        if (!BoundUtility.indexInBounds(x, component.getWidth()) || !BoundUtility.indexInBounds(y, component.getHeight())) {
             throw new IndexOutOfBoundsException(errorHandler.componentCoordinateOutOfBoundsErrorMessage(component, x, y));
         }
     }

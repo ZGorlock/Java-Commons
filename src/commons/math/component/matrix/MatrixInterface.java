@@ -363,9 +363,7 @@ public interface MatrixInterface<T extends Number, I extends MatrixInterface<?, 
      * @throws ArithmeticException       When the component coordinate rage is not a perfect square, or the Matrix is not resizable.
      */
     default I subMatrix(int x1, int y1, int x2, int y2) throws IndexOutOfBoundsException, ArithmeticException {
-        if (((x2 - x1) < 0) || ((y2 - y1) < 0) ||
-                !BoundUtility.inBounds(toIndex(x1, y1), 0, getLength(), true, false) ||
-                !BoundUtility.inBounds(toIndex(x2, y2), 0, getLength(), true, false)) {
+        if ((x2 < x1) || (y2 < y1) || !BoundUtility.indexInBounds(toIndex(x1, y1), getLength()) || !BoundUtility.indexInBounds(toIndex(x2, y2), getLength())) {
             throw new IndexOutOfBoundsException(getErrorHandler().componentCoordinateRangeOutOfBoundsErrorMessage(this, x1, y1, x2, y2));
         }
         

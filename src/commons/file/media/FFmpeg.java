@@ -1958,7 +1958,7 @@ public class FFmpeg {
         public Stream getStream(Identifier.Stream<Identifier.Scope.Singular> streamId) {
             List<Stream> searchStreams = (streamId.getStreamType() == null) ? streams : streams.stream()
                     .filter(e -> Objects.equals(e.getStreamType(), streamId.getStreamType())).collect(Collectors.toList());
-            return BoundUtility.inBounds(streamId.getIndex(), 0, searchStreams.size(), true, false) ?
+            return BoundUtility.inListBounds(streamId.getIndex(), searchStreams) ?
                    searchStreams.get(streamId.getIndex()) : null;
         }
         
@@ -3801,10 +3801,10 @@ public class FFmpeg {
                         return Collections.singletonList(Optional.of(mediaInfo.getStreams().stream()
                                         .filter(e -> ((id.getStreamType() == null) || (e.getStreamType() == id.getStreamType())))
                                         .map(MediaInfo.Stream::getStreamIndex).toArray(Integer[]::new))
-                                .filter(e -> BoundUtility.inBounds(id.getIndex(), 0, e.length, true, false))
+                                .filter(e -> BoundUtility.inArrayBounds(id.getIndex(), e))
                                 .map(e -> Stream.ofIndex(e[id.getIndex()])).orElse(null));
                     case "SINGULAR:CHAPTER":
-                        return Collections.singletonList(BoundUtility.inBounds(id.getIndex(), 0, mediaInfo.getChapters().size(), true, false) ?
+                        return Collections.singletonList(BoundUtility.inListBounds(id.getIndex(), mediaInfo.getChapters()) ?
                                                          Chapter.ofIndex(id.getIndex()) : null);
                     case "SINGULAR:GLOBAL":
                         return Collections.singletonList(Global.get());

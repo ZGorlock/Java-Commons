@@ -7,6 +7,8 @@
 
 package commons.math;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,7 +28,7 @@ public final class BoundUtility {
     //Functions
     
     /**
-     * Determines if the number if in the defined bounds.
+     * Determines if a number is in defined bounds.
      *
      * @param num        The number to test.
      * @param lower      The lower bound.
@@ -46,7 +48,7 @@ public final class BoundUtility {
     }
     
     /**
-     * Determines if the number if in the defined bounds.<br>
+     * Determines if a number is in defined bounds.<br>
      * The number can be in between or equal to these bounds. (lower &lt;= num &lt;= upper)<br>
      * To test bounds for other cases see inBounds(Number, Number, Number, boolean, boolean).
      *
@@ -58,6 +60,44 @@ public final class BoundUtility {
      */
     public static boolean inBounds(Number num, Number lower, Number upper) {
         return inBounds(num, lower, upper, true, true);
+    }
+    
+    /**
+     * Determines if an index is in the bounds of a collection with a specific length.
+     *
+     * @param index  The index to test.
+     * @param length The length of the set.
+     * @return Whether the index is in the bounds of the collection or not.
+     * @see #inBounds(Number, Number, Number)
+     */
+    public static <T> boolean indexInBounds(int index, int length) {
+        return inBounds((index + 1), 1, length);
+    }
+    
+    /**
+     * Determines if an index is in the bounds of an array.
+     *
+     * @param index The index to test.
+     * @param array The array.
+     * @param <T>   The type of the array.
+     * @return Whether the index is in the bounds of the array or not.
+     * @see #indexInBounds(int, int)
+     */
+    public static <T> boolean inArrayBounds(int index, T[] array) {
+        return indexInBounds(index, array.length);
+    }
+    
+    /**
+     * Determines if the index is in the bounds of a list.
+     *
+     * @param index The index to test.
+     * @param list  The list.
+     * @param <T>   The type of the list.
+     * @return Whether the index is in the bounds of the list or not.
+     * @see #indexInBounds(int, int)
+     */
+    public static <T> boolean inListBounds(int index, List<T> list) {
+        return indexInBounds(index, list.size());
     }
     
     /**

@@ -721,7 +721,7 @@ public final class ListUtility {
      * @return The element in the list at the specified index, or the default value if the index is invalid.
      */
     public static <T> T getOrDefault(List<T> list, int index, T defaultValue) {
-        return ((list != null) && BoundUtility.inBounds(index, 0, list.size(), true, false)) ?
+        return ((list != null) && BoundUtility.inListBounds(index, list)) ?
                list.get(index) : defaultValue;
     }
     

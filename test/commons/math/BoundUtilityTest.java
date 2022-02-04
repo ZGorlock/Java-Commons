@@ -7,6 +7,11 @@
 
 package commons.math;
 
+import java.util.List;
+
+import commons.object.collection.ArrayUtility;
+import commons.object.collection.ListUtility;
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -271,6 +276,107 @@ public class BoundUtilityTest {
         Assert.assertFalse(BoundUtility.inBounds(0, 0, 0, true, false));
         Assert.assertFalse(BoundUtility.inBounds(0, 0, 0, false, true));
         Assert.assertFalse(BoundUtility.inBounds(0, 0, 0, false, false));
+    }
+    
+    /**
+     * JUnit test of indexInBounds.
+     *
+     * @throws Exception When there is an exception.
+     * @see BoundUtility#indexInBounds(int, int)
+     */
+    @Test
+    public void testIndexInBounds() throws Exception {
+        //standard
+        Assert.assertTrue(BoundUtility.indexInBounds(0, 1));
+        Assert.assertFalse(BoundUtility.indexInBounds(1, 1));
+        Assert.assertFalse(BoundUtility.indexInBounds(-1, 1));
+        Assert.assertTrue(BoundUtility.indexInBounds(0, 4));
+        Assert.assertTrue(BoundUtility.indexInBounds(2, 4));
+        Assert.assertTrue(BoundUtility.indexInBounds(3, 4));
+        Assert.assertFalse(BoundUtility.indexInBounds(4, 4));
+        Assert.assertFalse(BoundUtility.indexInBounds(-1, 4));
+        Assert.assertTrue(BoundUtility.indexInBounds(5, 7));
+        Assert.assertTrue(BoundUtility.indexInBounds(6, 7));
+        Assert.assertFalse(BoundUtility.indexInBounds(7, 7));
+        Assert.assertFalse(BoundUtility.indexInBounds(-1, 7));
+        
+        //edge cases
+        Assert.assertFalse(BoundUtility.indexInBounds(0, 0));
+        Assert.assertFalse(BoundUtility.indexInBounds(3, 0));
+        Assert.assertFalse(BoundUtility.indexInBounds(-1, 0));
+        Assert.assertFalse(BoundUtility.indexInBounds(0, -1));
+        Assert.assertFalse(BoundUtility.indexInBounds(3, -1));
+        Assert.assertFalse(BoundUtility.indexInBounds(-1, -1));
+    }
+    
+    /**
+     * JUnit test of inArrayBounds.
+     *
+     * @throws Exception When there is an exception.
+     * @see BoundUtility#inArrayBounds(int, Object[])
+     */
+    @Test
+    public void testInArrayBounds() throws Exception {
+        final Object[] array0 = ArrayUtility.create(Object.class, 0);
+        final String[] array1 = ArrayUtility.create(String.class, 1);
+        final Integer[] array4 = ArrayUtility.create(Integer.class, 4);
+        final Boolean[] array7 = ArrayUtility.create(Boolean.class, 7);
+        
+        //standard
+        Assert.assertTrue(BoundUtility.inArrayBounds(0, array1));
+        Assert.assertFalse(BoundUtility.inArrayBounds(1, array1));
+        Assert.assertFalse(BoundUtility.inArrayBounds(-1, array1));
+        Assert.assertTrue(BoundUtility.inArrayBounds(0, array4));
+        Assert.assertTrue(BoundUtility.inArrayBounds(2, array4));
+        Assert.assertTrue(BoundUtility.inArrayBounds(3, array4));
+        Assert.assertFalse(BoundUtility.inArrayBounds(4, array4));
+        Assert.assertFalse(BoundUtility.inArrayBounds(-1, array4));
+        Assert.assertTrue(BoundUtility.inArrayBounds(5, array7));
+        Assert.assertTrue(BoundUtility.inArrayBounds(6, array7));
+        Assert.assertFalse(BoundUtility.inArrayBounds(7, array7));
+        Assert.assertFalse(BoundUtility.inArrayBounds(-1, array7));
+        
+        //edge cases
+        Assert.assertFalse(BoundUtility.inArrayBounds(0, array0));
+        Assert.assertFalse(BoundUtility.inArrayBounds(3, array0));
+        Assert.assertFalse(BoundUtility.inArrayBounds(-1, array0));
+        TestUtils.assertException(NullPointerException.class, () ->
+                BoundUtility.inArrayBounds(0, null));
+    }
+    
+    /**
+     * JUnit test of inListBounds.
+     *
+     * @throws Exception When there is an exception.
+     * @see BoundUtility#inListBounds(int, List)
+     */
+    @Test
+    public void testInListBounds() throws Exception {
+        final List<Object> list0 = ListUtility.create(Object.class, 0);
+        final List<String> list1 = ListUtility.create(String.class, 1);
+        final List<Integer> list4 = ListUtility.create(Integer.class, 4);
+        final List<Boolean> list7 = ListUtility.create(Boolean.class, 7);
+        
+        //standard
+        Assert.assertTrue(BoundUtility.inListBounds(0, list1));
+        Assert.assertFalse(BoundUtility.inListBounds(1, list1));
+        Assert.assertFalse(BoundUtility.inListBounds(-1, list1));
+        Assert.assertTrue(BoundUtility.inListBounds(0, list4));
+        Assert.assertTrue(BoundUtility.inListBounds(2, list4));
+        Assert.assertTrue(BoundUtility.inListBounds(3, list4));
+        Assert.assertFalse(BoundUtility.inListBounds(4, list4));
+        Assert.assertFalse(BoundUtility.inListBounds(-1, list4));
+        Assert.assertTrue(BoundUtility.inListBounds(5, list7));
+        Assert.assertTrue(BoundUtility.inListBounds(6, list7));
+        Assert.assertFalse(BoundUtility.inListBounds(7, list7));
+        Assert.assertFalse(BoundUtility.inListBounds(-1, list7));
+        
+        //edge cases
+        Assert.assertFalse(BoundUtility.inListBounds(0, list0));
+        Assert.assertFalse(BoundUtility.inListBounds(3, list0));
+        Assert.assertFalse(BoundUtility.inListBounds(-1, list0));
+        TestUtils.assertException(NullPointerException.class, () ->
+                BoundUtility.inListBounds(0, null));
     }
     
     /**

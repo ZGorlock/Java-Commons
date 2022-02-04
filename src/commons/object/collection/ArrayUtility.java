@@ -487,7 +487,7 @@ public final class ArrayUtility {
      * @return The element in the array at the specified index, or the default value if the index is invalid.
      */
     public static <T> T getOrDefault(T[] array, int index, T defaultValue) {
-        return ((array != null) && BoundUtility.inBounds(index, 0, array.length, true, false)) ?
+        return ((array != null) && BoundUtility.inArrayBounds(index, array)) ?
                array[index] : defaultValue;
     }
     
