@@ -22,6 +22,7 @@ import java.util.stream.IntStream;
 
 import commons.math.BoundUtility;
 import commons.math.MathUtility;
+import commons.object.string.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -382,6 +383,33 @@ public final class ListUtility {
     }
     
     /**
+     * Creates and populates a new list of a certain class.
+     *
+     * @param clazz    The class of the list.
+     * @param elements The elements to populate the list with.
+     * @param <T>      The type of the list.
+     * @param <L>      The class of the list.
+     * @return The created and populated list.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T, L extends List<?>> List<T> listOf(Class<L> clazz, T... elements) {
+        return cast(Arrays.asList(elements), clazz);
+    }
+    
+    /**
+     * Creates and populates a new list of a certain class.
+     *
+     * @param elements The elements to populate the list with.
+     * @param <T>      The type of the list.
+     * @return The created and populated list.
+     * @see #listOf(Class, Object[])
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> listOf(T... elements) {
+        return listOf(DEFAULT_LIST_CLASS, elements);
+    }
+    
+    /**
      * Converts an array to a list of a certain class.
      *
      * @param array The array.
@@ -391,7 +419,7 @@ public final class ListUtility {
      * @return The list built from the array.
      */
     public static <T, L extends List<?>> List<T> toList(T[] array, Class<L> clazz) {
-        return convertTo(Arrays.asList(array), clazz);
+        return cast(Arrays.asList(array), clazz);
     }
     
     /**
@@ -414,19 +442,35 @@ public final class ListUtility {
      * @return The clone of the list.
      */
     public static <T> List<T> clone(List<T> list) {
-        return convertTo(list, list.getClass());
+        switch (list.getClass().getSimpleName()) {
+            case "ArrayList":
+            default:
+                return new ArrayList<>(list);
+            case "LinkedList":
+                return new LinkedList<>(list);
+            case "Stack":
+                final Stack<T> stack = new Stack<>();
+                list.forEach(stack::push);
+                return stack;
+            case "Vector":
+                return new Vector<>(list);
+        }
     }
     
     /**
-     * Converts a list to a list of a specific class.
+     * Casts a list to a list of a specific class.
      *
      * @param list  The list.
-     * @param clazz The list class to convert to.
+     * @param clazz The list class to cast to.
      * @param <T>   The type of the list.
-     * @param <L>   The list class to convert to.
-     * @return The converted list.
+     * @param <L>   The list class to cast to.
+     * @return The casted list, or the same list if the class is the same as specified.
      */
-    public static <T, L extends List<?>> List<T> convertTo(List<T> list, Class<L> clazz) {
+    public static <T, L extends List<?>> List<T> cast(List<T> list, Class<L> clazz) {
+        if (list.getClass().equals(clazz)) {
+            return list;
+        }
+        
         switch (clazz.getSimpleName()) {
             case "ArrayList":
             default:
@@ -457,7 +501,7 @@ public final class ListUtility {
             throw new IndexOutOfBoundsException("The range [" + from + "," + to + ") is out of bounds of the list");
         }
         
-        return convertTo(list.subList(from, to), list.getClass());
+        return cast(clone(list.subList(from, to)), list.getClass());
     }
     
     /**
@@ -483,10 +527,9 @@ public final class ListUtility {
      * @return The merged list.
      */
     public static <T> List<T> merge(List<T> list1, List<T> list2) {
-        List<T> result = new ArrayList<>();
-        result.addAll(list1);
+        List<T> result = clone(list1);
         result.addAll(list2);
-        return convertTo(result, list1.getClass());
+        return result;
     }
     
     /**
@@ -510,9 +553,9 @@ public final class ListUtility {
         }
         
         for (int i = 0; i < result.size(); i++) {
-            result.set(i, convertTo(result.get(i), list.getClass()));
+            result.set(i, cast(result.get(i), list.getClass()));
         }
-        return convertTo(result, list.getClass());
+        return cast(result, list.getClass());
     }
     
     /**
@@ -529,7 +572,72 @@ public final class ListUtility {
     }
     
     /**
-     * Determines whether an element exists in a list.
+     * Determines if a list is null or empty.
+     *
+     * @param list The list.
+     * @param <T>  The type of the list.
+     * @return Whether the list is null or empty.
+     */
+    public static <T> boolean isNullOrEmpty(List<T> list) {
+        return (list == null) || list.isEmpty();
+    }
+    
+    /**
+     * Determines if a list equals another list.
+     *
+     * @param list1      The first list.
+     * @param list2      The second list.
+     * @param checkOrder Whether to check the order of the lists or not.
+     * @param <T>        The type of the lists.
+     * @return Whether the lists are equal or not.
+     */
+    public static <T> boolean equals(List<T> list1, List<T> list2, boolean checkOrder) {
+        return ((list1 == null) || (list2 == null)) ? ((list1 == null) && (list2 == null)) : ((list1.size() == list2.size()) &&
+                (checkOrder ? IntStream.range(0, list1.size()).boxed().allMatch(i -> Objects.equals(list1.get(i), list2.get(i))) :
+                 list1.stream().allMatch(e -> list2.contains(e) && (numberOfOccurrences(list1, e) == numberOfOccurrences(list2, e)))));
+    }
+    
+    /**
+     * Determines if a list equals another list.
+     *
+     * @param list1 The first list.
+     * @param list2 The second list.
+     * @param <T>   The type of the lists.
+     * @return Whether the lists are equal or not.
+     * @see #equals(List, List, boolean)
+     */
+    public static <T> boolean equals(List<T> list1, List<T> list2) {
+        return equals(list1, list2, true);
+    }
+    
+    /**
+     * Determines if a list of strings equals another list of strings, regardless of case.
+     *
+     * @param list1      The first list.
+     * @param list2      The second list.
+     * @param checkOrder Whether to check the order of the lists or not.
+     * @return Whether the lists of strings are equal or not, regardless of case.
+     */
+    public static boolean equalsIgnoreCase(List<String> list1, List<String> list2, boolean checkOrder) {
+        return ((list1 == null) || (list2 == null)) ? ((list1 == null) && (list2 == null)) : ((list1.size() == list2.size()) &&
+                (checkOrder ? IntStream.range(0, list1.size()).boxed().allMatch(i -> StringUtility.equalsIgnoreCase(list1.get(i), list2.get(i))) :
+                 list1.stream().allMatch(e -> containsIgnoreCase(list2, e) && (numberOfOccurrencesIgnoreCase(list1, e) == numberOfOccurrencesIgnoreCase(list2, e)))));
+    }
+    
+    /**
+     * Determines if a list of strings equals another list of strings, regardless of case.
+     *
+     * @param list1 The first list.
+     * @param list2 The second list.
+     * @return Whether the lists of strings are equal or not, regardless of case.
+     * @see #equalsIgnoreCase(List, List, boolean)
+     */
+    public static boolean equalsIgnoreCase(List<String> list1, List<String> list2) {
+        return equalsIgnoreCase(list1, list2, true);
+    }
+    
+    /**
+     * Determines if an element exists in a list.
      *
      * @param list    The list.
      * @param element The element.
@@ -537,18 +645,43 @@ public final class ListUtility {
      * @return Whether the list contains the specified element or not.
      */
     public static <T> boolean contains(List<T> list, T element) {
-        return list.contains(element);
+        return (list != null) && list.contains(element);
     }
     
     /**
-     * Determines whether a string exists in a list, regardless of case.
+     * Determines if a string exists in a list, regardless of case.
      *
      * @param list    The list.
      * @param element The element.
-     * @return Whether the list contains the specified string or not.
+     * @return Whether the list contains the specified string or not, regardless of case.
      */
     public static boolean containsIgnoreCase(List<String> list, String element) {
-        return list.stream().anyMatch(e -> e.equalsIgnoreCase(element));
+        return (list != null) && list.stream().anyMatch(e -> StringUtility.equalsIgnoreCase(e, element));
+    }
+    
+    /**
+     * Determines the number of occurrences of an element in a list.
+     *
+     * @param list    The list.
+     * @param element The element.
+     * @param <T>     The type of the list.
+     * @return The number of occurrences of the specified element in the list.
+     */
+    public static <T> int numberOfOccurrences(List<T> list, T element) {
+        return (list == null) ? 0 :
+               (int) list.stream().filter(e -> Objects.equals(e, element)).count();
+    }
+    
+    /**
+     * Determines the number of occurrences of a string element in a list, regardless of case.
+     *
+     * @param list    The list.
+     * @param element The element.
+     * @return The number of occurrences of the specified string element in the list, regardless of case.
+     */
+    public static int numberOfOccurrencesIgnoreCase(List<String> list, String element) {
+        return (list == null) ? 0 :
+               (int) list.stream().filter(e -> StringUtility.equalsIgnoreCase(e, element)).count();
     }
     
     /**
@@ -560,7 +693,22 @@ public final class ListUtility {
      * @return The index of the element in the list, or -1 if it does not exist.
      */
     public static <T> int indexOf(List<T> list, T element) {
-        return list.indexOf(element);
+        return (list == null) ? -1 :
+               list.indexOf(element);
+    }
+    
+    /**
+     * Returns the index of a string in a list, regardless of case.
+     *
+     * @param list    The list.
+     * @param element The element.
+     * @return The index of the string in the list, regardless of case, or -1 if it does not exist.
+     */
+    public static int indexOfIgnoreCase(List<String> list, String element) {
+        return (list == null) ? -1 :
+               IntStream.range(0, list.size()).boxed()
+                       .filter(i -> StringUtility.equalsIgnoreCase(list.get(i), element))
+                       .findFirst().orElse(-1);
     }
     
     /**
@@ -622,7 +770,7 @@ public final class ListUtility {
      * @return The list with null elements removed.
      */
     public static <T> List<T> removeNull(List<T> list) {
-        return convertTo(list.stream().filter(Objects::nonNull).collect(Collectors.toList()), list.getClass());
+        return cast(list.stream().filter(Objects::nonNull).collect(Collectors.toList()), list.getClass());
     }
     
     /**
@@ -633,7 +781,7 @@ public final class ListUtility {
      * @return The list with duplicate elements removed.
      */
     public static <T> List<T> removeDuplicates(List<T> list) {
-        return convertTo(list.stream().distinct().collect(Collectors.toList()), list.getClass());
+        return cast(list.stream().distinct().collect(Collectors.toList()), list.getClass());
     }
     
     /**
@@ -676,7 +824,7 @@ public final class ListUtility {
             choices.add(list.get(index));
             previousChoices.add(index);
         }
-        return convertTo(choices, list.getClass());
+        return cast(choices, list.getClass());
     }
     
     /**
@@ -689,7 +837,7 @@ public final class ListUtility {
      */
     public static <T> List<T> duplicateInOrder(List<T> list, int times) {
         if (times <= 0) {
-            return convertTo(new ArrayList<>(), list.getClass());
+            return cast(new ArrayList<>(), list.getClass());
         }
         if (times == 1) {
             return clone(list);
@@ -699,7 +847,7 @@ public final class ListUtility {
         for (int time = 0; time < times; time++) {
             finalList.addAll(list);
         }
-        return convertTo(finalList, list.getClass());
+        return cast(finalList, list.getClass());
     }
     
     /**
@@ -746,7 +894,7 @@ public final class ListUtility {
                 }
             });
         }
-        return convertTo(sorted, list.getClass());
+        return cast(sorted, list.getClass());
     }
     
     /**

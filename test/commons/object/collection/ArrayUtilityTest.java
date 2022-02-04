@@ -461,6 +461,57 @@ public class ArrayUtilityTest {
     }
     
     /**
+     * JUnit test of arrayOf.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#arrayOf(Class, Object[])
+     */
+    @Test
+    public void testArrayOf() throws Exception {
+        //boolean
+        Boolean[] booleanArrayTest = new Boolean[] {true, false, false, true, false};
+        Boolean[] booleanArray = ArrayUtility.arrayOf(Boolean.class, true, false, false, true, false);
+        Assert.assertEquals(booleanArrayTest.length, booleanArray.length);
+        Assert.assertArrayEquals(booleanArrayTest, booleanArray);
+        
+        //integer
+        Integer[] integerArrayTest = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        Integer[] integerArray = ArrayUtility.arrayOf(Integer.class, 15, 312, 48, 5, -4, -9, 6);
+        Assert.assertEquals(integerArrayTest.length, integerArray.length);
+        Assert.assertArrayEquals(integerArrayTest, integerArray);
+        
+        //float
+        Float[] floatArrayTest = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        Float[] floatArray = ArrayUtility.arrayOf(Float.class, 15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f);
+        Assert.assertEquals(floatArrayTest.length, floatArray.length);
+        Assert.assertArrayEquals(floatArrayTest, floatArray);
+        
+        //double
+        Double[] doubleArrayTest = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        Double[] doubleArray = ArrayUtility.arrayOf(Double.class, 15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d);
+        Assert.assertEquals(doubleArrayTest.length, doubleArray.length);
+        Assert.assertArrayEquals(doubleArrayTest, doubleArray);
+        
+        //long
+        Long[] longArrayTest = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        Long[] longArray = ArrayUtility.arrayOf(Long.class, 15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L);
+        Assert.assertEquals(longArrayTest.length, longArray.length);
+        Assert.assertArrayEquals(longArrayTest, longArray);
+        
+        //object
+        Object[] objectArrayTest = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        Object[] objectArray = ArrayUtility.arrayOf(Object.class, objectArrayTest[0], objectArrayTest[1], objectArrayTest[2], objectArrayTest[3], objectArrayTest[4]);
+        Assert.assertEquals(objectArrayTest.length, objectArray.length);
+        Assert.assertArrayEquals(objectArrayTest, objectArray);
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.arrayOf(Object.class, (Object[]) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.arrayOf(null, (Object[]) null));
+    }
+    
+    /**
      * JUnit test of toArray.
      *
      * @throws Exception When there is an exception.
@@ -834,6 +885,210 @@ public class ArrayUtilityTest {
     }
     
     /**
+     * JUnit test of isNullOrEmpty.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#isNullOrEmpty(Object[])
+     */
+    @Test
+    public void testIsNullOrEmpty() throws Exception {
+        //standard
+        Assert.assertFalse(ArrayUtility.isNullOrEmpty(new Object[] {"test"}));
+        
+        //empty
+        Assert.assertTrue(ArrayUtility.isNullOrEmpty(new Object[] {}));
+        
+        //null
+        Assert.assertTrue(ArrayUtility.isNullOrEmpty(null));
+    }
+    
+    /**
+     * JUnit test of equals.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#equals(Object[], Object[], boolean)
+     * @see ArrayUtility#equals(Object[], Object[])
+     */
+    @Test
+    public void testEquals() throws Exception {
+        //boolean
+        Boolean[] booleanArray1 = new Boolean[] {true, false, false, true, false};
+        Boolean[] booleanArray2 = new Boolean[] {true, false, false, true, false};
+        Assert.assertTrue(ArrayUtility.equals(booleanArray1, booleanArray2));
+        Assert.assertTrue(ArrayUtility.equals(booleanArray1, booleanArray2, true));
+        Assert.assertTrue(ArrayUtility.equals(booleanArray1, booleanArray2, false));
+        Assert.assertTrue(ArrayUtility.equals(booleanArray2, booleanArray1));
+        Assert.assertTrue(ArrayUtility.equals(booleanArray2, booleanArray1, true));
+        Assert.assertTrue(ArrayUtility.equals(booleanArray2, booleanArray1, false));
+        booleanArray1 = new Boolean[] {true, false, false, true, false};
+        booleanArray2 = new Boolean[] {true, false};
+        Assert.assertFalse(ArrayUtility.equals(booleanArray1, booleanArray2));
+        Assert.assertFalse(ArrayUtility.equals(booleanArray1, booleanArray2, true));
+        Assert.assertFalse(ArrayUtility.equals(booleanArray1, booleanArray2, false));
+        Assert.assertFalse(ArrayUtility.equals(booleanArray2, booleanArray1));
+        Assert.assertFalse(ArrayUtility.equals(booleanArray2, booleanArray1, true));
+        Assert.assertFalse(ArrayUtility.equals(booleanArray2, booleanArray1, false));
+        booleanArray1 = new Boolean[] {true, false, false, true, false};
+        booleanArray2 = new Boolean[] {true, false, false, false, false};
+        Assert.assertFalse(ArrayUtility.equals(booleanArray1, booleanArray2));
+        Assert.assertFalse(ArrayUtility.equals(booleanArray1, booleanArray2, true));
+        Assert.assertFalse(ArrayUtility.equals(booleanArray1, booleanArray2, false));
+        Assert.assertFalse(ArrayUtility.equals(booleanArray2, booleanArray1));
+        Assert.assertFalse(ArrayUtility.equals(booleanArray2, booleanArray1, true));
+        Assert.assertFalse(ArrayUtility.equals(booleanArray2, booleanArray1, false));
+        
+        //int
+        Integer[] integerArray1 = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        Integer[] integerArray2 = new Integer[] {312, 48, 5, -4, -9, 6, 15};
+        Assert.assertFalse(ArrayUtility.equals(integerArray1, integerArray2));
+        Assert.assertFalse(ArrayUtility.equals(integerArray1, integerArray2, true));
+        Assert.assertTrue(ArrayUtility.equals(integerArray1, integerArray2, false));
+        Assert.assertFalse(ArrayUtility.equals(integerArray2, integerArray1));
+        Assert.assertFalse(ArrayUtility.equals(integerArray2, integerArray1, true));
+        Assert.assertTrue(ArrayUtility.equals(integerArray2, integerArray1, false));
+        
+        //float
+        Float[] floatArray1 = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        Float[] floatArray2 = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f};
+        Assert.assertFalse(ArrayUtility.equals(floatArray1, floatArray2));
+        Assert.assertFalse(ArrayUtility.equals(floatArray1, floatArray2, true));
+        Assert.assertFalse(ArrayUtility.equals(floatArray1, floatArray2, false));
+        Assert.assertFalse(ArrayUtility.equals(floatArray2, floatArray1));
+        Assert.assertFalse(ArrayUtility.equals(floatArray2, floatArray1, true));
+        Assert.assertFalse(ArrayUtility.equals(floatArray2, floatArray1, false));
+        
+        //double
+        Double[] doubleArray1 = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        Double[] doubleArray2 = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        Assert.assertTrue(ArrayUtility.equals(doubleArray1, doubleArray2));
+        Assert.assertTrue(ArrayUtility.equals(doubleArray1, doubleArray2, true));
+        Assert.assertTrue(ArrayUtility.equals(doubleArray1, doubleArray2, false));
+        Assert.assertTrue(ArrayUtility.equals(doubleArray2, doubleArray1));
+        Assert.assertTrue(ArrayUtility.equals(doubleArray2, doubleArray1, true));
+        Assert.assertTrue(ArrayUtility.equals(doubleArray2, doubleArray1, false));
+        
+        //long
+        Long[] longArray1 = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        Long[] longArray2 = new Long[] {4800000015L, 15104564L, 3129113874L, 699546101L, 5457894511L, -4006005001L, -970487745L};
+        Assert.assertFalse(ArrayUtility.equals(longArray1, longArray2));
+        Assert.assertFalse(ArrayUtility.equals(longArray1, longArray2, true));
+        Assert.assertTrue(ArrayUtility.equals(longArray1, longArray2, false));
+        Assert.assertFalse(ArrayUtility.equals(longArray2, longArray1));
+        Assert.assertFalse(ArrayUtility.equals(longArray2, longArray1, true));
+        Assert.assertTrue(ArrayUtility.equals(longArray2, longArray1, false));
+        
+        //string
+        String[] stringArray1 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        String[] stringArray2 = new String[] {"Cat", "Dog", "Bird", "Lizard", "Fish"};
+        Assert.assertFalse(ArrayUtility.equals(stringArray1, stringArray2));
+        Assert.assertFalse(ArrayUtility.equals(stringArray1, stringArray2, true));
+        Assert.assertFalse(ArrayUtility.equals(stringArray1, stringArray2, false));
+        Assert.assertFalse(ArrayUtility.equals(stringArray2, stringArray1));
+        Assert.assertFalse(ArrayUtility.equals(stringArray2, stringArray1, true));
+        Assert.assertFalse(ArrayUtility.equals(stringArray2, stringArray1, false));
+        
+        //object
+        Object[] objectArray1 = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        Object[] objectArray2 = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        Assert.assertFalse(ArrayUtility.equals(objectArray1, objectArray2));
+        Assert.assertFalse(ArrayUtility.equals(objectArray1, objectArray2, true));
+        Assert.assertFalse(ArrayUtility.equals(objectArray1, objectArray2, false));
+        Assert.assertFalse(ArrayUtility.equals(objectArray2, objectArray1));
+        Assert.assertFalse(ArrayUtility.equals(objectArray2, objectArray1, true));
+        Assert.assertFalse(ArrayUtility.equals(objectArray2, objectArray1, false));
+        
+        //invalid
+        Assert.assertTrue(ArrayUtility.equals(new Object[] {}, new Object[] {}));
+        Assert.assertTrue(ArrayUtility.equals(new Object[] {}, new Object[] {}, true));
+        Assert.assertTrue(ArrayUtility.equals(new Object[] {}, new Object[] {}, false));
+        Assert.assertFalse(ArrayUtility.equals(objectArray1, null));
+        Assert.assertFalse(ArrayUtility.equals(objectArray1, null, true));
+        Assert.assertFalse(ArrayUtility.equals(objectArray1, null, false));
+        Assert.assertFalse(ArrayUtility.equals(null, objectArray2));
+        Assert.assertFalse(ArrayUtility.equals(null, objectArray2, true));
+        Assert.assertFalse(ArrayUtility.equals(null, objectArray2, false));
+        Assert.assertTrue(ArrayUtility.equals(null, null));
+        Assert.assertTrue(ArrayUtility.equals(null, null, true));
+        Assert.assertTrue(ArrayUtility.equals(null, null, false));
+    }
+    
+    /**
+     * JUnit test of equalsIgnoreCase.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#equalsIgnoreCase(String[], String[], boolean)
+     * @see ArrayUtility#equalsIgnoreCase(String[], String[])
+     */
+    @Test
+    public void testEqualsIgnoreCase() throws Exception {
+        //standard
+        String[] stringArray1 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        String[] stringArray2 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2, true));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2, false));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1, true));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1, false));
+        stringArray1 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        stringArray2 = new String[] {"lizard", "dog", "fish", "cat", "bird"};
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2, true));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2, false));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1, true));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1, false));
+        stringArray1 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        stringArray2 = new String[] {"dog", "bird", "lizard"};
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2, true));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2, false));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1, true));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1, false));
+        
+        //case
+        stringArray1 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        stringArray2 = new String[] {"Cat", "DOG", "biRd", "LizARd", "FISh"};
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2, true));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2, false));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1, true));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1, false));
+        stringArray1 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        stringArray2 = new String[] {"LizARd", "DOG", "FISh", "Cat", "biRd"};
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2, true));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2, false));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1, true));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1, false));
+        stringArray1 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        stringArray2 = new String[] {"DOG", "biRd", "LizARd"};
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2, true));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray1, stringArray2, false));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1, true));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray2, stringArray1, false));
+        
+        //invalid
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(new String[] {}, new String[] {}));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(new String[] {}, new String[] {}, true));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(new String[] {}, new String[] {}, false));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray1, null));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray1, null, true));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(stringArray1, null, false));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(null, stringArray2));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(null, stringArray2, true));
+        Assert.assertFalse(ArrayUtility.equalsIgnoreCase(null, stringArray2, false));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(null, null));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(null, null, true));
+        Assert.assertTrue(ArrayUtility.equalsIgnoreCase(null, null, false));
+    }
+    
+    /**
      * JUnit test of contains.
      *
      * @throws Exception When there is an exception.
@@ -879,13 +1134,16 @@ public class ArrayUtilityTest {
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        Object[] objectArrayWithNull = new Object[] {"", 54, new ArithmeticException(), null};
         Assert.assertTrue(ArrayUtility.contains(objectArray, objectArray[2]));
         Assert.assertTrue(ArrayUtility.contains(objectArray, objectArray[4]));
         Assert.assertFalse(ArrayUtility.contains(objectArray, new ArrayList<>()));
+        Assert.assertFalse(ArrayUtility.contains(objectArray, null));
+        Assert.assertTrue(ArrayUtility.contains(objectArrayWithNull, null));
         
         //invalid
-        TestUtils.assertException(NullPointerException.class, () ->
-                ArrayUtility.contains(null, new Object()));
+        Assert.assertFalse(ArrayUtility.contains(null, new Object()));
+        Assert.assertFalse(ArrayUtility.contains(null, null));
     }
     
     /**
@@ -897,6 +1155,7 @@ public class ArrayUtilityTest {
     @Test
     public void testContainsIgnoreCase() throws Exception {
         String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        String[] stringArrayWithNull = new String[] {"cat", null, "bird"};
         
         //standard
         Assert.assertTrue(ArrayUtility.containsIgnoreCase(stringArray, "cat"));
@@ -910,9 +1169,96 @@ public class ArrayUtilityTest {
         Assert.assertTrue(ArrayUtility.containsIgnoreCase(stringArray, "doG"));
         Assert.assertFalse(ArrayUtility.containsIgnoreCase(stringArray, "rAt"));
         
+        //null
+        Assert.assertTrue(ArrayUtility.containsIgnoreCase(stringArrayWithNull, "birD"));
+        Assert.assertTrue(ArrayUtility.containsIgnoreCase(stringArrayWithNull, null));
+        
         //invalid
-        TestUtils.assertException(NullPointerException.class, () ->
-                ArrayUtility.containsIgnoreCase(null, ""));
+        Assert.assertFalse(ArrayUtility.containsIgnoreCase(null, ""));
+        Assert.assertFalse(ArrayUtility.containsIgnoreCase(null, null));
+    }
+    
+    /**
+     * JUnit test of numberOfOccurrences.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#numberOfOccurrences(Object[], Object)
+     */
+    @Test
+    public void testNumberOfOccurrences() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        Assert.assertEquals(2, ArrayUtility.numberOfOccurrences(booleanArray, true));
+        Assert.assertEquals(3, ArrayUtility.numberOfOccurrences(booleanArray, false));
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -4, -4, -4, -9, 6};
+        Assert.assertEquals(1, ArrayUtility.numberOfOccurrences(integerArray, 15));
+        Assert.assertEquals(4, ArrayUtility.numberOfOccurrences(integerArray, -4));
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        Assert.assertEquals(1, ArrayUtility.numberOfOccurrences(floatArray, 312.91f));
+        Assert.assertEquals(0, ArrayUtility.numberOfOccurrences(floatArray, 6.9999f));
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        Assert.assertEquals(1, ArrayUtility.numberOfOccurrences(doubleArray, 312.9113874d));
+        Assert.assertEquals(0, ArrayUtility.numberOfOccurrences(doubleArray, 6.99d));
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        Assert.assertEquals(1, ArrayUtility.numberOfOccurrences(longArray, 699546101L));
+        Assert.assertEquals(0, ArrayUtility.numberOfOccurrences(longArray, 0L));
+        
+        //string
+        String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        Assert.assertEquals(1, ArrayUtility.numberOfOccurrences(stringArray, "cat"));
+        Assert.assertEquals(0, ArrayUtility.numberOfOccurrences(stringArray, "CAT"));
+        
+        //object
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        Object[] objectArrayWithNull = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object(), null, null};
+        Assert.assertEquals(1, ArrayUtility.numberOfOccurrences(objectArray, ""));
+        Assert.assertEquals(1, ArrayUtility.numberOfOccurrences(objectArray, 54));
+        Assert.assertEquals(0, ArrayUtility.numberOfOccurrences(objectArray, new ArithmeticException()));
+        Assert.assertEquals(1, ArrayUtility.numberOfOccurrences(objectArray, new HashMap<>()));
+        Assert.assertEquals(0, ArrayUtility.numberOfOccurrences(objectArray, new Object()));
+        Assert.assertEquals(0, ArrayUtility.numberOfOccurrences(objectArray, null));
+        Assert.assertEquals(2, ArrayUtility.numberOfOccurrences(objectArrayWithNull, null));
+        
+        //invalid
+        Assert.assertEquals(0, ArrayUtility.numberOfOccurrences(null, null));
+    }
+    
+    /**
+     * JUnit test of numberOfOccurrencesIgnoreCase.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#numberOfOccurrencesIgnoreCase(String[], String)
+     */
+    @Test
+    public void testNumberOfOccurrencesIgnoreCase() throws Exception {
+        String[] stringArray = new String[] {"cat", "dog", "DOG", "bird", "lizard", "fish", "Fish", "fISh"};
+        String[] stringArrayWithNull = new String[] {"cat", null, "bird"};
+        
+        //standard
+        Assert.assertEquals(1, ArrayUtility.numberOfOccurrencesIgnoreCase(stringArray, "cat"));
+        Assert.assertEquals(2, ArrayUtility.numberOfOccurrencesIgnoreCase(stringArray, "dog"));
+        Assert.assertEquals(3, ArrayUtility.numberOfOccurrencesIgnoreCase(stringArray, "fish"));
+        
+        //case
+        Assert.assertEquals(1, ArrayUtility.numberOfOccurrencesIgnoreCase(stringArray, "CAT"));
+        Assert.assertEquals(2, ArrayUtility.numberOfOccurrencesIgnoreCase(stringArray, "dOg"));
+        Assert.assertEquals(3, ArrayUtility.numberOfOccurrencesIgnoreCase(stringArray, "fISH"));
+        
+        //null
+        Assert.assertEquals(0, ArrayUtility.numberOfOccurrencesIgnoreCase(stringArrayWithNull, "LizARD"));
+        Assert.assertEquals(1, ArrayUtility.numberOfOccurrencesIgnoreCase(stringArrayWithNull, null));
+        
+        //invalid
+        Assert.assertEquals(0, ArrayUtility.numberOfOccurrencesIgnoreCase(null, ""));
+        Assert.assertEquals(0, ArrayUtility.numberOfOccurrencesIgnoreCase(null, null));
     }
     
     /**
@@ -959,8 +1305,40 @@ public class ArrayUtilityTest {
         Assert.assertEquals(-1, ArrayUtility.indexOf(objectArray, new ArrayList<>()));
         
         //invalid
-        TestUtils.assertException(NullPointerException.class, () ->
-                ArrayUtility.indexOf(null, new Object()));
+        Assert.assertEquals(-1, ArrayUtility.indexOf(null, new Object()));
+        Assert.assertEquals(-1, ArrayUtility.indexOf(null, null));
+    }
+    
+    /**
+     * JUnit test of indexOfIgnoreCase.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#indexOfIgnoreCase(String[], String)
+     */
+    @Test
+    public void testIndexOfIgnoreCase() throws Exception {
+        String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        String[] stringArrayWithNull = new String[] {"cat", null, "bird"};
+        
+        //standard
+        Assert.assertEquals(0, ArrayUtility.indexOfIgnoreCase(stringArray, "cat"));
+        Assert.assertEquals(3, ArrayUtility.indexOfIgnoreCase(stringArray, "lizard"));
+        Assert.assertEquals(1, ArrayUtility.indexOfIgnoreCase(stringArray, "dog"));
+        Assert.assertEquals(-1, ArrayUtility.indexOfIgnoreCase(stringArray, "rat"));
+        
+        //case
+        Assert.assertEquals(0, ArrayUtility.indexOfIgnoreCase(stringArray, "CAT"));
+        Assert.assertEquals(3, ArrayUtility.indexOfIgnoreCase(stringArray, "LIzArD"));
+        Assert.assertEquals(1, ArrayUtility.indexOfIgnoreCase(stringArray, "doG"));
+        Assert.assertEquals(-1, ArrayUtility.indexOfIgnoreCase(stringArray, "rAt"));
+        
+        //null
+        Assert.assertEquals(2, ArrayUtility.indexOfIgnoreCase(stringArrayWithNull, "birD"));
+        Assert.assertEquals(1, ArrayUtility.indexOfIgnoreCase(stringArrayWithNull, null));
+        
+        //invalid
+        Assert.assertEquals(-1, ArrayUtility.indexOfIgnoreCase(null, ""));
+        Assert.assertEquals(-1, ArrayUtility.indexOfIgnoreCase(null, null));
     }
     
     /**

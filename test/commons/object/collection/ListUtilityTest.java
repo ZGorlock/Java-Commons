@@ -8,6 +8,7 @@
 package commons.object.collection;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -894,6 +895,64 @@ public class ListUtilityTest {
     }
     
     /**
+     * JUnit test of listOf.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#listOf(Class, Object[])
+     * @see ListUtility#listOf(Object[])
+     */
+    @Test
+    public void testListOf() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        List<Boolean> booleanList = ListUtility.listOf(true, false, false, true, false);
+        Assert.assertTrue(booleanList instanceof ArrayList);
+        Assert.assertEquals(booleanArray.length, booleanList.size());
+        Assert.assertArrayEquals(booleanArray, booleanList.toArray());
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        List<Integer> integerList = ListUtility.listOf(ArrayList.class, 15, 312, 48, 5, -4, -9, 6);
+        Assert.assertTrue(integerList instanceof ArrayList);
+        Assert.assertEquals(integerArray.length, integerList.size());
+        Assert.assertArrayEquals(integerArray, integerList.toArray());
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        List<Float> floatList = ListUtility.listOf(LinkedList.class, 15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f);
+        Assert.assertTrue(floatList instanceof LinkedList);
+        Assert.assertEquals(floatArray.length, floatList.size());
+        Assert.assertArrayEquals(floatArray, floatList.toArray());
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        List<Double> doubleList = ListUtility.listOf(Stack.class, 15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d);
+        Assert.assertTrue(doubleList instanceof Stack);
+        Assert.assertEquals(doubleArray.length, doubleList.size());
+        Assert.assertArrayEquals(doubleArray, doubleList.toArray());
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        List<Long> longList = ListUtility.listOf(Vector.class, 15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L);
+        Assert.assertTrue(longList instanceof Vector);
+        Assert.assertEquals(longArray.length, longList.size());
+        Assert.assertArrayEquals(longArray, longList.toArray());
+        
+        //object
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        List<Object> objectList = ListUtility.listOf(objectArray[0], objectArray[1], objectArray[2], objectArray[3], objectArray[4]);
+        Assert.assertTrue(objectList instanceof ArrayList);
+        Assert.assertEquals(objectArray.length, objectList.size());
+        Assert.assertArrayEquals(objectArray, objectList.toArray());
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.listOf((Object[]) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.listOf(null, (Object[]) null));
+    }
+    
+    /**
      * JUnit test of toList.
      *
      * @throws Exception When there is an exception.
@@ -1071,35 +1130,35 @@ public class ListUtilityTest {
     }
     
     /**
-     * JUnit test of conertTo.
+     * JUnit test of cast.
      *
      * @throws Exception When there is an exception.
-     * @see ListUtility#convertTo(List, Class)
+     * @see ListUtility#cast(List, Class)
      */
     @Test
-    public void testConvertTo() throws Exception {
+    public void testCast() throws Exception {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
         List<Boolean> booleanList = ListUtility.toList(booleanArray);
-        List<Boolean> booleanConverted = ListUtility.convertTo(booleanList, ArrayList.class);
+        List<Boolean> booleanConverted = ListUtility.cast(booleanList, ArrayList.class);
         Assert.assertTrue(booleanConverted instanceof ArrayList);
         Assert.assertEquals(booleanList.size(), booleanConverted.size());
         Assert.assertArrayEquals(booleanList.toArray(), booleanConverted.toArray());
-        Assert.assertNotSame(booleanList, booleanConverted);
+        Assert.assertSame(booleanList, booleanConverted);
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         List<Integer> integerList = ListUtility.toList(integerArray, ArrayList.class);
-        List<Integer> integerConverted = ListUtility.convertTo(integerList, ArrayList.class);
+        List<Integer> integerConverted = ListUtility.cast(integerList, ArrayList.class);
         Assert.assertTrue(integerConverted instanceof ArrayList);
         Assert.assertEquals(integerList.size(), integerConverted.size());
         Assert.assertArrayEquals(integerList.toArray(), integerConverted.toArray());
-        Assert.assertNotSame(integerList, integerConverted);
+        Assert.assertSame(integerList, integerConverted);
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         List<Float> floatList = ListUtility.toList(floatArray, ArrayList.class);
-        List<Float> floatConverted = ListUtility.convertTo(floatList, LinkedList.class);
+        List<Float> floatConverted = ListUtility.cast(floatList, LinkedList.class);
         Assert.assertTrue(floatConverted instanceof LinkedList);
         Assert.assertEquals(floatList.size(), floatConverted.size());
         Assert.assertArrayEquals(floatList.toArray(), floatConverted.toArray());
@@ -1108,7 +1167,7 @@ public class ListUtilityTest {
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         List<Double> doubleList = ListUtility.toList(doubleArray, LinkedList.class);
-        List<Double> doubleConverted = ListUtility.convertTo(doubleList, Stack.class);
+        List<Double> doubleConverted = ListUtility.cast(doubleList, Stack.class);
         Assert.assertTrue(doubleConverted instanceof Stack);
         Assert.assertEquals(doubleList.size(), doubleConverted.size());
         Assert.assertArrayEquals(doubleList.toArray(), doubleConverted.toArray());
@@ -1117,7 +1176,7 @@ public class ListUtilityTest {
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         List<Long> longList = ListUtility.toList(longArray, Vector.class);
-        List<Long> longConverted = ListUtility.convertTo(longList, LinkedList.class);
+        List<Long> longConverted = ListUtility.cast(longList, LinkedList.class);
         Assert.assertTrue(longConverted instanceof LinkedList);
         Assert.assertEquals(longList.size(), longConverted.size());
         Assert.assertArrayEquals(longList.toArray(), longConverted.toArray());
@@ -1126,7 +1185,7 @@ public class ListUtilityTest {
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         List<Object> objectList = ListUtility.toList(objectArray, Stack.class);
-        List<Object> objectConverted = ListUtility.convertTo(objectList, Vector.class);
+        List<Object> objectConverted = ListUtility.cast(objectList, Vector.class);
         Assert.assertTrue(objectConverted instanceof Vector);
         Assert.assertEquals(objectList.size(), objectConverted.size());
         Assert.assertArrayEquals(objectList.toArray(), objectConverted.toArray());
@@ -1134,11 +1193,11 @@ public class ListUtilityTest {
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
-                ListUtility.convertTo(objectList, null));
+                ListUtility.cast(objectList, null));
         TestUtils.assertException(NullPointerException.class, () ->
-                ListUtility.convertTo(null, ArrayList.class));
+                ListUtility.cast(null, ArrayList.class));
         TestUtils.assertException(NullPointerException.class, () ->
-                ListUtility.convertTo(null, null));
+                ListUtility.cast(null, null));
     }
     
     /**
@@ -1459,6 +1518,240 @@ public class ListUtilityTest {
     }
     
     /**
+     * JUnit test of isNullOrEmpty.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#isNullOrEmpty(List)
+     */
+    @Test
+    public void testIsNullOrEmpty() throws Exception {
+        //standard
+        Assert.assertFalse(ListUtility.isNullOrEmpty(Arrays.asList("test", "list")));
+        
+        //empty
+        Assert.assertTrue(ListUtility.isNullOrEmpty(new ArrayList<>()));
+        
+        //null
+        Assert.assertTrue(ListUtility.isNullOrEmpty(null));
+    }
+    
+    /**
+     * JUnit test of equals.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#equals(List, List, boolean)
+     * @see ListUtility#equals(List, List)
+     */
+    @Test
+    public void testEquals() throws Exception {
+        //boolean
+        Boolean[] booleanArray1 = new Boolean[] {true, false, false, true, false};
+        Boolean[] booleanArray2 = new Boolean[] {true, false, false, true, false};
+        List<Boolean> booleanList1 = ListUtility.toList(booleanArray1);
+        List<Boolean> booleanList2 = ListUtility.toList(booleanArray2);
+        Assert.assertTrue(ListUtility.equals(booleanList1, booleanList2));
+        Assert.assertTrue(ListUtility.equals(booleanList1, booleanList2, true));
+        Assert.assertTrue(ListUtility.equals(booleanList1, booleanList2, false));
+        Assert.assertTrue(ListUtility.equals(booleanList2, booleanList1));
+        Assert.assertTrue(ListUtility.equals(booleanList2, booleanList1, true));
+        Assert.assertTrue(ListUtility.equals(booleanList2, booleanList1, false));
+        booleanArray1 = new Boolean[] {true, false, false, true, false};
+        booleanArray2 = new Boolean[] {true, false};
+        booleanList1 = ListUtility.toList(booleanArray1);
+        booleanList2 = ListUtility.toList(booleanArray2);
+        Assert.assertFalse(ListUtility.equals(booleanList1, booleanList2));
+        Assert.assertFalse(ListUtility.equals(booleanList1, booleanList2, true));
+        Assert.assertFalse(ListUtility.equals(booleanList1, booleanList2, false));
+        Assert.assertFalse(ListUtility.equals(booleanList2, booleanList1));
+        Assert.assertFalse(ListUtility.equals(booleanList2, booleanList1, true));
+        Assert.assertFalse(ListUtility.equals(booleanList2, booleanList1, false));
+        booleanArray1 = new Boolean[] {true, false, false, true, false};
+        booleanArray2 = new Boolean[] {true, false, false, false, false};
+        booleanList1 = ListUtility.toList(booleanArray1);
+        booleanList2 = ListUtility.toList(booleanArray2);
+        Assert.assertFalse(ListUtility.equals(booleanList1, booleanList2));
+        Assert.assertFalse(ListUtility.equals(booleanList1, booleanList2, true));
+        Assert.assertFalse(ListUtility.equals(booleanList1, booleanList2, false));
+        Assert.assertFalse(ListUtility.equals(booleanList2, booleanList1));
+        Assert.assertFalse(ListUtility.equals(booleanList2, booleanList1, true));
+        Assert.assertFalse(ListUtility.equals(booleanList2, booleanList1, false));
+        
+        //int
+        Integer[] integerArray1 = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        Integer[] integerArray2 = new Integer[] {312, 48, 5, -4, -9, 6, 15};
+        List<Integer> integerList1 = ListUtility.toList(integerArray1);
+        List<Integer> integerList2 = ListUtility.toList(integerArray2);
+        Assert.assertFalse(ListUtility.equals(integerList1, integerList2));
+        Assert.assertFalse(ListUtility.equals(integerList1, integerList2, true));
+        Assert.assertTrue(ListUtility.equals(integerList1, integerList2, false));
+        Assert.assertFalse(ListUtility.equals(integerList2, integerList1));
+        Assert.assertFalse(ListUtility.equals(integerList2, integerList1, true));
+        Assert.assertTrue(ListUtility.equals(integerList2, integerList1, false));
+        
+        //float
+        Float[] floatArray1 = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        Float[] floatArray2 = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f};
+        List<Float> floatList1 = ListUtility.toList(floatArray1);
+        List<Float> floatList2 = ListUtility.toList(floatArray2);
+        Assert.assertFalse(ListUtility.equals(floatList1, floatList2));
+        Assert.assertFalse(ListUtility.equals(floatList1, floatList2, true));
+        Assert.assertFalse(ListUtility.equals(floatList1, floatList2, false));
+        Assert.assertFalse(ListUtility.equals(floatList2, floatList1));
+        Assert.assertFalse(ListUtility.equals(floatList2, floatList1, true));
+        Assert.assertFalse(ListUtility.equals(floatList2, floatList1, false));
+        
+        //double
+        Double[] doubleArray1 = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        Double[] doubleArray2 = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        List<Double> doubleList1 = ListUtility.toList(doubleArray2);
+        List<Double> doubleList2 = ListUtility.toList(doubleArray2);
+        Assert.assertTrue(ListUtility.equals(doubleList1, doubleList2));
+        Assert.assertTrue(ListUtility.equals(doubleList1, doubleList2, true));
+        Assert.assertTrue(ListUtility.equals(doubleList1, doubleList2, false));
+        Assert.assertTrue(ListUtility.equals(doubleList2, doubleList1));
+        Assert.assertTrue(ListUtility.equals(doubleList2, doubleList1, true));
+        Assert.assertTrue(ListUtility.equals(doubleList2, doubleList1, false));
+        
+        //long
+        Long[] longArray1 = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        Long[] longArray2 = new Long[] {4800000015L, 15104564L, 3129113874L, 699546101L, 5457894511L, -4006005001L, -970487745L};
+        List<Long> longList1 = ListUtility.toList(longArray1);
+        List<Long> longList2 = ListUtility.toList(longArray2);
+        Assert.assertFalse(ListUtility.equals(longList1, longList2));
+        Assert.assertFalse(ListUtility.equals(longList1, longList2, true));
+        Assert.assertTrue(ListUtility.equals(longList1, longList2, false));
+        Assert.assertFalse(ListUtility.equals(longList2, longList1));
+        Assert.assertFalse(ListUtility.equals(longList2, longList1, true));
+        Assert.assertTrue(ListUtility.equals(longList2, longList1, false));
+        
+        //string
+        String[] stringArray1 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        String[] stringArray2 = new String[] {"Cat", "Dog", "Bird", "Lizard", "Fish"};
+        List<String> stringList1 = ListUtility.toList(stringArray1);
+        List<String> stringList2 = ListUtility.toList(stringArray2);
+        Assert.assertFalse(ListUtility.equals(stringList1, stringList2));
+        Assert.assertFalse(ListUtility.equals(stringList1, stringList2, true));
+        Assert.assertFalse(ListUtility.equals(stringList1, stringList2, false));
+        Assert.assertFalse(ListUtility.equals(stringList2, stringList1));
+        Assert.assertFalse(ListUtility.equals(stringList2, stringList1, true));
+        Assert.assertFalse(ListUtility.equals(stringList2, stringList1, false));
+        
+        //object
+        Object[] objectArray1 = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        Object[] objectArray2 = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        List<Object> objectList1 = ListUtility.toList(objectArray1);
+        List<Object> objectList2 = ListUtility.toList(objectArray2);
+        Assert.assertFalse(ListUtility.equals(objectList1, objectList2));
+        Assert.assertFalse(ListUtility.equals(objectList1, objectList2, true));
+        Assert.assertFalse(ListUtility.equals(objectList1, objectList2, false));
+        Assert.assertFalse(ListUtility.equals(objectList2, objectList1));
+        Assert.assertFalse(ListUtility.equals(objectList2, objectList1, true));
+        Assert.assertFalse(ListUtility.equals(objectList2, objectList1, false));
+        
+        //invalid
+        Assert.assertTrue(ListUtility.equals(new ArrayList<>(), new ArrayList<>()));
+        Assert.assertTrue(ListUtility.equals(new ArrayList<>(), new ArrayList<>(), true));
+        Assert.assertTrue(ListUtility.equals(new ArrayList<>(), new ArrayList<>(), false));
+        Assert.assertFalse(ListUtility.equals(objectList1, null));
+        Assert.assertFalse(ListUtility.equals(objectList1, null, true));
+        Assert.assertFalse(ListUtility.equals(objectList1, null, false));
+        Assert.assertFalse(ListUtility.equals(null, objectList2));
+        Assert.assertFalse(ListUtility.equals(null, objectList2, true));
+        Assert.assertFalse(ListUtility.equals(null, objectList2, false));
+        Assert.assertTrue(ListUtility.equals(null, null));
+        Assert.assertTrue(ListUtility.equals(null, null, true));
+        Assert.assertTrue(ListUtility.equals(null, null, false));
+    }
+    
+    /**
+     * JUnit test of equalsIgnoreCase.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#equalsIgnoreCase(List, List, boolean)
+     * @see ListUtility#equalsIgnoreCase(List, List)
+     */
+    @Test
+    public void testEqualsIgnoreCase() throws Exception {
+        //standard
+        String[] stringArray1 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        String[] stringArray2 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        List<String> stringList1 = ListUtility.toList(stringArray1);
+        List<String> stringList2 = ListUtility.toList(stringArray2);
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList1, stringList2));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList1, stringList2, true));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList1, stringList2, false));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList2, stringList1));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList2, stringList1, true));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList2, stringList1, false));
+        stringArray1 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        stringArray2 = new String[] {"lizard", "dog", "fish", "cat", "bird"};
+        stringList1 = ListUtility.toList(stringArray1);
+        stringList2 = ListUtility.toList(stringArray2);
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList1, stringList2));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList1, stringList2, true));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList1, stringList2, false));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList2, stringList1));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList2, stringList1, true));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList2, stringList1, false));
+        stringArray1 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        stringArray2 = new String[] {"dog", "bird", "lizard"};
+        stringList1 = ListUtility.toList(stringArray1);
+        stringList2 = ListUtility.toList(stringArray2);
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList1, stringList2));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList1, stringList2, true));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList1, stringList2, false));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList2, stringList1));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList2, stringList1, true));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList2, stringList1, false));
+        
+        //case
+        stringArray1 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        stringArray2 = new String[] {"Cat", "DOG", "biRd", "LizARd", "FISh"};
+        stringList1 = ListUtility.toList(stringArray1);
+        stringList2 = ListUtility.toList(stringArray2);
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList1, stringList2));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList1, stringList2, true));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList1, stringList2, false));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList2, stringList1));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList2, stringList1, true));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList2, stringList1, false));
+        stringArray1 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        stringArray2 = new String[] {"LizARd", "DOG", "FISh", "Cat", "biRd"};
+        stringList1 = ListUtility.toList(stringArray1);
+        stringList2 = ListUtility.toList(stringArray2);
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList1, stringList2));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList1, stringList2, true));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList1, stringList2, false));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList2, stringList1));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList2, stringList1, true));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(stringList2, stringList1, false));
+        stringArray1 = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        stringArray2 = new String[] {"DOG", "biRd", "LizARd"};
+        stringList1 = ListUtility.toList(stringArray1);
+        stringList2 = ListUtility.toList(stringArray2);
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList1, stringList2));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList1, stringList2, true));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList1, stringList2, false));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList2, stringList1));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList2, stringList1, true));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList2, stringList1, false));
+        
+        //invalid
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(new ArrayList<>(), new ArrayList<>()));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(new ArrayList<>(), new ArrayList<>(), true));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(new ArrayList<>(), new ArrayList<>(), false));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList1, null));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList1, null, true));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(stringList1, null, false));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(null, stringList2));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(null, stringList2, true));
+        Assert.assertFalse(ListUtility.equalsIgnoreCase(null, stringList2, false));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(null, null));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(null, null, true));
+        Assert.assertTrue(ListUtility.equalsIgnoreCase(null, null, false));
+    }
+    
+    /**
      * JUnit test of contains.
      *
      * @throws Exception When there is an exception.
@@ -1510,15 +1803,18 @@ public class ListUtilityTest {
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        Object[] objectArrayWithNull = new Object[] {"", 54, new ArithmeticException(), null};
         List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> objectListWithNull = ListUtility.toList(objectArrayWithNull);
         Assert.assertTrue(ListUtility.contains(objectList, objectArray[2]));
         Assert.assertTrue(ListUtility.contains(objectList, objectArray[4]));
         Assert.assertFalse(ListUtility.contains(objectList, new ArrayList<>()));
+        Assert.assertFalse(ListUtility.contains(objectList, null));
+        Assert.assertTrue(ListUtility.contains(objectListWithNull, null));
         
         //invalid
-        //noinspection ResultOfMethodCallIgnored
-        TestUtils.assertException(NullPointerException.class, () ->
-                ListUtility.contains(null, new Object()));
+        Assert.assertFalse(ListUtility.contains(null, new Object()));
+        Assert.assertFalse(ListUtility.contains(null, null));
     }
     
     /**
@@ -1530,7 +1826,9 @@ public class ListUtilityTest {
     @Test
     public void testContainsIgnoreCase() throws Exception {
         String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        String[] stringArrayWithNull = new String[] {"cat", null, "bird"};
         List<String> stringList = ListUtility.toList(stringArray);
+        List<String> stringListWithNull = ListUtility.toList(stringArrayWithNull);
         
         //standard
         Assert.assertTrue(ListUtility.containsIgnoreCase(stringList, "cat"));
@@ -1544,10 +1842,106 @@ public class ListUtilityTest {
         Assert.assertTrue(ListUtility.containsIgnoreCase(stringList, "doG"));
         Assert.assertFalse(ListUtility.containsIgnoreCase(stringList, "rAt"));
         
+        //null
+        Assert.assertTrue(ListUtility.containsIgnoreCase(stringListWithNull, "birD"));
+        Assert.assertTrue(ListUtility.containsIgnoreCase(stringListWithNull, null));
+        
         //invalid
-        //noinspection ResultOfMethodCallIgnored
-        TestUtils.assertException(NullPointerException.class, () ->
-                ListUtility.containsIgnoreCase(null, ""));
+        Assert.assertFalse(ListUtility.containsIgnoreCase(null, ""));
+        Assert.assertFalse(ListUtility.containsIgnoreCase(null, null));
+    }
+    
+    /**
+     * JUnit test of numberOfOccurrences.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#numberOfOccurrences(List, Object)
+     */
+    @Test
+    public void testNumberOfOccurrences() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        Assert.assertEquals(2, ListUtility.numberOfOccurrences(booleanList, true));
+        Assert.assertEquals(3, ListUtility.numberOfOccurrences(booleanList, false));
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -4, -4, -4, -9, 6};
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        Assert.assertEquals(1, ListUtility.numberOfOccurrences(integerList, 15));
+        Assert.assertEquals(4, ListUtility.numberOfOccurrences(integerList, -4));
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        List<Float> floatList = ListUtility.toList(floatArray);
+        Assert.assertEquals(1, ListUtility.numberOfOccurrences(floatList, 312.91f));
+        Assert.assertEquals(0, ListUtility.numberOfOccurrences(floatList, 6.9999f));
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        Assert.assertEquals(1, ListUtility.numberOfOccurrences(doubleList, 312.9113874d));
+        Assert.assertEquals(0, ListUtility.numberOfOccurrences(doubleList, 6.99d));
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        List<Long> longList = ListUtility.toList(longArray);
+        Assert.assertEquals(1, ListUtility.numberOfOccurrences(longList, 699546101L));
+        Assert.assertEquals(0, ListUtility.numberOfOccurrences(longList, 0L));
+        
+        //string
+        String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        List<String> stringList = ListUtility.toList(stringArray);
+        Assert.assertEquals(1, ListUtility.numberOfOccurrences(stringList, "cat"));
+        Assert.assertEquals(0, ListUtility.numberOfOccurrences(stringList, "CAT"));
+        
+        //object
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        Object[] objectArrayWithNull = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object(), null, null};
+        List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> objectListWithNull = ListUtility.toList(objectArrayWithNull);
+        Assert.assertEquals(1, ListUtility.numberOfOccurrences(objectList, ""));
+        Assert.assertEquals(1, ListUtility.numberOfOccurrences(objectList, 54));
+        Assert.assertEquals(0, ListUtility.numberOfOccurrences(objectList, new ArithmeticException()));
+        Assert.assertEquals(1, ListUtility.numberOfOccurrences(objectList, new HashMap<>()));
+        Assert.assertEquals(0, ListUtility.numberOfOccurrences(objectList, new Object()));
+        Assert.assertEquals(0, ListUtility.numberOfOccurrences(objectList, null));
+        Assert.assertEquals(2, ListUtility.numberOfOccurrences(objectListWithNull, null));
+        
+        //invalid
+        Assert.assertEquals(0, ListUtility.numberOfOccurrences(null, null));
+    }
+    
+    /**
+     * JUnit test of numberOfOccurrencesIgnoreCase.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#numberOfOccurrencesIgnoreCase(List, String)
+     */
+    @Test
+    public void testNumberOfOccurrencesIgnoreCase() throws Exception {
+        String[] stringArray = new String[] {"cat", "dog", "DOG", "bird", "lizard", "fish", "Fish", "fISh"};
+        String[] stringArrayWithNull = new String[] {"cat", null, "bird"};
+        List<String> stringList = ListUtility.toList(stringArray);
+        List<String> stringListWithNull = ListUtility.toList(stringArrayWithNull);
+        
+        //standard
+        Assert.assertEquals(1, ListUtility.numberOfOccurrencesIgnoreCase(stringList, "cat"));
+        Assert.assertEquals(2, ListUtility.numberOfOccurrencesIgnoreCase(stringList, "dog"));
+        Assert.assertEquals(3, ListUtility.numberOfOccurrencesIgnoreCase(stringList, "fish"));
+        
+        //case
+        Assert.assertEquals(1, ListUtility.numberOfOccurrencesIgnoreCase(stringList, "CAT"));
+        Assert.assertEquals(2, ListUtility.numberOfOccurrencesIgnoreCase(stringList, "dOg"));
+        Assert.assertEquals(3, ListUtility.numberOfOccurrencesIgnoreCase(stringList, "fISH"));
+        
+        //null
+        Assert.assertEquals(0, ListUtility.numberOfOccurrencesIgnoreCase(stringListWithNull, "LizARD"));
+        Assert.assertEquals(1, ListUtility.numberOfOccurrencesIgnoreCase(stringListWithNull, null));
+        
+        //invalid
+        Assert.assertEquals(0, ListUtility.numberOfOccurrencesIgnoreCase(null, ""));
+        Assert.assertEquals(0, ListUtility.numberOfOccurrencesIgnoreCase(null, null));
     }
     
     /**
@@ -1600,8 +1994,42 @@ public class ListUtilityTest {
         Assert.assertEquals(-1, ListUtility.indexOf(objectList, new ArrayList<>()));
         
         //invalid
-        TestUtils.assertException(NullPointerException.class, () ->
-                ListUtility.indexOf(null, new Object()));
+        Assert.assertEquals(-1, ListUtility.indexOf(null, new Object()));
+        Assert.assertEquals(-1, ListUtility.indexOf(null, null));
+    }
+    
+    /**
+     * JUnit test of indexOfIgnoreCase.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#indexOfIgnoreCase(List, String)
+     */
+    @Test
+    public void testIndexOfIgnoreCase() throws Exception {
+        String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        String[] stringArrayWithNull = new String[] {"cat", null, "bird"};
+        List<String> stringList = ListUtility.toList(stringArray);
+        List<String> stringListWithNull = ListUtility.toList(stringArrayWithNull);
+        
+        //standard
+        Assert.assertEquals(0, ListUtility.indexOfIgnoreCase(stringList, "cat"));
+        Assert.assertEquals(3, ListUtility.indexOfIgnoreCase(stringList, "lizard"));
+        Assert.assertEquals(1, ListUtility.indexOfIgnoreCase(stringList, "dog"));
+        Assert.assertEquals(-1, ListUtility.indexOfIgnoreCase(stringList, "rat"));
+        
+        //case
+        Assert.assertEquals(0, ListUtility.indexOfIgnoreCase(stringList, "CAT"));
+        Assert.assertEquals(3, ListUtility.indexOfIgnoreCase(stringList, "LIzArD"));
+        Assert.assertEquals(1, ListUtility.indexOfIgnoreCase(stringList, "doG"));
+        Assert.assertEquals(-1, ListUtility.indexOfIgnoreCase(stringList, "rAt"));
+        
+        //null
+        Assert.assertEquals(2, ListUtility.indexOfIgnoreCase(stringListWithNull, "birD"));
+        Assert.assertEquals(1, ListUtility.indexOfIgnoreCase(stringListWithNull, null));
+        
+        //invalid
+        Assert.assertEquals(-1, ListUtility.indexOfIgnoreCase(null, ""));
+        Assert.assertEquals(-1, ListUtility.indexOfIgnoreCase(null, null));
     }
     
     /**
@@ -1903,7 +2331,7 @@ public class ListUtilityTest {
         Assert.assertArrayEquals(new Object[] {}, denulled.toArray());
         
         //none
-        list = ListUtility.convertTo(Collections.emptyList(), Vector.class);
+        list = ListUtility.cast(Collections.emptyList(), Vector.class);
         denulled = ListUtility.removeNull(list);
         Assert.assertTrue(list instanceof Vector);
         Assert.assertArrayEquals(new Object[] {}, denulled.toArray());

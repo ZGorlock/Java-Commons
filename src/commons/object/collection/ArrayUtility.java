@@ -21,6 +21,7 @@ import java.util.stream.IntStream;
 
 import commons.math.BoundUtility;
 import commons.math.MathUtility;
+import commons.object.string.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -214,6 +215,21 @@ public final class ArrayUtility {
     }
     
     /**
+     * Creates and populates a new array.
+     *
+     * @param type     The type of the array.
+     * @param elements The elements to populate the array with.
+     * @param <T>      The type of the array.
+     * @return The created and populated array.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T[] arrayOf(Class<T> type, T... elements) {
+        T[] result = create(type, elements.length);
+        System.arraycopy(elements, 0, result, 0, elements.length);
+        return result;
+    }
+    
+    /**
      * Converts a list to an array.
      *
      * @param list The list.
@@ -322,7 +338,72 @@ public final class ArrayUtility {
     }
     
     /**
-     * Determines whether an element exists in an array.
+     * Determines if an array is null or empty.
+     *
+     * @param array The array.
+     * @param <T>   The type of the array.
+     * @return Whether the array is null or empty.
+     */
+    public static <T> boolean isNullOrEmpty(T[] array) {
+        return (array == null) || (array.length == 0);
+    }
+    
+    /**
+     * Determines if an array equals another array.
+     *
+     * @param array1     The first array.
+     * @param array2     The second array.
+     * @param checkOrder Whether to check the order of the arrays or not.
+     * @param <T>        The type of the arrays.
+     * @return Whether the arrays are equal or not.
+     */
+    public static <T> boolean equals(T[] array1, T[] array2, boolean checkOrder) {
+        return ((array1 == null) || (array2 == null)) ? ((array1 == null) && (array2 == null)) : ((array1.length == array2.length) &&
+                (checkOrder ? IntStream.range(0, array1.length).boxed().allMatch(i -> Objects.equals(array1[i], array2[i])) :
+                 Arrays.stream(array1).allMatch(e -> contains(array2, e) && (numberOfOccurrences(array1, e) == numberOfOccurrences(array2, e)))));
+    }
+    
+    /**
+     * Determines if an array equals another array.
+     *
+     * @param array1 The first array.
+     * @param array2 The second array.
+     * @param <T>    The type of the arrays.
+     * @return Whether the arrays are equal or not.
+     * @see #equals(Object[], Object[], boolean)
+     */
+    public static <T> boolean equals(T[] array1, T[] array2) {
+        return equals(array1, array2, true);
+    }
+    
+    /**
+     * Determines if an array of strings equals another array of strings, regardless of case.
+     *
+     * @param array1     The first array.
+     * @param array2     The second array.
+     * @param checkOrder Whether to check the order of the arrays or not.
+     * @return Whether the arrays of strings are equal or not, regardless of case.
+     */
+    public static boolean equalsIgnoreCase(String[] array1, String[] array2, boolean checkOrder) {
+        return ((array1 == null) || (array2 == null)) ? ((array1 == null) && (array2 == null)) : ((array1.length == array2.length) &&
+                (checkOrder ? IntStream.range(0, array1.length).boxed().allMatch(i -> StringUtility.equalsIgnoreCase(array1[i], array2[i])) :
+                 Arrays.stream(array1).allMatch(e -> containsIgnoreCase(array2, e) && (numberOfOccurrencesIgnoreCase(array1, e) == numberOfOccurrencesIgnoreCase(array2, e)))));
+    }
+    
+    /**
+     * Determines if an array of strings equals another array of strings, regardless of case.
+     *
+     * @param array1 The first array.
+     * @param array2 The second array.
+     * @return Whether the arrays of strings are equal or not, regardless of case.
+     * @see #equalsIgnoreCase(String[], String[], boolean)
+     */
+    public static boolean equalsIgnoreCase(String[] array1, String[] array2) {
+        return equalsIgnoreCase(array1, array2, true);
+    }
+    
+    /**
+     * Determines if an element exists in an array.
      *
      * @param array   The array.
      * @param element The element.
@@ -330,18 +411,43 @@ public final class ArrayUtility {
      * @return Whether the array contains the specified element or not.
      */
     public static <T> boolean contains(T[] array, T element) {
-        return Arrays.asList(array).contains(element);
+        return (array != null) && Arrays.asList(array).contains(element);
     }
     
     /**
-     * Determines whether a string exists in an array, regardless of case.
+     * Determines if a string exists in an array, regardless of case.
      *
      * @param array   The array.
      * @param element The element.
-     * @return Whether the array contains the specified string or not.
+     * @return Whether the array contains the specified string or not, regardless of case.
      */
     public static boolean containsIgnoreCase(String[] array, String element) {
-        return Arrays.stream(array).anyMatch(e -> e.equalsIgnoreCase(element));
+        return (array != null) && Arrays.stream(array).anyMatch(e -> StringUtility.equalsIgnoreCase(e, element));
+    }
+    
+    /**
+     * Determines the number of occurrences of an element in an array.
+     *
+     * @param array   The array.
+     * @param element The element.
+     * @param <T>     The type of the array.
+     * @return The number of occurrences of the specified element in the array.
+     */
+    public static <T> int numberOfOccurrences(T[] array, T element) {
+        return (array == null) ? 0 :
+               (int) Arrays.stream(array).filter(e -> Objects.equals(e, element)).count();
+    }
+    
+    /**
+     * Determines the number of occurrences of a string element in an array, regardless of case.
+     *
+     * @param array   The array.
+     * @param element The element.
+     * @return The number of occurrences of the specified string element in the array, regardless of case.
+     */
+    public static int numberOfOccurrencesIgnoreCase(String[] array, String element) {
+        return (array == null) ? 0 :
+               (int) Arrays.stream(array).filter(e -> StringUtility.equalsIgnoreCase(e, element)).count();
     }
     
     /**
@@ -353,7 +459,22 @@ public final class ArrayUtility {
      * @return The index of the element in the array, or -1 if it does not exist.
      */
     public static <T> int indexOf(T[] array, T element) {
-        return Arrays.asList(array).indexOf(element);
+        return (array == null) ? -1 :
+               Arrays.asList(array).indexOf(element);
+    }
+    
+    /**
+     * Returns the index of a string in an array, regardless of case.
+     *
+     * @param array   The array.
+     * @param element The element.
+     * @return The index of the string in the array, regardless of case, or -1 if it does not exist.
+     */
+    public static int indexOfIgnoreCase(String[] array, String element) {
+        return (array == null) ? -1 :
+               IntStream.range(0, array.length).boxed()
+                       .filter(i -> StringUtility.equalsIgnoreCase(array[i], element))
+                       .findFirst().orElse(-1);
     }
     
     /**
@@ -362,7 +483,7 @@ public final class ArrayUtility {
      * @param array        The array.
      * @param index        The index.
      * @param defaultValue The default value.
-     * @param <T>          The type of the list.
+     * @param <T>          The type of the array.
      * @return The element in the array at the specified index, or the default value if the index is invalid.
      */
     public static <T> T getOrDefault(T[] array, int index, T defaultValue) {
@@ -375,8 +496,8 @@ public final class ArrayUtility {
      *
      * @param array The array.
      * @param index The index.
-     * @param <T>   The type of the list.
-     * @return The element in the list at the specified index, or null if the index is invalid.
+     * @param <T>   The type of the array.
+     * @return The element in the array at the specified index, or null if the index is invalid.
      * @see #getOrDefault(Object[], int, Object)
      */
     public static <T> T getOrNull(T[] array, int index) {
@@ -397,7 +518,7 @@ public final class ArrayUtility {
     /**
      * Removes null elements from an array.
      *
-     * @param array The list.
+     * @param array The array.
      * @param <T>   The type of the array.
      * @return The array with null elements removed.
      */
@@ -445,9 +566,9 @@ public final class ArrayUtility {
     @SuppressWarnings("StatementWithEmptyBody")
     public static <T> T[] selectN(T[] array, int n, Class<T> type) {
         if (n >= array.length) {
-            List<T> list = Arrays.asList(array);
-            Collections.shuffle(list);
-            return toArray(list, type);
+            List<T> shuffle = Arrays.asList(array);
+            Collections.shuffle(shuffle);
+            return toArray(shuffle, type);
         }
         
         List<Integer> previousChoices = new ArrayList<>();
