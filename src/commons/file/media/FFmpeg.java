@@ -35,8 +35,11 @@ import commons.math.BoundUtility;
 import commons.math.EquationUtility;
 import commons.math.NumberUtility;
 import commons.object.collection.ListUtility;
+import commons.object.collection.MapUtility;
 import commons.object.string.StringUtility;
 import commons.time.DateTimeUtility;
+import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -931,9 +934,9 @@ public class FFmpeg {
     @SuppressWarnings("unchecked")
     private static String modifyMetadataHelper(File source, Identifier<?> entityId, MediaInfo.MetadataTags modification, File output, boolean clearExisting, boolean isRemove) {
         return modifyMetadata(source,
-                entityId.isSingularScoped() ? new LinkedHashMap<>() {{
-                    put((Identifier<Identifier.Scope.Singular>) entityId, modification);
-                }} : Identifier.decompose(Collections.singletonList(entityId), Collections.singletonList(modification), source),
+                entityId.isSingularScoped() ? MapUtility.mapOf(LinkedHashMap.class,
+                        new ImmutablePair<>((Identifier<Identifier.Scope.Singular>) entityId, modification)) :
+                Identifier.decompose(Collections.singletonList(entityId), Collections.singletonList(modification), source),
                 output, clearExisting, isRemove);
     }
     
@@ -1035,10 +1038,11 @@ public class FFmpeg {
      * @return The response from the ffmpeg process.
      * @see #addMetadata(File, Identifier, MediaInfo.MetadataTags, File)
      */
+    @SuppressWarnings("unchecked")
     public static String addMetadata(File source, Identifier<?> entityId, String tagName, String tagValue, File output) {
-        return addMetadata(source, entityId, new MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-            put(tagName, tagValue);
-        }}), output);
+        return addMetadata(source, entityId, new MediaInfo.MetadataTags(
+                new ImmutablePair<>(tagName, tagValue)
+        ), output);
     }
     
     /**
@@ -1168,9 +1172,10 @@ public class FFmpeg {
      * @see #modifyMetadataHelper(File, Map, File, boolean, boolean)
      */
     public static String clearMetadata(File source, List<Identifier<?>> entityIds, File output) {
-        return modifyMetadataHelper(source, new HashMap<>() {{
-            entityIds.forEach(e -> put(e, null));
-        }}, output, true, true);
+        return modifyMetadataHelper(source, MapUtility.mapOf(
+                entityIds,
+                ListUtility.create(MediaInfo.MetadataTags.class, entityIds.size())
+        ), output, true, true);
     }
     
     /**
@@ -2013,29 +2018,37 @@ public class FFmpeg {
             }
             
             /**
+             * Creates a new MetadataTags from a set of metadata tags.
+             *
+             * @param tags The set of metadata tags.
+             * @see #MetadataTags(LinkedHashMap)
+             */
+            @SuppressWarnings("unchecked")
+            public MetadataTags(Pair<String, String>... tags) {
+                this((LinkedHashMap<String, String>) MapUtility.mapOf(LinkedHashMap.class, tags));
+            }
+            
+            /**
              * Creates a new MetadataTags from a list of metadata tag names; values will be null.
              *
              * @param tagNames The list of metadata tag names.
+             * @see #MetadataTags(LinkedHashMap)
              */
             public MetadataTags(List<String> tagNames) {
-                this.tags = new LinkedHashMap<>() {{
-                    tagNames.forEach(e -> put(e, null));
-                }};
+                this((LinkedHashMap<String, String>) MapUtility.mapOf(LinkedHashMap.class, tagNames, ListUtility.create(String.class, tagNames.size())));
             }
             
             /**
              * Creates a new MetadataTags from json metadata.
              *
              * @param data The metadata in json.
+             * @see #MetadataTags(LinkedHashMap)
              */
             @SuppressWarnings({"unchecked"})
             public MetadataTags(JSONObject data) {
-                this.tags = new LinkedHashMap<>();
-                if (data.containsKey("tags")) {
-                    for (Map.Entry<String, Object> tag : (Set<Map.Entry<String, Object>>) ((JSONObject) data.get("tags")).entrySet()) {
-                        this.tags.put(tag.getKey(), tag.getValue().toString());
-                    }
-                }
+                this((LinkedHashMap<String, String>) ((Set<Map.Entry<String, Object>>)
+                        ((Optional.ofNullable((JSONObject) data.get("tags")).orElse(new JSONObject())).entrySet())).stream()
+                        .collect(LinkedHashMap<String, String>::new, (m, e) -> m.put(e.getKey(), e.getValue().toString()), LinkedHashMap::putAll));
             }
             
             
@@ -3801,11 +3814,10 @@ public class FFmpeg {
             };
             
             return IntStream.range(0, identifiers.size()).boxed()
-                    .map(i -> new HashMap<Identifier<Scope.Singular>, T>() {{
-                        decomposer.apply(identifiers.get(i)).stream().filter(Objects::nonNull).forEach(e ->
-                                put(e, ListUtility.getOrNull(mappedValues, i)));
-                    }}).flatMap(e -> e.entrySet().stream()).sorted(Map.Entry.comparingByKey())
-                    .collect(LinkedHashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), LinkedHashMap::putAll);
+                    .map(i -> decomposer.apply(identifiers.get(i)).stream().filter(Objects::nonNull)
+                            .collect(HashMap<Identifier<Scope.Singular>, T>::new, (m, e) -> m.put(e, ListUtility.getOrNull(mappedValues, i)), HashMap::putAll)
+                    ).flatMap(e -> e.entrySet().stream()).sorted(Map.Entry.comparingByKey())
+                    .collect(LinkedHashMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), LinkedHashMap::putAll);
         }
         
         /**

@@ -29,8 +29,10 @@ import commons.graphics.DrawUtility;
 import commons.log.CommonsLogging;
 import commons.math.MathUtility;
 import commons.math.component.vector.IntVector;
+import commons.object.collection.MapUtility;
 import commons.object.string.StringUtility;
 import commons.test.TestUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -341,12 +343,12 @@ public class VideoUtilityTest {
                 streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //standard
-        VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 0), "libx265");
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), "libx264");
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 2), "mpeg4");
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), "aac");
-        }}, testOutput2);
+        VideoUtility.transcodeVideo(testSource, MapUtility.mapOf(
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 0), "libx265"),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), "libx264"),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 2), "mpeg4"),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), "aac")
+        ), testOutput2);
         Assert.assertTrue(testOutput2.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput2));
         Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput2));
@@ -360,14 +362,14 @@ public class VideoUtilityTest {
                 streams.stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
         
         //to mp4
-        VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 0), "libx265");
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), "libx264");
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 2), "mpeg4");
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), "libvorbis");
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 4), "mp3");
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.SUBTITLE), "mov_text");
-        }}, testOutput3);
+        VideoUtility.transcodeVideo(testSource, MapUtility.mapOf(
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 0), "libx265"),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), "libx264"),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 2), "mpeg4"),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), "libvorbis"),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 4), "mp3"),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.SUBTITLE), "mov_text")
+        ), testOutput3);
         Assert.assertTrue(testOutput3.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput3));
         Assert.assertEquals(16, FFmpeg.getStreamCount(testOutput3));
@@ -385,38 +387,34 @@ public class VideoUtilityTest {
                 VideoUtility.transcodeVideo(fakeSource, new HashMap<>(), fakeOutput));
         Assert.assertTrue(VideoUtility.transcodeVideo(testSource, new HashMap<>(), fakeOutput).contains(
                 "[*]Could not write header for output file #0 (incorrect codec parameters ?): Invalid argument"));
-        Assert.assertTrue(VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 3), "libx265");
-        }}, fakeOutput).contains(
+        Assert.assertTrue(VideoUtility.transcodeVideo(testSource, MapUtility.mapOf(
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 3), "libx265")
+        ), fakeOutput).contains(
                 "[*]Could not write header for output file #0 (incorrect codec parameters ?): Invalid argument"));
-        Assert.assertTrue(VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, -1), "libx265");
-        }}, fakeOutput).contains(
+        Assert.assertTrue(VideoUtility.transcodeVideo(testSource, MapUtility.mapOf(
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, -1), "libx265")
+        ), fakeOutput).contains(
                 "Invalid stream specifier: v:-1."));
-        Assert.assertTrue(VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), "test");
-        }}, fakeOutput).contains(
+        Assert.assertTrue(VideoUtility.transcodeVideo(testSource, MapUtility.mapOf(
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), "test")
+        ), fakeOutput).contains(
                 "[*]Unknown encoder 'test'"));
-        Assert.assertTrue(VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), "");
-        }}, fakeOutput).contains(
+        Assert.assertTrue(VideoUtility.transcodeVideo(testSource, MapUtility.mapOf(
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), "")
+        ), fakeOutput).contains(
                 "[*]At least one output file must be specified"));
-        Assert.assertTrue(VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), null);
-        }}, fakeOutput).contains(
-                "[*]Unknown encoder 'null'"));
-        Assert.assertTrue(VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), null);
-        }}, fakeOutput).contains(
+        Assert.assertTrue(VideoUtility.transcodeVideo(testSource, MapUtility.mapOf(
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1), null)
+        ), fakeOutput).contains(
                 "[*]Unknown encoder 'null'"));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-                    put(null, "libx264");
-                }}, fakeOutput));
+                VideoUtility.transcodeVideo(testSource, MapUtility.mapOf(
+                        new ImmutablePair<>(null, "libx264")
+                ), fakeOutput));
         TestUtils.assertException(NullPointerException.class, () ->
-                VideoUtility.transcodeVideo(testSource, new HashMap<>() {{
-                    put(null, null);
-                }}, fakeOutput));
+                VideoUtility.transcodeVideo(testSource, MapUtility.mapOf(
+                        new ImmutablePair<>(null, null)
+                ), fakeOutput));
         TestUtils.assertException(NullPointerException.class, () ->
                 VideoUtility.transcodeVideo(testSource, null, fakeOutput));
         TestUtils.assertException(NullPointerException.class, () ->

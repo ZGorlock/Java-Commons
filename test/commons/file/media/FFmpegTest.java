@@ -30,8 +30,10 @@ import commons.access.Project;
 import commons.console.Console;
 import commons.console.ProgressBar;
 import commons.log.CommonsLogging;
+import commons.object.collection.MapUtility;
 import commons.object.string.StringUtility;
 import commons.test.TestUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.junit.After;
@@ -2034,29 +2036,22 @@ public class FFmpegTest {
         );
         
         //set
-        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
-                new LinkedHashMap<>() {{
-                    put(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("name", "Video 3");
-                    }}));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("title", "Galway");
-                        put("artist", "Kevin MacLeod");
-                    }}));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("title", "Galway+");
-                        put("artist", "Kevin MacLeod+");
-                        put("Special", "true");
-                    }}));
-                    put(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("title", "Chapter");
-                    }}));
-                    put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("name", "Global");
-                        put("Title", "Global");
-                    }}));
-                }},
-                testOutput1, true, false);
+        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource, MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "Video 3"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "Galway"),
+                        new ImmutablePair<>("artist", "Kevin MacLeod"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "Galway+"),
+                        new ImmutablePair<>("artist", "Kevin MacLeod+"),
+                        new ImmutablePair<>("Special", "true"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "Chapter"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "Global"),
+                        new ImmutablePair<>("Title", "Global")))
+        ), testOutput1, true, false);
         Assert.assertEquals(Stream.of(
                         "Global: {ENCODER:'Lavf58.45.100', title:'Global', NAME:'Global'}",
                         "Stream #0: {D:''}", "Stream #1: {D:''}",
@@ -2073,9 +2068,8 @@ public class FFmpegTest {
                 FFmpeg.getMediaInfo(testOutput1).metadataString().replaceAll("DURATION:'[\\d.:]+'", "D:''")
         );
         TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testOutput1,
-                FFmpeg.Identifier.Stream.ofIndex(11), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                    put("new", "yes");
-                }}),
+                FFmpeg.Identifier.Stream.ofIndex(11), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("new", "yes")),
                 testOutput2, true, false);
         Assert.assertEquals(Stream.of(
                         "Global: {ENCODER:'Lavf58.45.100', title:'Global', NAME:'Global'}",
@@ -2094,29 +2088,22 @@ public class FFmpegTest {
                 ).collect(Collectors.joining(System.lineSeparator())),
                 FFmpeg.getMediaInfo(testOutput2).metadataString().replaceAll("DURATION:'[\\d.:]+'", "D:''")
         );
-        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSourceOriginal,
-                new LinkedHashMap<>() {{
-                    put(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("name", "Video 3");
-                    }}));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("title", "Galway+");
-                        put("artist", "Kevin MacLeod+");
-                        put("Special", "true");
-                    }}));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("title", "Not Galway");
-                        put("artist", "Not Kevin MacLeod");
-                    }}));
-                    put(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("title", "Chapter");
-                    }}));
-                    put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("name", "Global");
-                        put("Title", "Global");
-                    }}));
-                }},
-                testOutput3, true, false);
+        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSourceOriginal, MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "Video 3"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "Galway+"),
+                        new ImmutablePair<>("artist", "Kevin MacLeod+"),
+                        new ImmutablePair<>("Special", "true"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "Not Galway"),
+                        new ImmutablePair<>("artist", "Not Kevin MacLeod"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "Chapter"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "Global"),
+                        new ImmutablePair<>("Title", "Global")))
+        ), testOutput3, true, false);
         Assert.assertEquals(Stream.of(
                         "Global: {ENCODER:'Lavf58.45.100', title:'Global', NAME:'Global'}",
                         "Stream #0: {language:'eng', title:'Red', D:''}",
@@ -2140,29 +2127,22 @@ public class FFmpegTest {
         );
         
         //add
-        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
-                new LinkedHashMap<>() {{
-                    put(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("name", "Video 3");
-                    }}));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("title", "Galway");
-                        put("artist", "Kevin MacLeod");
-                    }}));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("title", "Galway+");
-                        put("artist", "Kevin MacLeod+");
-                        put("Special", "true");
-                    }}));
-                    put(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("title", "Chapter");
-                    }}));
-                    put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("name", "Global");
-                        put("Title", "Global");
-                    }}));
-                }},
-                testOutput4, false, false);
+        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource, MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "Video 3"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "Galway"),
+                        new ImmutablePair<>("artist", "Kevin MacLeod"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "Galway+"),
+                        new ImmutablePair<>("artist", "Kevin MacLeod+"),
+                        new ImmutablePair<>("Special", "true"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "Chapter"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "Global"),
+                        new ImmutablePair<>("Title", "Global")))
+        ), testOutput4, false, false);
         Assert.assertEquals(Stream.of(
                         "Global: {ENCODER:'Lavf58.45.100', title:'Global', NAME:'Global'}",
                         "Stream #0: {D:''}", "Stream #1: {D:''}",
@@ -2179,9 +2159,8 @@ public class FFmpegTest {
                 FFmpeg.getMediaInfo(testOutput4).metadataString().replaceAll("DURATION:'[\\d.:]+'", "D:''")
         );
         TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testOutput4,
-                FFmpeg.Identifier.Stream.ofIndex(3), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                    put("new", "yes");
-                }}),
+                FFmpeg.Identifier.Stream.ofIndex(3), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("new", "yes")),
                 testOutput5, false, false);
         Assert.assertEquals(Stream.of(
                         "Global: {ENCODER:'Lavf58.45.100', title:'Global', NAME:'Global'}",
@@ -2199,30 +2178,23 @@ public class FFmpegTest {
                 ).collect(Collectors.joining(System.lineSeparator())),
                 FFmpeg.getMediaInfo(testOutput5).metadataString().replaceAll("DURATION:'[\\d.:]+'", "D:''")
         );
-        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSourceOriginal,
-                new LinkedHashMap<>() {{
-                    put(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("name", "Video 3");
-                    }}));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("title", "Galway+");
-                        put("artist", "Kevin MacLeod+");
-                        put("Special", "true");
-                    }}));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("title", "Not Galway");
-                        put("artist", "Not Kevin MacLeod");
-                        put("isSpecial", "false");
-                    }}));
-                    put(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("title", "Chapter");
-                    }}));
-                    put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("name", "Global");
-                        put("Title", "Global");
-                    }}));
-                }},
-                testOutput6, false, false);
+        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSourceOriginal, MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "Video 3"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "Galway+"),
+                        new ImmutablePair<>("artist", "Kevin MacLeod+"),
+                        new ImmutablePair<>("Special", "true"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "Not Galway"),
+                        new ImmutablePair<>("artist", "Not Kevin MacLeod"),
+                        new ImmutablePair<>("isSpecial", "false"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "Chapter"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "Global"),
+                        new ImmutablePair<>("Title", "Global")))
+        ), testOutput6, false, false);
         Assert.assertEquals(Stream.of(
                         "Global: {ENCODER:'Lavf58.45.100', title:'Global', NAME:'Global'}",
                         "Stream #0: {language:'eng', title:'Red', D:''}",
@@ -2246,18 +2218,15 @@ public class FFmpegTest {
         );
         
         //remove
-        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testOutput5,
-                new LinkedHashMap<>() {{
-                    put(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("name", "Video 3");
-                        put("description", "not valid");
-                    }}));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("artist")));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(List.of("artist", "Special")));
-                    put(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(List.of("description")));
-                    put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("name", "Title")));
-                }},
-                testOutput7, false, true);
+        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testOutput5, MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "Video 3"),
+                        new ImmutablePair<>("description", "not valid"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("artist"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(List.of("artist", "Special"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(List.of("description"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("name", "Title")))
+        ), testOutput7, false, true);
         Assert.assertEquals(Stream.of(
                         "Global: {ENCODER:'Lavf58.45.100'}",
                         "Stream #0: {D:''}", "Stream #1: {D:''}", "Stream #2: {D:''}",
@@ -2289,18 +2258,15 @@ public class FFmpegTest {
                 ).collect(Collectors.joining(System.lineSeparator())),
                 FFmpeg.getMediaInfo(testOutput8).metadataString().replaceAll("DURATION:'[\\d.:]+'", "D:''")
         );
-        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSourceOriginal,
-                new LinkedHashMap<>() {{
-                    put(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("name", "Video 3");
-                        put("description", "not valid");
-                    }}));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(List.of("title", "description")));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("artist")));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.SUBTITLE), new FFmpeg.MediaInfo.MetadataTags(List.of("title")));
-                    put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("name", "Title")));
-                }},
-                testOutput9, false, true);
+        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSourceOriginal, MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "Video 3"),
+                        new ImmutablePair<>("description", "not valid"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(List.of("title", "description"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("artist"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.SUBTITLE), new FFmpeg.MediaInfo.MetadataTags(List.of("title"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("name", "Title")))
+        ), testOutput9, false, true);
         Assert.assertEquals(Stream.of(
                         "Global: {ENCODER:'Lavf58.45.100'}",
                         "Stream #0: {language:'eng', title:'Red', D:''}",
@@ -2324,18 +2290,15 @@ public class FFmpegTest {
         );
         
         //clear
-        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testOutput9,
-                new LinkedHashMap<>() {{
-                    put(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("name", "Video 3");
-                        put("description", "not valid");
-                    }}));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("artist")));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(List.of("artist", "Special")));
-                    put(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(List.of("description")));
-                    put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("name", "Title")));
-                }},
-                testOutput10, true, true);
+        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testOutput9, MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "Video 3"),
+                        new ImmutablePair<>("description", "not valid"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("artist"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(List.of("artist", "Special"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(List.of("description"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("name", "Title")))
+        ), testOutput10, true, true);
         Assert.assertEquals(Stream.of(
                         "Global: {ENCODER:'Lavf58.45.100'}",
                         "Stream #0: {language:'eng', title:'Red', D:''}",
@@ -2370,18 +2333,15 @@ public class FFmpegTest {
                 ).collect(Collectors.joining(System.lineSeparator())),
                 FFmpeg.getMediaInfo(testOutput11).metadataString().replaceAll("DURATION:'[\\d.:]+'", "D:''")
         );
-        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSourceOriginal,
-                new LinkedHashMap<>() {{
-                    put(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                        put("name", "Video 3");
-                        put("description", "not valid");
-                    }}));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(List.of("title", "description")));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("artist")));
-                    put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.SUBTITLE), new FFmpeg.MediaInfo.MetadataTags(List.of("title")));
-                    put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("name", "Title")));
-                }},
-                testOutput12, true, true);
+        TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSourceOriginal, MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.ofIndex(2), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "Video 3"),
+                        new ImmutablePair<>("description", "not valid"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO, 2), new FFmpeg.MediaInfo.MetadataTags(List.of("title", "description"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("artist"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.SUBTITLE), new FFmpeg.MediaInfo.MetadataTags(List.of("title"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("name", "Title")))
+        ), testOutput12, true, true);
         Assert.assertEquals(Stream.of(
                         "Global: {ENCODER:'Lavf58.45.100'}",
                         "Stream #0: {language:'eng', title:'Red', D:''}",
@@ -2401,10 +2361,6 @@ public class FFmpegTest {
             Assert.assertNotNull(modifiersMap);
             Assert.assertNotNull(testModifiers.get());
             final Map<FFmpeg.Identifier<FFmpeg.Identifier.Scope.Singular>, FFmpeg.MediaInfo.MetadataTags> testModifiersMap =
-                    ((testModifiers.get().size() == 1) && (testModifiers.get().keySet().toArray(FFmpeg.Identifier[]::new)[0].isSingularScoped())) ?
-                    new LinkedHashMap<>() {{
-                        testModifiers.get().forEach((key, value) -> put((FFmpeg.Identifier<FFmpeg.Identifier.Scope.Singular>) key, value));
-                    }} :
                     FFmpeg.Identifier.decompose(new ArrayList<>(testModifiers.get().keySet()), new ArrayList<>(testModifiers.get().values()), mediaInfo);
             final Map<String, String> testModifiersStringMap = testModifiersMap.entrySet().stream().collect(Collectors.toMap(Object::toString, Object::toString));
             Assert.assertEquals(testModifiersMap.size(), modifiersMap.size());
@@ -2412,19 +2368,16 @@ public class FFmpegTest {
             Assert.assertFalse(testModifiersStringMap.entrySet().stream().anyMatch(e -> (!modifiersStringMap.containsKey(e.getKey()) || !Objects.equals(e.getValue(), modifiersStringMap.get(e.getKey())))));
             return null;
         }).when(FFmpeg.class, "modifyMetadata", ArgumentMatchers.any(File.class), ArgumentMatchers.anyMap(), ArgumentMatchers.any(File.class), ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyBoolean());
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Stream.ofIndex(3), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("name", "A Name");
-                put("duration", "00:00:03.000");
-            }}));
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("title", "The Title");
-                put("duration", "00:00:03.000");
-            }}));
-            put(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("language", "eng");
-            }}));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.ofIndex(3), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "A Name"),
+                        new ImmutablePair<>("duration", "00:00:03.000"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "The Title"),
+                        new ImmutablePair<>("duration", "00:00:03.000"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("language", "eng")))
+        ));
         TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSourceOriginal,
                 testModifiers.get(),
                 fakeOutput, false, false);
@@ -2432,12 +2385,11 @@ public class FFmpegTest {
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSourceOriginal), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(fakeOutput), ArgumentMatchers.eq(false), ArgumentMatchers.eq(false));
         PowerMockito.verifyStatic(FFmpeg.class, VerificationModeFactory.times(1));
         FFmpeg.getMediaInfo(ArgumentMatchers.eq(testSourceOriginal));
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Stream.ofIndex(3), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("name", "A Name");
-                put("duration", "00:00:03.000");
-            }}));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.ofIndex(3), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "A Name"),
+                        new ImmutablePair<>("duration", "00:00:03.000")))
+        ));
         TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSourceOriginal,
                 testModifiers.get(),
                 fakeOutput, false, true);
@@ -2445,12 +2397,11 @@ public class FFmpegTest {
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSourceOriginal), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(fakeOutput), ArgumentMatchers.eq(false), ArgumentMatchers.eq(true));
         PowerMockito.verifyStatic(FFmpeg.class, VerificationModeFactory.times(1));
         FFmpeg.getMediaInfo(ArgumentMatchers.eq(testSourceOriginal));
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("title", "The Title");
-                put("duration", "00:00:03.000");
-            }}));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "The Title"),
+                        new ImmutablePair<>("duration", "00:00:03.000")))
+        ));
         TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSourceOriginal,
                 testModifiers.get().keySet().iterator().next(), testModifiers.get().values().iterator().next(),
                 fakeOutput, true, false);
@@ -2458,12 +2409,11 @@ public class FFmpegTest {
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSourceOriginal), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(fakeOutput), ArgumentMatchers.eq(true), ArgumentMatchers.eq(false));
         PowerMockito.verifyStatic(FFmpeg.class, VerificationModeFactory.times(2));
         FFmpeg.getMediaInfo(ArgumentMatchers.eq(testSourceOriginal));
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Stream.ofIndex(3), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("name", "A Name");
-                put("duration", "00:00:03.000");
-            }}));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.ofIndex(3), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "A Name"),
+                        new ImmutablePair<>("duration", "00:00:03.000")))
+        ));
         TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSourceOriginal,
                 testModifiers.get().keySet().iterator().next(), testModifiers.get().values().iterator().next(),
                 fakeOutput, true, true);
@@ -2476,11 +2426,9 @@ public class FFmpegTest {
         
         //invalid
         PowerMockito.doNothing().when(TestUtils.AssertWrapper.class, "fail", ArgumentMatchers.anyString());
-        Assert.assertTrue(((String) TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
-                new LinkedHashMap<>() {{
-                    put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")));
-                }},
-                fakeOutput, true, true)).contains(
+        Assert.assertTrue(((String) TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource, MapUtility.mapOf(
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")))
+        ), fakeOutput, true, true)).contains(
                 "[*]Could not write header for output file #0 (incorrect codec parameters ?): Invalid argument"));
         Assert.assertTrue(((String) TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                 FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
@@ -2503,31 +2451,25 @@ public class FFmpegTest {
                         null, null,
                         testOutput1, true, true));
         TestUtils.assertException(AssertionError.class, () -> //NullPointerException
-                TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null,
-                        new LinkedHashMap<>() {{
-                            put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")));
-                        }},
-                        fakeOutput, true, true));
+                TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null, MapUtility.mapOf(
+                        new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")))
+                ), fakeOutput, true, true));
         TestUtils.assertException(AssertionError.class, () -> //NullPointerException
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null,
                         FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
                         fakeOutput, true, true));
         TestUtils.assertException(AssertionError.class, () -> //NullPointerException
-                TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
-                        new LinkedHashMap<>() {{
-                            put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")));
-                        }},
-                        null, true, true));
+                TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource, MapUtility.mapOf(
+                        new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")))
+                ), null, true, true));
         TestUtils.assertException(AssertionError.class, () -> //NullPointerException
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
                         null, true, true));
         TestUtils.assertException(AssertionError.class, () -> //NullPointerException
-                TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null,
-                        new LinkedHashMap<>() {{
-                            put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")));
-                        }},
-                        null, true, true));
+                TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null, MapUtility.mapOf(
+                        new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")))
+                ), null, true, true));
         TestUtils.assertException(AssertionError.class, () -> //NullPointerException
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null,
                         FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
@@ -2557,10 +2499,6 @@ public class FFmpegTest {
             Assert.assertNotNull(modifiersMap);
             Assert.assertNotNull(testModifiers.get());
             final Map<FFmpeg.Identifier<FFmpeg.Identifier.Scope.Singular>, FFmpeg.MediaInfo.MetadataTags> testModifiersMap =
-                    ((testModifiers.get().size() == 1) && (testModifiers.get().keySet().toArray(FFmpeg.Identifier[]::new)[0].isSingularScoped())) ?
-                    new LinkedHashMap<>() {{
-                        testModifiers.get().forEach((key, value) -> put((FFmpeg.Identifier<FFmpeg.Identifier.Scope.Singular>) key, value));
-                    }} :
                     FFmpeg.Identifier.decompose(new ArrayList<>(testModifiers.get().keySet()), new ArrayList<>(testModifiers.get().values()), mediaInfo);
             final Map<String, String> testModifiersStringMap = testModifiersMap.entrySet().stream().collect(Collectors.toMap(Object::toString, Object::toString));
             Assert.assertEquals(testModifiersMap.size(), modifiersMap.size());
@@ -2570,41 +2508,36 @@ public class FFmpegTest {
         }).when(FFmpeg.class, "modifyMetadata", ArgumentMatchers.any(File.class), ArgumentMatchers.anyMap(), ArgumentMatchers.any(File.class), ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyBoolean());
         
         //map
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Stream.ofIndex(3), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("name", "A Name");
-                put("duration", "00:00:03.000");
-            }}));
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("title", "The Title");
-                put("duration", "00:00:03.000");
-            }}));
-            put(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("language", "eng");
-            }}));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.ofIndex(3), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "A Name"),
+                        new ImmutablePair<>("duration", "00:00:03.000"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "The Title"),
+                        new ImmutablePair<>("duration", "00:00:03.000"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("language", "eng")))
+        ));
         FFmpeg.setMetadata(testSource, new LinkedHashMap<>(testModifiers.get()), testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(1))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(true), ArgumentMatchers.eq(false));
         
         //identifier, tags
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("title", "The Title");
-                put("duration", "00:00:03.000");
-            }}));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "The Title"),
+                        new ImmutablePair<>("duration", "00:00:03.000")))
+        ));
         FFmpeg.setMetadata(testSource, new ArrayList<>(testModifiers.get().keySet()).get(0), new ArrayList<>(testModifiers.get().values()).get(0), testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(2))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(true), ArgumentMatchers.eq(false));
         
         //global, tags
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("title", "The Title");
-                put("duration", "00:00:03.000");
-            }}));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "The Title"),
+                        new ImmutablePair<>("duration", "00:00:03.000")))
+        ));
         FFmpeg.setMetadata(testSource, new ArrayList<>(testModifiers.get().values()).get(0), testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(3))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(true), ArgumentMatchers.eq(false));
@@ -2634,10 +2567,6 @@ public class FFmpegTest {
             Assert.assertNotNull(modifiersMap);
             Assert.assertNotNull(testModifiers.get());
             final Map<FFmpeg.Identifier<FFmpeg.Identifier.Scope.Singular>, FFmpeg.MediaInfo.MetadataTags> testModifiersMap =
-                    ((testModifiers.get().size() == 1) && (testModifiers.get().keySet().toArray(FFmpeg.Identifier[]::new)[0].isSingularScoped())) ?
-                    new LinkedHashMap<>() {{
-                        testModifiers.get().forEach((key, value) -> put((FFmpeg.Identifier<FFmpeg.Identifier.Scope.Singular>) key, value));
-                    }} :
                     FFmpeg.Identifier.decompose(new ArrayList<>(testModifiers.get().keySet()), new ArrayList<>(testModifiers.get().values()), mediaInfo);
             final Map<String, String> testModifiersStringMap = testModifiersMap.entrySet().stream().collect(Collectors.toMap(Object::toString, Object::toString));
             Assert.assertEquals(testModifiersMap.size(), modifiersMap.size());
@@ -2647,61 +2576,54 @@ public class FFmpegTest {
         }).when(FFmpeg.class, "modifyMetadata", ArgumentMatchers.any(File.class), ArgumentMatchers.anyMap(), ArgumentMatchers.any(File.class), ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyBoolean());
         
         //map
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Stream.ofIndex(3), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("name", "A Name");
-                put("duration", "00:00:03.000");
-            }}));
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("title", "The Title");
-                put("duration", "00:00:03.000");
-            }}));
-            put(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("language", "eng");
-            }}));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.ofIndex(3), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("name", "A Name"),
+                        new ImmutablePair<>("duration", "00:00:03.000"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "The Title"),
+                        new ImmutablePair<>("duration", "00:00:03.000"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("language", "eng")))
+        ));
         FFmpeg.addMetadata(testSource, new LinkedHashMap<>(testModifiers.get()), testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(1))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(false), ArgumentMatchers.eq(false));
         
         //identifier, tags
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("title", "The Title");
-                put("duration", "00:00:03.000");
-            }}));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "The Title"),
+                        new ImmutablePair<>("duration", "00:00:03.000")))
+        ));
         FFmpeg.addMetadata(testSource, new ArrayList<>(testModifiers.get().keySet()).get(0), new ArrayList<>(testModifiers.get().values()).get(0), testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(2))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(false), ArgumentMatchers.eq(false));
         
         //global, tags
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("title", "The Title");
-                put("duration", "00:00:03.000");
-            }}));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "The Title"),
+                        new ImmutablePair<>("duration", "00:00:03.000")))
+        ));
         FFmpeg.addMetadata(testSource, new ArrayList<>(testModifiers.get().values()).get(0), testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(3))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(false), ArgumentMatchers.eq(false));
         
         //identifier, tag name and value
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("title", "The Title");
-            }}));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "The Title")))
+        ));
         FFmpeg.addMetadata(testSource, new ArrayList<>(testModifiers.get().keySet()).get(0), "title", "The Title", testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(4))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(false), ArgumentMatchers.eq(false));
         
         //global, tag name and value
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-                put("title", "The Title");
-            }}));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(
+                        new ImmutablePair<>("title", "The Title")))
+        ));
         FFmpeg.addMetadata(testSource, "title", "The Title", testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(5))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(false), ArgumentMatchers.eq(false));
@@ -2733,10 +2655,6 @@ public class FFmpegTest {
             Assert.assertNotNull(modifiersMap);
             Assert.assertNotNull(testModifiers.get());
             final Map<FFmpeg.Identifier<FFmpeg.Identifier.Scope.Singular>, FFmpeg.MediaInfo.MetadataTags> testModifiersMap =
-                    ((testModifiers.get().size() == 1) && (testModifiers.get().keySet().toArray(FFmpeg.Identifier[]::new)[0].isSingularScoped())) ?
-                    new LinkedHashMap<>() {{
-                        testModifiers.get().forEach((key, value) -> put((FFmpeg.Identifier<FFmpeg.Identifier.Scope.Singular>) key, value));
-                    }} :
                     FFmpeg.Identifier.decompose(new ArrayList<>(testModifiers.get().keySet()), new ArrayList<>(testModifiers.get().values()), mediaInfo);
             final Map<String, String> testModifiersStringMap = testModifiersMap.entrySet().stream().collect(Collectors.toMap(Object::toString, Object::toString));
             Assert.assertEquals(testModifiersMap.size(), modifiersMap.size());
@@ -2746,59 +2664,59 @@ public class FFmpegTest {
         }).when(FFmpeg.class, "modifyMetadata", ArgumentMatchers.any(File.class), ArgumentMatchers.anyMap(), ArgumentMatchers.any(File.class), ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyBoolean());
         
         //map
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Stream.ofIndex(3), new FFmpeg.MediaInfo.MetadataTags(List.of("name", "duration")));
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("title", "duration")));
-            put(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(List.of("language")));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.ofIndex(3), new FFmpeg.MediaInfo.MetadataTags(List.of("name", "duration"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("title", "duration"))),
+                new ImmutablePair<>(FFmpeg.Identifier.Chapter.all(), new FFmpeg.MediaInfo.MetadataTags(List.of("language")))
+        ));
         FFmpeg.removeMetadata(testSource, new LinkedHashMap<>(testModifiers.get()), testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(1))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(false), ArgumentMatchers.eq(true));
         
         //identifier, tags
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("title", "duration")));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("title", "duration")))
+        ));
         FFmpeg.removeMetadata(testSource, new ArrayList<>(testModifiers.get().keySet()).get(0), new ArrayList<>(testModifiers.get().values()).get(0), testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(2))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(false), ArgumentMatchers.eq(true));
         
         //global, tags
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title", "duration")));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title", "duration")))
+        ));
         FFmpeg.removeMetadata(testSource, new ArrayList<>(testModifiers.get().values()).get(0), testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(3))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(false), ArgumentMatchers.eq(true));
         
         //identifier, list
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("title", "duration")));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("title", "duration")))
+        ));
         FFmpeg.removeMetadata(testSource, new ArrayList<>(testModifiers.get().keySet()).get(0), List.of("title", "duration"), testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(4))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(false), ArgumentMatchers.eq(true));
         
         //global, list
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title", "duration")));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title", "duration")))
+        ));
         FFmpeg.removeMetadata(testSource, List.of("title", "duration"), testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(5))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(false), ArgumentMatchers.eq(true));
         
         //identifier, tag name
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("title")));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), new FFmpeg.MediaInfo.MetadataTags(List.of("title")))
+        ));
         FFmpeg.removeMetadata(testSource, new ArrayList<>(testModifiers.get().keySet()).get(0), "title", testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(6))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(false), ArgumentMatchers.eq(true));
         
         //global, tag name
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")));
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")))
+        ));
         FFmpeg.removeMetadata(testSource, "title", testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(7))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(false), ArgumentMatchers.eq(true));
@@ -2826,10 +2744,6 @@ public class FFmpegTest {
             Assert.assertNotNull(modifiersMap);
             Assert.assertNotNull(testModifiers.get());
             final Map<FFmpeg.Identifier<FFmpeg.Identifier.Scope.Singular>, FFmpeg.MediaInfo.MetadataTags> testModifiersMap =
-                    ((testModifiers.get().size() == 1) && (testModifiers.get().keySet().toArray(FFmpeg.Identifier[]::new)[0].isSingularScoped())) ?
-                    new LinkedHashMap<>() {{
-                        testModifiers.get().forEach((key, value) -> put((FFmpeg.Identifier<FFmpeg.Identifier.Scope.Singular>) key, value));
-                    }} :
                     FFmpeg.Identifier.decompose(new ArrayList<>(testModifiers.get().keySet()), new ArrayList<>(testModifiers.get().values()), mediaInfo);
             final Map<String, String> testModifiersStringMap = testModifiersMap.entrySet().stream().collect(Collectors.toMap(Object::toString, Object::toString));
             Assert.assertEquals(testModifiersMap.size(), modifiersMap.size());
@@ -2839,27 +2753,27 @@ public class FFmpegTest {
         }).when(FFmpeg.class, "modifyMetadata", ArgumentMatchers.any(File.class), ArgumentMatchers.anyMap(), ArgumentMatchers.any(File.class), ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyBoolean());
         
         //list
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Stream.ofIndex(3), null);
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), null);
-            put(FFmpeg.Identifier.Chapter.all(), null);
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.ofIndex(3), null),
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), null),
+                new ImmutablePair<>(FFmpeg.Identifier.Chapter.all(), null)
+        ));
         FFmpeg.clearMetadata(testSource, new ArrayList<>(testModifiers.get().keySet()), testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(1))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(true), ArgumentMatchers.eq(true));
         
         //identifier
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), null);
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.AUDIO), null)
+        ));
         FFmpeg.clearMetadata(testSource, new ArrayList<>(testModifiers.get().keySet()).get(0), testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(2))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(true), ArgumentMatchers.eq(true));
         
         //global
-        testModifiers.set(new LinkedHashMap<>() {{
-            put(FFmpeg.Identifier.Global.get(), null);
-        }});
+        testModifiers.set(MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>(FFmpeg.Identifier.Global.get(), null)
+        ));
         FFmpeg.clearMetadata(testSource, testOutput);
         PowerMockito.verifyPrivate(FFmpeg.class, VerificationModeFactory.times(3))
                 .invoke("modifyMetadata", ArgumentMatchers.eq(testSource), ArgumentMatchers.anyMap(), ArgumentMatchers.eq(testOutput), ArgumentMatchers.eq(true), ArgumentMatchers.eq(true));
@@ -4714,7 +4628,7 @@ public class FFmpegTest {
      * @throws Exception When there is an exception.
      * @see FFmpeg.MediaInfo.MetadataTags
      */
-    @SuppressWarnings("AssertBetweenInconvertibleTypes")
+    @SuppressWarnings({"AssertBetweenInconvertibleTypes", "rawtypes"})
     private void testMediaInfoMetadataTags() throws Exception {
         final File testVideo = new File(testResources, "test.mkv");
         final FFmpeg.MediaInfo mediaInfo = FFmpeg.getMediaInfo(testVideo);
@@ -4889,11 +4803,17 @@ public class FFmpegTest {
         Assert.assertEquals("{title:'The Last Chapter'}", tags.toString());
         
         //constructors
-        tags = new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-            put("test", "value");
-            put("test 2", "2nd value");
-            put("s:o=m;t(h)i[n]g\n", "s:o=m;t(h)i[n]g\n");
-        }});
+        tags = new FFmpeg.MediaInfo.MetadataTags((LinkedHashMap<String, String>) MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>("test", "value"),
+                new ImmutablePair<>("test 2", "2nd value"),
+                new ImmutablePair<>("s:o=m;t(h)i[n]g\n", "s:o=m;t(h)i[n]g\n")
+        ));
+        Assert.assertEquals(3, tags.size());
+        Assert.assertEquals("{test:'value', test 2:'2nd value', s:o=m;t(h)i[n]g\n:'s:o=m;t(h)i[n]g\n'}", tags.toString());
+        tags = new FFmpeg.MediaInfo.MetadataTags(
+                new ImmutablePair<>("test", "value"),
+                new ImmutablePair<>("test 2", "2nd value"),
+                new ImmutablePair<>("s:o=m;t(h)i[n]g\n", "s:o=m;t(h)i[n]g\n"));
         Assert.assertEquals(3, tags.size());
         Assert.assertEquals("{test:'value', test 2:'2nd value', s:o=m;t(h)i[n]g\n:'s:o=m;t(h)i[n]g\n'}", tags.toString());
         tags = new FFmpeg.MediaInfo.MetadataTags(List.of("test", "test 2", "s:o=m;t(h)i[n]g\n"));
@@ -4908,53 +4828,52 @@ public class FFmpegTest {
         Assert.assertNotNull(tags);
         Assert.assertEquals(0, tags.size());
         Assert.assertEquals("{}", tags.toString());
-        TestUtils.setField(tags, "tags", new LinkedHashMap<String, String>() {{
-            put("test", "value");
-        }});
+        TestUtils.setField(tags, "tags", MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>("test", "value")));
         Assert.assertEquals(1, tags.size());
         Assert.assertEquals("{test:'value'}", tags.toString());
-        TestUtils.setField(tags, "tags", new LinkedHashMap<String, String>() {{
-            put("test", "value");
-            put("test 2", "2nd value");
-            put("s:o=m;t(h)i[n]g\n", "s:o=m;t(h)i[n]g\n");
-        }});
+        TestUtils.setField(tags, "tags", MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>("test", "value"),
+                new ImmutablePair<>("test 2", "2nd value"),
+                new ImmutablePair<>("s:o=m;t(h)i[n]g\n", "s:o=m;t(h)i[n]g\n")
+        ));
         Assert.assertEquals(3, tags.size());
         Assert.assertEquals("{test:'value', test 2:'2nd value', s:o=m;t(h)i[n]g\n:'s:o=m;t(h)i[n]g\n'}", tags.toString());
         
         //equals
         tags = new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>());
         tags2 = new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>());
-        TestUtils.setField(tags, "tags", new LinkedHashMap<String, String>() {{
-            put("test", "value");
-            put("other", "other value");
-        }});
-        TestUtils.setField(tags2, "tags", new LinkedHashMap<String, String>() {{
-            put("test", "value");
-            put("other", "other value");
-        }});
+        TestUtils.setField(tags, "tags", MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>("test", "value"),
+                new ImmutablePair<>("other", "other value")
+        ));
+        TestUtils.setField(tags2, "tags", MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>("test", "value"),
+                new ImmutablePair<>("other", "other value")
+        ));
         Assert.assertEquals(tags, tags2);
         Assert.assertEquals(tags2, tags);
-        TestUtils.setField(tags2, "tags", new LinkedHashMap<String, String>() {{
-            put("other", "other value");
-            put("test", "value");
-        }});
+        TestUtils.setField(tags2, "tags", MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>("other", "other value"),
+                new ImmutablePair<>("test", "value")
+        ));
         Assert.assertEquals(tags, tags2);
         Assert.assertEquals(tags2, tags);
-        TestUtils.setField(tags2, "tags", new LinkedHashMap<String, String>() {{
-            put("test", "value");
-            put("other", "other value");
-            put("last", "last value");
-        }});
+        TestUtils.setField(tags2, "tags", MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>("test", "value"),
+                new ImmutablePair<>("other", "other value"),
+                new ImmutablePair<>("last", "last value")
+        ));
         Assert.assertNotEquals(tags, tags2);
         Assert.assertNotEquals(tags2, tags);
-        TestUtils.setField(tags, "tags", new LinkedHashMap<String, String>() {{
-            put("test", "value");
-            put("other", "other value");
-        }});
-        TestUtils.setField(tags2, "tags", new LinkedHashMap<String, String>() {{
-            put("another", "another value");
-            put("last", "last value");
-        }});
+        TestUtils.setField(tags, "tags", MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>("test", "value"),
+                new ImmutablePair<>("other", "other value")
+        ));
+        TestUtils.setField(tags2, "tags", MapUtility.mapOf(LinkedHashMap.class,
+                new ImmutablePair<>("another", "another value"),
+                new ImmutablePair<>("last", "last value")
+        ));
         Assert.assertNotEquals(tags, tags2);
         Assert.assertNotEquals(tags2, tags);
         tags = mediaInfo.getMetadata();
@@ -4966,11 +4885,11 @@ public class FFmpegTest {
         Assert.assertNotEquals(tags, null);
         
         //metadata cmds
-        tags = new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>() {{
-            put("test", "value");
-            put("test 2", "2nd value");
-            put("s:o=m;t(h)i[n]g\n", "s:o=m;t(h)i[n]g\n");
-        }});
+        tags = new FFmpeg.MediaInfo.MetadataTags(
+                new ImmutablePair<>("test", "value"),
+                new ImmutablePair<>("test 2", "2nd value"),
+                new ImmutablePair<>("s:o=m;t(h)i[n]g\n", "s:o=m;t(h)i[n]g\n")
+        );
         Assert.assertEquals(
                 " -metadata:s:v:1 \"test\"=\"value\" -metadata:s:v:1 \"test 2\"=\"2nd value\" -metadata:s:v:1 \"s:o-m;t(h)i[n]g - \"=\"s:o-m;t(h)i[n]g - \"",
                 tags.setMetadataCmd(FFmpeg.Identifier.Stream.of(FFmpeg.StreamType.VIDEO, 1)));
@@ -5002,9 +4921,9 @@ public class FFmpegTest {
         TestUtils.assertNoException(() ->
                 new FFmpeg.MediaInfo.MetadataTags(new JSONObject()));
         TestUtils.assertException(NullPointerException.class, () ->
-                new FFmpeg.MediaInfo.MetadataTags((LinkedHashMap<String, String>) null));
+                new FFmpeg.MediaInfo.MetadataTags((LinkedHashMap) null));
         TestUtils.assertException(NullPointerException.class, () ->
-                new FFmpeg.MediaInfo.MetadataTags((ArrayList<String>) null));
+                new FFmpeg.MediaInfo.MetadataTags((ArrayList) null));
         TestUtils.assertException(NullPointerException.class, () ->
                 new FFmpeg.MediaInfo.MetadataTags((JSONObject) null));
     }
