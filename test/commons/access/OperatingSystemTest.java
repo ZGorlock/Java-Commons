@@ -235,6 +235,65 @@ public class OperatingSystemTest {
     }
     
     /**
+     * JUnit test of is.
+     *
+     * @throws Exception When there is an exception.
+     * @see OperatingSystem#is(OperatingSystem.OS)
+     */
+    @Test
+    public void testIs() throws Exception {
+        //Windows
+        for (String windowsOs : WINDOWS_OS_EXAMPLES) {
+            osName = windowsOs;
+            Assert.assertTrue(OperatingSystem.is(OperatingSystem.OS.WINDOWS));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.UNIX));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.MACOS));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.POSIX));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.OTHER));
+        }
+        
+        //Unix
+        for (String unixOs : UNIX_OS_EXAMPLES) {
+            osName = unixOs;
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.WINDOWS));
+            Assert.assertTrue(OperatingSystem.is(OperatingSystem.OS.UNIX));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.MACOS));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.POSIX));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.OTHER));
+        }
+        
+        //MacOS
+        for (String macOs : MAC_OS_EXAMPLES) {
+            osName = macOs;
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.WINDOWS));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.UNIX));
+            Assert.assertTrue(OperatingSystem.is(OperatingSystem.OS.MACOS));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.POSIX));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.OTHER));
+        }
+        
+        //POSIX
+        for (String posixOs : POSIX_OS_EXAMPLES) {
+            osName = posixOs;
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.WINDOWS));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.UNIX));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.MACOS));
+            Assert.assertTrue(OperatingSystem.is(OperatingSystem.OS.POSIX));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.OTHER));
+        }
+        
+        //Other
+        for (String otherOs : OTHER_OS_EXAMPLES) {
+            osName = otherOs;
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.WINDOWS));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.UNIX));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.MACOS));
+            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.POSIX));
+            Assert.assertTrue(OperatingSystem.is(OperatingSystem.OS.OTHER));
+        }
+    }
+    
+    /**
      * JUnit test of isWindows.
      *
      * @throws Exception When there is an exception.
@@ -426,65 +485,6 @@ public class OperatingSystemTest {
         for (String otherOs : OTHER_OS_EXAMPLES) {
             osName = otherOs;
             Assert.assertTrue(OperatingSystem.isOther());
-        }
-    }
-    
-    /**
-     * JUnit test of is.
-     *
-     * @throws Exception When there is an exception.
-     * @see OperatingSystem#is(OperatingSystem.OS)
-     */
-    @Test
-    public void testIs() throws Exception {
-        //Windows
-        for (String windowsOs : WINDOWS_OS_EXAMPLES) {
-            osName = windowsOs;
-            Assert.assertTrue(OperatingSystem.is(OperatingSystem.OS.WINDOWS));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.UNIX));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.MACOS));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.POSIX));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.OTHER));
-        }
-        
-        //Unix
-        for (String unixOs : UNIX_OS_EXAMPLES) {
-            osName = unixOs;
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.WINDOWS));
-            Assert.assertTrue(OperatingSystem.is(OperatingSystem.OS.UNIX));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.MACOS));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.POSIX));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.OTHER));
-        }
-        
-        //MacOS
-        for (String macOs : MAC_OS_EXAMPLES) {
-            osName = macOs;
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.WINDOWS));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.UNIX));
-            Assert.assertTrue(OperatingSystem.is(OperatingSystem.OS.MACOS));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.POSIX));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.OTHER));
-        }
-        
-        //POSIX
-        for (String posixOs : POSIX_OS_EXAMPLES) {
-            osName = posixOs;
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.WINDOWS));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.UNIX));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.MACOS));
-            Assert.assertTrue(OperatingSystem.is(OperatingSystem.OS.POSIX));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.OTHER));
-        }
-        
-        //Other
-        for (String otherOs : OTHER_OS_EXAMPLES) {
-            osName = otherOs;
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.WINDOWS));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.UNIX));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.MACOS));
-            Assert.assertFalse(OperatingSystem.is(OperatingSystem.OS.POSIX));
-            Assert.assertTrue(OperatingSystem.is(OperatingSystem.OS.OTHER));
         }
     }
     
