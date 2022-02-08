@@ -16,12 +16,19 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Consumer;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import commons.console.ProgressBar;
@@ -122,12 +129,16 @@ public class CmdLineTest {
      * JUnit test of executeCmd.
      *
      * @throws Exception When there is an exception.
+     * @see CmdLine#executeCmd(String, boolean, ProgressBar)
+     * @see CmdLine#executeCmd(String, boolean)
      * @see CmdLine#executeCmd(String, ProgressBar)
      * @see CmdLine#executeCmd(String)
      */
     @Test
     public void testExecuteCmd() throws Exception {
         PowerMockito.mockStatic(CmdLine.class);
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.any(), ArgumentMatchers.anyBoolean(), ArgumentMatchers.any());
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.any(), ArgumentMatchers.anyBoolean());
         PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.any(), ArgumentMatchers.any());
         PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.any());
         PowerMockito.doCallRealMethod().when(CmdLine.class, "buildProcess", ArgumentMatchers.any());
@@ -140,6 +151,8 @@ public class CmdLineTest {
         PipedInputStream processInputStream;
         PipedOutputStream processErrorStreamWriter;
         PipedInputStream processErrorStream;
+        ProcessBuilder invalidProcessBuilder;
+        ProgressBar invalidProgressBar;
         final AtomicBoolean processAlive = new AtomicBoolean(false);
         final List<String> testResponseLines = Collections.synchronizedList(new ArrayList<>());
         
@@ -159,6 +172,8 @@ public class CmdLineTest {
         mockProcessBuilder = PowerMockito.mock(ProcessBuilder.class);
         PowerMockito.when(mockProcessBuilder.start()).thenReturn(mockProcess);
         
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString(), ArgumentMatchers.anyBoolean(), ArgumentMatchers.any());
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString(), ArgumentMatchers.anyBoolean());
         PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString(), ArgumentMatchers.any());
         PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString());
         PowerMockito.doCallRealMethod().when(CmdLine.class, "buildProcess", ArgumentMatchers.anyString());
@@ -210,6 +225,8 @@ public class CmdLineTest {
         PowerMockito.doCallRealMethod().when(CmdLine.class, "buildProcess", ArgumentMatchers.any());
         PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.any());
         PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.any(), ArgumentMatchers.any());
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.any(), ArgumentMatchers.anyBoolean());
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.any(), ArgumentMatchers.anyBoolean(), ArgumentMatchers.any());
         
         //progress bar
         
@@ -228,6 +245,8 @@ public class CmdLineTest {
         PowerMockito.when(mockProcessBuilder.start()).thenReturn(mockProcess);
         mockProgressBar = Mockito.mock(ProgressBar.class);
         
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString(), ArgumentMatchers.anyBoolean(), ArgumentMatchers.any());
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString(), ArgumentMatchers.anyBoolean());
         PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString(), ArgumentMatchers.any());
         PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString());
         PowerMockito.doCallRealMethod().when(CmdLine.class, "buildProcess", ArgumentMatchers.anyString());
@@ -287,6 +306,34 @@ public class CmdLineTest {
         PowerMockito.doCallRealMethod().when(CmdLine.class, "buildProcess", ArgumentMatchers.any());
         PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.any());
         PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.any(), ArgumentMatchers.any());
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.any(), ArgumentMatchers.anyBoolean());
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "executeCmd", ArgumentMatchers.any(), ArgumentMatchers.anyBoolean(), ArgumentMatchers.any());
+        
+        //safe execute
+        PowerMockito.spy(OperatingSystem.class);
+        String saveOs = System.getProperty("os.name");
+        System.setProperty("os.name", "OtherOS");
+        PowerMockito.doReturn(OperatingSystem.OS.OTHER).when(OperatingSystem.class, "getOperatingSystem");
+        TestUtils.assertException(RuntimeException.class, "java.lang.RuntimeException: Operating system: OTHEROS is not supported!", () ->
+                CmdLine.executeCmd("test cmd", false));
+        Assert.assertNull(CmdLine.executeCmd("test cmd"));
+        Assert.assertNull(CmdLine.executeCmd("test cmd", true));
+        PowerMockito.doCallRealMethod().when(OperatingSystem.class, "getOperatingSystem");
+        System.setProperty("os.name", saveOs);
+        invalidProcessBuilder = PowerMockito.mock(ProcessBuilder.class);
+        Mockito.doThrow(new UnsupportedOperationException()).when(invalidProcessBuilder).start();
+        PowerMockito.doReturn(invalidProcessBuilder).when(CmdLine.class, "buildProcess", ArgumentMatchers.anyString(), ArgumentMatchers.anyBoolean());
+        TestUtils.assertException(RuntimeException.class, "java.lang.UnsupportedOperationException", () ->
+                CmdLine.executeCmd("test cmd", false));
+        Assert.assertNull(CmdLine.executeCmd("test cmd"));
+        Assert.assertNull(CmdLine.executeCmd("test cmd", true));
+        PowerMockito.doCallRealMethod().when(CmdLine.class, "buildProcess", ArgumentMatchers.anyString(), ArgumentMatchers.anyBoolean());
+        invalidProgressBar = PowerMockito.mock(ProgressBar.class);
+        Mockito.doThrow(new IllegalStateException("progressBar#complete")).when(invalidProgressBar).complete();
+        TestUtils.assertException(RuntimeException.class, "java.lang.IllegalStateException: progressBar#complete", () ->
+                CmdLine.executeCmd("test cmd", false, invalidProgressBar));
+        Assert.assertNull(CmdLine.executeCmd("test cmd", invalidProgressBar));
+        Assert.assertNull(CmdLine.executeCmd("test cmd", true, invalidProgressBar));
         
         //real case, Windows
         
@@ -315,9 +362,10 @@ public class CmdLineTest {
         }
         
         //invalid
-        
-        Assert.assertEquals("", CmdLine.executeCmd(""));
-        Assert.assertEquals("", CmdLine.executeCmd(null));
+        Assert.assertNull(CmdLine.executeCmd(""));
+        Assert.assertNull(CmdLine.executeCmd("", null));
+        Assert.assertNull(CmdLine.executeCmd(null));
+        Assert.assertNull(CmdLine.executeCmd(null, null));
     }
     
     /**
@@ -522,561 +570,368 @@ public class CmdLineTest {
      */
     @Test
     public void testKillProcess() throws Exception {
-        PowerMockito.mockStatic(CmdLine.class);
-        PowerMockito.doCallRealMethod().when(CmdLine.class, "killProcess", ArgumentMatchers.any(Process.class));
-        PowerMockito.doReturn(PowerMockito.mock(ProcessBuilder.class)).when(CmdLine.class, "buildProcess", ArgumentMatchers.anyString());
-        PowerMockito.mockStatic(OperatingSystem.class);
+        final Class<?> ProcessKiller = TestUtils.getEnum(CmdLine.class, "ProcessKiller");
+        final Process mockProcess = Mockito.mock(Process.class);
         
-        List<AtomicBoolean> processIsAlive = Arrays.asList(
-                new AtomicBoolean(true), new AtomicBoolean(false), new AtomicBoolean(false), new AtomicBoolean(false));
-        List<Long> processPid = Arrays.asList(
-                MathUtility.random(1000001L, 1000100L), MathUtility.random(1000101L, 1000200L), MathUtility.random(1000201L, 1000300L), MathUtility.random(1000301L, 1000400L));
-        ProcessHandle mockProcessHandle = Mockito.mock(ProcessHandle.class, Mockito.CALLS_REAL_METHODS);
-        ProcessHandle mockSubProcessHandle1 = Mockito.mock(ProcessHandle.class, Mockito.CALLS_REAL_METHODS);
-        ProcessHandle mockSubProcessHandle2 = Mockito.mock(ProcessHandle.class, Mockito.CALLS_REAL_METHODS);
-        ProcessHandle mockSubSubProcessHandle1 = Mockito.mock(ProcessHandle.class, Mockito.CALLS_REAL_METHODS);
-        Mockito.when(mockProcessHandle.isAlive()).thenAnswer((Answer<Boolean>) invocationOnMock -> processIsAlive.get(0).get());
-        Mockito.when(mockSubProcessHandle1.isAlive()).thenAnswer((Answer<Boolean>) invocationOnMock -> processIsAlive.get(1).get());
-        Mockito.when(mockSubProcessHandle2.isAlive()).thenAnswer((Answer<Boolean>) invocationOnMock -> processIsAlive.get(2).get());
-        Mockito.when(mockSubSubProcessHandle1.isAlive()).thenAnswer((Answer<Boolean>) invocationOnMock -> processIsAlive.get(3).get());
-        Mockito.when(mockProcessHandle.pid()).thenAnswer((Answer<Long>) invocationOnMock -> processPid.get(0));
-        Mockito.when(mockSubProcessHandle1.pid()).thenAnswer((Answer<Long>) invocationOnMock -> processPid.get(1));
-        Mockito.when(mockSubProcessHandle2.pid()).thenAnswer((Answer<Long>) invocationOnMock -> processPid.get(2));
-        Mockito.when(mockSubSubProcessHandle1.pid()).thenAnswer((Answer<Long>) invocationOnMock -> processPid.get(3));
-        Mockito.when(mockProcessHandle.descendants()).thenAnswer((Answer<Stream<ProcessHandle>>) invocationOnMock ->
-                Stream.of(mockSubProcessHandle1, mockSubSubProcessHandle1, mockSubProcessHandle2));
-        Process mockProcess = Mockito.mock(Process.class, Mockito.CALLS_REAL_METHODS);
-        Mockito.doReturn(mockProcessHandle).when(mockProcess).toHandle();
-        Mockito.doReturn(false).when(mockProcessHandle).destroy();
-        Mockito.doReturn(false).when(mockSubProcessHandle1).destroy();
-        Mockito.doReturn(false).when(mockSubProcessHandle2).destroy();
-        Mockito.doReturn(false).when(mockSubSubProcessHandle1).destroy();
-        Mockito.doReturn(false).when(mockProcessHandle).destroyForcibly();
-        Mockito.doReturn(false).when(mockSubProcessHandle1).destroyForcibly();
-        Mockito.doReturn(false).when(mockSubProcessHandle2).destroyForcibly();
-        Mockito.doReturn(false).when(mockSubSubProcessHandle1).destroyForcibly();
+        //standard
+        PowerMockito.spy(ProcessKiller);
+        PowerMockito.doReturn(true).when(ProcessKiller, "kill", ArgumentMatchers.eq(mockProcess));
+        CmdLine.killProcess(mockProcess);
+        PowerMockito.verifyPrivate(ProcessKiller, VerificationModeFactory.times(1))
+                .invoke("kill", ArgumentMatchers.eq(mockProcess));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                CmdLine.killProcess(null));
+    }
+    
+    /**
+     * JUnit test of ProcessKiller.
+     *
+     * @throws Exception When there is an exception.
+     * @see CmdLine.ProcessKiller
+     * @see CmdLine.ProcessKiller.KillStage
+     */
+    @Test
+    public void testProcessKiller() throws Exception {
+        final Class<?> ProcessKiller = TestUtils.getEnum(CmdLine.class, "ProcessKiller");
+        final Class<?> KillStage = TestUtils.getEnum(ProcessKiller, "KillStage");
+        final Object[] enumValues = KillStage.getEnumConstants();
+        final AtomicReference<OperatingSystem.OS> operatingSystem = new AtomicReference<>(null);
+        
+        PowerMockito.spy(OperatingSystem.class);
+        PowerMockito.doAnswer((Answer<OperatingSystem.OS>) invocation -> (operatingSystem.get() != null) ? operatingSystem.get() : (OperatingSystem.OS) invocation.callRealMethod())
+                .when(OperatingSystem.class, "getOperatingSystem");
+        
+        //constants
+        operatingSystem.set(OperatingSystem.OS.WINDOWS);
+        Assert.assertEquals(
+                "[DESTROY->DESTROY_FORCIBLY | DESTROY_FORCIBLY->CMD_KILL_WINDOWS | CMD_KILL->CMD_KILL_HARD | CMD_KILL_HARD->null | CMD_KILL_WINDOWS->null]",
+                ((LinkedHashMap<Object, Object>) TestUtils.getField(ProcessKiller, "KILL_SEQUENCE")).entrySet().stream()
+                        .map(e -> e.getKey() + "->" + ((Supplier<Object>) e.getValue()).get()).collect(Collectors.joining(" | ", "[", "]")));
+        operatingSystem.set(OperatingSystem.OS.UNIX);
+        Assert.assertEquals(
+                "[DESTROY->DESTROY_FORCIBLY | DESTROY_FORCIBLY->CMD_KILL | CMD_KILL->CMD_KILL_HARD | CMD_KILL_HARD->null | CMD_KILL_WINDOWS->null]",
+                ((LinkedHashMap<Object, Object>) TestUtils.getField(ProcessKiller, "KILL_SEQUENCE")).entrySet().stream()
+                        .map(e -> e.getKey() + "->" + ((Supplier<Object>) e.getValue()).get()).collect(Collectors.joining(" | ", "[", "]")));
+        operatingSystem.set(null);
+        Assert.assertEquals(250L, TestUtils.getField(ProcessKiller, "DEFAULT_VALIDATION_DELAY"));
+        
+        //kill stage
+        Assert.assertEquals(5, enumValues.length);
+        Assert.assertEquals("DESTROY", enumValues[0].toString());
+        Assert.assertEquals("DESTROY_FORCIBLY", enumValues[1].toString());
+        Assert.assertEquals("CMD_KILL", enumValues[2].toString());
+        Assert.assertEquals("CMD_KILL_HARD", enumValues[3].toString());
+        Assert.assertEquals("CMD_KILL_WINDOWS", enumValues[4].toString());
+        Assert.assertTrue(Arrays.stream(enumValues).map(e -> TestUtils.getField(e, "action")).allMatch(Objects::nonNull));
+        Assert.assertTrue(Arrays.stream(enumValues).allMatch(e -> ((long) TestUtils.getField(e, "validationDelay")) == (e.toString().equals("DESTROY_FORCIBLY") ? 750 : 250)));
+        Assert.assertTrue(Arrays.stream(enumValues).allMatch(e -> (!(boolean) TestUtils.getField(e, "reverseTree") || e.toString().matches("^CMD_KILL(?:_WINDOWS)?$"))));
+        
+        //instance
+        Assert.assertEquals(List.class, ProcessKiller.getDeclaredField("processTree").getType());
+        Assert.assertEquals(KillStage, ProcessKiller.getDeclaredField("stage").getType());
+        Assert.assertNotNull(ProcessKiller.getDeclaredConstructor(Process.class));
+        Assert.assertNotNull(ProcessKiller.getDeclaredMethod("nextStage"));
+        Assert.assertNotNull(ProcessKiller.getDeclaredMethod("finished"));
+        Assert.assertNotNull(ProcessKiller.getDeclaredMethod("succeeded"));
+        
+        //kill
+        testProcessKillerKill();
+    }
+    
+    /**
+     * Helper method for JUnit test of ProcessKiller for kill.
+     *
+     * @throws Exception When there is an exception.
+     * @see CmdLine.ProcessKiller#kill(Process)
+     */
+    private void testProcessKillerKill() throws Exception {
+        final int PROCESS_TREE_SIZE = 4;
+        final AtomicReference<Process> process = new AtomicReference<>(null);
+        final List<ProcessHandle> processHandles = Arrays.asList(null, null, null, null); //handle, sub handle A, sub handle B, sub handle A sub handle
+        final List<AtomicBoolean> processAlive = IntStream.range(0, PROCESS_TREE_SIZE).boxed().map(i -> new AtomicBoolean(false)).collect(Collectors.toList());
+        final List<Long> processPid = IntStream.range(0, PROCESS_TREE_SIZE).boxed().map(i -> (MathUtility.random(1000001L, 1000100L) + (100L * i))).collect(Collectors.toList());
+        final AtomicReference<OperatingSystem.OS> operatingSystem = new AtomicReference<>(null);
+        
+        PowerMockito.spy(CmdLine.class);
+        PowerMockito.spy(OperatingSystem.class);
+        PowerMockito.doAnswer((Answer<OperatingSystem.OS>) invocation -> (operatingSystem.get() != null) ? operatingSystem.get() : (OperatingSystem.OS) invocation.callRealMethod())
+                .when(OperatingSystem.class, "getOperatingSystem");
+        
+        final Consumer<boolean[][]> mockProcessInitializer = (boolean[][] properties) -> { //handle, sub handle A, sub handle B, sub handle A sub handle  |  isAlive, destroy, destroyForcibly, cmd
+            process.set(Mockito.mock(Process.class, Mockito.CALLS_REAL_METHODS));
+            processHandles.replaceAll(e -> Mockito.mock(ProcessHandle.class, Mockito.CALLS_REAL_METHODS));
+            processPid.replaceAll(e -> (e + 1000L));
+            IntStream.range(0, PROCESS_TREE_SIZE).forEach(i -> {
+                try {
+                    processAlive.get(i).set(properties[0][i]);
+                    Mockito.doAnswer((Answer<Boolean>) invocation -> processAlive.get(i).get()).when(processHandles.get(i)).isAlive();
+                    Mockito.doAnswer((Answer<Long>) invocation -> processPid.get(i)).when(processHandles.get(i)).pid();
+                    Mockito.doAnswer((Answer<Boolean>) invocation -> (properties[1][i] && processAlive.get(i).getAndSet(false))).when(processHandles.get(i)).destroy();
+                    Mockito.doAnswer((Answer<Boolean>) invocation -> (properties[2][i] && processAlive.get(i).getAndSet(false))).when(processHandles.get(i)).destroyForcibly();
+                    PowerMockito.doAnswer((Answer<ProcessBuilder>) invocation -> {
+                        final String cmd = invocation.getArgument(0);
+                        if ((properties[3][0] && cmd.contains("taskkill")) || (properties[3][1] && cmd.contains("SIGTERM")) || (properties[3][2] && cmd.contains("SIGKILL"))) {
+                            processAlive.get(processPid.indexOf(Long.parseLong(cmd.replaceAll("(?:[^\\s]+\\s)*", "")))).set(false);
+                        }
+                        return PowerMockito.mock(ProcessBuilder.class);
+                    }).when(CmdLine.class, "buildProcess", ArgumentMatchers.anyString());
+                } catch (Exception e) {
+                    Assert.fail(e.getMessage());
+                }
+            });
+            Mockito.doAnswer((Answer<Stream<ProcessHandle>>) invocation -> Stream.of(processHandles.get(3))).when(processHandles.get(1)).descendants();
+            Mockito.doAnswer((Answer<Stream<ProcessHandle>>) invocation -> IntStream.range(1, PROCESS_TREE_SIZE).boxed().map(processHandles::get)).when(processHandles.get(0)).descendants();
+            Mockito.doReturn(processHandles.get(0)).when(process.get()).toHandle();
+        };
+        final Consumer<int[][]> mockProcessVerifier = (int[][] expected) -> { //process, handle, sub handle A, sub handle B, sub handle A sub handle  |  toHandle, descendants, isAlive, destroy, destroyForcibly, taskkill, SIGTERM, SIGKILL, killed
+            IntStream.rangeClosed(0, PROCESS_TREE_SIZE).forEachOrdered(i -> {
+                final Object mock = (i == 0) ? process.get() : processHandles.get(i - 1);
+                try {
+                    if (i == 0) {
+                        PowerMockito.verifyPrivate(mock, ((expected[1][i] > 0) ? VerificationModeFactory.times(expected[0][i]) : Mockito.never())).invoke("toHandle");
+                    }
+                    PowerMockito.verifyPrivate(mock, ((expected[1][i] > 0) ? VerificationModeFactory.times(expected[1][i]) : Mockito.never())).invoke("descendants");
+                    PowerMockito.verifyPrivate(mock, ((expected[2][i] > 0) ? VerificationModeFactory.times(expected[2][i]) : Mockito.never())).invoke("isAlive");
+                    PowerMockito.verifyPrivate(mock, ((expected[3][i] > 0) ? VerificationModeFactory.times(expected[3][i]) : Mockito.never())).invoke("destroy");
+                    PowerMockito.verifyPrivate(mock, ((expected[4][i] > 0) ? VerificationModeFactory.times(expected[4][i]) : Mockito.never())).invoke("destroyForcibly");
+                    PowerMockito.verifyPrivate(mock, (((expected[5][i] + expected[6][i] + expected[7][i]) > 0) ? VerificationModeFactory.times((expected[5][i] + expected[6][i] + expected[7][i])) : Mockito.never())).invoke("pid");
+                    PowerMockito.verifyNoMoreInteractions(mock);
+                    if (i > 0) {
+                        Assert.assertEquals((expected[8][i] == 0), processAlive.get(i - 1).get());
+                        PowerMockito.verifyStatic(CmdLine.class, ((expected[5][i] > 0) ? VerificationModeFactory.times(expected[5][i]) : Mockito.never()));
+                        CmdLine.buildProcess(ArgumentMatchers.eq("taskkill /F /PID " + processPid.get(i - 1)));
+                        PowerMockito.verifyStatic(CmdLine.class, ((expected[6][i] > 0) ? VerificationModeFactory.times(expected[6][i]) : Mockito.never()));
+                        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGTERM " + processPid.get(i - 1)));
+                        PowerMockito.verifyStatic(CmdLine.class, ((expected[7][i] > 0) ? VerificationModeFactory.times(expected[7][i]) : Mockito.never()));
+                        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGKILL " + processPid.get(i - 1)));
+                    }
+                } catch (Exception e) {
+                    Assert.fail(e.getMessage());
+                }
+            });
+        };
         
         //none alive
-        processIsAlive.get(0).set(false);
-        processIsAlive.get(1).set(false);
-        processIsAlive.get(2).set(false);
-        processIsAlive.get(3).set(false);
-        Assert.assertTrue(CmdLine.killProcess(mockProcess));
-        Mockito.verify(mockProcess, VerificationModeFactory.times(2)).toHandle();
-        Mockito.verify(mockProcess, VerificationModeFactory.times(1)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(1)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(1)).isAlive();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(1)).isAlive();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(1)).isAlive();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(1)).isAlive();
-        Mockito.verifyNoMoreInteractions(mockProcess);
-        Mockito.verifyNoMoreInteractions(mockProcessHandle);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle1);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle2);
-        Mockito.verifyNoMoreInteractions(mockSubSubProcessHandle1);
+        mockProcessInitializer.accept(new boolean[][] {
+                new boolean[] /*alive    */ {false, false, false, false},
+                new boolean[] /*destroy  */ {false, false, false, false},
+                new boolean[] /*forcibly */ {false, false, false, false},
+                new boolean[] /*cmd      */ {false, false, false}
+        });
+        Assert.assertTrue(CmdLine.killProcess(process.get()));
+        mockProcessVerifier.accept(new int[][] {
+                new int[] /*toHandle*/ {2, 0, 0, 0, 0}, new int[] /*descendants*/ {1, 1, 0, 0, 0},
+                new int[] /*alive   */ {0, 2, 2, 2, 2}, new int[] /*destroy    */ {0, 0, 0, 0, 0},
+                new int[] /*forcibly*/ {0, 0, 0, 0, 0}, new int[] /*taskkill   */ {0, 0, 0, 0, 0},
+                new int[] /*sigterm */ {0, 0, 0, 0, 0}, new int[] /*sigkill    */ {0, 0, 0, 0, 0},
+                new int[] /*killed  */ {1, 1, 1, 1, 1}
+        });
         
         //main process alive
-        processIsAlive.get(0).set(true);
-        processIsAlive.get(1).set(false);
-        processIsAlive.get(2).set(false);
-        processIsAlive.get(3).set(false);
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(0).set(false);
-            return null;
-        }).when(mockProcessHandle).destroy();
-        Assert.assertTrue(CmdLine.killProcess(mockProcess));
-        Mockito.verify(mockProcess, VerificationModeFactory.times(4)).toHandle();
-        Mockito.verify(mockProcess, VerificationModeFactory.times(2)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(2)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(4)).isAlive();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(1)).destroy();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(3)).isAlive();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(3)).isAlive();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(3)).isAlive();
-        Mockito.verifyNoMoreInteractions(mockProcess);
-        Mockito.verifyNoMoreInteractions(mockProcessHandle);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle1);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle2);
-        Mockito.verifyNoMoreInteractions(mockSubSubProcessHandle1);
-        Mockito.doReturn(false).when(mockProcessHandle).destroy();
+        mockProcessInitializer.accept(new boolean[][] {
+                new boolean[] /*alive    */ {true, false, false, false},
+                new boolean[] /*destroy  */ {true, false, false, false},
+                new boolean[] /*forcibly */ {false, false, false, false},
+                new boolean[] /*cmd      */ {false, false, false}
+        });
+        Assert.assertTrue(CmdLine.killProcess(process.get()));
+        mockProcessVerifier.accept(new int[][] {
+                new int[] /*toHandle*/ {2, 0, 0, 0, 0}, new int[] /*descendants*/ {1, 1, 0, 0, 0},
+                new int[] /*alive   */ {0, 4, 3, 3, 3}, new int[] /*destroy    */ {0, 1, 0, 0, 0},
+                new int[] /*forcibly*/ {0, 0, 0, 0, 0}, new int[] /*taskkill   */ {0, 0, 0, 0, 0},
+                new int[] /*sigterm */ {0, 0, 0, 0, 0}, new int[] /*sigkill    */ {0, 0, 0, 0, 0},
+                new int[] /*killed  */ {1, 1, 1, 1, 1}
+        });
         
         //all processes alive
-        processIsAlive.get(0).set(true);
-        processIsAlive.get(1).set(true);
-        processIsAlive.get(2).set(true);
-        processIsAlive.get(3).set(true);
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(0).set(false);
-            return null;
-        }).when(mockProcessHandle).destroy();
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(1).set(false);
-            return null;
-        }).when(mockSubProcessHandle1).destroy();
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(2).set(false);
-            return null;
-        }).when(mockSubProcessHandle2).destroy();
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(3).set(false);
-            return null;
-        }).when(mockSubSubProcessHandle1).destroy();
-        Assert.assertTrue(CmdLine.killProcess(mockProcess));
-        Mockito.verify(mockProcess, VerificationModeFactory.times(6)).toHandle();
-        Mockito.verify(mockProcess, VerificationModeFactory.times(3)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(3)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(7)).isAlive();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(2)).destroy();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(5)).isAlive();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(1)).destroy();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(5)).isAlive();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(1)).destroy();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(5)).isAlive();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(1)).destroy();
-        Mockito.verifyNoMoreInteractions(mockProcess);
-        Mockito.verifyNoMoreInteractions(mockProcessHandle);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle1);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle2);
-        Mockito.verifyNoMoreInteractions(mockSubSubProcessHandle1);
-        Mockito.doReturn(false).when(mockProcessHandle).destroy();
-        Mockito.doReturn(false).when(mockSubProcessHandle1).destroy();
-        Mockito.doReturn(false).when(mockSubProcessHandle2).destroy();
-        Mockito.doReturn(false).when(mockSubSubProcessHandle1).destroy();
+        mockProcessInitializer.accept(new boolean[][] {
+                new boolean[] /*alive    */ {true, true, true, true},
+                new boolean[] /*destroy  */ {true, true, true, true},
+                new boolean[] /*forcibly */ {false, false, false, false},
+                new boolean[] /*cmd      */ {false, false, false}
+        });
+        Assert.assertTrue(CmdLine.killProcess(process.get()));
+        mockProcessVerifier.accept(new int[][] {
+                new int[] /*toHandle*/ {2, 0, 0, 0, 0}, new int[] /*descendants*/ {1, 1, 0, 0, 0},
+                new int[] /*alive   */ {0, 4, 3, 3, 3}, new int[] /*destroy    */ {0, 1, 1, 1, 1},
+                new int[] /*forcibly*/ {0, 0, 0, 0, 0}, new int[] /*taskkill   */ {0, 0, 0, 0, 0},
+                new int[] /*sigterm */ {0, 0, 0, 0, 0}, new int[] /*sigkill    */ {0, 0, 0, 0, 0},
+                new int[] /*killed  */ {1, 1, 1, 1, 1}
+        });
         
         //sub processes alive
-        processIsAlive.get(0).set(false);
-        processIsAlive.get(1).set(false);
-        processIsAlive.get(2).set(true);
-        processIsAlive.get(3).set(true);
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(2).set(false);
-            return null;
-        }).when(mockSubProcessHandle2).destroy();
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(3).set(false);
-            return null;
-        }).when(mockSubSubProcessHandle1).destroy();
-        Assert.assertTrue(CmdLine.killProcess(mockProcess));
-        Mockito.verify(mockProcess, VerificationModeFactory.times(8)).toHandle();
-        Mockito.verify(mockProcess, VerificationModeFactory.times(4)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(4)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(10)).isAlive();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(2)).destroy();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(8)).isAlive();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(1)).destroy();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(7)).isAlive();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(2)).destroy();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(8)).isAlive();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(2)).destroy();
-        Mockito.verifyNoMoreInteractions(mockProcess);
-        Mockito.verifyNoMoreInteractions(mockProcessHandle);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle1);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle2);
-        Mockito.verifyNoMoreInteractions(mockSubSubProcessHandle1);
-        Mockito.doReturn(false).when(mockSubProcessHandle2).destroy();
-        Mockito.doReturn(false).when(mockSubSubProcessHandle1).destroy();
+        mockProcessInitializer.accept(new boolean[][] {
+                new boolean[] /*alive    */ {false, false, true, true},
+                new boolean[] /*destroy  */ {false, false, true, true},
+                new boolean[] /*forcibly */ {false, false, false, false},
+                new boolean[] /*cmd      */ {false, false, false}
+        });
+        Assert.assertTrue(CmdLine.killProcess(process.get()));
+        mockProcessVerifier.accept(new int[][] {
+                new int[] /*toHandle*/ {2, 0, 0, 0, 0}, new int[] /*descendants*/ {1, 1, 0, 0, 0},
+                new int[] /*alive   */ {0, 4, 4, 4, 3}, new int[] /*destroy    */ {0, 0, 0, 1, 1},
+                new int[] /*forcibly*/ {0, 0, 0, 0, 0}, new int[] /*taskkill   */ {0, 0, 0, 0, 0},
+                new int[] /*sigterm */ {0, 0, 0, 0, 0}, new int[] /*sigkill    */ {0, 0, 0, 0, 0},
+                new int[] /*killed  */ {1, 1, 1, 1, 1}
+        });
         
         //main process still alive
-        processIsAlive.get(0).set(true);
-        processIsAlive.get(1).set(false);
-        processIsAlive.get(2).set(false);
-        processIsAlive.get(3).set(false);
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(0).set(false);
-            return null;
-        }).when(mockProcessHandle).destroyForcibly();
-        Assert.assertTrue(CmdLine.killProcess(mockProcess));
-        Mockito.verify(mockProcess, VerificationModeFactory.times(10)).toHandle();
-        Mockito.verify(mockProcess, VerificationModeFactory.times(5)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(5)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(15)).isAlive();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(3)).destroy();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(1)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(11)).isAlive();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(1)).destroy();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(10)).isAlive();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(2)).destroy();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(11)).isAlive();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(2)).destroy();
-        Mockito.verifyNoMoreInteractions(mockProcess);
-        Mockito.verifyNoMoreInteractions(mockProcessHandle);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle1);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle2);
-        Mockito.verifyNoMoreInteractions(mockSubSubProcessHandle1);
-        Mockito.doReturn(false).when(mockProcessHandle).destroyForcibly();
+        mockProcessInitializer.accept(new boolean[][] {
+                new boolean[] /*alive    */ {true, false, false, false},
+                new boolean[] /*destroy  */ {false, false, false, false},
+                new boolean[] /*forcibly */ {true, false, false, false},
+                new boolean[] /*cmd      */ {false, false, false}
+        });
+        Assert.assertTrue(CmdLine.killProcess(process.get()));
+        mockProcessVerifier.accept(new int[][] {
+                new int[] /*toHandle*/ {2, 0, 0, 0, 0}, new int[] /*descendants*/ {1, 1, 0, 0, 0},
+                new int[] /*alive   */ {0, 6, 4, 4, 4}, new int[] /*destroy    */ {0, 1, 0, 0, 0},
+                new int[] /*forcibly*/ {0, 1, 0, 0, 0}, new int[] /*taskkill   */ {0, 0, 0, 0, 0},
+                new int[] /*sigterm */ {0, 0, 0, 0, 0}, new int[] /*sigkill    */ {0, 0, 0, 0, 0},
+                new int[] /*killed  */ {1, 1, 1, 1, 1}
+        });
         
         //all processes still alive
-        processIsAlive.get(0).set(true);
-        processIsAlive.get(1).set(true);
-        processIsAlive.get(2).set(true);
-        processIsAlive.get(3).set(true);
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(0).set(false);
-            return null;
-        }).when(mockProcessHandle).destroyForcibly();
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(1).set(false);
-            return null;
-        }).when(mockSubProcessHandle1).destroyForcibly();
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(2).set(false);
-            return null;
-        }).when(mockSubProcessHandle2).destroyForcibly();
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(3).set(false);
-            return null;
-        }).when(mockSubSubProcessHandle1).destroyForcibly();
-        Assert.assertTrue(CmdLine.killProcess(mockProcess));
-        Mockito.verify(mockProcess, VerificationModeFactory.times(12)).toHandle();
-        Mockito.verify(mockProcess, VerificationModeFactory.times(6)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(6)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(20)).isAlive();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(4)).destroy();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(2)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(14)).isAlive();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(2)).destroy();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(1)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(13)).isAlive();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(3)).destroy();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(1)).destroyForcibly();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(14)).isAlive();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(3)).destroy();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(1)).destroyForcibly();
-        Mockito.verifyNoMoreInteractions(mockProcess);
-        Mockito.verifyNoMoreInteractions(mockProcessHandle);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle1);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle2);
-        Mockito.verifyNoMoreInteractions(mockSubSubProcessHandle1);
-        Mockito.doReturn(false).when(mockProcessHandle).destroyForcibly();
-        Mockito.doReturn(false).when(mockSubProcessHandle1).destroyForcibly();
-        Mockito.doReturn(false).when(mockSubProcessHandle2).destroyForcibly();
-        Mockito.doReturn(false).when(mockSubSubProcessHandle1).destroyForcibly();
+        mockProcessInitializer.accept(new boolean[][] {
+                new boolean[] /*alive    */ {true, true, true, true},
+                new boolean[] /*destroy  */ {false, false, false, false},
+                new boolean[] /*forcibly */ {true, true, true, true},
+                new boolean[] /*cmd      */ {false, false, false}
+        });
+        Assert.assertTrue(CmdLine.killProcess(process.get()));
+        mockProcessVerifier.accept(new int[][] {
+                new int[] /*toHandle*/ {2, 0, 0, 0, 0}, new int[] /*descendants*/ {1, 1, 0, 0, 0},
+                new int[] /*alive   */ {0, 6, 4, 4, 4}, new int[] /*destroy    */ {0, 1, 1, 1, 1},
+                new int[] /*forcibly*/ {0, 1, 1, 1, 1}, new int[] /*taskkill   */ {0, 0, 0, 0, 0},
+                new int[] /*sigterm */ {0, 0, 0, 0, 0}, new int[] /*sigkill    */ {0, 0, 0, 0, 0},
+                new int[] /*killed  */ {1, 1, 1, 1, 1}
+        });
         
         //sub processes still alive
-        processIsAlive.get(0).set(true);
-        processIsAlive.get(1).set(true);
-        processIsAlive.get(2).set(true);
-        processIsAlive.get(3).set(true);
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(0).set(false);
-            return null;
-        }).when(mockProcessHandle).destroy();
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(1).set(false);
-            return null;
-        }).when(mockSubProcessHandle1).destroy();
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(2).set(false);
-            return null;
-        }).when(mockSubProcessHandle2).destroyForcibly();
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(3).set(false);
-            return null;
-        }).when(mockSubSubProcessHandle1).destroyForcibly();
-        Assert.assertTrue(CmdLine.killProcess(mockProcess));
-        Mockito.verify(mockProcess, VerificationModeFactory.times(14)).toHandle();
-        Mockito.verify(mockProcess, VerificationModeFactory.times(7)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(7)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(25)).isAlive();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(5)).destroy();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(2)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(18)).isAlive();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(3)).destroy();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(1)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(16)).isAlive();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(4)).destroy();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(2)).destroyForcibly();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(18)).isAlive();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(4)).destroy();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(2)).destroyForcibly();
-        Mockito.verifyNoMoreInteractions(mockProcess);
-        Mockito.verifyNoMoreInteractions(mockProcessHandle);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle1);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle2);
-        Mockito.verifyNoMoreInteractions(mockSubSubProcessHandle1);
-        Mockito.doReturn(false).when(mockProcessHandle).destroy();
-        Mockito.doReturn(false).when(mockSubProcessHandle1).destroy();
-        Mockito.doReturn(false).when(mockSubProcessHandle2).destroyForcibly();
-        Mockito.doReturn(false).when(mockSubSubProcessHandle1).destroyForcibly();
+        mockProcessInitializer.accept(new boolean[][] {
+                new boolean[] /*alive    */ {true, true, true, true},
+                new boolean[] /*destroy  */ {true, true, false, false},
+                new boolean[] /*forcibly */ {false, false, true, true},
+                new boolean[] /*cmd      */ {false, false, false}
+        });
+        Assert.assertTrue(CmdLine.killProcess(process.get()));
+        mockProcessVerifier.accept(new int[][] {
+                new int[] /*toHandle*/ {2, 0, 0, 0, 0}, new int[] /*descendants*/ {1, 1, 0, 0, 0},
+                new int[] /*alive   */ {0, 6, 5, 5, 4}, new int[] /*destroy    */ {0, 1, 1, 1, 1},
+                new int[] /*forcibly*/ {0, 0, 0, 1, 1}, new int[] /*taskkill   */ {0, 0, 0, 0, 0},
+                new int[] /*sigterm */ {0, 0, 0, 0, 0}, new int[] /*sigkill    */ {0, 0, 0, 0, 0},
+                new int[] /*killed  */ {1, 1, 1, 1, 1}
+        });
         
         //main process not responding, Windows
-        PowerMockito.when(OperatingSystem.class, "getOperatingSystem").thenReturn(OperatingSystem.OS.WINDOWS);
-        processIsAlive.get(0).set(true);
-        processIsAlive.get(1).set(false);
-        processIsAlive.get(2).set(false);
-        processIsAlive.get(3).set(false);
-        Assert.assertFalse(CmdLine.killProcess(mockProcess));
-        Mockito.verify(mockProcess, VerificationModeFactory.times(16)).toHandle();
-        Mockito.verify(mockProcess, VerificationModeFactory.times(8)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(8)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(32)).isAlive();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(6)).destroy();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(3)).destroyForcibly();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(1)).pid();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(22)).isAlive();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(3)).destroy();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(1)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(20)).isAlive();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(4)).destroy();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(2)).destroyForcibly();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(22)).isAlive();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(4)).destroy();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(2)).destroyForcibly();
-        Mockito.verifyNoMoreInteractions(mockProcess);
-        Mockito.verifyNoMoreInteractions(mockProcessHandle);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle1);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle2);
-        Mockito.verifyNoMoreInteractions(mockSubSubProcessHandle1);
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.buildProcess(ArgumentMatchers.eq("taskkill /F /PID " + processPid.get(0)));
+        operatingSystem.set(OperatingSystem.OS.WINDOWS);
+        mockProcessInitializer.accept(new boolean[][] {
+                new boolean[] /*alive    */ {true, false, false, false},
+                new boolean[] /*destroy  */ {false, false, false, false},
+                new boolean[] /*forcibly */ {false, false, false, false},
+                new boolean[] /*cmd      */ {false, false, false}
+        });
+        Assert.assertFalse(CmdLine.killProcess(process.get()));
+        mockProcessVerifier.accept(new int[][] {
+                new int[] /*toHandle*/ {2, 0, 0, 0, 0}, new int[] /*descendants*/ {1, 1, 0, 0, 0},
+                new int[] /*alive   */ {0, 7, 4, 4, 4}, new int[] /*destroy    */ {0, 1, 0, 0, 0},
+                new int[] /*forcibly*/ {0, 1, 0, 0, 0}, new int[] /*taskkill   */ {0, 1, 0, 0, 0},
+                new int[] /*sigterm */ {0, 0, 0, 0, 0}, new int[] /*sigkill    */ {0, 0, 0, 0, 0},
+                new int[] /*killed  */ {0, 0, 1, 1, 1}
+        });
+        operatingSystem.set(null);
         
         //all process not responding, Windows
-        PowerMockito.when(OperatingSystem.class, "getOperatingSystem").thenReturn(OperatingSystem.OS.WINDOWS);
-        processIsAlive.get(0).set(true);
-        processIsAlive.get(1).set(true);
-        processIsAlive.get(2).set(true);
-        processIsAlive.get(3).set(true);
-        PowerMockito.doAnswer((Answer<ProcessBuilder>) invocationOnMock -> {
-            final String cmd = invocationOnMock.getArgument(0);
-            processIsAlive.get(processPid.indexOf(
-                    Long.parseLong(cmd.substring(cmd.lastIndexOf(' ') + 1)))).set(false);
-            return PowerMockito.mock(ProcessBuilder.class);
-        }).when(CmdLine.class, "buildProcess", ArgumentMatchers.anyString());
-        Assert.assertTrue(CmdLine.killProcess(mockProcess));
-        Mockito.verify(mockProcess, VerificationModeFactory.times(18)).toHandle();
-        Mockito.verify(mockProcess, VerificationModeFactory.times(9)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(9)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(39)).isAlive();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(7)).destroy();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(4)).destroyForcibly();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(2)).pid();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(26)).isAlive();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(4)).destroy();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(2)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(1)).pid();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(24)).isAlive();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(5)).destroy();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(3)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(1)).pid();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(26)).isAlive();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(5)).destroy();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(3)).destroyForcibly();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(1)).pid();
-        Mockito.verifyNoMoreInteractions(mockProcess);
-        Mockito.verifyNoMoreInteractions(mockProcessHandle);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle1);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle2);
-        Mockito.verifyNoMoreInteractions(mockSubSubProcessHandle1);
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(2));
-        CmdLine.buildProcess(ArgumentMatchers.eq("taskkill /F /PID " + processPid.get(0)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.buildProcess(ArgumentMatchers.eq("taskkill /F /PID " + processPid.get(1)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.buildProcess(ArgumentMatchers.eq("taskkill /F /PID " + processPid.get(2)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.buildProcess(ArgumentMatchers.eq("taskkill /F /PID " + processPid.get(3)));
-        PowerMockito.doReturn(PowerMockito.mock(ProcessBuilder.class)).when(CmdLine.class, "buildProcess", ArgumentMatchers.anyString());
+        operatingSystem.set(OperatingSystem.OS.WINDOWS);
+        mockProcessInitializer.accept(new boolean[][] {
+                new boolean[] /*alive    */ {true, true, true, true},
+                new boolean[] /*destroy  */ {false, false, false, false},
+                new boolean[] /*forcibly */ {false, false, false, false},
+                new boolean[] /*cmd      */ {true, false, false}
+        });
+        Assert.assertTrue(CmdLine.killProcess(process.get()));
+        mockProcessVerifier.accept(new int[][] {
+                new int[] /*toHandle*/ {2, 0, 0, 0, 0}, new int[] /*descendants*/ {1, 1, 0, 0, 0},
+                new int[] /*alive   */ {0, 7, 4, 4, 4}, new int[] /*destroy    */ {0, 1, 1, 1, 1},
+                new int[] /*forcibly*/ {0, 1, 1, 1, 1}, new int[] /*taskkill   */ {0, 1, 1, 1, 1},
+                new int[] /*sigterm */ {0, 0, 0, 0, 0}, new int[] /*sigkill    */ {0, 0, 0, 0, 0},
+                new int[] /*killed  */ {1, 1, 1, 1, 1}
+        });
+        operatingSystem.set(null);
         
         //sub processes not responding, Windows
-        PowerMockito.when(OperatingSystem.class, "getOperatingSystem").thenReturn(OperatingSystem.OS.WINDOWS);
-        processIsAlive.get(0).set(true);
-        processIsAlive.get(1).set(true);
-        processIsAlive.get(2).set(true);
-        processIsAlive.get(3).set(true);
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(0).set(false);
-            return null;
-        }).when(mockProcessHandle).destroy();
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(1).set(false);
-            return null;
-        }).when(mockSubProcessHandle1).destroy();
-        Assert.assertFalse(CmdLine.killProcess(mockProcess));
-        Mockito.verify(mockProcess, VerificationModeFactory.times(20)).toHandle();
-        Mockito.verify(mockProcess, VerificationModeFactory.times(10)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(10)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(45)).isAlive();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(8)).destroy();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(4)).destroyForcibly();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(2)).pid();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(31)).isAlive();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(5)).destroy();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(2)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(1)).pid();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(28)).isAlive();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(6)).destroy();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(4)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(2)).pid();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(31)).isAlive();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(6)).destroy();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(4)).destroyForcibly();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(2)).pid();
-        Mockito.verifyNoMoreInteractions(mockProcess);
-        Mockito.verifyNoMoreInteractions(mockProcessHandle);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle1);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle2);
-        Mockito.verifyNoMoreInteractions(mockSubSubProcessHandle1);
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(2));
-        CmdLine.buildProcess(ArgumentMatchers.eq("taskkill /F /PID " + processPid.get(0)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.buildProcess(ArgumentMatchers.eq("taskkill /F /PID " + processPid.get(1)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(2));
-        CmdLine.buildProcess(ArgumentMatchers.eq("taskkill /F /PID " + processPid.get(2)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(2));
-        CmdLine.buildProcess(ArgumentMatchers.eq("taskkill /F /PID " + processPid.get(3)));
-        Mockito.doReturn(false).when(mockProcessHandle).destroy();
-        Mockito.doReturn(false).when(mockSubProcessHandle1).destroy();
+        operatingSystem.set(OperatingSystem.OS.WINDOWS);
+        mockProcessInitializer.accept(new boolean[][] {
+                new boolean[] /*alive    */ {true, true, true, true},
+                new boolean[] /*destroy  */ {true, false, false, true},
+                new boolean[] /*forcibly */ {false, true, false, false},
+                new boolean[] /*cmd      */ {false, false, false}
+        });
+        Assert.assertFalse(CmdLine.killProcess(process.get()));
+        mockProcessVerifier.accept(new int[][] {
+                new int[] /*toHandle*/ {2, 0, 0, 0, 0}, new int[] /*descendants*/ {1, 1, 0, 0, 0},
+                new int[] /*alive   */ {0, 6, 5, 5, 4}, new int[] /*destroy    */ {0, 1, 1, 1, 1},
+                new int[] /*forcibly*/ {0, 0, 1, 1, 0}, new int[] /*taskkill   */ {0, 0, 0, 1, 0},
+                new int[] /*sigterm */ {0, 0, 0, 0, 0}, new int[] /*sigkill    */ {0, 0, 0, 0, 0},
+                new int[] /*killed  */ {0, 1, 1, 0, 1}
+        });
+        operatingSystem.set(null);
         
         //main process not responding, not Windows
-        PowerMockito.when(OperatingSystem.class, "getOperatingSystem").thenReturn(OperatingSystem.OS.UNIX);
-        processIsAlive.get(0).set(true);
-        processIsAlive.get(1).set(false);
-        processIsAlive.get(2).set(false);
-        processIsAlive.get(3).set(false);
-        Assert.assertFalse(CmdLine.killProcess(mockProcess));
-        Mockito.verify(mockProcess, VerificationModeFactory.times(22)).toHandle();
-        Mockito.verify(mockProcess, VerificationModeFactory.times(11)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(11)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(53)).isAlive();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(9)).destroy();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(5)).destroyForcibly();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(4)).pid();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(36)).isAlive();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(5)).destroy();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(2)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(1)).pid();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(33)).isAlive();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(6)).destroy();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(4)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(2)).pid();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(36)).isAlive();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(6)).destroy();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(4)).destroyForcibly();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(2)).pid();
-        Mockito.verifyNoMoreInteractions(mockProcess);
-        Mockito.verifyNoMoreInteractions(mockProcessHandle);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle1);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle2);
-        Mockito.verifyNoMoreInteractions(mockSubSubProcessHandle1);
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGTERM " + processPid.get(0)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGKILL " + processPid.get(0)));
+        operatingSystem.set(OperatingSystem.OS.UNIX);
+        mockProcessInitializer.accept(new boolean[][] {
+                new boolean[] /*alive    */ {true, false, false, false},
+                new boolean[] /*destroy  */ {false, false, false, false},
+                new boolean[] /*forcibly */ {false, false, false, false},
+                new boolean[] /*cmd      */ {false, true, true}
+        });
+        Assert.assertTrue(CmdLine.killProcess(process.get()));
+        mockProcessVerifier.accept(new int[][] {
+                new int[] /*toHandle*/ {2, 0, 0, 0, 0}, new int[] /*descendants*/ {1, 1, 0, 0, 0},
+                new int[] /*alive   */ {0, 8, 5, 5, 5}, new int[] /*destroy    */ {0, 1, 0, 0, 0},
+                new int[] /*forcibly*/ {0, 1, 0, 0, 0}, new int[] /*taskkill   */ {0, 0, 0, 0, 0},
+                new int[] /*sigterm */ {0, 1, 0, 0, 0}, new int[] /*sigkill    */ {0, 0, 0, 0, 0},
+                new int[] /*killed  */ {1, 1, 1, 1, 1}
+        });
+        operatingSystem.set(null);
         
         //all process not responding, not Windows
-        PowerMockito.when(OperatingSystem.class, "getOperatingSystem").thenReturn(OperatingSystem.OS.MACOS);
-        processIsAlive.get(0).set(true);
-        processIsAlive.get(1).set(true);
-        processIsAlive.get(2).set(true);
-        processIsAlive.get(3).set(true);
-        PowerMockito.doAnswer((Answer<ProcessBuilder>) invocationOnMock -> {
-            final String cmd = invocationOnMock.getArgument(0);
-            if (cmd.contains("SIGKILL")) {
-                processIsAlive.get(processPid.indexOf(
-                        Long.parseLong(cmd.substring(cmd.lastIndexOf(' ') + 1)))).set(false);
-            }
-            return PowerMockito.mock(ProcessBuilder.class);
-        }).when(CmdLine.class, "buildProcess", ArgumentMatchers.anyString());
-        Assert.assertTrue(CmdLine.killProcess(mockProcess));
-        Mockito.verify(mockProcess, VerificationModeFactory.times(24)).toHandle();
-        Mockito.verify(mockProcess, VerificationModeFactory.times(12)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(12)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(61)).isAlive();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(10)).destroy();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(6)).destroyForcibly();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(6)).pid();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(41)).isAlive();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(6)).destroy();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(3)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(3)).pid();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(38)).isAlive();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(7)).destroy();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(5)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(4)).pid();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(41)).isAlive();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(7)).destroy();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(5)).destroyForcibly();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(4)).pid();
-        Mockito.verifyNoMoreInteractions(mockProcess);
-        Mockito.verifyNoMoreInteractions(mockProcessHandle);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle1);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle2);
-        Mockito.verifyNoMoreInteractions(mockSubSubProcessHandle1);
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(2));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGTERM " + processPid.get(0)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(2));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGKILL " + processPid.get(0)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGTERM " + processPid.get(1)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGKILL " + processPid.get(1)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGTERM " + processPid.get(2)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGKILL " + processPid.get(2)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGTERM " + processPid.get(3)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGKILL " + processPid.get(3)));
-        PowerMockito.doReturn(PowerMockito.mock(ProcessBuilder.class)).when(CmdLine.class, "buildProcess", ArgumentMatchers.anyString());
+        operatingSystem.set(OperatingSystem.OS.MACOS);
+        mockProcessInitializer.accept(new boolean[][] {
+                new boolean[] /*alive    */ {true, true, true, true},
+                new boolean[] /*destroy  */ {false, false, false, false},
+                new boolean[] /*forcibly */ {false, false, false, false},
+                new boolean[] /*cmd      */ {false, false, true}
+        });
+        Assert.assertTrue(CmdLine.killProcess(process.get()));
+        mockProcessVerifier.accept(new int[][] {
+                new int[] /*toHandle*/ {2, 0, 0, 0, 0}, new int[] /*descendants*/ {1, 1, 0, 0, 0},
+                new int[] /*alive   */ {0, 8, 5, 5, 6}, new int[] /*destroy    */ {0, 1, 1, 1, 1},
+                new int[] /*forcibly*/ {0, 1, 1, 1, 1}, new int[] /*taskkill   */ {0, 0, 0, 0, 0},
+                new int[] /*sigterm */ {0, 1, 1, 1, 1}, new int[] /*sigkill    */ {0, 1, 1, 1, 1},
+                new int[] /*killed  */ {1, 1, 1, 1, 1}
+        });
+        operatingSystem.set(null);
         
         //sub processes not responding, not Windows
-        PowerMockito.when(OperatingSystem.class, "getOperatingSystem").thenReturn(OperatingSystem.OS.POSIX);
-        processIsAlive.get(0).set(true);
-        processIsAlive.get(1).set(true);
-        processIsAlive.get(2).set(true);
-        processIsAlive.get(3).set(true);
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(0).set(false);
-            return null;
-        }).when(mockProcessHandle).destroy();
-        Mockito.doAnswer(invocationOnMock -> {
-            processIsAlive.get(1).set(false);
-            return null;
-        }).when(mockSubProcessHandle1).destroy();
-        Assert.assertFalse(CmdLine.killProcess(mockProcess));
-        Mockito.verify(mockProcess, VerificationModeFactory.times(26)).toHandle();
-        Mockito.verify(mockProcess, VerificationModeFactory.times(13)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(13)).descendants();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(68)).isAlive();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(11)).destroy();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(6)).destroyForcibly();
-        Mockito.verify(mockProcessHandle, VerificationModeFactory.times(6)).pid();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(47)).isAlive();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(7)).destroy();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(3)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle1, VerificationModeFactory.times(3)).pid();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(43)).isAlive();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(8)).destroy();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(6)).destroyForcibly();
-        Mockito.verify(mockSubProcessHandle2, VerificationModeFactory.times(6)).pid();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(47)).isAlive();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(8)).destroy();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(6)).destroyForcibly();
-        Mockito.verify(mockSubSubProcessHandle1, VerificationModeFactory.times(6)).pid();
-        Mockito.verifyNoMoreInteractions(mockProcess);
-        Mockito.verifyNoMoreInteractions(mockProcessHandle);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle1);
-        Mockito.verifyNoMoreInteractions(mockSubProcessHandle2);
-        Mockito.verifyNoMoreInteractions(mockSubSubProcessHandle1);
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(2));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGTERM " + processPid.get(0)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(2));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGKILL " + processPid.get(0)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGTERM " + processPid.get(1)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGKILL " + processPid.get(1)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(2));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGTERM " + processPid.get(2)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(2));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGKILL " + processPid.get(2)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(2));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGTERM " + processPid.get(3)));
-        PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(2));
-        CmdLine.buildProcess(ArgumentMatchers.eq("kill -SIGKILL " + processPid.get(3)));
-        Mockito.doReturn(false).when(mockProcessHandle).destroy();
-        Mockito.doReturn(false).when(mockSubProcessHandle1).destroy();
+        operatingSystem.set(OperatingSystem.OS.POSIX);
+        mockProcessInitializer.accept(new boolean[][] {
+                new boolean[] /*alive    */ {true, true, true, true},
+                new boolean[] /*destroy  */ {true, false, false, false},
+                new boolean[] /*forcibly */ {false, true, false, false},
+                new boolean[] /*cmd      */ {true, false, false}
+        });
+        Assert.assertFalse(CmdLine.killProcess(process.get()));
+        mockProcessVerifier.accept(new int[][] {
+                new int[] /*toHandle*/ {2, 0, 0, 0, 0}, new int[] /*descendants*/ {1, 1, 0, 0, 0},
+                new int[] /*alive   */ {0, 7, 6, 5, 6}, new int[] /*destroy    */ {0, 1, 1, 1, 1},
+                new int[] /*forcibly*/ {0, 0, 1, 1, 1}, new int[] /*taskkill   */ {0, 0, 0, 0, 0},
+                new int[] /*sigterm */ {0, 0, 0, 1, 1}, new int[] /*sigkill    */ {0, 0, 0, 1, 1},
+                new int[] /*killed  */ {0, 1, 1, 0, 0}
+        });
+        operatingSystem.set(null);
     }
     
 }

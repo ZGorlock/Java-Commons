@@ -303,11 +303,14 @@ public class SpeechRecognizer {
         switch (mode) {
             case CONTINUOUS:
                 CmdLine.executeCmd(killPocketSphinxCmd);
-                if ((pocketsphinx != null) && pocketsphinx.isAlive()) {
-                    pocketsphinx.destroyForcibly();
+                if (pocketsphinx != null) {
+                    if (CmdLine.killProcess(pocketsphinx)) {
+                        pocketsphinx = null;
+                        logger.debug("Continuous speech recognition terminated");
+                    } else {
+                        logger.warn("Failed to terminate continuous speech recognition");
+                    }
                 }
-                pocketsphinx = null;
-                logger.debug("Continuous speech recognition terminated");
                 if (speechStream != null) {
                     try {
                         speechStream.close();
@@ -661,7 +664,11 @@ public class SpeechRecognizer {
                     String decodeCmd = String.format(decodeRecordingCmd, wavFile.getAbsolutePath());
                     String speech = CmdLine.executeCmd(decodeCmd);
                     if (speechBuffer != null) {
-                        speechBuffer.set(speech.trim());
+                        if (speech != null) {
+                            speechBuffer.set(speech.trim());
+                        } else {
+                            logger.warn("Failed to decode speech recording");
+                        }
                     }
                 }
                 Filesystem.deleteFile(wavFile);
@@ -869,7 +876,7 @@ public class SpeechRecognizer {
                     " -mswav yes";
             
             String genFeatureFilesResponse = CmdLine.executeCmd(genFeatureFilesCmd);
-            if (genFeatureFilesResponse.contains("ERROR")) {
+            if ((genFeatureFilesResponse == null) || genFeatureFilesResponse.contains("ERROR")) {
                 logger.warn("There was an error generating the acoustic feature files");
                 return false;
             }
@@ -903,7 +910,7 @@ public class SpeechRecognizer {
                     " -accumdir .";
             
             String accumulateObservationCountResponse = CmdLine.executeCmd(accumulateObservationCountCmd);
-            if (accumulateObservationCountResponse.contains("ERROR")) {
+            if ((accumulateObservationCountResponse == null) || accumulateObservationCountResponse.contains("ERROR")) {
                 logger.warn("There was an error accumulating observation counts");
                 return false;
             }
@@ -930,7 +937,7 @@ public class SpeechRecognizer {
                     " -accumdir .";
             
             String transformationMllrResponse = CmdLine.executeCmd(transformationMllrCmd);
-            if (transformationMllrCmd.contains("ERROR")) {
+            if ((transformationMllrResponse == null) || transformationMllrResponse.contains("ERROR")) {
                 logger.warn("There was an error creating the acoustic adaption matrix");
                 return false;
             }
