@@ -7,6 +7,7 @@
 
 package commons.object.string;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.OutputStream;
 import java.util.ArrayList;
@@ -24,6 +25,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -1987,6 +1990,39 @@ public class StringUtilityTest {
     }
     
     /**
+     * JUnit test of toUnicodeAlternative.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#toUnicodeAlternative(String)
+     */
+    @Test
+    public void testToUnicodeAlternative() throws Exception {
+        //standard
+        Assert.assertEquals("𝚝𝚎𝚜𝚝", StringUtility.toUnicodeAlternative("test"));
+        Assert.assertEquals("𝚃𝙴𝚂𝚃", StringUtility.toUnicodeAlternative("TEST"));
+        Assert.assertEquals("𝟸𝟻𝟶", StringUtility.toUnicodeAlternative("250"));
+        Assert.assertEquals(" ", StringUtility.toUnicodeAlternative(" "));
+        Assert.assertEquals(".", StringUtility.toUnicodeAlternative("."));
+        Assert.assertEquals("𝚃𝚑𝚒𝚜 𝚒𝚜 𝚞𝚗𝚒𝚌𝚘𝚍𝚎", StringUtility.toUnicodeAlternative("This is unicode"));
+        Assert.assertEquals("𝚃𝚑𝚒𝚜 𝚒𝚜 𝚝𝚎𝚜𝚝 𝟻.", StringUtility.toUnicodeAlternative("This is test 5."));
+        
+        //set
+        Assert.assertEquals("𝙰𝙱𝙲𝙳𝙴𝙵𝙶𝙷𝙸𝙹𝙺𝙻𝙼𝙽𝙾𝙿𝚀𝚁𝚂𝚃𝚄𝚅𝚆𝚇𝚈𝚉", StringUtility.toUnicodeAlternative("ABCDEFGHIJKLMNOPQRSTUVWXYZ"));
+        Assert.assertEquals("𝚊𝚋𝚌𝚍𝚎𝚏𝚐𝚑𝚒𝚓𝚔𝚕𝚖𝚗𝚘𝚙𝚚𝚛𝚜𝚝𝚞𝚟𝚠𝚡𝚢𝚣", StringUtility.toUnicodeAlternative("abcdefghijklmnopqrstuvwxyz"));
+        Assert.assertEquals("𝟶𝟷𝟸𝟹𝟺𝟻𝟼𝟽𝟾𝟿", StringUtility.toUnicodeAlternative("0123456789"));
+        Assert.assertEquals("☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↑↓→←∟↔▲▼", StringUtility.toUnicodeAlternative("☺☻♥♦♣♠•◘○◙♂♀♪♫☼►◄↕‼¶§▬↑↓→←∟↔▲▼"));
+        Assert.assertEquals(" !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~", StringUtility.toUnicodeAlternative(" !\"#$%&'()*+,-./:;<=>?@[\\]^_`{|}~"));
+        Assert.assertEquals("⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿", StringUtility.toUnicodeAlternative("⌂ÇüéâäàåçêëèïîìÄÅÉæÆôöòûùÿÖÜ¢£¥₧ƒáíóúñÑªº¿"));
+        Assert.assertEquals("⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀", StringUtility.toUnicodeAlternative("⌐¬½¼¡«»░▒▓│┤╡╢╖╕╣║╗╝╜╛┐└┴┬├─┼╞╟╚╔╩╦╠═╬╧╨╤╥╙╘╒╓╫╪┘┌█▄▌▐▀"));
+        Assert.assertEquals("αßΓπΣσµτΦΘΩδ∞φε↨∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ ", StringUtility.toUnicodeAlternative("αßΓπΣσµτΦΘΩδ∞φε↨∩≡±≥≤⌠⌡÷≈°∙·√ⁿ²■ "));
+        
+        //invalid
+        Assert.assertEquals("", StringUtility.toUnicodeAlternative(""));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.toUnicodeAlternative(null));
+    }
+    
+    /**
      * JUnit test of justifyAOrAn.
      *
      * @throws Exception When there is an exception.
@@ -2086,32 +2122,221 @@ public class StringUtilityTest {
     }
     
     /**
+     * JUnit test of classString.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#classString(Class)
+     * @see StringUtility#classString(Object)
+     */
+    @SuppressWarnings("InstantiationOfUtilityClass")
+    @Test
+    public void testClassString() throws Exception {
+        //class
+        Assert.assertEquals("StringUtility",
+                StringUtility.classString(StringUtility.class));
+        
+        //object
+        Assert.assertEquals("StringUtility",
+                StringUtility.classString(new StringUtility()));
+        
+        //mock
+        Assert.assertEquals("StringUtility",
+                StringUtility.classString(Mockito.mock(StringUtility.class)));
+        Assert.assertEquals("StringUtility",
+                StringUtility.classString(PowerMockito.mock(StringUtility.class)));
+        Assert.assertEquals("StringUtility",
+                StringUtility.classString(Mockito.spy(new StringUtility())));
+        
+        //edge case
+        Assert.assertEquals("null",
+                StringUtility.classString(null));
+        Assert.assertEquals("null",
+                StringUtility.classString((Object) null));
+    }
+    
+    /**
+     * JUnit test of innerClassString.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#innerClassString(Class, String)
+     * @see StringUtility#innerClassString(Object, String)
+     */
+    @SuppressWarnings("InstantiationOfUtilityClass")
+    @Test
+    public void testInnerClassString() throws Exception {
+        //class
+        Assert.assertEquals("StringUtility$InnerClassString",
+                StringUtility.innerClassString(StringUtility.class, "InnerClassString"));
+        
+        //object
+        Assert.assertEquals("StringUtility$InnerClassString",
+                StringUtility.innerClassString(new StringUtility(), "InnerClassString"));
+        
+        //mock
+        Assert.assertEquals("StringUtility$InnerClassString",
+                StringUtility.innerClassString(Mockito.mock(StringUtility.class), "InnerClassString"));
+        Assert.assertEquals("StringUtility$InnerClassString",
+                StringUtility.innerClassString(PowerMockito.mock(StringUtility.class), "InnerClassString"));
+        Assert.assertEquals("StringUtility$InnerClassString",
+                StringUtility.innerClassString(Mockito.spy(new StringUtility()), "InnerClassString"));
+        
+        //edge case
+        Assert.assertEquals("StringUtility$null",
+                StringUtility.innerClassString(StringUtility.class, null));
+        Assert.assertEquals("StringUtility$null",
+                StringUtility.innerClassString(new StringUtility(), null));
+        Assert.assertEquals("StringUtility$null",
+                StringUtility.innerClassString(Mockito.mock(StringUtility.class), null));
+        Assert.assertEquals("null$InnerClassString",
+                StringUtility.innerClassString(null, "InnerClassString"));
+        Assert.assertEquals("null$InnerClassString",
+                StringUtility.innerClassString((Object) null, "InnerClassString"));
+        Assert.assertEquals("null$null",
+                StringUtility.innerClassString(null, null));
+        Assert.assertEquals("null$null",
+                StringUtility.innerClassString((Object) null, null));
+    }
+    
+    /**
      * JUnit test of methodString.
      *
      * @throws Exception When there is an exception.
      * @see StringUtility#methodString(Class, String, Class[])
+     * @see StringUtility#methodString(Object, String, Class[])
      */
+    @SuppressWarnings("InstantiationOfUtilityClass")
     @Test
     public void testMethodString() throws Exception {
-        //valid
+        //class
         Assert.assertEquals("StringUtility::methodString(Class, String, Class[])",
                 StringUtility.methodString(StringUtility.class, "methodString", Class.class, String.class, Class[].class));
         Assert.assertEquals("OutputStream::println()",
                 StringUtility.methodString(OutputStream.class, "println"));
+        Assert.assertEquals("StringUtility::methodString(StringUtility, String, Class[])",
+                StringUtility.methodString(StringUtility.class, "methodString", Mockito.mock(StringUtility.class).getClass(), String.class, Class[].class));
+        
+        //object
+        Assert.assertEquals("StringUtility::methodString(Class, String, Class[])",
+                StringUtility.methodString(new StringUtility(), "methodString", Class.class, String.class, Class[].class));
+        Assert.assertEquals("BufferedOutputStream::println()",
+                StringUtility.methodString(new BufferedOutputStream(null), "println"));
+        Assert.assertEquals("StringUtility::methodString(StringUtility, String, Class[])",
+                StringUtility.methodString(new StringUtility(), "methodString", Mockito.mock(StringUtility.class).getClass(), String.class, Class[].class));
+        
+        //mock
+        Assert.assertEquals("StringUtility::methodString(Class, String, Class[])",
+                StringUtility.methodString(Mockito.mock(StringUtility.class), "methodString", Class.class, String.class, Class[].class));
+        Assert.assertEquals("StringUtility::methodString(Class, String, Class[])",
+                StringUtility.methodString(PowerMockito.mock(StringUtility.class), "methodString", Class.class, String.class, Class[].class));
+        Assert.assertEquals("StringUtility::methodString(Class, String, Class[])",
+                StringUtility.methodString(Mockito.spy(new StringUtility()), "methodString", Class.class, String.class, Class[].class));
+        Assert.assertEquals("BufferedOutputStream::println()",
+                StringUtility.methodString(Mockito.mock(BufferedOutputStream.class), "println"));
+        Assert.assertEquals("BufferedOutputStream::println()",
+                StringUtility.methodString(PowerMockito.mock(BufferedOutputStream.class), "println"));
+        Assert.assertEquals("BufferedOutputStream::println()",
+                StringUtility.methodString(Mockito.spy(new BufferedOutputStream(null)), "println"));
+        Assert.assertEquals("StringUtility::methodString(StringUtility, String, Class[])",
+                StringUtility.methodString(Mockito.mock(StringUtility.class), "methodString", Mockito.mock(StringUtility.class).getClass(), String.class, Class[].class));
         
         //edge case
         Assert.assertEquals("StringUtility::methodString(Class, null, Class[])",
                 StringUtility.methodString(StringUtility.class, "methodString", Class.class, null, Class[].class));
+        Assert.assertEquals("StringUtility::methodString(Class, null, Class[])",
+                StringUtility.methodString(new StringUtility(), "methodString", Class.class, null, Class[].class));
+        Assert.assertEquals("StringUtility::methodString(Class, null, Class[])",
+                StringUtility.methodString(Mockito.mock(StringUtility.class), "methodString", Class.class, null, Class[].class));
         Assert.assertEquals("StringUtility::methodString(null)",
                 StringUtility.methodString(StringUtility.class, "methodString", (Class<?>) null));
+        Assert.assertEquals("StringUtility::methodString(null)",
+                StringUtility.methodString(new StringUtility(), "methodString", (Class<?>) null));
+        Assert.assertEquals("StringUtility::methodString(null)",
+                StringUtility.methodString(Mockito.mock(StringUtility.class), "methodString", (Class<?>) null));
         Assert.assertEquals("StringUtility::(Class, String, Class[])",
                 StringUtility.methodString(StringUtility.class, "", Class.class, String.class, Class[].class));
+        Assert.assertEquals("StringUtility::(Class, String, Class[])",
+                StringUtility.methodString(new StringUtility(), "", Class.class, String.class, Class[].class));
+        Assert.assertEquals("StringUtility::(Class, String, Class[])",
+                StringUtility.methodString(Mockito.mock(StringUtility.class), "", Class.class, String.class, Class[].class));
         Assert.assertEquals("StringUtility::null(Class, String, Class[])",
                 StringUtility.methodString(StringUtility.class, null, Class.class, String.class, Class[].class));
+        Assert.assertEquals("StringUtility::null(Class, String, Class[])",
+                StringUtility.methodString(new StringUtility(), null, Class.class, String.class, Class[].class));
+        Assert.assertEquals("StringUtility::null(Class, String, Class[])",
+                StringUtility.methodString(Mockito.mock(StringUtility.class), null, Class.class, String.class, Class[].class));
         Assert.assertEquals("null::methodString(Class, null, Class[])",
                 StringUtility.methodString(null, "methodString", Class.class, null, Class[].class));
+        Assert.assertEquals("null::methodString(Class, null, Class[])",
+                StringUtility.methodString((Object) null, "methodString", Class.class, null, Class[].class));
         Assert.assertEquals("null::null(null)",
                 StringUtility.methodString(null, null, (Class<?>) null));
+        Assert.assertEquals("null::null(null)",
+                StringUtility.methodString((Object) null, null, (Class<?>) null));
+    }
+    
+    /**
+     * JUnit test of constructorString.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#constructorString(Class, Class[])
+     * @see StringUtility#constructorString(Object, Class[])
+     */
+    @SuppressWarnings("InstantiationOfUtilityClass")
+    @Test
+    public void testConstructorString() throws Exception {
+        //class
+        Assert.assertEquals("StringUtility::StringUtility(Class, String, Class[])",
+                StringUtility.constructorString(StringUtility.class, Class.class, String.class, Class[].class));
+        Assert.assertEquals("OutputStream::OutputStream()",
+                StringUtility.constructorString(OutputStream.class));
+        Assert.assertEquals("StringUtility::StringUtility(StringUtility, String, Class[])",
+                StringUtility.constructorString(StringUtility.class, Mockito.mock(StringUtility.class).getClass(), String.class, Class[].class));
+        
+        //object
+        Assert.assertEquals("StringUtility::StringUtility(Class, String, Class[])",
+                StringUtility.constructorString(new StringUtility(), Class.class, String.class, Class[].class));
+        Assert.assertEquals("BufferedOutputStream::BufferedOutputStream()",
+                StringUtility.constructorString(new BufferedOutputStream(null)));
+        Assert.assertEquals("StringUtility::StringUtility(StringUtility, String, Class[])",
+                StringUtility.constructorString(new StringUtility(), Mockito.mock(StringUtility.class).getClass(), String.class, Class[].class));
+        
+        //mock
+        Assert.assertEquals("StringUtility::StringUtility(Class, String, Class[])",
+                StringUtility.constructorString(Mockito.mock(StringUtility.class), Class.class, String.class, Class[].class));
+        Assert.assertEquals("StringUtility::StringUtility(Class, String, Class[])",
+                StringUtility.constructorString(PowerMockito.mock(StringUtility.class), Class.class, String.class, Class[].class));
+        Assert.assertEquals("StringUtility::StringUtility(Class, String, Class[])",
+                StringUtility.constructorString(Mockito.spy(new StringUtility()), Class.class, String.class, Class[].class));
+        Assert.assertEquals("BufferedOutputStream::BufferedOutputStream()",
+                StringUtility.constructorString(Mockito.mock(BufferedOutputStream.class)));
+        Assert.assertEquals("BufferedOutputStream::BufferedOutputStream()",
+                StringUtility.constructorString(PowerMockito.mock(BufferedOutputStream.class)));
+        Assert.assertEquals("BufferedOutputStream::BufferedOutputStream()",
+                StringUtility.constructorString(Mockito.spy(new BufferedOutputStream(null))));
+        Assert.assertEquals("StringUtility::StringUtility(StringUtility, String, Class[])",
+                StringUtility.constructorString(Mockito.mock(StringUtility.class), Mockito.mock(StringUtility.class).getClass(), String.class, Class[].class));
+        
+        //edge case
+        Assert.assertEquals("StringUtility::StringUtility(Class, null, Class[])",
+                StringUtility.constructorString(StringUtility.class, Class.class, null, Class[].class));
+        Assert.assertEquals("StringUtility::StringUtility(Class, null, Class[])",
+                StringUtility.constructorString(new StringUtility(), Class.class, null, Class[].class));
+        Assert.assertEquals("StringUtility::StringUtility(Class, null, Class[])",
+                StringUtility.constructorString(Mockito.mock(StringUtility.class), Class.class, null, Class[].class));
+        Assert.assertEquals("StringUtility::StringUtility(null)",
+                StringUtility.constructorString(StringUtility.class, (Class<?>) null));
+        Assert.assertEquals("StringUtility::StringUtility(null)",
+                StringUtility.constructorString(new StringUtility(), (Class<?>) null));
+        Assert.assertEquals("StringUtility::StringUtility(null)",
+                StringUtility.constructorString(Mockito.mock(StringUtility.class), (Class<?>) null));
+        Assert.assertEquals("null::null(Class, null, Class[])",
+                StringUtility.constructorString(null, Class.class, null, Class[].class));
+        Assert.assertEquals("null::null(Class, null, Class[])",
+                StringUtility.constructorString((Object) null, Class.class, null, Class[].class));
+        Assert.assertEquals("null::null(null)",
+                StringUtility.constructorString(null, (Class<?>) null));
+        Assert.assertEquals("null::null(null)",
+                StringUtility.constructorString((Object) null, (Class<?>) null));
     }
     
     /**
@@ -2119,20 +2344,38 @@ public class StringUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see StringUtility#fieldString(Class, String)
+     * @see StringUtility#fieldString(Object, String)
      */
+    @SuppressWarnings("InstantiationOfUtilityClass")
     @Test
     public void testFieldString() throws Exception {
-        //valid
+        //class
         Assert.assertEquals("StringUtility::fieldString",
                 StringUtility.fieldString(StringUtility.class, "fieldString"));
+        
+        //object
+        Assert.assertEquals("StringUtility::fieldString",
+                StringUtility.fieldString(new StringUtility(), "fieldString"));
+        
+        //mock
+        Assert.assertEquals("StringUtility::fieldString",
+                StringUtility.fieldString(Mockito.mock(StringUtility.class), "fieldString"));
         
         //edge case
         Assert.assertEquals("StringUtility::null",
                 StringUtility.fieldString(StringUtility.class, null));
+        Assert.assertEquals("StringUtility::null",
+                StringUtility.fieldString(new StringUtility(), null));
+        Assert.assertEquals("StringUtility::null",
+                StringUtility.fieldString(Mockito.mock(StringUtility.class), null));
         Assert.assertEquals("null::fieldString",
                 StringUtility.fieldString(null, "fieldString"));
+        Assert.assertEquals("null::fieldString",
+                StringUtility.fieldString((Object) null, "fieldString"));
         Assert.assertEquals("null::null",
                 StringUtility.fieldString(null, null));
+        Assert.assertEquals("null::null",
+                StringUtility.fieldString((Object) null, null));
     }
     
     /**
