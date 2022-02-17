@@ -197,6 +197,9 @@ public class ObjectCastUtilityTest {
         Assert.assertFalse(ObjectCastUtility.toBoolean("1564567897562131.6494564").booleanValue());
         Assert.assertFalse(ObjectCastUtility.toBoolean("test").booleanValue());
         Assert.assertFalse(ObjectCastUtility.toBoolean("").booleanValue());
+        
+        //invalid
+        Assert.assertNull(ObjectCastUtility.toBoolean(null));
     }
     
     /**
@@ -284,6 +287,9 @@ public class ObjectCastUtilityTest {
         Assert.assertNull(ObjectCastUtility.toByte("1564567897562131.6494564"));
         Assert.assertNull(ObjectCastUtility.toByte("test"));
         Assert.assertNull(ObjectCastUtility.toByte(""));
+        
+        //invalid
+        Assert.assertNull(ObjectCastUtility.toByte(null));
     }
     
     /**
@@ -371,6 +377,9 @@ public class ObjectCastUtilityTest {
         Assert.assertNull(ObjectCastUtility.toShort("1564567897562131.6494564"));
         Assert.assertNull(ObjectCastUtility.toShort("test"));
         Assert.assertNull(ObjectCastUtility.toShort(""));
+        
+        //invalid
+        Assert.assertNull(ObjectCastUtility.toShort(null));
     }
     
     /**
@@ -458,6 +467,9 @@ public class ObjectCastUtilityTest {
         Assert.assertNull(ObjectCastUtility.toInt("1564567897562131.6494564"));
         Assert.assertNull(ObjectCastUtility.toInt("test"));
         Assert.assertNull(ObjectCastUtility.toInt(""));
+        
+        //invalid
+        Assert.assertNull(ObjectCastUtility.toInt(null));
     }
     
     /**
@@ -545,6 +557,9 @@ public class ObjectCastUtilityTest {
         Assert.assertNull(ObjectCastUtility.toLong("1564567897562131.6494564"));
         Assert.assertNull(ObjectCastUtility.toLong("test"));
         Assert.assertNull(ObjectCastUtility.toLong(""));
+        
+        //invalid
+        Assert.assertNull(ObjectCastUtility.toLong(null));
     }
     
     /**
@@ -633,6 +648,9 @@ public class ObjectCastUtilityTest {
         Assert.assertEquals(1.564567868014592E15, ObjectCastUtility.toFloat("1564567897562131.6494564").floatValue(), 0.0000001);
         Assert.assertNull(ObjectCastUtility.toFloat("test"));
         Assert.assertNull(ObjectCastUtility.toFloat(""));
+        
+        //invalid
+        Assert.assertNull(ObjectCastUtility.toFloat(null));
     }
     
     /**
@@ -721,6 +739,9 @@ public class ObjectCastUtilityTest {
         Assert.assertEquals(1.5645678975621318E15, ObjectCastUtility.toDouble("1564567897562131.6494564").doubleValue(), 0.0000001);
         Assert.assertNull(ObjectCastUtility.toDouble("test"));
         Assert.assertNull(ObjectCastUtility.toDouble(""));
+        
+        //invalid
+        Assert.assertNull(ObjectCastUtility.toDouble(null));
     }
     
     /**
@@ -808,6 +829,9 @@ public class ObjectCastUtilityTest {
         Assert.assertNull(ObjectCastUtility.toBigInteger("1564567897562131.6494564"));
         Assert.assertNull(ObjectCastUtility.toBigInteger("test"));
         Assert.assertNull(ObjectCastUtility.toBigInteger(""));
+        
+        //invalid
+        Assert.assertNull(ObjectCastUtility.toBigInteger(null));
     }
     
     /**
@@ -895,6 +919,9 @@ public class ObjectCastUtilityTest {
         Assert.assertEquals(new BigDecimal("1564567897562131.6494564"), ObjectCastUtility.toBigDecimal("1564567897562131.6494564"));
         Assert.assertNull(ObjectCastUtility.toBigDecimal("test"));
         Assert.assertNull(ObjectCastUtility.toBigDecimal(""));
+        
+        //invalid
+        Assert.assertNull(ObjectCastUtility.toBigDecimal(null));
     }
     
     /**
@@ -982,6 +1009,9 @@ public class ObjectCastUtilityTest {
         Assert.assertNull(ObjectCastUtility.toChar("1564567897562131.6494564"));
         Assert.assertNull(ObjectCastUtility.toChar("test"));
         Assert.assertNull(ObjectCastUtility.toChar(""));
+        
+        //invalid
+        Assert.assertNull(ObjectCastUtility.toChar(null));
     }
     
     /**
@@ -1069,6 +1099,142 @@ public class ObjectCastUtilityTest {
         Assert.assertEquals("1564567897562131.6494564", ObjectCastUtility.toString("1564567897562131.6494564"));
         Assert.assertEquals("test", ObjectCastUtility.toString("test"));
         Assert.assertEquals("", ObjectCastUtility.toString(""));
+        
+        //invalid
+        Assert.assertEquals("null", ObjectCastUtility.toString(null));
+    }
+    
+    /**
+     * JUnit test of toClass.
+     *
+     * @throws Exception When there is an exception.
+     * @see ObjectCastUtility#toClass(Object)
+     */
+    @SuppressWarnings("UnnecessaryBoxing")
+    @Test
+    public void testToClass() throws Exception {
+        //standard
+        Assert.assertEquals(Boolean.class, ObjectCastUtility.toClass(Boolean.TRUE));
+        Assert.assertEquals(Boolean.class, ObjectCastUtility.toClass(false));
+        Assert.assertEquals(Byte.class, ObjectCastUtility.toClass(Byte.valueOf((byte) 1)));
+        Assert.assertEquals(Byte.class, ObjectCastUtility.toClass((byte) 1));
+        Assert.assertEquals(Short.class, ObjectCastUtility.toClass(Short.valueOf((short) 32100)));
+        Assert.assertEquals(Short.class, ObjectCastUtility.toClass((short) 32100));
+        Assert.assertEquals(Integer.class, ObjectCastUtility.toClass(Integer.valueOf(-115411)));
+        Assert.assertEquals(Integer.class, ObjectCastUtility.toClass(-115411));
+        Assert.assertEquals(Long.class, ObjectCastUtility.toClass(Long.valueOf(15624653112L)));
+        Assert.assertEquals(Long.class, ObjectCastUtility.toClass(15624653112L));
+        Assert.assertEquals(Float.class, ObjectCastUtility.toClass(Float.valueOf(-8.154f)));
+        Assert.assertEquals(Float.class, ObjectCastUtility.toClass(-8.154f));
+        Assert.assertEquals(Double.class, ObjectCastUtility.toClass(Double.valueOf(984.565489421d)));
+        Assert.assertEquals(Double.class, ObjectCastUtility.toClass(984.565489421d));
+        Assert.assertEquals(BigInteger.class, ObjectCastUtility.toClass(new BigInteger("1")));
+        Assert.assertEquals(BigDecimal.class, ObjectCastUtility.toClass(new BigDecimal("1")));
+        Assert.assertEquals(Character.class, ObjectCastUtility.toClass(Character.valueOf('t')));
+        Assert.assertEquals(Character.class, ObjectCastUtility.toClass('t'));
+        Assert.assertEquals(String.class, ObjectCastUtility.toClass("test"));
+        Assert.assertEquals(Exception.class, ObjectCastUtility.toClass(new Exception()));
+        
+        //class
+        Assert.assertEquals(Boolean.class, ObjectCastUtility.toClass(Boolean.class));
+        Assert.assertEquals(boolean.class, ObjectCastUtility.toClass(boolean.class));
+        Assert.assertEquals(Byte.class, ObjectCastUtility.toClass(Byte.class));
+        Assert.assertEquals(byte.class, ObjectCastUtility.toClass(byte.class));
+        Assert.assertEquals(Short.class, ObjectCastUtility.toClass(Short.class));
+        Assert.assertEquals(short.class, ObjectCastUtility.toClass(short.class));
+        Assert.assertEquals(Integer.class, ObjectCastUtility.toClass(Integer.class));
+        Assert.assertEquals(int.class, ObjectCastUtility.toClass(int.class));
+        Assert.assertEquals(Long.class, ObjectCastUtility.toClass(Long.class));
+        Assert.assertEquals(long.class, ObjectCastUtility.toClass(long.class));
+        Assert.assertEquals(Float.class, ObjectCastUtility.toClass(Float.class));
+        Assert.assertEquals(float.class, ObjectCastUtility.toClass(float.class));
+        Assert.assertEquals(Double.class, ObjectCastUtility.toClass(Double.class));
+        Assert.assertEquals(double.class, ObjectCastUtility.toClass(double.class));
+        Assert.assertEquals(BigInteger.class, ObjectCastUtility.toClass(BigInteger.class));
+        Assert.assertEquals(BigDecimal.class, ObjectCastUtility.toClass(BigDecimal.class));
+        Assert.assertEquals(Character.class, ObjectCastUtility.toClass(Character.class));
+        Assert.assertEquals(char.class, ObjectCastUtility.toClass(char.class));
+        Assert.assertEquals(String.class, ObjectCastUtility.toClass(String.class));
+        Assert.assertEquals(Exception.class, ObjectCastUtility.toClass(Exception.class));
+        
+        //invalid
+        Assert.assertNull(ObjectCastUtility.toClass(null));
+    }
+    
+    /**
+     * JUnit test of toPrimitiveClass.
+     *
+     * @throws Exception When there is an exception.
+     * @see ObjectCastUtility#toPrimitiveClass(Class)
+     */
+    @Test
+    public void testToPrimitiveClass() throws Exception {
+        //standard
+        Assert.assertEquals(boolean.class, ObjectCastUtility.toPrimitiveClass(Boolean.class));
+        Assert.assertEquals(byte.class, ObjectCastUtility.toPrimitiveClass(Byte.class));
+        Assert.assertEquals(short.class, ObjectCastUtility.toPrimitiveClass(Short.class));
+        Assert.assertEquals(int.class, ObjectCastUtility.toPrimitiveClass(Integer.class));
+        Assert.assertEquals(long.class, ObjectCastUtility.toPrimitiveClass(Long.class));
+        Assert.assertEquals(float.class, ObjectCastUtility.toPrimitiveClass(Float.class));
+        Assert.assertEquals(double.class, ObjectCastUtility.toPrimitiveClass(Double.class));
+        Assert.assertEquals(char.class, ObjectCastUtility.toPrimitiveClass(Character.class));
+        
+        //primitive
+        Assert.assertEquals(boolean.class, ObjectCastUtility.toPrimitiveClass(boolean.class));
+        Assert.assertEquals(byte.class, ObjectCastUtility.toPrimitiveClass(byte.class));
+        Assert.assertEquals(short.class, ObjectCastUtility.toPrimitiveClass(short.class));
+        Assert.assertEquals(int.class, ObjectCastUtility.toPrimitiveClass(int.class));
+        Assert.assertEquals(long.class, ObjectCastUtility.toPrimitiveClass(long.class));
+        Assert.assertEquals(float.class, ObjectCastUtility.toPrimitiveClass(float.class));
+        Assert.assertEquals(double.class, ObjectCastUtility.toPrimitiveClass(double.class));
+        Assert.assertEquals(char.class, ObjectCastUtility.toPrimitiveClass(char.class));
+        
+        //no primitive class
+        Assert.assertEquals(BigInteger.class, ObjectCastUtility.toPrimitiveClass(BigInteger.class));
+        Assert.assertEquals(BigDecimal.class, ObjectCastUtility.toPrimitiveClass(BigDecimal.class));
+        Assert.assertEquals(String.class, ObjectCastUtility.toPrimitiveClass(String.class));
+        Assert.assertEquals(Exception.class, ObjectCastUtility.toPrimitiveClass(Exception.class));
+        
+        //invalid
+        Assert.assertNull(ObjectCastUtility.toPrimitiveClass(null));
+    }
+    
+    /**
+     * JUnit test of toNonPrimitiveClass.
+     *
+     * @throws Exception When there is an exception.
+     * @see ObjectCastUtility#toNonPrimitiveClass(Class)
+     */
+    @Test
+    public void testToNonPrimitiveClass() throws Exception {
+        //standard
+        Assert.assertEquals(Boolean.class, ObjectCastUtility.toNonPrimitiveClass(boolean.class));
+        Assert.assertEquals(Byte.class, ObjectCastUtility.toNonPrimitiveClass(byte.class));
+        Assert.assertEquals(Short.class, ObjectCastUtility.toNonPrimitiveClass(short.class));
+        Assert.assertEquals(Integer.class, ObjectCastUtility.toNonPrimitiveClass(int.class));
+        Assert.assertEquals(Long.class, ObjectCastUtility.toNonPrimitiveClass(long.class));
+        Assert.assertEquals(Float.class, ObjectCastUtility.toNonPrimitiveClass(float.class));
+        Assert.assertEquals(Double.class, ObjectCastUtility.toNonPrimitiveClass(double.class));
+        Assert.assertEquals(Character.class, ObjectCastUtility.toNonPrimitiveClass(char.class));
+        
+        //non-primitive
+        Assert.assertEquals(Boolean.class, ObjectCastUtility.toNonPrimitiveClass(Boolean.class));
+        Assert.assertEquals(Byte.class, ObjectCastUtility.toNonPrimitiveClass(Byte.class));
+        Assert.assertEquals(Short.class, ObjectCastUtility.toNonPrimitiveClass(Short.class));
+        Assert.assertEquals(Integer.class, ObjectCastUtility.toNonPrimitiveClass(Integer.class));
+        Assert.assertEquals(Long.class, ObjectCastUtility.toNonPrimitiveClass(Long.class));
+        Assert.assertEquals(Float.class, ObjectCastUtility.toNonPrimitiveClass(Float.class));
+        Assert.assertEquals(Double.class, ObjectCastUtility.toNonPrimitiveClass(Double.class));
+        Assert.assertEquals(Character.class, ObjectCastUtility.toNonPrimitiveClass(Character.class));
+        
+        //no primitive class
+        Assert.assertEquals(BigInteger.class, ObjectCastUtility.toNonPrimitiveClass(BigInteger.class));
+        Assert.assertEquals(BigDecimal.class, ObjectCastUtility.toNonPrimitiveClass(BigDecimal.class));
+        Assert.assertEquals(String.class, ObjectCastUtility.toNonPrimitiveClass(String.class));
+        Assert.assertEquals(Exception.class, ObjectCastUtility.toNonPrimitiveClass(Exception.class));
+        
+        //invalid
+        Assert.assertNull(ObjectCastUtility.toNonPrimitiveClass(null));
     }
     
     /**
@@ -1083,11 +1249,34 @@ public class ObjectCastUtilityTest {
         final Collection<Boolean> testCollection1 = new ArrayList<>(Arrays.asList(false, true, true));
         final Collection<Integer> testCollection2 = new PriorityQueue<>(Arrays.asList(1, 4, 11));
         final Collection<String> testCollection3 = new HashSet<>(Arrays.asList("test", "value", "another", "else"));
-        
-        //ArrayList
         ArrayList<Boolean> arrayList1;
         ArrayList<Integer> arrayList2;
         ArrayList<String> arrayList3;
+        LinkedList<Boolean> linkedList1;
+        LinkedList<Integer> linkedList2;
+        LinkedList<String> linkedList3;
+        Vector<Boolean> vector1;
+        Vector<Integer> vector2;
+        Vector<String> vector3;
+        PriorityQueue<Boolean> priorityQueue1;
+        PriorityQueue<Integer> priorityQueue2;
+        PriorityQueue<String> priorityQueue3;
+        List<String> priorityQueue3Values;
+        ArrayDeque<Boolean> arrayDeque1;
+        ArrayDeque<Integer> arrayDeque2;
+        ArrayDeque<String> arrayDeque3;
+        List<String> arrayDeque3Values;
+        HashSet<Boolean> hashSet1;
+        HashSet<Integer> hashSet2;
+        HashSet<String> hashSet3;
+        LinkedHashSet<Boolean> linkedHashSet1;
+        LinkedHashSet<Integer> linkedHashSet2;
+        LinkedHashSet<String> linkedHashSet3;
+        TreeSet<Boolean> treeSet1;
+        TreeSet<Integer> treeSet2;
+        TreeSet<String> treeSet3;
+        
+        //ArrayList
         arrayList1 = ObjectCastUtility.toCollectionType(testCollection1, ArrayList.class, Boolean.class);
         Assert.assertNotNull(arrayList1);
         Assert.assertEquals(ArrayList.class, arrayList1.getClass());
@@ -1115,9 +1304,6 @@ public class ObjectCastUtilityTest {
         Assert.assertTrue(arrayList3.contains("else"));
         
         //LinkedList
-        LinkedList<Boolean> linkedList1;
-        LinkedList<Integer> linkedList2;
-        LinkedList<String> linkedList3;
         linkedList1 = ObjectCastUtility.toCollectionType(testCollection1, LinkedList.class, Boolean.class);
         Assert.assertNotNull(linkedList1);
         Assert.assertEquals(LinkedList.class, linkedList1.getClass());
@@ -1145,9 +1331,6 @@ public class ObjectCastUtilityTest {
         Assert.assertTrue(linkedList3.contains("else"));
         
         //Vector
-        Vector<Boolean> vector1;
-        Vector<Integer> vector2;
-        Vector<String> vector3;
         vector1 = ObjectCastUtility.toCollectionType(testCollection1, Vector.class, Boolean.class);
         Assert.assertNotNull(vector1);
         Assert.assertEquals(Vector.class, vector1.getClass());
@@ -1175,9 +1358,6 @@ public class ObjectCastUtilityTest {
         Assert.assertTrue(vector3.contains("else"));
         
         //PriorityQueue
-        PriorityQueue<Boolean> priorityQueue1;
-        PriorityQueue<Integer> priorityQueue2;
-        PriorityQueue<String> priorityQueue3;
         priorityQueue1 = ObjectCastUtility.toCollectionType(testCollection1, PriorityQueue.class, Boolean.class);
         Assert.assertNotNull(priorityQueue1);
         Assert.assertEquals(PriorityQueue.class, priorityQueue1.getClass());
@@ -1200,16 +1380,13 @@ public class ObjectCastUtilityTest {
         Assert.assertEquals(PriorityQueue.class, priorityQueue3.getClass());
         Assert.assertNotSame(testCollection3, priorityQueue3);
         Assert.assertEquals(4, priorityQueue3.size());
-        final List<String> priorityQueue3Values = new ArrayList<>(priorityQueue3);
+        priorityQueue3Values = new ArrayList<>(priorityQueue3);
         Assert.assertTrue(priorityQueue3Values.contains("test"));
         Assert.assertTrue(priorityQueue3Values.contains("value"));
         Assert.assertTrue(priorityQueue3Values.contains("another"));
         Assert.assertTrue(priorityQueue3Values.contains("else"));
         
         //ArrayDeque
-        ArrayDeque<Boolean> arrayDeque1;
-        ArrayDeque<Integer> arrayDeque2;
-        ArrayDeque<String> arrayDeque3;
         arrayDeque1 = ObjectCastUtility.toCollectionType(testCollection1, ArrayDeque.class, Boolean.class);
         Assert.assertNotNull(arrayDeque1);
         Assert.assertEquals(ArrayDeque.class, arrayDeque1.getClass());
@@ -1231,16 +1408,13 @@ public class ObjectCastUtilityTest {
         Assert.assertEquals(ArrayDeque.class, arrayDeque3.getClass());
         Assert.assertNotSame(testCollection3, arrayDeque3);
         Assert.assertEquals(4, arrayDeque3.size());
-        final List<String> arrayDeque3Values = new ArrayList<>(arrayDeque3);
+        arrayDeque3Values = new ArrayList<>(arrayDeque3);
         Assert.assertTrue(arrayDeque3Values.contains("test"));
         Assert.assertTrue(arrayDeque3Values.contains("value"));
         Assert.assertTrue(arrayDeque3Values.contains("another"));
         Assert.assertTrue(arrayDeque3Values.contains("else"));
         
         //HashSet
-        HashSet<Boolean> hashSet1;
-        HashSet<Integer> hashSet2;
-        HashSet<String> hashSet3;
         hashSet1 = ObjectCastUtility.toCollectionType(testCollection1, HashSet.class, Boolean.class);
         Assert.assertNotNull(hashSet1);
         Assert.assertEquals(HashSet.class, hashSet1.getClass());
@@ -1267,9 +1441,6 @@ public class ObjectCastUtilityTest {
         Assert.assertTrue(hashSet3.contains("else"));
         
         //LinkedHashSet
-        LinkedHashSet<Boolean> linkedHashSet1;
-        LinkedHashSet<Integer> linkedHashSet2;
-        LinkedHashSet<String> linkedHashSet3;
         linkedHashSet1 = ObjectCastUtility.toCollectionType(testCollection1, LinkedHashSet.class, Boolean.class);
         Assert.assertNotNull(linkedHashSet1);
         Assert.assertEquals(LinkedHashSet.class, linkedHashSet1.getClass());
@@ -1296,9 +1467,6 @@ public class ObjectCastUtilityTest {
         Assert.assertTrue(linkedHashSet3.contains("else"));
         
         //TreeSet
-        TreeSet<Boolean> treeSet1;
-        TreeSet<Integer> treeSet2;
-        TreeSet<String> treeSet3;
         treeSet1 = ObjectCastUtility.toCollectionType(testCollection1, TreeSet.class, Boolean.class);
         Assert.assertNotNull(treeSet1);
         Assert.assertEquals(TreeSet.class, treeSet1.getClass());
@@ -1325,40 +1493,14 @@ public class ObjectCastUtilityTest {
         Assert.assertTrue(treeSet3.contains("else"));
         
         //invalid
-        final Stack<Boolean> stack1 = ObjectCastUtility.toCollectionType(testCollection1, Stack.class, Boolean.class);
-        Assert.assertNull(stack1);
-        arrayList1 = ObjectCastUtility.toCollectionType(testCollection2, ArrayList.class, Integer.class);
-        Assert.assertNotNull(arrayList1);
-        Assert.assertEquals(ArrayList.class, arrayList1.getClass());
-        Assert.assertEquals(3, arrayList1.size());
-        linkedList1 = ObjectCastUtility.toCollectionType(testCollection2, LinkedList.class, Integer.class);
-        Assert.assertNotNull(linkedList1);
-        Assert.assertEquals(LinkedList.class, linkedList1.getClass());
-        Assert.assertEquals(3, linkedList1.size());
-        vector1 = ObjectCastUtility.toCollectionType(testCollection2, Vector.class, Integer.class);
-        Assert.assertNotNull(vector1);
-        Assert.assertEquals(Vector.class, vector1.getClass());
-        Assert.assertEquals(3, vector1.size());
-        priorityQueue1 = ObjectCastUtility.toCollectionType(testCollection2, PriorityQueue.class, Integer.class);
-        Assert.assertNotNull(priorityQueue1);
-        Assert.assertEquals(PriorityQueue.class, priorityQueue1.getClass());
-        Assert.assertEquals(3, priorityQueue1.size());
-        arrayDeque1 = ObjectCastUtility.toCollectionType(testCollection2, ArrayDeque.class, Integer.class);
-        Assert.assertNotNull(arrayDeque1);
-        Assert.assertEquals(ArrayDeque.class, arrayDeque1.getClass());
-        Assert.assertEquals(3, arrayDeque1.size());
-        hashSet1 = ObjectCastUtility.toCollectionType(testCollection2, HashSet.class, Integer.class);
-        Assert.assertNotNull(hashSet1);
-        Assert.assertEquals(HashSet.class, hashSet1.getClass());
-        Assert.assertEquals(3, hashSet1.size());
-        linkedHashSet1 = ObjectCastUtility.toCollectionType(testCollection2, LinkedHashSet.class, Integer.class);
-        Assert.assertNotNull(linkedHashSet1);
-        Assert.assertEquals(LinkedHashSet.class, linkedHashSet1.getClass());
-        Assert.assertEquals(3, linkedHashSet1.size());
-        treeSet1 = ObjectCastUtility.toCollectionType(testCollection2, TreeSet.class, Integer.class);
-        Assert.assertNotNull(treeSet1);
-        Assert.assertEquals(TreeSet.class, treeSet1.getClass());
-        Assert.assertEquals(3, treeSet1.size());
+        Assert.assertNull(ObjectCastUtility.toCollectionType(testCollection1, Stack.class, Boolean.class));
+        Assert.assertNotNull(ObjectCastUtility.toCollectionType(testCollection1, ArrayList.class, null));
+        Assert.assertNull(ObjectCastUtility.toCollectionType(testCollection1, null, Boolean.class));
+        Assert.assertNull(ObjectCastUtility.toCollectionType(testCollection1, null, null));
+        Assert.assertNull(ObjectCastUtility.toCollectionType(null, ArrayList.class, Boolean.class));
+        Assert.assertNull(ObjectCastUtility.toCollectionType(null, ArrayList.class, null));
+        Assert.assertNull(ObjectCastUtility.toCollectionType(null, null, Boolean.class));
+        Assert.assertNull(ObjectCastUtility.toCollectionType(null, null, null));
     }
     
     /**
@@ -1383,11 +1525,17 @@ public class ObjectCastUtilityTest {
         testMap3.put(9, "value");
         testMap3.put(-4, "another");
         testMap3.put(10, "else");
-        
-        //HashMap
         HashMap<Integer, Boolean> hashMap1;
         HashMap<String, String> hashMap2;
         HashMap<Integer, String> hashMap3;
+        LinkedHashMap<Integer, Boolean> linkedHashMap1;
+        LinkedHashMap<String, String> linkedHashMap2;
+        LinkedHashMap<Integer, String> linkedHashMap3;
+        TreeMap<Integer, Boolean> treeMap1;
+        TreeMap<String, String> treeMap2;
+        TreeMap<Integer, String> treeMap3;
+        
+        //HashMap
         hashMap1 = ObjectCastUtility.toMapType(testMap1, HashMap.class, Integer.class, Boolean.class);
         Assert.assertNotNull(hashMap1);
         Assert.assertEquals(HashMap.class, hashMap1.getClass());
@@ -1415,9 +1563,6 @@ public class ObjectCastUtilityTest {
         Assert.assertEquals("else", hashMap3.get(10));
         
         //LinkedHashMap
-        LinkedHashMap<Integer, Boolean> linkedHashMap1;
-        LinkedHashMap<String, String> linkedHashMap2;
-        LinkedHashMap<Integer, String> linkedHashMap3;
         linkedHashMap1 = ObjectCastUtility.toMapType(testMap1, LinkedHashMap.class, Integer.class, Boolean.class);
         Assert.assertNotNull(linkedHashMap1);
         Assert.assertEquals(LinkedHashMap.class, linkedHashMap1.getClass());
@@ -1445,9 +1590,6 @@ public class ObjectCastUtilityTest {
         Assert.assertEquals("else", linkedHashMap3.get(10));
         
         //TreeMap
-        TreeMap<Integer, Boolean> treeMap1;
-        TreeMap<String, String> treeMap2;
-        TreeMap<Integer, String> treeMap3;
         treeMap1 = ObjectCastUtility.toMapType(testMap1, TreeMap.class, Integer.class, Boolean.class);
         Assert.assertNotNull(treeMap1);
         Assert.assertEquals(TreeMap.class, treeMap1.getClass());
@@ -1475,18 +1617,20 @@ public class ObjectCastUtilityTest {
         Assert.assertEquals("else", treeMap3.get(10));
         
         //invalid
-        hashMap1 = ObjectCastUtility.toMapType(testMap2, HashMap.class, String.class, String.class);
-        Assert.assertNotNull(hashMap1);
-        Assert.assertEquals(HashMap.class, hashMap1.getClass());
-        Assert.assertEquals(3, hashMap1.size());
-        linkedHashMap1 = ObjectCastUtility.toMapType(testMap2, LinkedHashMap.class, String.class, String.class);
-        Assert.assertNotNull(linkedHashMap1);
-        Assert.assertEquals(LinkedHashMap.class, linkedHashMap1.getClass());
-        Assert.assertEquals(3, linkedHashMap1.size());
-        treeMap1 = ObjectCastUtility.toMapType(testMap2, TreeMap.class, String.class, String.class);
-        Assert.assertNotNull(treeMap1);
-        Assert.assertEquals(TreeMap.class, treeMap1.getClass());
-        Assert.assertEquals(3, treeMap1.size());
+        Assert.assertNotNull(ObjectCastUtility.toMapType(testMap1, HashMap.class, Integer.class, null));
+        Assert.assertNotNull(ObjectCastUtility.toMapType(testMap1, HashMap.class, null, Boolean.class));
+        Assert.assertNotNull(ObjectCastUtility.toMapType(testMap1, HashMap.class, null, null));
+        Assert.assertNull(ObjectCastUtility.toMapType(testMap1, null, Integer.class, Boolean.class));
+        Assert.assertNull(ObjectCastUtility.toMapType(testMap1, null, Integer.class, null));
+        Assert.assertNull(ObjectCastUtility.toMapType(testMap1, null, null, Boolean.class));
+        Assert.assertNull(ObjectCastUtility.toMapType(testMap1, null, null, null));
+        Assert.assertNull(ObjectCastUtility.toMapType(null, HashMap.class, Integer.class, null));
+        Assert.assertNull(ObjectCastUtility.toMapType(null, HashMap.class, null, Boolean.class));
+        Assert.assertNull(ObjectCastUtility.toMapType(null, HashMap.class, null, null));
+        Assert.assertNull(ObjectCastUtility.toMapType(null, null, Integer.class, Boolean.class));
+        Assert.assertNull(ObjectCastUtility.toMapType(null, null, Integer.class, null));
+        Assert.assertNull(ObjectCastUtility.toMapType(null, null, null, Boolean.class));
+        Assert.assertNull(ObjectCastUtility.toMapType(null, null, null, null));
     }
     
 }
