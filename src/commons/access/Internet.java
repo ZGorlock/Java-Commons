@@ -62,7 +62,7 @@ public final class Internet {
     private static String testHost = DEFAULT_TEST_HOST;
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Determines if the system has access to the internet.

@@ -189,7 +189,7 @@ public class RawVector extends RawComponent<RawVector> implements VectorInterfac
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new Raw Vector instance of the specified dimensionality.

@@ -25,7 +25,7 @@ public final class BoundUtility {
     private static final Logger logger = LoggerFactory.getLogger(BoundUtility.class);
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Determines if a number is in defined bounds.

@@ -251,7 +251,7 @@ public class BigMatrix extends BigComponent<BigMatrix> implements MatrixInterfac
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new Big Matrix instance of the specified dimensionality.

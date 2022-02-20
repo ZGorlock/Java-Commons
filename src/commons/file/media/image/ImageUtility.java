@@ -65,7 +65,7 @@ public class ImageUtility {
     private static final Logger logger = LoggerFactory.getLogger(ImageUtility.class);
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Loads an image.

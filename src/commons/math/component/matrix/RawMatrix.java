@@ -227,7 +227,7 @@ public class RawMatrix extends RawComponent<RawMatrix> implements MatrixInterfac
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new Raw Matrix instance of the specified dimensionality.

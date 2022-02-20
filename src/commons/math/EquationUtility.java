@@ -37,116 +37,6 @@ public final class EquationUtility {
     private static final Logger logger = LoggerFactory.getLogger(EquationUtility.class);
     
     
-    //Enums
-    
-    /**
-     * An enumeration of Operations that can be applied to operands in the equation.
-     */
-    public enum Operation {
-        
-        //Values
-        
-        POWER('^'),
-        ROOT('~'),
-        MULTIPLY('*'),
-        DIVIDE('/'),
-        MODULUS('%'),
-        ADD('+'),
-        SUBTRACT('-');
-        
-        
-        //Fields
-        
-        /**
-         * The symbol of the Operation.
-         */
-        private final char symbol;
-        
-        
-        //Constructors
-        
-        /**
-         * The constructor for an Operation.
-         *
-         * @param symbol The symbol of the Operation.
-         */
-        Operation(char symbol) {
-            this.symbol = symbol;
-        }
-        
-        
-        //Getters
-        
-        /**
-         * Returns the symbol of the Operation.
-         *
-         * @return The symbol of the Operation.
-         */
-        public char getSymbol() {
-            return symbol;
-        }
-        
-        
-        //Functions
-        
-        /**
-         * Retrieves an Operation by its symbol.
-         *
-         * @param symbol The symbol of the Operation.
-         * @return The Operation.
-         */
-        public static Operation getOperation(char symbol) {
-            return Arrays.stream(Operation.values()).filter(e -> e.getSymbol() == symbol).findFirst().orElse(null);
-        }
-        
-    }
-    
-    /**
-     * An enumeration representing the Order of Operations.
-     */
-    public enum OrderOfOperations {
-        
-        //Values
-        
-        FIRST("^~"),
-        SECOND("*/%"),
-        THIRD("+-");
-        
-        
-        //Fields
-        
-        /**
-         * The string of symbols corresponding to the stage in the order of operations.
-         */
-        private final String symbols;
-        
-        
-        //Constructors
-        
-        /**
-         * The constructor for an OrderOfOperations enumeration.
-         *
-         * @param symbols The string of symbols corresponding to the stage in the order of operations.
-         */
-        OrderOfOperations(String symbols) {
-            this.symbols = symbols;
-        }
-        
-        
-        //Getters
-        
-        /**
-         * Returns the string of symbols corresponding to the stage in the order of operations.
-         *
-         * @return The string of symbols corresponding to the stage in the order of operations.
-         */
-        public String getSymbols() {
-            return symbols;
-        }
-        
-    }
-    
-    
     //Constants
     
     /**
@@ -175,7 +65,117 @@ public final class EquationUtility {
     public static final Pattern ELEMENT_PATTERN = Pattern.compile("(?:" + NUMBER_PATTERN.pattern() + '|' + VARIABLE_PATTERN.pattern() + ')');
     
     
-    //Functions
+    //Enums
+    
+    /**
+     * An enumeration of equation Operations.
+     */
+    public enum Operation {
+        
+        //Values
+        
+        POWER('^'),
+        ROOT('~'),
+        MULTIPLY('*'),
+        DIVIDE('/'),
+        MODULUS('%'),
+        ADD('+'),
+        SUBTRACT('-');
+        
+        
+        //Fields
+        
+        /**
+         * The symbol of the Operation.
+         */
+        private final char symbol;
+        
+        
+        //Constructors
+        
+        /**
+         * Constructs an Operation.
+         *
+         * @param symbol The symbol of the Operation.
+         */
+        Operation(char symbol) {
+            this.symbol = symbol;
+        }
+        
+        
+        //Getters
+        
+        /**
+         * Returns the symbol of the Operation.
+         *
+         * @return The symbol of the Operation.
+         */
+        public char getSymbol() {
+            return symbol;
+        }
+        
+        
+        //Static Methods
+        
+        /**
+         * Retrieves an Operation by its symbol.
+         *
+         * @param symbol The symbol of the Operation.
+         * @return The Operation.
+         */
+        public static Operation getOperation(char symbol) {
+            return Arrays.stream(Operation.values()).filter(e -> e.getSymbol() == symbol).findFirst().orElse(null);
+        }
+        
+    }
+    
+    /**
+     * An enumeration representing the Order of Operations.
+     */
+    public enum OrderOfOperations {
+        
+        //Values
+        
+        FIRST("^~"),
+        SECOND("*/%"),
+        THIRD("+-");
+        
+        
+        //Fields
+        
+        /**
+         * The string of symbols corresponding to the stage of the Order of Operations.
+         */
+        private final String symbols;
+        
+        
+        //Constructors
+        
+        /**
+         * Constructs an Order of Operations.
+         *
+         * @param symbols The string of symbols corresponding to the stage of the Order of Operations.
+         */
+        OrderOfOperations(String symbols) {
+            this.symbols = symbols;
+        }
+        
+        
+        //Getters
+        
+        /**
+         * Returns the string of symbols corresponding to the stage of the Order of Operations.
+         *
+         * @return The string of symbols corresponding to the stage of the Order of Operations.
+         */
+        public String getSymbols() {
+            return symbols;
+        }
+        
+    }
+    
+    
+    //Static Methods
     
     /**
      * Parses a mathematical equation into a series of Operations on Operands.

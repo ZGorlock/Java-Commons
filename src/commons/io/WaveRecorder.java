@@ -110,7 +110,7 @@ public class WaveRecorder extends SingletonInputHandler {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Opens the target data line and begins capturing the recording.

@@ -2349,7 +2349,7 @@ public class BaseComponentTest {
         }
         
         
-        //Functions
+        //Static Methods
         
         /**
          * Creates a new Test Component instance of the specified dimensionality.

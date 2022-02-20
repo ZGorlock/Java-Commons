@@ -54,7 +54,7 @@ public final class CommonsLogging {
     private static CommonsLogger commonsLogger;
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Determines whether or not Filesystem operations should be logged.

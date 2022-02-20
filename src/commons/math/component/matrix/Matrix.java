@@ -216,7 +216,7 @@ public class Matrix extends Component<Matrix> implements MatrixInterface<Double,
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new Matrix instance of the specified dimensionality.

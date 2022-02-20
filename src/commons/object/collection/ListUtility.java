@@ -48,7 +48,7 @@ public final class ListUtility {
     private static final Class<? extends List<?>> DEFAULT_LIST_CLASS = (Class) ArrayList.class;
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new list of a certain class, type, and length, filled with a default value or null.

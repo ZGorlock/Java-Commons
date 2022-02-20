@@ -161,7 +161,7 @@ public class Vector3 extends Vector {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new 3D Vector instance.

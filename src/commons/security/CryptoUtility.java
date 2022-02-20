@@ -189,7 +189,7 @@ public final class CryptoUtility {
     public static final int RSA_MAX_DATA_LENGTH = 128;
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Generates a private/public key pair for the specified algorithm.

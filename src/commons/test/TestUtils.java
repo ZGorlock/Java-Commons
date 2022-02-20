@@ -61,7 +61,7 @@ public final class TestUtils {
     public static final BigDecimal DELTA_BIG = BigDecimal.valueOf(1E-36);
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Asserts that a call throws an exception with a particular message.

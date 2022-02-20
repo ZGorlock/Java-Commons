@@ -258,7 +258,7 @@ public class BigVector extends BigComponent<BigVector> implements VectorInterfac
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new Big Vector instance of the specified dimensionality.

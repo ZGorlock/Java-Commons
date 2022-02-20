@@ -32,7 +32,7 @@ public class DrawUtility {
     private static final Logger logger = LoggerFactory.getLogger(DrawUtility.class);
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Draws a line.

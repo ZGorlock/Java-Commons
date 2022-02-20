@@ -131,7 +131,7 @@ public class Matrix2 extends Matrix {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new 2D Matrix instance.

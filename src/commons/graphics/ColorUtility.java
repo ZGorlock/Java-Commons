@@ -26,7 +26,7 @@ public final class ColorUtility {
     private static final Logger logger = LoggerFactory.getLogger(ColorUtility.class);
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Returns a random color.

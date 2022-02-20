@@ -38,7 +38,7 @@ public class NumberUtility {
     public static final Pattern HEX_NUMBER_PATTERN = Pattern.compile("-?[0-9A-Fa-f]*(?:\\.[0-9A-Fa-f]+)?");
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Determines if a number is even.

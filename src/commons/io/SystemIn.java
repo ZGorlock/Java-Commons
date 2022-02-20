@@ -76,7 +76,7 @@ public final class SystemIn extends SingletonInputHandler {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Starts the scanner for System.in.
@@ -324,7 +324,7 @@ public final class SystemIn extends SingletonInputHandler {
         private static final Console console = System.console();
         
         
-        //Functions
+        //Static Methods
         
         /**
          * Reads a password from the console.

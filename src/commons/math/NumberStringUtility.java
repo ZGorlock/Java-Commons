@@ -42,75 +42,6 @@ public final class NumberStringUtility {
     private static final Logger logger = LoggerFactory.getLogger(NumberStringUtility.class);
     
     
-    //Enums
-    
-    /**
-     * An enumeration of the Sets in the number names token table.
-     */
-    private enum NumberNameSet {
-        
-        //Values
-        
-        DIGITS,
-        TENS,
-        HUNDREDS,
-        TEENS,
-        LATIN_SPECIAL,
-        LATIN_ONES_PREFIXES,
-        LATIN_TENS_PREFIXES,
-        LATIN_HUNDREDS_PREFIXES,
-        LATIN_THOUSANDS_SEPARATORS,
-        SUFFIXES,
-        FRACTIONAL,
-        RECIPROCAL,
-        MODIFIERS
-        
-    }
-    
-    /**
-     * An enumeration of the Suffixes in the number names token table.
-     */
-    private enum NumberNameSuffix {
-        
-        //Values
-        
-        SPECIAL,
-        SMALL,
-        STANDARD
-        
-    }
-    
-    /**
-     * An enumeration of the Modifiers in the number names token table.
-     */
-    private enum NumberNameModifier {
-        
-        //Values
-        
-        NEGATIVE,
-        POINT,
-        AND,
-        OH_HUNDRED,
-        O_HUNDRED,
-        EXPONENTIATED,
-        PLURAL
-        
-    }
-    
-    /**
-     * An enumeration of the Fraction Modes.
-     */
-    public enum FractionMode {
-        
-        //Values
-        
-        DEFAULT,
-        SIMPLE,
-        FANCY
-        
-    }
-    
-    
     //Constants
     
     /**
@@ -212,7 +143,76 @@ public final class NumberStringUtility {
             .collect(Collectors.joining("|", "(?:", ")")) + "[\\s\\-]?)+$");
     
     
-    //Functions
+    //Enums
+    
+    /**
+     * An enumeration of the token table Number Name Sets.
+     */
+    private enum NumberNameSet {
+        
+        //Values
+        
+        DIGITS,
+        TENS,
+        HUNDREDS,
+        TEENS,
+        LATIN_SPECIAL,
+        LATIN_ONES_PREFIXES,
+        LATIN_TENS_PREFIXES,
+        LATIN_HUNDREDS_PREFIXES,
+        LATIN_THOUSANDS_SEPARATORS,
+        SUFFIXES,
+        FRACTIONAL,
+        RECIPROCAL,
+        MODIFIERS
+        
+    }
+    
+    /**
+     * An enumeration of the token table Number Name Suffixes.
+     */
+    private enum NumberNameSuffix {
+        
+        //Values
+        
+        SPECIAL,
+        SMALL,
+        STANDARD
+        
+    }
+    
+    /**
+     * An enumeration of the token table Number Name Modifiers.
+     */
+    private enum NumberNameModifier {
+        
+        //Values
+        
+        NEGATIVE,
+        POINT,
+        AND,
+        OH_HUNDRED,
+        O_HUNDRED,
+        EXPONENTIATED,
+        PLURAL
+        
+    }
+    
+    /**
+     * An enumeration of supported Fraction Modes.
+     */
+    public enum FractionMode {
+        
+        //Values
+        
+        DEFAULT,
+        SIMPLE,
+        FANCY
+        
+    }
+    
+    
+    //Static Methods
     
     /**
      * Returns the string value of a number.

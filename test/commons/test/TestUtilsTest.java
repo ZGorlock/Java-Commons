@@ -993,7 +993,7 @@ public class TestUtilsTest {
             
         }
         
-        //Fields
+        //Static Fields
         
         /**
          * A private static final field.
@@ -1024,6 +1024,9 @@ public class TestUtilsTest {
          * A static field.
          */
         static byte field5 = 4;
+        
+        
+        //Fields
         
         /**
          * A private final field.

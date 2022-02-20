@@ -149,7 +149,7 @@ public class Vector4 extends Vector {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new 4D Vector instance.

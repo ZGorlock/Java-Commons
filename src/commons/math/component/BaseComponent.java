@@ -678,7 +678,7 @@ public abstract class BaseComponent<T extends Number, I extends BaseComponent<?,
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Copies the values from one Component to another.

@@ -46,11 +46,35 @@ public class SpeechSynthesizer {
      */
     private static final Logger logger = LoggerFactory.getLogger(SpeechSynthesizer.class);
     
+    //Constants
+    
+    /**
+     * The default voice of the Speech Synthesizer.
+     */
+    public static final Voice DEFAULT_VOICE = Voice.TOM;
+    
+    /**
+     * The default volume of the Speech Synthesizer.
+     */
+    public static final float DEFAULT_VOLUME = 75.0f;
+    
+    /**
+     * The default value of the flag to run in quiet mode or not.
+     */
+    public static final boolean DEFAULT_QUIET_MODE = false;
+    
+    /**
+     * A map of letters to their pronunciations.
+     *
+     * @see #getLetterPronunciations()
+     */
+    public static final Map<String, String> LETTER_PRONUNCIATIONS = Collections.unmodifiableMap(getLetterPronunciations());
+    
     
     //Enums
     
     /**
-     * An enumeration of Speech Voices.
+     * An enumeration of speech Voices.
      */
     public enum Voice {
         
@@ -107,18 +131,18 @@ public class SpeechSynthesizer {
         //Methods
         
         /**
-         * Returns if the Voice is male or not.
+         * Returns whether the Voice is male or not.
          *
-         * @return If ths Voice is male of not.
+         * @return Whether ths Voice is male of not.
          */
         public boolean isMale() {
             return gender;
         }
         
         /**
-         * Returns if the Voice is female or not.
+         * Returns whether the Voice is female or not.
          *
-         * @return If ths Voice is female of not.
+         * @return Whether ths Voice is female of not.
          */
         public boolean isFemale() {
             return !gender;
@@ -171,30 +195,6 @@ public class SpeechSynthesizer {
         }
         
     }
-    
-    //Constants
-    
-    /**
-     * The default voice of the Speech Synthesizer.
-     */
-    public static final Voice DEFAULT_VOICE = Voice.TOM;
-    
-    /**
-     * The default volume of the Speech Synthesizer.
-     */
-    public static final float DEFAULT_VOLUME = 75.0f;
-    
-    /**
-     * The default value of the flag to run in quiet mode or not.
-     */
-    public static final boolean DEFAULT_QUIET_MODE = false;
-    
-    /**
-     * A map of letters to their pronunciations.
-     *
-     * @see #getLetterPronunciations()
-     */
-    public static final Map<String, String> LETTER_PRONUNCIATIONS = Collections.unmodifiableMap(getLetterPronunciations());
     
     
     //Static Fields
@@ -462,7 +462,7 @@ public class SpeechSynthesizer {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Determines if the Speech Synthesizer is currently speaking or not.

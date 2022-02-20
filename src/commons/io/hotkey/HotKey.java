@@ -32,6 +32,14 @@ public class HotKey {
     private static final Logger logger = LoggerFactory.getLogger(HotKey.class);
     
     
+    //Constants
+    
+    /**
+     * The virtual key code to use when you are not expecting any.
+     */
+    public static int NO_KEY = -1;
+    
+    
     //Enums
     
     /**
@@ -63,7 +71,7 @@ public class HotKey {
         //Constructors
         
         /**
-         * Constructs a Modifier Key
+         * Constructs a Modifier Key.
          *
          * @param name           The name of the Modifier Key.
          * @param alternateNames A list of alternate names of the Modifier Key.
@@ -87,7 +95,7 @@ public class HotKey {
         }
         
         
-        //Functions
+        //Static Methods
         
         /**
          * Finds a Modifier Key by a name.
@@ -102,14 +110,6 @@ public class HotKey {
         }
         
     }
-    
-    
-    //Constants
-    
-    /**
-     * The virtual key code to use when you are not expecting any.
-     */
-    public static int NO_KEY = -1;
     
     
     //Fields

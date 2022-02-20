@@ -164,7 +164,7 @@ public class Vector extends Component<Vector> implements VectorInterface<Double,
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new Vector instance of the specified dimensionality.

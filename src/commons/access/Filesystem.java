@@ -74,7 +74,7 @@ public final class Filesystem {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Attempts to create a the specified file.

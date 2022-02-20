@@ -189,7 +189,7 @@ public class IntVector extends IntComponent<IntVector> implements VectorInterfac
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new Integer Vector instance of the specified dimensionality.

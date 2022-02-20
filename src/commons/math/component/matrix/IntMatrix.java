@@ -227,7 +227,7 @@ public class IntMatrix extends IntComponent<IntMatrix> implements MatrixInterfac
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new Integer Matrix instance of the specified dimensionality.

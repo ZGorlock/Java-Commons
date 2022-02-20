@@ -37,7 +37,7 @@ public class VideoUtility {
     private static final Logger logger = LoggerFactory.getLogger(VideoUtility.class);
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Converts a video from one video file to another.<br>

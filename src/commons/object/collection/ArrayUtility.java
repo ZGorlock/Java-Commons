@@ -38,7 +38,7 @@ public final class ArrayUtility {
     private static final Logger logger = LoggerFactory.getLogger(ArrayUtility.class);
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new array of a certain type and length, filled with a default value or null.

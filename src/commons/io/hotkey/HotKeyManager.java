@@ -278,7 +278,7 @@ public class HotKeyManager {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Registers a HotKey.
@@ -333,7 +333,7 @@ public class HotKeyManager {
      */
     protected static final class GlobalScreenWrapper {
         
-        //Functions
+        //Static Methods
         
         /**
          * Registers the native hook.

@@ -62,7 +62,7 @@ public final class CmdLine {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Executes a command on the system command line.
@@ -257,6 +257,28 @@ public final class CmdLine {
      */
     private final static class ProcessKiller {
         
+        //Constants
+        
+        /**
+         * The sequence of Kill Stages to perform when killing a process.
+         */
+        private static final Map<KillStage, Supplier<KillStage>> KILL_SEQUENCE = new LinkedHashMap<>();
+        
+        //Populates the Kill Stage sequence
+        static {
+            KILL_SEQUENCE.put(KillStage.DESTROY, () -> KillStage.DESTROY_FORCIBLY);
+            KILL_SEQUENCE.put(KillStage.DESTROY_FORCIBLY, () -> (OperatingSystem.isWindows() ? KillStage.CMD_KILL_WINDOWS : KillStage.CMD_KILL));
+            KILL_SEQUENCE.put(KillStage.CMD_KILL, () -> KillStage.CMD_KILL_HARD);
+            KILL_SEQUENCE.put(KillStage.CMD_KILL_HARD, () -> null);
+            KILL_SEQUENCE.put(KillStage.CMD_KILL_WINDOWS, () -> null);
+        }
+        
+        /**
+         * The default amount of time to wait after performing a Kill Stage before checking if the process has been killed or not, in milliseconds.
+         */
+        private static final long DEFAULT_VALIDATION_DELAY = 250L;
+        
+        
         //Enums
         
         /**
@@ -307,28 +329,6 @@ public final class CmdLine {
             }
             
         }
-        
-        
-        //Constants
-        
-        /**
-         * The sequence of Kill Stages to perform when killing a process.
-         */
-        private static final Map<KillStage, Supplier<KillStage>> KILL_SEQUENCE = new LinkedHashMap<>();
-        
-        //Populates the Kill Stage sequence
-        static {
-            KILL_SEQUENCE.put(KillStage.DESTROY, () -> KillStage.DESTROY_FORCIBLY);
-            KILL_SEQUENCE.put(KillStage.DESTROY_FORCIBLY, () -> (OperatingSystem.isWindows() ? KillStage.CMD_KILL_WINDOWS : KillStage.CMD_KILL));
-            KILL_SEQUENCE.put(KillStage.CMD_KILL, () -> KillStage.CMD_KILL_HARD);
-            KILL_SEQUENCE.put(KillStage.CMD_KILL_HARD, () -> null);
-            KILL_SEQUENCE.put(KillStage.CMD_KILL_WINDOWS, () -> null);
-        }
-        
-        /**
-         * The default amount of time to wait after performing a Kill Stage before checking if the process has been killed or not, in milliseconds.
-         */
-        private static final long DEFAULT_VALIDATION_DELAY = 250L;
         
         
         //Fields
@@ -397,7 +397,7 @@ public final class CmdLine {
         }
         
         
-        //Functions
+        //Static Methods
         
         /**
          * Attempts to kill a running process.

@@ -43,23 +43,6 @@ public class SpeechRecognizer {
     private static final Logger logger = LoggerFactory.getLogger(SpeechRecognizer.class);
     
     
-    //Enums
-    
-    /**
-     * An enumeration of speech Recognition Modes.
-     */
-    public enum RecognitionMode {
-        
-        //Values
-        
-        CONTINUOUS,
-        TRIGGERED,
-        ON_DEMAND,
-        OFF
-        
-    }
-    
-    
     //Constants
     
     /**
@@ -141,6 +124,23 @@ public class SpeechRecognizer {
      * The default minimum length in milliseconds for a speech recordings to be processed in triggered mode.
      */
     public static final long DEFAULT_MINIMUM_RECORDING_LENGTH = 750L;
+    
+    
+    //Enums
+    
+    /**
+     * An enumeration of speech Recognition Modes.
+     */
+    public enum RecognitionMode {
+        
+        //Values
+        
+        CONTINUOUS,
+        TRIGGERED,
+        ON_DEMAND,
+        OFF
+        
+    }
     
     
     //Static Fields
@@ -945,7 +945,7 @@ public class SpeechRecognizer {
         }
         
         
-        //Functions
+        //Static Methods
         
         /**
          * Performs training of the PocketSphinx acoustic model.

@@ -101,7 +101,7 @@ public class FFmpeg {
     public static int maxMuxingQueueSize = -1;
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Determines whether ffmpeg exists and is accessible.
@@ -2169,7 +2169,7 @@ public class FFmpeg {
             }
             
             
-            //Functions
+            //Static Methods
             
             /**
              * Formats a metadata tag key or value.
@@ -3086,7 +3086,7 @@ public class FFmpeg {
                     //Fields
                     
                     /**
-                     * The key of the StreamDisposition.
+                     * The key of the Stream Disposition.
                      */
                     private final String key;
                     
@@ -3094,9 +3094,9 @@ public class FFmpeg {
                     //Constructors
                     
                     /**
-                     * Constructs a StreamDisposition.
+                     * Constructs a Stream Disposition.
                      *
-                     * @param key The key of the StreamDisposition.
+                     * @param key The key of the Stream Disposition.
                      */
                     StreamDisposition(String key) {
                         this.key = key;
@@ -3106,9 +3106,9 @@ public class FFmpeg {
                     //Getters
                     
                     /**
-                     * Returns the key of the StreamDisposition.
+                     * Returns the key of the Stream Disposition.
                      *
-                     * @return The key of the StreamDisposition.
+                     * @return The key of the Stream Disposition.
                      */
                     public String getKey() {
                         return key;
@@ -3320,7 +3320,7 @@ public class FFmpeg {
                 }
                 
                 
-                //Functions
+                //Static Methods
                 
                 /**
                  * Generates the contents of an FFMETADATA file from a list of Chapter DTOs.
@@ -3372,6 +3372,22 @@ public class FFmpeg {
      */
     public abstract static class Identifier<E extends Identifier.Scope> implements Comparable<Identifier<?>> {
         
+        //Constants
+        
+        /**
+         * The regex pattern for an entity specifier.
+         */
+        public static final Pattern SPECIFIER_PATTERN = Pattern.compile("(?i)^(?:(?<sourceIndex>\\d+):)?" +
+                Arrays.stream(IdentifierType.values()).map(e ->
+                                List.of(StringUtility.lSnip(e.name(), 1), StringUtility.lSnip(e.keys, 1)))
+                        .flatMap(List::stream).map(String::toLowerCase).distinct()
+                        .collect(Collectors.joining("", "(?:(?<type>[", "]):?)?")) +
+                StringUtility.lShear(IdentifierType.STREAM.keys, 1).chars().boxed().map(i -> String.valueOf((char) i.intValue()))
+                        .map(String::toLowerCase).distinct()
+                        .collect(Collectors.joining("", "(?:(?<streamType>[", "]):?)?")) +
+                "(?<index>\\d+)?$");
+        
+        
         //Enums
         
         /**
@@ -3386,7 +3402,7 @@ public class FFmpeg {
             ALL;
             
             
-            //Functions
+            //Static Methods
             
             /**
              * Determines the Identifier Scope for an identifier.
@@ -3428,7 +3444,7 @@ public class FFmpeg {
             //Constructors
             
             /**
-             * Creates a new Identifier Type.
+             * Constructs an Identifier Type.
              *
              * @param keys The available keys for the Identifier Type.
              */
@@ -3437,7 +3453,7 @@ public class FFmpeg {
             }
             
             
-            //Functions
+            //Static Methods
             
             /**
              * Determines the Identifier Type for an identifier subclass.
@@ -3455,22 +3471,6 @@ public class FFmpeg {
             }
             
         }
-        
-        
-        //Constants
-        
-        /**
-         * The regex pattern for an entity specifier.
-         */
-        public static final Pattern SPECIFIER_PATTERN = Pattern.compile("(?i)^(?:(?<sourceIndex>\\d+):)?" +
-                Arrays.stream(IdentifierType.values()).map(e ->
-                                List.of(StringUtility.lSnip(e.name(), 1), StringUtility.lSnip(e.keys, 1)))
-                        .flatMap(List::stream).map(String::toLowerCase).distinct()
-                        .collect(Collectors.joining("", "(?:(?<type>[", "]):?)?")) +
-                StringUtility.lShear(IdentifierType.STREAM.keys, 1).chars().boxed().map(i -> String.valueOf((char) i.intValue()))
-                        .map(String::toLowerCase).distinct()
-                        .collect(Collectors.joining("", "(?:(?<streamType>[", "]):?)?")) +
-                "(?<index>\\d+)?$");
         
         
         //Fields
@@ -3776,7 +3776,7 @@ public class FFmpeg {
         }
         
         
-        //Functions
+        //Static Methods
         
         /**
          * Decomposes a list of identifiers into a list of valid singular identifiers for a specific media.
@@ -4306,7 +4306,7 @@ public class FFmpeg {
         private static List<Color> colors;
         
         
-        //Functions
+        //Static Methods
         
         /**
          * Returns the list of formats supported by ffmpeg.

@@ -68,7 +68,7 @@ public final class Project {
     public static final File TMP_DIR = new File("tmp");
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Ensures the project directories exist and creates them if needed.

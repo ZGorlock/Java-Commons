@@ -28,7 +28,7 @@ public final class ObjectCastUtility {
     private static final Logger logger = LoggerFactory.getLogger(ObjectCastUtility.class);
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Casts an Object to a Boolean.

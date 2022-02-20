@@ -57,7 +57,7 @@ public final class CoordinateUtility {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Converts cartesian coordinates to a vector in spherical coordinates.

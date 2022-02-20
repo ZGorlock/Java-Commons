@@ -131,7 +131,7 @@ public class Matrix3 extends Matrix {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new 3D Matrix instance.

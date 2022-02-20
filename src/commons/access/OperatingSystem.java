@@ -52,7 +52,7 @@ public final class OperatingSystem {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Determines the current operating system.

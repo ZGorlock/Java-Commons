@@ -40,7 +40,7 @@ public class ImageTransformationUtility {
     private static final Logger logger = LoggerFactory.getLogger(ImageTransformationUtility.class);
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Performs a quad to quad image transformation.

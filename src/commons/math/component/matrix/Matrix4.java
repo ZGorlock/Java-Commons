@@ -131,7 +131,7 @@ public class Matrix4 extends Matrix {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new 4D Matrix instance.

@@ -45,7 +45,7 @@ public final class MapUtility {
     private static final Class<? extends Map<?, ?>> DEFAULT_MAP_CLASS = (Class) HashMap.class;
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new map of a certain class.

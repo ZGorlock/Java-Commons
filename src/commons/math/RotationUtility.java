@@ -26,7 +26,7 @@ public final class RotationUtility {
     private static final Logger logger = LoggerFactory.getLogger(RotationUtility.class);
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Calculates a rotation transformation matrix.

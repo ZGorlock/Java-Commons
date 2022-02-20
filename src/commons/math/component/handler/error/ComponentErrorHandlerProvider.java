@@ -58,7 +58,7 @@ public final class ComponentErrorHandlerProvider {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Checks if the dimensionality of two Components is the same or not.

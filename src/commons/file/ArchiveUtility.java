@@ -48,6 +48,15 @@ public final class ArchiveUtility {
     private static final Logger logger = LoggerFactory.getLogger(ArchiveUtility.class);
     
     
+    //Constants
+    
+    /**
+     * The path separator character for an archive file.
+     */
+    @SuppressWarnings("HardcodedFileSeparator")
+    public static final String ARCHIVE_PATH_SEPARATOR = "/";
+    
+    
     //Enums
     
     /**
@@ -96,7 +105,7 @@ public final class ArchiveUtility {
     }
     
     /**
-     * An enumeration of Compression Methods for archives.
+     * An enumeration of archive Compression Methods.
      */
     public enum CompressionMethod {
         
@@ -117,7 +126,7 @@ public final class ArchiveUtility {
         //Constructors
         
         /**
-         * Constructs a CompressionMethod.
+         * Constructs a Compression Method.
          *
          * @param level The level for the Compression Method.
          */
@@ -140,16 +149,7 @@ public final class ArchiveUtility {
     }
     
     
-    //Constants
-    
-    /**
-     * The path separator character for an archive file.
-     */
-    @SuppressWarnings("HardcodedFileSeparator")
-    public static final String ARCHIVE_PATH_SEPARATOR = "/";
-    
-    
-    //Functions
+    //Static Methods
     
     /**
      * Extracts a resource from an archive to an external directory.
@@ -884,7 +884,7 @@ public final class ArchiveUtility {
      */
     private static abstract class BaseArchive {
         
-        //Functions
+        //Static Methods
         
         /**
          * Writes an archive stream to a file.
@@ -974,7 +974,7 @@ public final class ArchiveUtility {
      */
     private static final class ZipArchive extends BaseArchive {
         
-        //Functions
+        //Static Methods
         
         /**
          * Extracts a resource from a zip to an external file.
@@ -1284,7 +1284,7 @@ public final class ArchiveUtility {
      */
     private static final class JarArchive extends BaseArchive {
         
-        //Functions
+        //Static Methods
         
         /**
          * Extracts a resource from a jar to an external file.

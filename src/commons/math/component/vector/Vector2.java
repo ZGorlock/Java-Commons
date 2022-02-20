@@ -171,7 +171,7 @@ public class Vector2 extends Vector {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Creates a new 2D Vector instance.

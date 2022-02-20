@@ -26,7 +26,7 @@ public class MathUtility {
     private static final Logger logger = LoggerFactory.getLogger(MathUtility.class);
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Returns a random number between two values.

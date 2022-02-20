@@ -31,7 +31,7 @@ public class ImageMetadataUtility {
     private static final Logger logger = LoggerFactory.getLogger(ImageMetadataUtility.class);
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Extracts the metadata tags from a file.

@@ -29,7 +29,7 @@ public final class AudioPlayer {
     private static final Logger logger = LoggerFactory.getLogger(AudioPlayer.class);
     
     
-    //Functions
+    //Static Methods
     
     //TODO
     

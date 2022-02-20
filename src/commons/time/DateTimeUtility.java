@@ -32,48 +32,6 @@ public final class DateTimeUtility {
     private static final Logger logger = LoggerFactory.getLogger(DateTimeUtility.class);
     
     
-    //Enums
-    
-    /**
-     * An enumerations of Months.
-     */
-    public enum Month {
-        
-        //Values
-        
-        JANUARY,
-        FEBRUARY,
-        MARCH,
-        APRIL,
-        MAY,
-        JUNE,
-        JULY,
-        AUGUST,
-        SEPTEMBER,
-        OCTOBER,
-        NOVEMBER,
-        DECEMBER
-        
-    }
-    
-    /**
-     * An enumeration of Weekdays.
-     */
-    public enum Weekday {
-        
-        //Values
-        
-        MONDAY,
-        TUESDAY,
-        WEDNESDAY,
-        THURSDAY,
-        FRIDAY,
-        SATURDAY,
-        SUNDAY
-        
-    }
-    
-    
     //Constants
     
     /**
@@ -147,7 +105,49 @@ public final class DateTimeUtility {
     public static final Pattern TIME_PATTERN = Pattern.compile("(?<hour>\\d{2}):(?<minute>\\d{2})(:(?<second>\\d{2}))?");
     
     
-    //Functions
+    //Enums
+    
+    /**
+     * An enumerations of Months.
+     */
+    public enum Month {
+        
+        //Values
+        
+        JANUARY,
+        FEBRUARY,
+        MARCH,
+        APRIL,
+        MAY,
+        JUNE,
+        JULY,
+        AUGUST,
+        SEPTEMBER,
+        OCTOBER,
+        NOVEMBER,
+        DECEMBER
+        
+    }
+    
+    /**
+     * An enumeration of Weekdays.
+     */
+    public enum Weekday {
+        
+        //Values
+        
+        MONDAY,
+        TUESDAY,
+        WEDNESDAY,
+        THURSDAY,
+        FRIDAY,
+        SATURDAY,
+        SUNDAY
+        
+    }
+    
+    
+    //Static Methods
     
     /**
      * Converts a date to a formatted date string.

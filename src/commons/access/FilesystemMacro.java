@@ -29,7 +29,7 @@ public final class FilesystemMacro {
     private static final Logger logger = LoggerFactory.getLogger(FilesystemMacro.class);
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Macro to delete empty directories within the requested directory.

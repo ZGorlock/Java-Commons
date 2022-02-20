@@ -65,7 +65,7 @@ public final class StringUtility {
     //Enums
     
     /**
-     * An enumeration of Box Types for the boxText method.
+     * An enumeration of boxText Box Types.
      */
     public enum BoxType {
         
@@ -78,7 +78,7 @@ public final class StringUtility {
     }
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Determines if a string is null or empty.

@@ -55,7 +55,7 @@ public final class StringComparisonUtility {
     private static final Map<UUID, Integer> extractionDepths = new ConcurrentHashMap<>();
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Compares the closeness of two strings and extracts variables and tokens if applicable.<br>

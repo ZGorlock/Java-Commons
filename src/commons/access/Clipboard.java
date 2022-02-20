@@ -30,7 +30,7 @@ public final class Clipboard {
     private static final Logger logger = LoggerFactory.getLogger(Clipboard.class);
     
     
-    //Functions
+    //Static Methods
     
     /**
      * Returns the contents of the clipboard as a string.
