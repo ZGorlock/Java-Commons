@@ -7,6 +7,9 @@
 
 package commons.io;
 
+import java.util.concurrent.atomic.AtomicReference;
+
+import commons.object.ObjectCastUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,12 +31,12 @@ public abstract class SingletonInputHandler {
     /**
      * The current owner of the Input Handler.
      */
-    protected String owner = "";
+    protected final AtomicReference<Object> owner = new AtomicReference<>(null);
     
     /**
-     * The default owner of the Input Handler.
+     * The manager of the Input Handler.
      */
-    protected String defaultOwner = "";
+    protected final AtomicReference<Object> manager = new AtomicReference<>(null);
     
     /**
      * The action to perform to interrupt the Input Handler.
@@ -45,108 +48,81 @@ public abstract class SingletonInputHandler {
     //Methods
     
     /**
-     * Determines if a specified class is the owner of the Input Handler.
+     * Determines if a specified caller is the owner of the Input Handler.
      *
-     * @param owner The calling class.
-     * @return Whether the class is the owner of the Input Handler or not.
+     * @param caller The caller.
+     * @return Whether the caller is the owner of the Input Handler or not.
      */
-    protected synchronized boolean isOwner(Class<?> owner) {
-        return (owner != null) && this.owner.equals(owner.getCanonicalName());
+    protected boolean isOwner(Object caller) {
+        return (caller != null) && ((caller == owner.get()) || (ObjectCastUtility.toClass(caller) == owner.get()));
     }
     
     /**
-     * Determines if a specified class is the owner of the Input Handler.
+     * Determines if a specified caller is the manager of the Input Handler.
      *
-     * @param owner The calling object.
-     * @return Whether the class is the owner of the Input Handler or not.
-     * @see #isOwner(Class)
+     * @param caller The caller.
+     * @return Whether the caller is the manager of the Input Handler or not.
      */
-    protected synchronized boolean isOwner(Object owner) {
-        return isOwner((owner != null) ? owner.getClass() : null);
+    protected boolean isManager(Object caller) {
+        return (caller != null) && (caller == manager.get());
     }
     
     /**
-     * Claims ownership of the Input Handler.
+     * Acquires ownership of the Input Handler.
      *
-     * @param owner The new owner of the Input Handler.
-     * @return Whether the class acquired ownership of the Input Handler or not.
+     * @param caller The caller.
+     * @return Whether the caller acquired ownership of the Input Handler or not.
      */
-    protected synchronized boolean claimOwnership(Class<?> owner) {
-        if ((owner != null) &&
-                (this.owner.equals(this.defaultOwner) ||
-                        owner.getCanonicalName().equals(this.defaultOwner))) {
-            this.interrupt.run();
-            this.owner = owner.getCanonicalName();
+    protected boolean acquireOwnership(Object caller) {
+        if ((caller != null) && !isOwner(caller) && ((owner.get() == null) || isManager(caller))) {
+            interrupt.run();
+            owner.set(caller);
             return true;
         }
         return false;
     }
     
     /**
-     * Claims ownership of the Input Handler.
+     * Relinquishes ownership of the Input Handler.
      *
-     * @param owner The new owner of the Input Handler.
-     * @return Whether the class acquired ownership of the Input Handler or not.
-     * @see #claimOwnership(Class)
+     * @param caller The caller.
+     * @return Whether the caller relinquished ownership of the Input Handler or not.
      */
-    protected synchronized boolean claimOwnership(Object owner) {
-        return claimOwnership((owner != null) ? owner.getClass() : null);
-    }
-    
-    /**
-     * Claims the default ownership of the Input Handler.
-     *
-     * @param owner The default owner of the Input Handler.
-     * @return Whether default ownership was successfully acquired or not.
-     */
-    protected synchronized boolean claimDefaultOwnership(Class<?> owner) {
-        if ((owner != null) &&
-                this.defaultOwner.isEmpty()) {
-            this.interrupt.run();
-            this.defaultOwner = owner.getCanonicalName();
-            this.owner = this.defaultOwner;
+    protected boolean releaseOwnership(Object caller) {
+        if ((caller != null) && (owner.get() != null) && (isOwner(caller) || isManager(caller))) {
+            interrupt.run();
+            owner.set(null);
             return true;
         }
         return false;
     }
     
     /**
-     * Claims the default ownership of the Input Handler.
+     * Acquires management of the Input Handler.
      *
-     * @param owner The default owner of the Input Handler.
-     * @return Whether default ownership was successfully acquired or not.
-     * @see #claimDefaultOwnership(Class)
+     * @param caller The caller.
+     * @return Whether the caller acquired management of the Input Handler or not.
      */
-    protected synchronized boolean claimDefaultOwnership(Object owner) {
-        return claimDefaultOwnership((owner != null) ? owner.getClass() : null);
-    }
-    
-    /**
-     * Relinquishes the ownership of the Input Handler to the default owner.
-     *
-     * @param owner The calling class.
-     * @return Whether the class relinquished ownership of the Input Handler or not.
-     */
-    protected synchronized boolean relinquishOwnership(Class<?> owner) {
-        if ((owner != null) && (
-                owner.getCanonicalName().equals(this.owner) ||
-                        (this.owner.equals(this.defaultOwner) && !this.owner.isEmpty()))) {
-            this.interrupt.run();
-            this.owner = this.defaultOwner;
+    protected boolean acquireManagement(Object caller) {
+        if ((caller != null) && (manager.get() == null)) {
+            manager.set(caller);
             return true;
         }
         return false;
     }
     
     /**
-     * Relinquishes the ownership of the Input Handler to the default owner.
+     * Relinquishes management of the Input Handler.
      *
-     * @param owner The calling object.
-     * @return Whether the class relinquished ownership of the Input Handler or not.
-     * @see #relinquishOwnership(Class)
+     * @param caller The caller.
+     * @return Whether the caller relinquished management of the Input Handler or not.
      */
-    protected synchronized boolean relinquishOwnership(Object owner) {
-        return relinquishOwnership((owner != null) ? owner.getClass() : null);
+    protected boolean releaseManagement(Object caller) {
+        if ((caller != null) && isManager(caller)) {
+            manager.set(null);
+            return true;
+        }
+        return false;
     }
     
 }

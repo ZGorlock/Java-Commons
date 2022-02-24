@@ -8,7 +8,14 @@
 package commons.io;
 
 import java.io.File;
+import java.io.IOException;
+import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.stream.Stream;
 import javax.sound.sampled.AudioFileFormat;
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioInputStream;
@@ -17,7 +24,10 @@ import javax.sound.sampled.Line;
 import javax.sound.sampled.TargetDataLine;
 
 import commons.access.Filesystem;
+import commons.object.collection.MapUtility;
 import commons.test.TestUtils;
+import commons.test.TestUtilsTest;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -28,6 +38,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -59,11 +70,6 @@ public class WaveRecorderTest {
      */
     private WaveRecorder sut;
     
-    /**
-     * A flag indicating whether the interrupt was activated or not.
-     */
-    private final AtomicBoolean interrupt = new AtomicBoolean(false);
-    
     
     //Initialization
     
@@ -94,15 +100,20 @@ public class WaveRecorderTest {
      */
     @Before
     public void setup() throws Exception {
-        PowerMockito.mockStatic(WaveRecorder.class, Mockito.CALLS_REAL_METHODS);
-        sut = Mockito.mock(WaveRecorder.class, Mockito.CALLS_REAL_METHODS);
-        TestUtils.setField(sut, "interrupt", (Runnable) () -> interrupt.set(true));
-        TestUtils.setField(WaveRecorder.class, "instance", sut);
+        PowerMockito.spy(WaveRecorder.class);
         
-        TestUtils.setField(sut, "owner", "");
-        TestUtils.setField(sut, "defaultOwner", "");
-        WaveRecorder.defaultOwn(WaveRecorderTest.class);
-        Assert.assertTrue(interrupt.getAndSet(false));
+        sut = Mockito.spy(WaveRecorder.class);
+        TestUtils.setField(sut, "owner", new AtomicReference<>(getClass()));
+        TestUtils.setField(sut, "manager", new AtomicReference<>(getClass()));
+        
+        TestUtils.setField(WaveRecorder.class, "output", null);
+        TestUtils.setField(WaveRecorder.class, "format", null);
+        TestUtils.setField(WaveRecorder.class, "line", null);
+        TestUtils.setField(WaveRecorder.class, "recorder", null);
+        TestUtils.setField(WaveRecorder.class, "recorderHandle", null);
+        TestUtils.setField(WaveRecorder.class, "recorderWarning", new AtomicBoolean(false));
+        TestUtils.setField(WaveRecorder.class, "instance", sut);
+        TestUtils.setField(WaveRecorder.class, "inUse", new AtomicBoolean(false));
     }
     
     /**
@@ -112,7 +123,7 @@ public class WaveRecorderTest {
      */
     @After
     public void cleanup() throws Exception {
-        WaveRecorder.stop(WaveRecorderTest.class);
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "stop"));
     }
     
     
@@ -131,6 +142,7 @@ public class WaveRecorderTest {
      */
     @Test
     public void testConstants() throws Exception {
+        //standard
         Assert.assertEquals(100, WaveRecorder.RECORDING_THREAD_STATUS_DELAY);
         Assert.assertEquals(44100, WaveRecorder.DEFAULT_SAMPLE_RATE);
         Assert.assertEquals(16, WaveRecorder.DEFAULT_SAMPLE_SIZE_IN_BITS);
@@ -140,100 +152,158 @@ public class WaveRecorderTest {
     }
     
     /**
+     * JUnit test of constructors.
+     *
+     * @throws Exception When there is an exception.
+     * @see WaveRecorder#WaveRecorder()
+     */
+    @Test
+    public void testConstructors() throws Exception {
+        WaveRecorder sut;
+        
+        //private
+        sut = TestUtils.invokeConstructor(WaveRecorder.class);
+        Assert.assertNotNull(sut);
+        Assert.assertTrue(sut instanceof WaveRecorder);
+        Assert.assertNotNull(TestUtils.getField(sut, "interrupt"));
+    }
+    
+    /**
      * JUnit test of start.
      *
      * @throws Exception When there is an exception.
-     * @see WaveRecorder#start(File, AudioFormat, Class)
+     * @see WaveRecorder#start(File, AudioFormat)
      * @see WaveRecorder#start(File, AudioFormat, Object)
-     * @see WaveRecorder#start(File, int, int, int, boolean, boolean, Class)
      * @see WaveRecorder#start(File, int, int, int, boolean, boolean, Object)
-     * @see WaveRecorder#start(File, Class)
      * @see WaveRecorder#start(File, Object)
      */
     @Test
     public void testStart() throws Exception {
         final File output = Filesystem.getTemporaryFile();
         final AudioFormat audioFormat = new AudioFormat(WaveRecorder.DEFAULT_SAMPLE_RATE, WaveRecorder.DEFAULT_SAMPLE_SIZE_IN_BITS, WaveRecorder.DEFAULT_CHANNELS, WaveRecorder.DEFAULT_SIGNED, WaveRecorder.DEFAULT_BIG_ENDIAN);
-        PowerMockito.mockStatic(AudioSystem.class, Mockito.CALLS_REAL_METHODS);
+        final AtomicBoolean lineSupported = new AtomicBoolean(false);
         long startTime;
         long duration;
-        Assert.assertTrue(WaveRecorder.owns(WaveRecorderTest.class));
+        
+        PowerMockito.spy(AudioSystem.class);
+        PowerMockito.doAnswer((Answer<Boolean>) invocation ->
+                lineSupported.get()
+        ).when(AudioSystem.class, "isLineSupported", ArgumentMatchers.any(Line.Info.class));
         
         //standard
-        
+        lineSupported.set(true);
         startTime = System.currentTimeMillis();
-        Assert.assertTrue(WaveRecorder.start(output, WaveRecorderTest.class));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "start", output, audioFormat));
         duration = System.currentTimeMillis() - startTime;
         Assert.assertTrue(duration >= WaveRecorder.RECORDING_THREAD_STATUS_DELAY);
-        Assert.assertNotNull(TestUtils.getField(WaveRecorder.class, "output"));
-        Assert.assertNotNull(TestUtils.getField(WaveRecorder.class, "format"));
-        Assert.assertNotNull(TestUtils.getField(WaveRecorder.class, "line"));
-        Assert.assertNotNull(TestUtils.getField(WaveRecorder.class, "recording"));
-        Assert.assertTrue(((Thread) TestUtils.getField(WaveRecorder.class, "recording")).isAlive());
-        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(1));
-        WaveRecorder.stop(ArgumentMatchers.eq(WaveRecorderTest.class));
-        PowerMockito.verifyStatic(AudioSystem.class, VerificationModeFactory.times(1));
-        AudioSystem.write(ArgumentMatchers.any(AudioInputStream.class), ArgumentMatchers.eq(AudioFileFormat.Type.WAVE), ArgumentMatchers.eq(output));
-        WaveRecorder.stop(WaveRecorderTest.class);
-        
-        //doenst own
-        
-        Assert.assertTrue(WaveRecorder.relinquish(WaveRecorderTest.class));
-        Assert.assertTrue(WaveRecorder.own(TestUtils.class));
-        Assert.assertFalse(WaveRecorder.start(output, audioFormat, WaveRecorderTest.class));
-        Assert.assertTrue(WaveRecorder.own(WaveRecorderTest.class));
-        
-        //recording not allowed
-        
-        PowerMockito.mockStatic(AudioSystem.class, Mockito.CALLS_REAL_METHODS);
-        PowerMockito.doReturn(false).when(AudioSystem.class, "isLineSupported", ArgumentMatchers.any(Line.Info.class));
-        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(WaveRecorder.class, "recordingWarning")).get());
-        Assert.assertFalse(WaveRecorder.start(output, audioFormat, WaveRecorderTest.class));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(WaveRecorder.class, "recordingWarning")).get());
+        List.of("recorder", "recorderHandle", "recorderWarning", "line", "output", "format").forEach(e ->
+                Assert.assertNotNull(TestUtils.getField(WaveRecorder.class, e)));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(WaveRecorder.class, "recorderWarning")).get());
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "stop"));
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Thread.sleep(250);
+        PowerMockito.verifyPrivate(WaveRecorder.class, VerificationModeFactory.times(1))
+                .invoke("stop");
         PowerMockito.verifyStatic(AudioSystem.class, VerificationModeFactory.times(1));
         AudioSystem.isLineSupported(ArgumentMatchers.any(Line.Info.class));
-        PowerMockito.doCallRealMethod().when(AudioSystem.class, "isLineSupported", ArgumentMatchers.any(Line.Info.class));
-        Assert.assertTrue(WaveRecorder.start(output, WaveRecorderTest.class));
-        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(WaveRecorder.class, "recordingWarning")).get());
+        PowerMockito.verifyStatic(AudioSystem.class, VerificationModeFactory.times(1));
+        AudioSystem.getLine(ArgumentMatchers.any(Line.Info.class));
+        PowerMockito.verifyStatic(AudioSystem.class, VerificationModeFactory.times(1));
+        AudioSystem.write(ArgumentMatchers.any(AudioInputStream.class), ArgumentMatchers.eq(AudioFileFormat.Type.WAVE), ArgumentMatchers.eq(output));
+        
+        //in use
+        lineSupported.set(true);
+        Assert.assertTrue(WaveRecorder.start(output, audioFormat, getClass()));
+        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(WaveRecorder.class, "inUse")).get());
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Assert.assertFalse(WaveRecorder.start(output, audioFormat, getClass()));
+        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(WaveRecorder.class, "inUse")).get());
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Assert.assertTrue(WaveRecorder.stop(getClass()));
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(WaveRecorder.class, "inUse")).get());
+        Thread.sleep(250);
+        PowerMockito.verifyPrivate(WaveRecorder.class, VerificationModeFactory.times(3));
+        WaveRecorder.owns(ArgumentMatchers.eq(getClass()));
+        PowerMockito.verifyPrivate(WaveRecorder.class, VerificationModeFactory.times(3))
+                .invoke("stop");
+        PowerMockito.verifyStatic(AudioSystem.class, VerificationModeFactory.times(2));
+        AudioSystem.isLineSupported(ArgumentMatchers.any(Line.Info.class));
+        PowerMockito.verifyStatic(AudioSystem.class, VerificationModeFactory.times(2));
+        AudioSystem.getLine(ArgumentMatchers.any(Line.Info.class));
+        PowerMockito.verifyStatic(AudioSystem.class, VerificationModeFactory.times(2));
+        AudioSystem.write(ArgumentMatchers.any(AudioInputStream.class), ArgumentMatchers.eq(AudioFileFormat.Type.WAVE), ArgumentMatchers.eq(output));
+        
+        //recording not supported
+        lineSupported.set(false);
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(WaveRecorder.class, "recorderWarning")).get());
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "start", output, audioFormat));
+        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(WaveRecorder.class, "recorderWarning")).get());
+        lineSupported.set(true);
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "start", output, audioFormat));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(WaveRecorder.class, "recorderWarning")).get());
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "stop"));
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Thread.sleep(250);
+        PowerMockito.verifyPrivate(WaveRecorder.class, VerificationModeFactory.times(4))
+                .invoke("stop");
+        PowerMockito.verifyStatic(AudioSystem.class, VerificationModeFactory.times(4));
+        AudioSystem.isLineSupported(ArgumentMatchers.any(Line.Info.class));
+        PowerMockito.verifyStatic(AudioSystem.class, VerificationModeFactory.times(3));
+        AudioSystem.getLine(ArgumentMatchers.any(Line.Info.class));
+        PowerMockito.verifyStatic(AudioSystem.class, VerificationModeFactory.times(3));
+        AudioSystem.write(ArgumentMatchers.any(AudioInputStream.class), ArgumentMatchers.eq(AudioFileFormat.Type.WAVE), ArgumentMatchers.eq(output));
+        
+        //recording failure
+        lineSupported.set(true);
+        TestUtils.setField(WaveRecorder.class, "inUse", new AtomicBoolean(true));
+        PowerMockito.doThrow(new IOException()).when(AudioSystem.class, "write", ArgumentMatchers.any(AudioInputStream.class), ArgumentMatchers.eq(AudioFileFormat.Type.WAVE), ArgumentMatchers.eq(output));
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "start", output, audioFormat));
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(WaveRecorder.class, "inUse")).get());
+        Thread.sleep(250);
+        PowerMockito.verifyPrivate(WaveRecorder.class, VerificationModeFactory.times(5))
+                .invoke("stop");
+        PowerMockito.verifyStatic(AudioSystem.class, VerificationModeFactory.times(5));
+        AudioSystem.isLineSupported(ArgumentMatchers.any(Line.Info.class));
+        PowerMockito.verifyStatic(AudioSystem.class, VerificationModeFactory.times(4));
+        AudioSystem.getLine(ArgumentMatchers.any(Line.Info.class));
+        PowerMockito.verifyStatic(AudioSystem.class, VerificationModeFactory.times(4));
+        AudioSystem.write(ArgumentMatchers.any(AudioInputStream.class), ArgumentMatchers.eq(AudioFileFormat.Type.WAVE), ArgumentMatchers.eq(output));
+        PowerMockito.doCallRealMethod().when(AudioSystem.class, "write", ArgumentMatchers.any(AudioInputStream.class), ArgumentMatchers.eq(AudioFileFormat.Type.WAVE), ArgumentMatchers.eq(output));
         
         //overloads
-        
-        PowerMockito.mockStatic(WaveRecorder.class, Mockito.CALLS_REAL_METHODS);
-        PowerMockito.doReturn(true).when(WaveRecorder.class, "start", ArgumentMatchers.eq(output), ArgumentMatchers.any(AudioFormat.class), ArgumentMatchers.eq(WaveRecorderTest.class));
-        
-        WaveRecorder.start(output, audioFormat, new WaveRecorderTest());
-        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(1));
-        WaveRecorder.start(ArgumentMatchers.eq(output), ArgumentMatchers.any(AudioFormat.class), ArgumentMatchers.eq(WaveRecorderTest.class));
-        
-        WaveRecorder.start(output, new AudioFormat(WaveRecorder.DEFAULT_SAMPLE_RATE, WaveRecorder.DEFAULT_SAMPLE_SIZE_IN_BITS, WaveRecorder.DEFAULT_CHANNELS, WaveRecorder.DEFAULT_SIGNED, WaveRecorder.DEFAULT_BIG_ENDIAN), null);
-        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(1));
-        WaveRecorder.start(ArgumentMatchers.eq(output), ArgumentMatchers.any(AudioFormat.class), ArgumentMatchers.eq(null));
-        
-        WaveRecorder.start(output, WaveRecorder.DEFAULT_SAMPLE_RATE, WaveRecorder.DEFAULT_SAMPLE_SIZE_IN_BITS, WaveRecorder.DEFAULT_CHANNELS, WaveRecorder.DEFAULT_SIGNED, WaveRecorder.DEFAULT_BIG_ENDIAN, WaveRecorderTest.class);
+        PowerMockito.spy(WaveRecorder.class);
+        PowerMockito.doReturn(true).when(WaveRecorder.class, "start", ArgumentMatchers.any(File.class), ArgumentMatchers.any(AudioFormat.class));
+        WaveRecorder.start(output, audioFormat, getClass());
+        TestUtils.setField(WaveRecorder.class, "inUse", new AtomicBoolean(false));
+        PowerMockito.verifyPrivate(WaveRecorder.class, VerificationModeFactory.times(1))
+                .invoke("start", ArgumentMatchers.eq(output), ArgumentMatchers.eq(audioFormat));
+        PowerMockito.doReturn(true).when(WaveRecorder.class, "start", ArgumentMatchers.any(File.class), ArgumentMatchers.any(AudioFormat.class), ArgumentMatchers.any());
+        WaveRecorder.start(output, 0, 0, 0, false, false, getClass());
         PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(2));
-        WaveRecorder.start(ArgumentMatchers.eq(output), ArgumentMatchers.any(AudioFormat.class), ArgumentMatchers.eq(WaveRecorderTest.class));
-        
-        WaveRecorder.start(output, WaveRecorder.DEFAULT_SAMPLE_RATE, WaveRecorder.DEFAULT_SAMPLE_SIZE_IN_BITS, WaveRecorder.DEFAULT_CHANNELS, WaveRecorder.DEFAULT_SIGNED, WaveRecorder.DEFAULT_BIG_ENDIAN, new WaveRecorderTest());
+        WaveRecorder.start(ArgumentMatchers.eq(output), ArgumentMatchers.any(AudioFormat.class), ArgumentMatchers.eq(getClass()));
+        WaveRecorder.start(output, getClass());
         PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(3));
-        WaveRecorder.start(ArgumentMatchers.eq(output), ArgumentMatchers.any(AudioFormat.class), ArgumentMatchers.eq(WaveRecorderTest.class));
+        WaveRecorder.start(ArgumentMatchers.eq(output), ArgumentMatchers.any(AudioFormat.class), ArgumentMatchers.eq(getClass()));
+        PowerMockito.doCallRealMethod().when(WaveRecorder.class, "start", ArgumentMatchers.any(File.class), ArgumentMatchers.any(AudioFormat.class), ArgumentMatchers.any());
+        PowerMockito.doCallRealMethod().when(WaveRecorder.class, "start", ArgumentMatchers.any(File.class), ArgumentMatchers.any(AudioFormat.class));
         
-        WaveRecorder.start(output, WaveRecorder.DEFAULT_SAMPLE_RATE, WaveRecorder.DEFAULT_SAMPLE_SIZE_IN_BITS, WaveRecorder.DEFAULT_CHANNELS, WaveRecorder.DEFAULT_SIGNED, WaveRecorder.DEFAULT_BIG_ENDIAN, null);
-        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(2));
-        WaveRecorder.start(ArgumentMatchers.eq(output), ArgumentMatchers.any(AudioFormat.class), ArgumentMatchers.eq(null));
-        
-        WaveRecorder.start(output, WaveRecorderTest.class);
-        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(4));
-        WaveRecorder.start(ArgumentMatchers.eq(output), ArgumentMatchers.any(AudioFormat.class), ArgumentMatchers.eq(WaveRecorderTest.class));
-        
-        WaveRecorder.start(output, new WaveRecorderTest());
-        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(5));
-        WaveRecorder.start(ArgumentMatchers.eq(output), ArgumentMatchers.any(AudioFormat.class), ArgumentMatchers.eq(WaveRecorderTest.class));
-        
-        WaveRecorder.start(output, null);
-        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(3));
-        WaveRecorder.start(ArgumentMatchers.eq(output), ArgumentMatchers.any(AudioFormat.class), ArgumentMatchers.eq(null));
-        
-        PowerMockito.doCallRealMethod().when(WaveRecorder.class, "start", ArgumentMatchers.eq(output), ArgumentMatchers.any(AudioFormat.class), ArgumentMatchers.eq(WaveRecorderTest.class));
+        //invalid
+        Assert.assertFalse(WaveRecorder.start(output, audioFormat, TestUtilsTest.class));
+        Assert.assertFalse(WaveRecorder.start(output, audioFormat, new TestUtilsTest()));
+        Assert.assertFalse(WaveRecorder.start(output, 0, 0, 0, false, false, TestUtilsTest.class));
+        Assert.assertFalse(WaveRecorder.start(output, 0, 0, 0, false, false, new TestUtilsTest()));
+        Assert.assertFalse(WaveRecorder.start(output, TestUtilsTest.class));
+        Assert.assertFalse(WaveRecorder.start(output, new TestUtilsTest()));
+        Assert.assertFalse(WaveRecorder.start(output, null, getClass()));
+        Assert.assertFalse(WaveRecorder.start(null, audioFormat, getClass()));
+        Assert.assertFalse(WaveRecorder.start(null, 0, 0, 0, false, false, getClass()));
+        Assert.assertFalse(WaveRecorder.start(null, null, getClass()));
+        Assert.assertFalse(WaveRecorder.start(output, audioFormat, null));
+        Assert.assertFalse(WaveRecorder.start(output, 0, 0, 0, false, false, null));
+        Assert.assertFalse(WaveRecorder.start(null, null, null));
     }
     
     /**
@@ -241,138 +311,184 @@ public class WaveRecorderTest {
      *
      * @throws Exception When there is an exception.
      * @see WaveRecorder#stop()
-     * @see WaveRecorder#stop(Class)
      * @see WaveRecorder#stop(Object)
      */
     @Test
     public void testStop() throws Exception {
-        final File output = Filesystem.getTemporaryFile();
-        final AudioFormat audioFormat = new AudioFormat(WaveRecorder.DEFAULT_SAMPLE_RATE, WaveRecorder.DEFAULT_SAMPLE_SIZE_IN_BITS, WaveRecorder.DEFAULT_CHANNELS, WaveRecorder.DEFAULT_SIGNED, WaveRecorder.DEFAULT_BIG_ENDIAN);
-        final TargetDataLine line = Mockito.mock(TargetDataLine.class);
-        final Thread recording = Mockito.mock(Thread.class);
-        Assert.assertTrue(WaveRecorder.owns(WaveRecorderTest.class));
+        final ExecutorService mockRecorder = Mockito.mock(ExecutorService.class);
+        final Future<?> mockRecorderHandle = Mockito.mock(Future.class);
+        final TargetDataLine mockLine = Mockito.mock(TargetDataLine.class);
+        final File mockOutput = Mockito.mock(File.class);
+        final AudioFormat mockAudioFormat = Mockito.mock(AudioFormat.class);
+        
+        Mockito.doReturn(true).when(mockRecorder).awaitTermination(ArgumentMatchers.anyLong(), ArgumentMatchers.any());
+        
+        final Runnable fieldInitializer = () ->
+                MapUtility.mapOf(
+                        new ImmutablePair<>("recorder", mockRecorder),
+                        new ImmutablePair<>("recorderHandle", mockRecorderHandle),
+                        new ImmutablePair<>("line", mockLine),
+                        new ImmutablePair<>("output", mockOutput),
+                        new ImmutablePair<>("format", mockAudioFormat)
+                ).forEach((String fieldName, Object testValue) ->
+                        TestUtils.setField(WaveRecorder.class, fieldName, testValue));
         
         //standard
-        
-        TestUtils.setField(WaveRecorder.class, "output", output);
-        TestUtils.setField(WaveRecorder.class, "format", audioFormat);
-        TestUtils.setField(WaveRecorder.class, "line", line);
-        TestUtils.setField(WaveRecorder.class, "recording", recording);
-        Assert.assertTrue(WaveRecorder.stop(WaveRecorderTest.class));
-        Assert.assertNotNull(TestUtils.getField(WaveRecorder.class, "output"));
-        Assert.assertNotNull(TestUtils.getField(WaveRecorder.class, "format"));
-        Assert.assertNull(TestUtils.getField(WaveRecorder.class, "line"));
-        Assert.assertNull(TestUtils.getField(WaveRecorder.class, "recording"));
-        Mockito.verify(line, VerificationModeFactory.times(1))
+        fieldInitializer.run();
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "stop"));
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        List.of("recorder", "recorderHandle", "line").forEach(e ->
+                Assert.assertNull(TestUtils.getField(WaveRecorder.class, e)));
+        List.of("output", "format").forEach(e ->
+                Assert.assertNotNull(TestUtils.getField(WaveRecorder.class, e)));
+        Mockito.verify(mockLine, VerificationModeFactory.times(1))
                 .stop();
-        Mockito.verify(line, VerificationModeFactory.times(1))
+        Mockito.verify(mockLine, VerificationModeFactory.times(1))
                 .close();
+        Mockito.verify(mockRecorderHandle, VerificationModeFactory.times(1))
+                .cancel(ArgumentMatchers.eq(true));
+        Mockito.verify(mockRecorder, VerificationModeFactory.times(1))
+                .shutdown();
+        Mockito.verify(mockRecorder, VerificationModeFactory.times(1))
+                .shutdownNow();
+        Mockito.verify(mockRecorder, VerificationModeFactory.times(1))
+                .awaitTermination(ArgumentMatchers.eq(1000L), ArgumentMatchers.eq(TimeUnit.MILLISECONDS));
         
-        TestUtils.setField(WaveRecorder.class, "output", output);
-        TestUtils.setField(WaveRecorder.class, "format", audioFormat);
-        TestUtils.setField(WaveRecorder.class, "line", null);
-        TestUtils.setField(WaveRecorder.class, "recording", null);
-        TestUtils.assertNoException(() ->
-                Assert.assertTrue(WaveRecorder.stop(WaveRecorderTest.class)));
+        //recording not running
+        List.of("recorder", "recorderHandle", "line", "output", "format").forEach(e ->
+                TestUtils.setField(WaveRecorder.class, e, null));
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "stop"));
+        List.of("recorder", "recorderHandle", "line", "output", "format").forEach(e ->
+                Assert.assertNull(TestUtils.getField(WaveRecorder.class, e)));
         
-        //doesn't own
+        //can't stop recorder
+        fieldInitializer.run();
+        Mockito.doReturn(false).when(mockRecorder).awaitTermination(ArgumentMatchers.anyLong(), ArgumentMatchers.any());
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "stop"));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        List.of("recorder", "recorderHandle", "line", "output", "format").forEach(e ->
+                TestUtils.setField(WaveRecorder.class, e, null));
+        Mockito.verify(mockLine, VerificationModeFactory.times(2))
+                .stop();
+        Mockito.verify(mockLine, VerificationModeFactory.times(2))
+                .close();
+        Mockito.verify(mockRecorderHandle, VerificationModeFactory.times(2))
+                .cancel(ArgumentMatchers.eq(true));
+        Mockito.verify(mockRecorder, VerificationModeFactory.times(2))
+                .shutdown();
+        Mockito.verify(mockRecorder, VerificationModeFactory.times(2))
+                .shutdownNow();
+        Mockito.verify(mockRecorder, VerificationModeFactory.times(2))
+                .awaitTermination(ArgumentMatchers.eq(1000L), ArgumentMatchers.eq(TimeUnit.MILLISECONDS));
+        Mockito.doReturn(true).when(mockRecorder).awaitTermination(ArgumentMatchers.anyLong(), ArgumentMatchers.any());
         
-        Assert.assertTrue(WaveRecorder.relinquish(WaveRecorderTest.class));
-        Assert.assertTrue(WaveRecorder.own(TestUtils.class));
-        Assert.assertFalse(WaveRecorder.stop(WaveRecorderTest.class));
-        Assert.assertTrue(WaveRecorder.own(WaveRecorderTest.class));
+        //invalid
+        Assert.assertFalse(WaveRecorder.stop(TestUtilsTest.class));
+        Assert.assertFalse(WaveRecorder.stop(new TestUtilsTest()));
+        Assert.assertFalse(WaveRecorder.stop(null));
+    }
+    
+    /**
+     * JUnit test of isRecorderRunning.
+     *
+     * @throws Exception When there is an exception.
+     * @see WaveRecorder#isRecorderRunning()
+     */
+    @Test
+    public void testIsRecorderRunning() throws Exception {
+        final ExecutorService mockRecorder = Mockito.mock(ExecutorService.class);
+        final Future<?> mockRecorderHandle = Mockito.mock(Future.class);
+        final File output = Filesystem.getTemporaryFile();
+        final AudioFormat audioFormat = new AudioFormat(WaveRecorder.DEFAULT_SAMPLE_RATE, WaveRecorder.DEFAULT_SAMPLE_SIZE_IN_BITS, WaveRecorder.DEFAULT_CHANNELS, WaveRecorder.DEFAULT_SIGNED, WaveRecorder.DEFAULT_BIG_ENDIAN);
         
-        //overloads
+        //standard
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "start", output, audioFormat));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "stop"));
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
         
-        PowerMockito.mockStatic(WaveRecorder.class, Mockito.CALLS_REAL_METHODS);
-        PowerMockito.doReturn(true).when(WaveRecorder.class, "stop", ArgumentMatchers.any(Class.class));
-        
-        WaveRecorder.stop(new WaveRecorderTest());
-        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(1));
-        WaveRecorder.stop(ArgumentMatchers.eq(WaveRecorderTest.class));
-        
-        WaveRecorder.stop(null);
-        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(1));
-        WaveRecorder.stop(ArgumentMatchers.eq(null));
-        
-        PowerMockito.doCallRealMethod().when(WaveRecorder.class, "stop", ArgumentMatchers.any(Class.class));
+        //other
+        TestUtils.setField(WaveRecorder.class, "recorder", mockRecorder);
+        TestUtils.setField(WaveRecorder.class, "recorderHandle", mockRecorderHandle);
+        Mockito.doReturn(true).when(mockRecorder).awaitTermination(ArgumentMatchers.anyLong(), ArgumentMatchers.any());
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Mockito.doReturn(true).when(mockRecorder).isShutdown();
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Mockito.doReturn(false).when(mockRecorder).isShutdown();
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Mockito.doReturn(true).when(mockRecorder).isTerminated();
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Mockito.doReturn(false).when(mockRecorder).isTerminated();
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Mockito.doReturn(true).when(mockRecorderHandle).isDone();
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Mockito.doReturn(false).when(mockRecorderHandle).isDone();
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Mockito.doReturn(true).when(mockRecorderHandle).isCancelled();
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Mockito.doReturn(false).when(mockRecorderHandle).isCancelled();
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        TestUtils.setField(WaveRecorder.class, "recorder", null);
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        TestUtils.setField(WaveRecorder.class, "recorder", mockRecorder);
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        TestUtils.setField(WaveRecorder.class, "recorderHandle", null);
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        TestUtils.setField(WaveRecorder.class, "recorderHandle", mockRecorderHandle);
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
+        Assert.assertTrue((boolean) TestUtils.invokeMethod(WaveRecorder.class, "stop"));
+        Assert.assertFalse((boolean) TestUtils.invokeMethod(WaveRecorder.class, "isRecorderRunning"));
     }
     
     /**
      * JUnit test of getLengthInMilliseconds.
      *
      * @throws Exception When there is an exception.
-     * @see WaveRecorder#getLengthInMilliseconds(Class)
      * @see WaveRecorder#getLengthInMilliseconds(Object)
      */
     @Test
     public void testGetLengthInMilliseconds() throws Exception {
-        final File output = Mockito.mock(File.class);
+        final ExecutorService mockRecorder = Mockito.mock(ExecutorService.class);
+        final Future<?> mockRecorderHandle = Mockito.mock(Future.class);
+        final File mockOutput = Mockito.mock(File.class);
         final AudioFormat audioFormat = new AudioFormat(WaveRecorder.DEFAULT_SAMPLE_RATE, WaveRecorder.DEFAULT_SAMPLE_SIZE_IN_BITS, WaveRecorder.DEFAULT_CHANNELS, WaveRecorder.DEFAULT_SIGNED, WaveRecorder.DEFAULT_BIG_ENDIAN);
-        final Thread recording = Mockito.mock(Thread.class);
-        Assert.assertTrue(WaveRecorder.owns(WaveRecorderTest.class));
         
         //standard
-        
-        TestUtils.setField(WaveRecorder.class, "output", output);
+        TestUtils.setField(WaveRecorder.class, "output", mockOutput);
         TestUtils.setField(WaveRecorder.class, "format", audioFormat);
-        TestUtils.setField(WaveRecorder.class, "recording", null);
-        Mockito.when(output.exists()).thenReturn(true);
-        
-        Mockito.when(output.length()).thenReturn(176400L);
-        Assert.assertEquals(1000L, WaveRecorder.getLengthInMilliseconds(WaveRecorderTest.class));
-        
-        Mockito.when(output.length()).thenReturn(441000L);
-        Assert.assertEquals(2500L, WaveRecorder.getLengthInMilliseconds(WaveRecorderTest.class));
-        
-        Mockito.when(output.length()).thenReturn(14994L);
-        Assert.assertEquals(85L, WaveRecorder.getLengthInMilliseconds(WaveRecorderTest.class));
-        
-        Mockito.when(output.length()).thenReturn(8945604895261265L);
-        Assert.assertEquals(50712045891503L, WaveRecorder.getLengthInMilliseconds(WaveRecorderTest.class));
-        
-        Mockito.when(output.length()).thenReturn(0L);
-        Assert.assertEquals(0L, WaveRecorder.getLengthInMilliseconds(WaveRecorderTest.class));
+        TestUtils.setField(WaveRecorder.class, "recorder", null);
+        Mockito.when(mockOutput.exists()).thenReturn(true);
+        MapUtility.mapOf(
+                new Long[] {176400L, 441000L, 14994L, 8945604895261265L, 0L},
+                new Long[] {1000L, 2500L, 85L, 50712045891503L, 0L}
+        ).forEach((fileLength, lengthInMilliseconds) -> {
+            Mockito.when(mockOutput.length()).thenReturn(fileLength);
+            Assert.assertEquals(lengthInMilliseconds.longValue(), WaveRecorder.getLengthInMilliseconds(getClass()));
+        });
         
         //invalid
-        
         TestUtils.setField(WaveRecorder.class, "output", null);
-        Assert.assertEquals(0L, WaveRecorder.getLengthInMilliseconds(WaveRecorderTest.class));
-        TestUtils.setField(WaveRecorder.class, "output", output);
-        
+        Assert.assertEquals(0L, WaveRecorder.getLengthInMilliseconds(getClass()));
+        TestUtils.setField(WaveRecorder.class, "output", mockOutput);
         TestUtils.setField(WaveRecorder.class, "format", null);
-        Assert.assertEquals(0L, WaveRecorder.getLengthInMilliseconds(WaveRecorderTest.class));
+        Assert.assertEquals(0L, WaveRecorder.getLengthInMilliseconds(getClass()));
         TestUtils.setField(WaveRecorder.class, "format", audioFormat);
-        
-        TestUtils.setField(WaveRecorder.class, "recording", recording);
-        Assert.assertEquals(0L, WaveRecorder.getLengthInMilliseconds(WaveRecorderTest.class));
-        TestUtils.setField(WaveRecorder.class, "recording", null);
-        
-        Mockito.when(output.exists()).thenReturn(false);
-        Assert.assertEquals(0L, WaveRecorder.getLengthInMilliseconds(WaveRecorderTest.class));
-        Mockito.when(output.exists()).thenReturn(true);
-        
-        //doesn't own
-        
-        Assert.assertTrue(WaveRecorder.relinquish(WaveRecorderTest.class));
-        Assert.assertTrue(WaveRecorder.own(TestUtils.class));
-        Assert.assertEquals(0L, WaveRecorder.getLengthInMilliseconds(WaveRecorderTest.class));
-        Assert.assertTrue(WaveRecorder.own(WaveRecorderTest.class));
-        
-        //overloads
-        
-        PowerMockito.mockStatic(WaveRecorder.class, Mockito.CALLS_REAL_METHODS);
-        PowerMockito.doReturn(0L).when(WaveRecorder.class, "getLengthInMilliseconds", ArgumentMatchers.any(Class.class));
-        
-        WaveRecorder.getLengthInMilliseconds(new WaveRecorderTest());
-        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(1));
-        WaveRecorder.getLengthInMilliseconds(ArgumentMatchers.eq(WaveRecorderTest.class));
-        
-        WaveRecorder.getLengthInMilliseconds(null);
-        PowerMockito.verifyStatic(WaveRecorder.class, VerificationModeFactory.times(1));
-        WaveRecorder.getLengthInMilliseconds(ArgumentMatchers.eq(null));
-        
-        PowerMockito.doCallRealMethod().when(WaveRecorder.class, "getLengthInMilliseconds", ArgumentMatchers.any(Class.class));
+        Mockito.when(mockOutput.exists()).thenReturn(false);
+        Assert.assertEquals(0L, WaveRecorder.getLengthInMilliseconds(getClass()));
+        Mockito.when(mockOutput.exists()).thenReturn(true);
+        TestUtils.setField(WaveRecorder.class, "recorder", mockRecorder);
+        Assert.assertEquals(0L, WaveRecorder.getLengthInMilliseconds(getClass()));
+        TestUtils.setField(WaveRecorder.class, "recorder", null);
+        TestUtils.setField(WaveRecorder.class, "recorderHandle", mockRecorderHandle);
+        Assert.assertEquals(0L, WaveRecorder.getLengthInMilliseconds(getClass()));
+        TestUtils.setField(WaveRecorder.class, "recorderHandle", null);
+        Assert.assertEquals(0L, WaveRecorder.getLengthInMilliseconds(TestUtilsTest.class));
+        Assert.assertEquals(0L, WaveRecorder.getLengthInMilliseconds(new TestUtilsTest()));
+        Assert.assertEquals(0L, WaveRecorder.getLengthInMilliseconds(null));
     }
     
     /**
@@ -383,99 +499,88 @@ public class WaveRecorderTest {
      */
     @Test
     public void testRecordingEnabled() throws Exception {
+        final AtomicBoolean lineSupported = new AtomicBoolean(false);
+        
         PowerMockito.mockStatic(AudioSystem.class);
+        PowerMockito.doAnswer((Answer<Boolean>) invocation ->
+                lineSupported.get()
+        ).when(AudioSystem.class, "isLineSupported", ArgumentMatchers.any(Line.Info.class));
         
-        PowerMockito.doReturn(true).when(AudioSystem.class, "isLineSupported", ArgumentMatchers.any(Line.Info.class));
-        Assert.assertTrue(WaveRecorder.recordingEnabled());
-        
-        PowerMockito.doReturn(false).when(AudioSystem.class, "isLineSupported", ArgumentMatchers.any(Line.Info.class));
-        Assert.assertFalse(WaveRecorder.recordingEnabled());
-        
-        PowerMockito.doCallRealMethod().when(AudioSystem.class, "isLineSupported", ArgumentMatchers.any(Line.Info.class));
+        //standard
+        Stream.of(true, false).forEach(e -> {
+            lineSupported.set(e);
+            Assert.assertEquals(e, WaveRecorder.recordingEnabled());
+        });
     }
     
     /**
      * JUnit test of owns.
      *
      * @throws Exception When there is an exception.
-     * @see WaveRecorder#owns(Class)
      * @see WaveRecorder#owns(Object)
      */
     @Test
     public void testOwns() throws Exception {
-        //class
-        WaveRecorder.owns(WaveRecorderTest.class);
+        //standard
+        WaveRecorder.owns(getClass());
         Mockito.verify(sut, VerificationModeFactory.times(1))
-                .isOwner(ArgumentMatchers.eq(WaveRecorderTest.class));
-        
-        //object
-        Object object = new WaveRecorderTest();
-        WaveRecorder.owns(object);
-        Mockito.verify(sut, VerificationModeFactory.times(1))
-                .isOwner(ArgumentMatchers.eq(object));
+                .isOwner(ArgumentMatchers.eq(getClass()));
     }
     
     /**
      * JUnit test of own.
      *
      * @throws Exception When there is an exception.
-     * @see WaveRecorder#own(Class)
      * @see WaveRecorder#own(Object)
      */
     @Test
     public void testOwn() throws Exception {
-        //class
-        WaveRecorder.own(WaveRecorderTest.class);
+        //standard
+        WaveRecorder.own(getClass());
         Mockito.verify(sut, VerificationModeFactory.times(1))
-                .claimOwnership(ArgumentMatchers.eq(WaveRecorderTest.class));
-        
-        //object
-        Object object = new WaveRecorderTest();
-        WaveRecorder.own(object);
-        Mockito.verify(sut, VerificationModeFactory.times(1))
-                .claimOwnership(ArgumentMatchers.eq(object));
-    }
-    
-    /**
-     * JUnit test of defaultOwn.
-     *
-     * @throws Exception When there is an exception.
-     * @see WaveRecorder#defaultOwn(Class)
-     * @see WaveRecorder#defaultOwn(Object)
-     */
-    @Test
-    public void testDefaultOwn() throws Exception {
-        //class
-        WaveRecorder.defaultOwn(WaveRecorderTest.class);
-        Mockito.verify(sut, VerificationModeFactory.times(2))
-                .claimDefaultOwnership(ArgumentMatchers.eq(WaveRecorderTest.class));
-        
-        //object
-        Object object = new WaveRecorderTest();
-        WaveRecorder.defaultOwn(object);
-        Mockito.verify(sut, VerificationModeFactory.times(1))
-                .claimDefaultOwnership(ArgumentMatchers.eq(object));
+                .acquireOwnership(ArgumentMatchers.eq(getClass()));
     }
     
     /**
      * JUnit test of relinquish.
      *
      * @throws Exception When there is an exception.
-     * @see WaveRecorder#relinquish(Class)
      * @see WaveRecorder#relinquish(Object)
      */
     @Test
     public void testRelinquish() throws Exception {
-        //class
-        WaveRecorder.relinquish(WaveRecorderTest.class);
+        //standard
+        WaveRecorder.relinquish(getClass());
         Mockito.verify(sut, VerificationModeFactory.times(1))
-                .relinquishOwnership(ArgumentMatchers.eq(WaveRecorderTest.class));
-        
-        //object
-        Object object = new WaveRecorderTest();
-        WaveRecorder.relinquish(object);
+                .releaseOwnership(ArgumentMatchers.eq(getClass()));
+    }
+    
+    /**
+     * JUnit test of manage.
+     *
+     * @throws Exception When there is an exception.
+     * @see WaveRecorder#manage(Object)
+     */
+    @Test
+    public void testManage() throws Exception {
+        //standard
+        WaveRecorder.manage(getClass());
         Mockito.verify(sut, VerificationModeFactory.times(1))
-                .relinquishOwnership(ArgumentMatchers.eq(object));
+                .acquireManagement(ArgumentMatchers.eq(getClass()));
+    }
+    
+    /**
+     * JUnit test of relinquishManagement.
+     *
+     * @throws Exception When there is an exception.
+     * @see WaveRecorder#relinquishManagement(Object)
+     */
+    @Test
+    public void testRelinquishManagement() throws Exception {
+        //standard
+        WaveRecorder.relinquishManagement(getClass());
+        Mockito.verify(sut, VerificationModeFactory.times(1))
+                .releaseManagement(ArgumentMatchers.eq(getClass()));
     }
     
 }

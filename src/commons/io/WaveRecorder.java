@@ -8,7 +8,10 @@
 package commons.io;
 
 import java.io.File;
-import java.io.IOException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import javax.sound.sampled.AudioFileFormat.Type;
 import javax.sound.sampled.AudioFormat;
@@ -18,6 +21,7 @@ import javax.sound.sampled.DataLine.Info;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,19 +89,29 @@ public class WaveRecorder extends SingletonInputHandler {
     private static TargetDataLine line = null;
     
     /**
-     * The recording thread.
+     * The thread that handles recording.
      */
-    private static Thread recording = null;
+    private static ExecutorService recorder = null;
+    
+    /**
+     * The handle for the thread that handles recording.
+     */
+    private static Future<?> recorderHandle = null;
     
     /**
      * A flag indicating whether or not a warning has been produced about microphone issues yet.
      */
-    private static AtomicBoolean recordingWarning = new AtomicBoolean(false);
+    private static AtomicBoolean recorderWarning = new AtomicBoolean(false);
     
     /**
      * The singleton instance of the Input Handler.
      */
     private static SingletonInputHandler instance = new WaveRecorder();
+    
+    /**
+     * A flag indicating whether the Input Handler is currently in use.
+     */
+    private static AtomicBoolean inUse = new AtomicBoolean(false);
     
     
     //Constructors
@@ -117,59 +131,52 @@ public class WaveRecorder extends SingletonInputHandler {
      *
      * @param output The file to save the recording in.
      * @param format The AudioFormat to use to record the audio.
-     * @param caller The calling class.
      * @return Whether the recording was successfully started or not.
      */
-    public static boolean start(File output, AudioFormat format, Class<?> caller) {
-        if (!owns(caller)) {
-            return false;
-        }
-        if ((output == null) || (format == null)) {
-            return false;
-        }
-        stop(caller);
-        
+    private static boolean start(File output, AudioFormat format) {
         WaveRecorder.output = output;
         WaveRecorder.format = format;
         
         try {
-            Info info = new Info(TargetDataLine.class, format);
+            final Info info = new Info(TargetDataLine.class, format);
             
             // checks if system supports the data line
             if (!AudioSystem.isLineSupported(info)) {
-                if (recordingWarning.compareAndSet(false, true)) {
+                if (recorderWarning.compareAndSet(false, true)) {
                     logger.warn("Your microphone is not supported or your system does not allow audio capture");
                 }
+                inUse.set(false);
                 return false;
             }
-            recordingWarning.set(false);
+            recorderWarning.set(false);
             
             line = (TargetDataLine) AudioSystem.getLine(info);
             line.open(format);
             line.start();
             
-            recording = new Thread(() -> {
-                try {
-                    AudioInputStream ais = new AudioInputStream(line); //start capturing
-                    AudioSystem.write(ais, Type.WAVE, output); //start recording
-                } catch (IOException e) {
-                    logger.error("There was an error capturing the recording", e);
-                    stop(caller);
-                }
-            }, "WavRecorder");
-            
         } catch (LineUnavailableException e) {
             logger.warn("You do not have a microphone installed", e);
+            inUse.set(false);
             return false;
         }
         
-        recording.start();
+        recorder = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("WavRecorder").build());
+        recorderHandle = recorder.submit(() -> {
+            try {
+                AudioSystem.write(new AudioInputStream(line), Type.WAVE, output);
+            } catch (Exception e) {
+                logger.error("There was an error capturing the recording", e);
+                stop();
+            } finally {
+                inUse.set(false);
+            }
+        });
         
         try {
             Thread.sleep(RECORDING_THREAD_STATUS_DELAY);
         } catch (InterruptedException ignored) {
         }
-        return recording.isAlive();
+        return isRecorderRunning();
     }
     
     /**
@@ -177,12 +184,17 @@ public class WaveRecorder extends SingletonInputHandler {
      *
      * @param output The file to save the recording in.
      * @param format The AudioFormat to use to record the audio.
-     * @param caller The calling object.
+     * @param caller The caller.
      * @return Whether the recording was successfully started or not.
-     * @see #start(File, AudioFormat, Class)
+     * @see #start(File, AudioFormat)
      */
     public static boolean start(File output, AudioFormat format, Object caller) {
-        return start(output, format, ((caller != null) ? caller.getClass() : null));
+        if (!owns(caller) || (output == null) || (format == null) || !inUse.compareAndSet(false, true)) {
+            return false;
+        }
+        
+        stop();
+        return start(output, format);
     }
     
     /**
@@ -194,54 +206,25 @@ public class WaveRecorder extends SingletonInputHandler {
      * @param channels         The number of channels.
      * @param signed           Whether to sign the audio file or not.
      * @param bigEndian        Whether to store the samples in big endian or little endian.
-     * @param caller           The calling class.
+     * @param caller           The caller.
      * @return Whether the recording was successfully started or not.
-     * @see #start(File, AudioFormat, Class)
+     * @see #start(File, AudioFormat, Object)
      */
-    public static boolean start(File output, int sampleRate, int sampleSizeInBits, int channels, boolean signed, boolean bigEndian, Class<?> caller) {
-        AudioFormat format = new AudioFormat(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
+    public static boolean start(File output, int sampleRate, int sampleSizeInBits, int channels, boolean signed, boolean bigEndian, Object caller) {
+        final AudioFormat format = new AudioFormat(sampleRate, sampleSizeInBits, channels, signed, bigEndian);
         return start(output, format, caller);
     }
     
     /**
-     * Opens the target data line and begins capturing the recording with the specified format.
-     *
-     * @param output           The file to save the recording in.
-     * @param sampleRate       The sample rate in kHz.
-     * @param sampleSizeInBits The sample size in bits.
-     * @param channels         The number of channels.
-     * @param signed           Whether to sign the audio file or not.
-     * @param bigEndian        Whether to store the samples in big endian or little endian.
-     * @param caller           The calling object.
-     * @return Whether the recording was successfully started or not.
-     * @see #start(File, int, int, int, boolean, boolean, Class)
-     */
-    public static boolean start(File output, int sampleRate, int sampleSizeInBits, int channels, boolean signed, boolean bigEndian, Object caller) {
-        return start(output, sampleRate, sampleSizeInBits, channels, signed, bigEndian, ((caller != null) ? caller.getClass() : null));
-    }
-    
-    /**
      * Opens the target data line and begins capturing the recording with the default format.
      *
      * @param output The file to save the recording in.
-     * @param caller The calling class.
+     * @param caller The caller.
      * @return Whether the recording was successfully started or not.
-     * @see #start(File, int, int, int, boolean, boolean, Class)
-     */
-    public static boolean start(File output, Class<?> caller) {
-        return start(output, DEFAULT_SAMPLE_RATE, DEFAULT_SAMPLE_SIZE_IN_BITS, DEFAULT_CHANNELS, DEFAULT_SIGNED, DEFAULT_BIG_ENDIAN, caller);
-    }
-    
-    /**
-     * Opens the target data line and begins capturing the recording with the default format.
-     *
-     * @param output The file to save the recording in.
-     * @param caller The calling object.
-     * @return Whether the recording was successfully started or not.
-     * @see #start(File, Class)
+     * @see #start(File, int, int, int, boolean, boolean, Object)
      */
     public static boolean start(File output, Object caller) {
-        return start(output, ((caller != null) ? caller.getClass() : null));
+        return start(output, DEFAULT_SAMPLE_RATE, DEFAULT_SAMPLE_SIZE_IN_BITS, DEFAULT_CHANNELS, DEFAULT_SIGNED, DEFAULT_BIG_ENDIAN, caller);
     }
     
     /**
@@ -256,14 +239,20 @@ public class WaveRecorder extends SingletonInputHandler {
             line = null;
         }
         
-        try {
-            if (recording != null) {
-                recording.join();
+        if (isRecorderRunning()) {
+            try {
+                recorderHandle.cancel(true);
+                recorder.shutdown();
+                recorder.shutdownNow();
+                if (!recorder.awaitTermination(1000, TimeUnit.MILLISECONDS)) {
+                    throw new InterruptedException();
+                }
+                recorder = null;
+                recorderHandle = null;
+            } catch (InterruptedException ignored) {
+                logger.error("Unable to shutdown WaveRecorder thread");
+                return false;
             }
-            recording = null;
-        } catch (InterruptedException e) {
-            logger.error("Unable to shutdown recording thread");
-            return false;
         }
         return true;
     }
@@ -271,58 +260,46 @@ public class WaveRecorder extends SingletonInputHandler {
     /**
      * Closes the target data line to finish capturing the recording.
      *
-     * @param caller The calling class.
+     * @param caller The caller.
      * @return Whether the recording was successfully stopped or not.
+     * @see #stop()
      */
-    public static boolean stop(Class<?> caller) {
+    public static boolean stop(Object caller) {
         if (!owns(caller)) {
             return false;
         }
+        
         return stop();
     }
     
     /**
-     * Closes the target data line to finish capturing the recording.
+     * Determines if the recorder thread is running or not.
      *
-     * @param caller The calling object.
-     * @return Whether the recording was successfully stopped or not.
-     * @see #stop(Class)
+     * @return Whether the recorder thread is running or not.
      */
-    public static boolean stop(Object caller) {
-        return stop((caller != null) ? caller.getClass() : null);
+    private static boolean isRecorderRunning() {
+        return !((recorder == null) || (recorderHandle == null) ||
+                recorder.isShutdown() || recorder.isTerminated() ||
+                recorderHandle.isDone() || recorderHandle.isCancelled());
     }
     
     /**
      * Determines the length of the recording in milliseconds.
      *
-     * @param caller The calling class.
+     * @param caller The caller.
      * @return The length of the recording in milliseconds.
      */
-    public static long getLengthInMilliseconds(Class<?> caller) {
+    public static long getLengthInMilliseconds(Object caller) {
         if (!owns(caller)) {
             return 0L;
         }
         
-        if ((output == null) || (format == null) || !output.exists() || (recording != null)) {
-            logger.debug("The length of the wav file cannot be determined until a recording has been produced.");
+        if ((output == null) || (format == null) || !output.exists() || (recorder != null) || (recorderHandle != null) || (line != null)) {
+            logger.debug("The length of the wav file cannot be determined until a recording has been produced");
             return 0L;
         }
         
-        long fileLength = output.length();
-        long bytesPerSecond = (long) (format.getSampleRate() * format.getChannels() * ((double) format.getSampleSizeInBits() / 8));
-        double timeInSeconds = (double) fileLength / bytesPerSecond;
-        return (long) (timeInSeconds * 1000);
-    }
-    
-    /**
-     * Determines the length of the recording in milliseconds.
-     *
-     * @param caller The calling object.
-     * @return The length of the recording in milliseconds.
-     * @see #getLengthInMilliseconds(Class)
-     */
-    public static long getLengthInMilliseconds(Object caller) {
-        return getLengthInMilliseconds((caller != null) ? caller.getClass() : null);
+        return (long) ((output.length() * 8.0) / (format.getSampleRate() * format.getChannels() * format.getSampleSizeInBits()) * 1000);
     }
     
     /**
@@ -331,97 +308,64 @@ public class WaveRecorder extends SingletonInputHandler {
      * @return Whether recording is enabled on the system or not.
      */
     public static boolean recordingEnabled() {
-        AudioFormat format = new AudioFormat(DEFAULT_SAMPLE_RATE, DEFAULT_SAMPLE_SIZE_IN_BITS, DEFAULT_CHANNELS, DEFAULT_SIGNED, DEFAULT_BIG_ENDIAN);
-        Info info = new Info(TargetDataLine.class, format);
+        final AudioFormat format = new AudioFormat(DEFAULT_SAMPLE_RATE, DEFAULT_SAMPLE_SIZE_IN_BITS, DEFAULT_CHANNELS, DEFAULT_SIGNED, DEFAULT_BIG_ENDIAN);
+        final Info info = new Info(TargetDataLine.class, format);
         return AudioSystem.isLineSupported(info);
     }
     
     /**
-     * Determines if a specified class is the owner of the Input Handler.
+     * Determines if a specified caller is the owner of the Input Handler.
      *
-     * @param owner The calling class.
-     * @return Whether the class is the owner of the Input Handler or not.
-     * @see SingletonInputHandler#isOwner(Class)
-     */
-    public static synchronized boolean owns(Class<?> owner) {
-        return instance.isOwner(owner);
-    }
-    
-    /**
-     * Determines if a specified class is the owner of the Input Handler.
-     *
-     * @param owner The calling object.
-     * @return Whether the class is the owner of the Input Handler or not.
+     * @param caller The caller.
+     * @return Whether the caller is the owner of the Input Handler or not.
      * @see SingletonInputHandler#isOwner(Object)
      */
-    public static synchronized boolean owns(Object owner) {
-        return instance.isOwner(owner);
+    public static boolean owns(Object caller) {
+        return instance.isOwner(caller);
     }
     
     /**
-     * Claims ownership of the Input Handler.
+     * Acquires ownership of the Input Handler.
      *
-     * @param owner The new owner of the Input Handler.
-     * @return Whether the class acquired ownership of the Input Handler or not.
-     * @see SingletonInputHandler#claimOwnership(Class)
+     * @param caller The caller.
+     * @return Whether the caller acquired ownership of the Input Handler or not.
+     * @see SingletonInputHandler#acquireOwnership(Object)
      */
-    public static synchronized boolean own(Class<?> owner) {
-        return instance.claimOwnership(owner);
+    public static boolean own(Object caller) {
+        return instance.acquireOwnership(caller);
     }
     
     /**
-     * Claims ownership of the Input Handler.
+     * Relinquishes ownership of the Input Handler.
      *
-     * @param owner The new owner of the Input Handler.
-     * @return Whether the class acquired ownership of the Input Handler or not.
-     * @see SingletonInputHandler#claimOwnership(Object)
+     * @param caller The caller.
+     * @return Whether the caller relinquished ownership of the Input Handler or not.
+     * @see SingletonInputHandler#releaseOwnership(Object)
      */
-    public static synchronized boolean own(Object owner) {
-        return instance.claimOwnership(owner);
+    public static boolean relinquish(Object caller) {
+        return instance.releaseOwnership(caller);
     }
     
     /**
-     * Claims the default ownership of the Input Handler.
+     * Acquires management of the Input Handler.
      *
-     * @param owner The default owner of the Input Handler.
-     * @return Whether default ownership was successfully acquired or not.
-     * @see SingletonInputHandler#claimDefaultOwnership(Class)
+     * @param caller The caller.
+     * @return Whether the caller acquired management of the Input Handler or not.
+     * @see SingletonInputHandler#acquireManagement(Object)
      */
-    public static synchronized boolean defaultOwn(Class<?> owner) {
-        return instance.claimDefaultOwnership(owner);
+    public static boolean manage(Object caller) {
+        return instance.acquireManagement(caller);
     }
     
     /**
-     * Claims the default ownership of the Input Handler.
+     * Relinquishes management of the Input Handler.
      *
-     * @param owner The default owner of the Input Handler.
-     * @return Whether default ownership was successfully acquired or not.
-     * @see SingletonInputHandler#claimDefaultOwnership(Object)
+     * @param caller The caller.
+     * @return Whether the caller relinquished management of the Input Handler or not.
+     * @see SingletonInputHandler#releaseManagement(Object)
      */
-    public static synchronized boolean defaultOwn(Object owner) {
-        return instance.claimDefaultOwnership(owner);
-    }
-    
-    /**
-     * Relinquishes the ownership of the Input Handler to the default owner.
-     *
-     * @param owner The calling class.
-     * @return Whether the class relinquished ownership of the Input Handler or not.
-     * @see SingletonInputHandler#relinquishOwnership(Class)
-     */
-    public static synchronized boolean relinquish(Class<?> owner) {
-        return instance.relinquishOwnership(owner);
-    }
-    
-    /**
-     * Relinquishes the ownership of the Input Handler to the default owner.
-     *
-     * @param owner The calling object.
-     * @return Whether the class relinquished ownership of the Input Handler or not.
-     * @see SingletonInputHandler#relinquishOwnership(Object)
-     */
-    public static synchronized boolean relinquish(Object owner) {
-        return instance.relinquishOwnership(owner);
+    public static boolean relinquishManagement(Object caller) {
+        return instance.releaseManagement(caller);
     }
     
 }

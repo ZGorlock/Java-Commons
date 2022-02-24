@@ -8,15 +8,18 @@
 package commons.io;
 
 import java.io.Console;
-import java.io.IOException;
 import java.io.InputStream;
-import java.util.Scanner;
+import java.io.InputStreamReader;
+import java.util.Optional;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import commons.io.stream.BufferedLineReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,9 +44,14 @@ public final class SystemIn extends SingletonInputHandler {
     private static final InputStream systemIn = System.in;
     
     /**
-     * The scanner for the stream.
+     * The stream reader for the scanner.
      */
-    private static final Scanner in = new Scanner(systemIn);
+    private static final BufferedLineReader in = new BufferedLineReader(new InputStreamReader(systemIn));
+    
+    /**
+     * The System console.
+     */
+    private static final Console console = System.console();
     
     /**
      * The buffer for the scanner.
@@ -51,19 +59,24 @@ public final class SystemIn extends SingletonInputHandler {
     private static AtomicReference<String> buffer = null;
     
     /**
-     * The thread that scans for input.
+     * The thread that handles scanning for input.
      */
-    private static ExecutorService scannerThread = null;
+    private static ExecutorService scanner = null;
     
     /**
-     * The handle for the thread that scans for input.
+     * The handle for the thread that handles scanning for input.
      */
-    private static Future<?> scannerThreadHandle = null;
+    private static Future<?> scannerHandle = null;
     
     /**
      * The singleton instance of the Input Handler.
      */
     private static SingletonInputHandler instance = new SystemIn();
+    
+    /**
+     * A flag indicating whether the Input Handler is currently in use.
+     */
+    private static AtomicBoolean inUse = new AtomicBoolean(false);
     
     
     //Constructors
@@ -80,43 +93,56 @@ public final class SystemIn extends SingletonInputHandler {
     
     /**
      * Starts the scanner for System.in.
+     *
+     * @return Whether the scanner was successfully started or not.
      */
     @SuppressWarnings("BusyWait")
-    private static synchronized void startScanner() {
-        interruptScanner();
+    private static boolean startScanner() {
+        if (!interruptScanner()) {
+            return false;
+        }
         
-        scannerThread = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("SystemIn").build());
-        scannerThreadHandle = scannerThread.submit(() -> {
+        scanner = Executors.newSingleThreadExecutor(new ThreadFactoryBuilder().setNameFormat("SystemIn").build());
+        scannerHandle = scanner.submit(() -> {
             try {
-                while ((systemIn.available() == 0) || !in.hasNextLine()) {
+                while (!in.lineReady()) {
                     if (Thread.currentThread().isInterrupted()) {
                         throw new InterruptedException();
                     }
                     Thread.sleep(5);
                 }
-                buffer = new AtomicReference<>(in.nextLine());
-            } catch (IOException | InterruptedException | IllegalStateException ignored) {
-                buffer = new AtomicReference<>("");
+                buffer = new AtomicReference<>(in.readLine());
+            } catch (Exception ignored) {
+                buffer = new AtomicReference<>(null);
             }
         });
+        return true;
     }
     
     /**
      * Interrupts the scanner for System.in.
+     *
+     * @return Whether the scanner was successfully shutdown or not.
      */
-    @SuppressWarnings("StatementWithEmptyBody")
-    private static synchronized void interruptScanner() {
+    private static boolean interruptScanner() {
         if (isScannerRunning()) {
-            scannerThreadHandle.cancel(true);
-            scannerThread.shutdown();
-            scannerThread.shutdownNow();
-            while (!scannerThread.isShutdown()) {
+            try {
+                scannerHandle.cancel(true);
+                scanner.shutdown();
+                scanner.shutdownNow();
+                if (!scanner.awaitTermination(1000, TimeUnit.MILLISECONDS)) {
+                    throw new InterruptedException();
+                }
+            } catch (Exception ignored) {
+                return false;
             }
-            scannerThread = null;
-            scannerThreadHandle = null;
+            
+            scanner = null;
+            scannerHandle = null;
         }
         
         buffer = null;
+        return true;
     }
     
     /**
@@ -124,253 +150,140 @@ public final class SystemIn extends SingletonInputHandler {
      *
      * @return Whether the scanner thread is running or not.
      */
-    private static synchronized boolean isScannerRunning() {
-        return ((scannerThread != null) && (scannerThreadHandle != null) &&
-                !scannerThread.isShutdown() && !scannerThread.isTerminated() &&
-                !scannerThreadHandle.isDone() && !scannerThreadHandle.isCancelled());
+    private static boolean isScannerRunning() {
+        return !((scanner == null) || (scannerHandle == null) ||
+                scanner.isShutdown() || scanner.isTerminated() ||
+                scannerHandle.isDone() || scannerHandle.isCancelled());
     }
     
     /**
-     * Gets the next line of input from the scanner, blocks the calling thread until the next line is retrieved.
+     * Gets the next line of input from the scanner.
      *
-     * @param caller The calling class.
-     * @return The next line of input, or an empty string if the caller is not the owner of the Input Handler.
+     * @return The next line of input, or null if the read was interrupted.
      */
     @SuppressWarnings("BusyWait")
-    public static synchronized String nextLine(Class<?> caller) {
-        if (!owns(caller)) {
-            return "";
-        }
-        
-        startScanner();
+    private static String nextLine() {
         while (isScannerRunning() && (buffer == null)) {
             try {
                 Thread.sleep(5);
             } catch (InterruptedException ignored) {
             }
         }
-        return getBuffer(caller);
+        return Optional.ofNullable(buffer)
+                .map(AtomicReference::get)
+                .orElse(null);
     }
     
     /**
      * Gets the next line of input from the scanner.
      *
-     * @param caller The calling object.
-     * @return The next line of input, or an empty string if the caller is not the owner of the Input Handler.
-     * @see #nextLine(Class)
+     * @param caller The caller.
+     * @return The next line of input, or null if the caller is not the owner of the Input Handler or if the caller if already waiting on input or if the read was interrupted.
+     * @see #nextLine()
      */
-    public static synchronized String nextLine(Object caller) {
-        return nextLine((caller != null) ? caller.getClass() : null);
-    }
-    
-    /**
-     * Gets a password input from the console, privately if there is a console, or not privately otherwise.
-     *
-     * @param caller The calling class.
-     * @return The password input, or an empty string if the caller is not the owner of the Input Handler.
-     * @see PasswordIn#readPassword(Class)
-     */
-    public static synchronized String getPassword(Class<?> caller) {
-        if (!owns(caller)) {
-            return "";
-        }
-        
-        interruptScanner();
-        return PasswordIn.hasConsole() ? PasswordIn.readPassword(caller) : nextLine(caller);
-    }
-    
-    /**
-     * Gets a password input from the console, privately if there is a console, or not privately otherwise.
-     *
-     * @param caller The calling object.
-     * @return The password input, or an empty string if the caller is not the owner of the Input Handler.
-     * @see #getPassword(Class)
-     */
-    public static synchronized String getPassword(Object caller) {
-        return getPassword((caller != null) ? caller.getClass() : null);
-    }
-    
-    /**
-     * Returns the input buffer from the scanner.
-     *
-     * @param caller The calling class.
-     * @return The input buffer, or null if the caller is not the owner of the Input Handler.
-     */
-    public static synchronized String getBuffer(Class<?> caller) {
-        if (!owns(caller)) {
+    public static String nextLine(Object caller) {
+        if (!owns(caller) || !inUse.compareAndSet(false, true)) {
             return null;
         }
         
-        if (buffer != null) {
-            String line = buffer.getAndSet("");
+        try {
+            startScanner();
+            return nextLine();
+            
+        } finally {
             buffer = null;
-            return line;
+            inUse.set(false);
         }
-        return null;
     }
     
     /**
-     * Returns the input buffer from the scanner.
+     * Gets a password input from the console, privately if there is a console, or not privately otherwise.
      *
-     * @param caller The calling object.
-     * @return The input buffer, or null if the caller is not the owner of the Input Handler.
-     * @see #getBuffer(Class)
+     * @return The password input, or null if the caller is not the owner of the Input Handler or if the caller if already waiting on input or if the read was interrupted.
+     * @see Console#readPassword()
      */
-    public static synchronized String getBuffer(Object caller) {
-        return getBuffer((caller != null) ? caller.getClass() : null);
+    private static String readPassword() {
+        return Optional.ofNullable(console)
+                .map(e -> String.valueOf(e.readPassword()))
+                .orElse(null);
     }
     
     /**
-     * Determines if a specified class is the owner of the Input Handler.
+     * Gets a password input from the console, privately if there is a console, or not privately otherwise.
      *
-     * @param owner The calling class.
-     * @return Whether the class is the owner of the Input Handler or not.
-     * @see SingletonInputHandler#isOwner(Class)
+     * @param caller The caller.
+     * @return The password input, or null if the caller is not the owner of the Input Handler or if the caller if already waiting on input or if the read was interrupted.
+     * @see #readPassword()
+     * @see #nextLine()
      */
-    public static synchronized boolean owns(Class<?> owner) {
-        return instance.isOwner(owner);
+    public static String readPassword(Object caller) {
+        if (!owns(caller) || !inUse.compareAndSet(false, true)) {
+            return null;
+        }
+        
+        try {
+            return (console != null) ?
+                   (interruptScanner() ? readPassword() : null) :
+                   (startScanner() ? nextLine() : null);
+            
+        } finally {
+            inUse.set(false);
+        }
     }
     
     /**
-     * Determines if a specified class is the owner of the Input Handler.
+     * Determines if a specified caller is the owner of the Input Handler.
      *
-     * @param owner The calling object.
-     * @return Whether the class is the owner of the Input Handler or not.
+     * @param caller The caller.
+     * @return Whether the caller is the owner of the Input Handler or not.
      * @see SingletonInputHandler#isOwner(Object)
      */
-    public static synchronized boolean owns(Object owner) {
-        return instance.isOwner(owner);
+    public static boolean owns(Object caller) {
+        return instance.isOwner(caller);
     }
     
     /**
-     * Claims ownership of the Input Handler.
+     * Acquires ownership of the Input Handler.
      *
-     * @param owner The new owner of the Input Handler.
-     * @return Whether the class acquired ownership of the Input Handler or not.
-     * @see SingletonInputHandler#claimOwnership(Class)
+     * @param caller The caller.
+     * @return Whether the caller acquired ownership of the Input Handler or not.
+     * @see SingletonInputHandler#acquireOwnership(Object)
      */
-    public static synchronized boolean own(Class<?> owner) {
-        return instance.claimOwnership(owner);
+    public static boolean own(Object caller) {
+        return instance.acquireOwnership(caller);
     }
     
     /**
-     * Claims ownership of the Input Handler.
+     * Relinquishes ownership of the Input Handler.
      *
-     * @param owner The new owner of the Input Handler.
-     * @return Whether the class acquired ownership of the Input Handler or not.
-     * @see SingletonInputHandler#claimOwnership(Object)
+     * @param caller The caller.
+     * @return Whether the caller relinquished ownership of the Input Handler or not.
+     * @see SingletonInputHandler#releaseOwnership(Object)
      */
-    public static synchronized boolean own(Object owner) {
-        return instance.claimOwnership(owner);
+    public static boolean relinquish(Object caller) {
+        return instance.releaseOwnership(caller);
     }
     
     /**
-     * Claims the default ownership of the Input Handler.
+     * Acquires management of the Input Handler.
      *
-     * @param owner The default owner of the Input Handler.
-     * @return Whether default ownership was successfully acquired or not.
-     * @see SingletonInputHandler#claimDefaultOwnership(Class)
+     * @param caller The caller.
+     * @return Whether the caller acquired management of the Input Handler or not.
+     * @see SingletonInputHandler#acquireManagement(Object)
      */
-    public static synchronized boolean defaultOwn(Class<?> owner) {
-        return instance.claimDefaultOwnership(owner);
+    public static boolean manage(Object caller) {
+        return instance.acquireManagement(caller);
     }
     
     /**
-     * Claims the default ownership of the Input Handler.
+     * Relinquishes management of the Input Handler.
      *
-     * @param owner The default owner of the Input Handler.
-     * @return Whether default ownership was successfully acquired or not.
-     * @see SingletonInputHandler#claimDefaultOwnership(Object)
+     * @param caller The caller.
+     * @return Whether the caller relinquished management of the Input Handler or not.
+     * @see SingletonInputHandler#releaseManagement(Object)
      */
-    public static synchronized boolean defaultOwn(Object owner) {
-        return instance.claimDefaultOwnership(owner);
-    }
-    
-    /**
-     * Relinquishes the ownership of the Input Handler to the default owner.
-     *
-     * @param owner The calling class.
-     * @return Whether the class relinquished ownership of the Input Handler or not.
-     * @see SingletonInputHandler#relinquishOwnership(Class)
-     */
-    public static synchronized boolean relinquish(Class<?> owner) {
-        return instance.relinquishOwnership(owner);
-    }
-    
-    /**
-     * Relinquishes the ownership of the Input Handler to the default owner.
-     *
-     * @param owner The calling object.
-     * @return Whether the class relinquished ownership of the Input Handler or not.
-     * @see SingletonInputHandler#relinquishOwnership(Object)
-     */
-    public static synchronized boolean relinquish(Object owner) {
-        return instance.relinquishOwnership(owner);
-    }
-    
-    
-    //Inner Classes
-    
-    /**
-     * Handles the reading of passwords from System.in.
-     */
-    protected static final class PasswordIn {
-        
-        //Static Fields
-        
-        /**
-         * The console input object.
-         */
-        private static final Console console = System.console();
-        
-        
-        //Static Methods
-        
-        /**
-         * Reads a password from the console.
-         *
-         * @return The password.
-         * @see Console#readPassword()
-         */
-        private static char[] doReadPassword() {
-            return console.readPassword();
-        }
-        
-        /**
-         * Reads a password from the console.
-         *
-         * @param caller The calling class.
-         * @return The password.
-         * @see #doReadPassword()
-         */
-        public static String readPassword(Class<?> caller) {
-            if (!owns(caller)) {
-                return "";
-            }
-            
-            return hasConsole() ? String.valueOf(doReadPassword()) : "";
-        }
-        
-        /**
-         * Reads a password from the console.
-         *
-         * @param caller The calling object.
-         * @return The password.
-         * @see #readPassword(Class)
-         */
-        public static String readPassword(Object caller) {
-            return readPassword((caller != null) ? caller.getClass() : null);
-        }
-        
-        /**
-         * Determines if the system has a console or not.
-         *
-         * @return Whether the system has a console or not.
-         */
-        public static boolean hasConsole() {
-            return (console != null);
-        }
-        
+    public static boolean relinquishManagement(Object caller) {
+        return instance.releaseManagement(caller);
     }
     
 }
