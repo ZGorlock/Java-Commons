@@ -19,7 +19,6 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Function;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -112,11 +111,11 @@ public class FFmpegTest {
         PowerMockito.doReturn(true).when(CommonsLogging.class, "showFfmpegProgressBarsByDefault");
         
         FFmpeg.setFFmpegExecutable(null);
-        Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffmpeg"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.class, "ffmpeg"));
         FFmpeg.setFFprobeExecutable(null);
-        Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffprobe"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.class, "ffprobe"));
         FFmpeg.setFFplayExecutable(null);
-        Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffplay"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.class, "ffplay"));
         
         FFmpeg.setMaxMuxingQueueSize(1024);
     }
@@ -129,11 +128,11 @@ public class FFmpegTest {
     @After
     public void cleanup() throws Exception {
         FFmpeg.setFFmpegExecutable(null);
-        Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffmpeg"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.class, "ffmpeg"));
         FFmpeg.setFFprobeExecutable(null);
-        Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffprobe"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.class, "ffprobe"));
         FFmpeg.setFFplayExecutable(null);
-        Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffplay"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.class, "ffplay"));
     }
     
     
@@ -182,7 +181,7 @@ public class FFmpegTest {
         Assert.assertTrue(FFmpeg.ffmpegExists());
         FFmpeg.setFFmpegExecutable(testExecutable);
         Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffmpeg")).getAbsolutePath());
+                TestUtils.getFieldValue(FFmpeg.class, File.class, "ffmpeg").getAbsolutePath());
         Assert.assertFalse(FFmpeg.ffmpegExists());
         Assert.assertFalse(FFmpeg.ffmpegExists());
     }
@@ -205,7 +204,7 @@ public class FFmpegTest {
         Assert.assertTrue(FFmpeg.ffprobeExists());
         FFmpeg.setFFprobeExecutable(testExecutable);
         Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffprobe")).getAbsolutePath());
+                TestUtils.getFieldValue(FFmpeg.class, File.class, "ffprobe").getAbsolutePath());
         Assert.assertFalse(FFmpeg.ffprobeExists());
         Assert.assertFalse(FFmpeg.ffprobeExists());
     }
@@ -228,7 +227,7 @@ public class FFmpegTest {
         Assert.assertTrue(FFmpeg.ffplayExists());
         FFmpeg.setFFplayExecutable(testExecutable);
         Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffplay")).getAbsolutePath());
+                TestUtils.getFieldValue(FFmpeg.class, File.class, "ffplay").getAbsolutePath());
         Assert.assertFalse(FFmpeg.ffplayExists());
         Assert.assertFalse(FFmpeg.ffplayExists());
     }
@@ -251,7 +250,7 @@ public class FFmpegTest {
         Assert.assertEquals("4.3.1", FFmpeg.ffmpegVersion());
         FFmpeg.setFFmpegExecutable(testExecutable);
         Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffmpeg")).getAbsolutePath());
+                TestUtils.getFieldValue(FFmpeg.class, File.class, "ffmpeg").getAbsolutePath());
         Assert.assertNull(FFmpeg.ffmpegVersion());
         Assert.assertNull(FFmpeg.ffmpegVersion());
     }
@@ -274,7 +273,7 @@ public class FFmpegTest {
         Assert.assertEquals("4.3.1", FFmpeg.ffprobeVersion());
         FFmpeg.setFFprobeExecutable(testExecutable);
         Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffprobe")).getAbsolutePath());
+                TestUtils.getFieldValue(FFmpeg.class, File.class, "ffprobe").getAbsolutePath());
         Assert.assertNull(FFmpeg.ffprobeVersion());
         Assert.assertNull(FFmpeg.ffprobeVersion());
     }
@@ -297,7 +296,7 @@ public class FFmpegTest {
         Assert.assertEquals("4.3.1", FFmpeg.ffplayVersion());
         FFmpeg.setFFplayExecutable(testExecutable);
         Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffplay")).getAbsolutePath());
+                TestUtils.getFieldValue(FFmpeg.class, File.class, "ffplay").getAbsolutePath());
         Assert.assertNull(FFmpeg.ffplayVersion());
         Assert.assertNull(FFmpeg.ffplayVersion());
     }
@@ -327,8 +326,8 @@ public class FFmpegTest {
         final File testFile3 = new File(testResources, "null3.mp4");
         final File testFile4 = new File(testResources, "null4.mp4");
         final FFmpeg.FFmpegProgressBar mockFFmpegProgressBar = Mockito.mock(FFmpeg.FFmpegProgressBar.class, Mockito.CALLS_REAL_METHODS);
-        TestUtils.setField(mockFFmpegProgressBar, "title", "");
-        TestUtils.setField(mockFFmpegProgressBar, "firstPrint", new AtomicBoolean(true));
+        TestUtils.setFieldValue(mockFFmpegProgressBar, "title", "");
+        TestUtils.setFieldValue(mockFFmpegProgressBar, "firstPrint", new AtomicBoolean(true));
         
         //standard
         PowerMockito.mockStatic(CmdLine.class);
@@ -639,38 +638,38 @@ public class FFmpegTest {
         FFmpeg.setFFmpegExecutable(null);
         Mockito.doCallRealMethod().when(mockFFmpegProgressBar).getTitle();
         Mockito.doCallRealMethod().when(mockFFmpegProgressBar).updateTitle(ArgumentMatchers.anyString());
-        Assert.assertTrue(TestUtils.setField(mockFFmpegProgressBar, "title", ""));
-        Assert.assertEquals("", TestUtils.getField(mockFFmpegProgressBar, "title"));
-        Assert.assertTrue(TestUtils.setField(mockFFmpegProgressBar, "firstPrint", new AtomicBoolean(true)));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(mockFFmpegProgressBar, "firstPrint")).get());
+        Assert.assertTrue(TestUtils.setFieldValue(mockFFmpegProgressBar, "title", ""));
+        Assert.assertEquals("", TestUtils.getFieldValue(mockFFmpegProgressBar, "title"));
+        Assert.assertTrue(TestUtils.setFieldValue(mockFFmpegProgressBar, "firstPrint", new AtomicBoolean(true)));
+        Assert.assertTrue(TestUtils.getFieldValue(mockFFmpegProgressBar, AtomicBoolean.class, "firstPrint").get());
         FFmpeg.ffmpeg("-y", Arrays.asList(testFile1, testFile2, testFile3), "-c:copy", testFile4, mockFFmpegProgressBar);
         Assert.assertEquals("FFmpeg " + Console.ConsoleEffect.GREY.apply("-hide_banner -progress - -nostats -y -i " + StringUtility.quote(testFile1.getAbsolutePath()) + " -i " + StringUtility.quote(testFile2.getAbsolutePath()) + " -i " + StringUtility.quote(testFile3.getAbsolutePath()) + " -c:copy " + StringUtility.quote(testFile4.getAbsolutePath())),
-                TestUtils.getField(mockFFmpegProgressBar, "title"));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(mockFFmpegProgressBar, "firstPrint")).get());
-        Assert.assertTrue(TestUtils.setField(mockFFmpegProgressBar, "title", "Test FFmpeg Progress Bar"));
-        Assert.assertEquals("Test FFmpeg Progress Bar", TestUtils.getField(mockFFmpegProgressBar, "title"));
-        Assert.assertTrue(TestUtils.setField(mockFFmpegProgressBar, "firstPrint", new AtomicBoolean(true)));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(mockFFmpegProgressBar, "firstPrint")).get());
+                TestUtils.getFieldValue(mockFFmpegProgressBar, "title"));
+        Assert.assertTrue(TestUtils.getFieldValue(mockFFmpegProgressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertTrue(TestUtils.setFieldValue(mockFFmpegProgressBar, "title", "Test FFmpeg Progress Bar"));
+        Assert.assertEquals("Test FFmpeg Progress Bar", TestUtils.getFieldValue(mockFFmpegProgressBar, "title"));
+        Assert.assertTrue(TestUtils.setFieldValue(mockFFmpegProgressBar, "firstPrint", new AtomicBoolean(true)));
+        Assert.assertTrue(TestUtils.getFieldValue(mockFFmpegProgressBar, AtomicBoolean.class, "firstPrint").get());
         FFmpeg.ffmpeg(testFile1, "-y -c:copy", testFile4, mockFFmpegProgressBar);
         Assert.assertEquals("Test FFmpeg Progress Bar",
-                TestUtils.getField(mockFFmpegProgressBar, "title"));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(mockFFmpegProgressBar, "firstPrint")).get());
-        Assert.assertTrue(TestUtils.setField(mockFFmpegProgressBar, "title", ""));
-        Assert.assertEquals("", TestUtils.getField(mockFFmpegProgressBar, "title"));
-        Assert.assertTrue(TestUtils.setField(mockFFmpegProgressBar, "firstPrint", new AtomicBoolean(false)));
-        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(mockFFmpegProgressBar, "firstPrint")).get());
+                TestUtils.getFieldValue(mockFFmpegProgressBar, "title"));
+        Assert.assertTrue(TestUtils.getFieldValue(mockFFmpegProgressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertTrue(TestUtils.setFieldValue(mockFFmpegProgressBar, "title", ""));
+        Assert.assertEquals("", TestUtils.getFieldValue(mockFFmpegProgressBar, "title"));
+        Assert.assertTrue(TestUtils.setFieldValue(mockFFmpegProgressBar, "firstPrint", new AtomicBoolean(false)));
+        Assert.assertFalse(TestUtils.getFieldValue(mockFFmpegProgressBar, AtomicBoolean.class, "firstPrint").get());
         FFmpeg.ffmpeg("-y", Arrays.asList(testFile1, testFile2, testFile3), "-c:copy", testFile4, mockFFmpegProgressBar);
         Assert.assertEquals("",
-                TestUtils.getField(mockFFmpegProgressBar, "title"));
-        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(mockFFmpegProgressBar, "firstPrint")).get());
-        Assert.assertTrue(TestUtils.setField(mockFFmpegProgressBar, "title", ""));
-        Assert.assertEquals("", TestUtils.getField(mockFFmpegProgressBar, "title"));
-        Assert.assertTrue(TestUtils.setField(mockFFmpegProgressBar, "firstPrint", new AtomicBoolean(true)));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(mockFFmpegProgressBar, "firstPrint")).get());
+                TestUtils.getFieldValue(mockFFmpegProgressBar, "title"));
+        Assert.assertFalse(TestUtils.getFieldValue(mockFFmpegProgressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertTrue(TestUtils.setFieldValue(mockFFmpegProgressBar, "title", ""));
+        Assert.assertEquals("", TestUtils.getFieldValue(mockFFmpegProgressBar, "title"));
+        Assert.assertTrue(TestUtils.setFieldValue(mockFFmpegProgressBar, "firstPrint", new AtomicBoolean(true)));
+        Assert.assertTrue(TestUtils.getFieldValue(mockFFmpegProgressBar, AtomicBoolean.class, "firstPrint").get());
         FFmpeg.ffmpeg("-hide_banner -progress - -nostats -y -i " + StringUtility.quote(testFile1.getAbsolutePath()) + " -i " + StringUtility.quote(testFile2.getAbsolutePath()) + " -i " + StringUtility.quote(testFile3.getAbsolutePath()) + " -c:copy " + StringUtility.quote(testFile4.getAbsolutePath()), mockFFmpegProgressBar);
         Assert.assertEquals("",
-                TestUtils.getField(mockFFmpegProgressBar, "title"));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(mockFFmpegProgressBar, "firstPrint")).get());
+                TestUtils.getFieldValue(mockFFmpegProgressBar, "title"));
+        Assert.assertTrue(TestUtils.getFieldValue(mockFFmpegProgressBar, AtomicBoolean.class, "firstPrint").get());
         
         //default progress bar name
         PowerMockito.mockStatic(CmdLine.class);
@@ -1756,10 +1755,10 @@ public class FFmpegTest {
         mockChapters = new ArrayList<>();
         for (int i = 0; i < 3; i++) {
             FFmpeg.MediaInfo.Chapter mockChapter = Mockito.mock(FFmpeg.MediaInfo.Chapter.class);
-            TestUtils.setField(mockChapter, "chapterId", (i + 1));
-            TestUtils.setField(mockChapter, "startTime", (i * 1000000));
-            TestUtils.setField(mockChapter, "endTime", ((i + 1) * 1000000));
-            TestUtils.setField(mockChapter, "title", ("Chapter " + (i + 1)));
+            TestUtils.setFieldValue(mockChapter, "chapterId", (i + 1));
+            TestUtils.setFieldValue(mockChapter, "startTime", (i * 1000000));
+            TestUtils.setFieldValue(mockChapter, "endTime", ((i + 1) * 1000000));
+            TestUtils.setFieldValue(mockChapter, "title", ("Chapter " + (i + 1)));
             mockChapters.add(mockChapter);
         }
         FFmpeg.addChapters(testSource, mockChapters, testOutput4);
@@ -2426,51 +2425,51 @@ public class FFmpegTest {
         
         //invalid
         PowerMockito.doNothing().when(TestUtils.AssertWrapper.class, "fail", ArgumentMatchers.anyString());
-        Assert.assertTrue(((String) TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource, MapUtility.mapOf(
+        Assert.assertTrue(TestUtils.invokeMethod(FFmpeg.class, String.class, "modifyMetadataHelper", testSource, MapUtility.mapOf(
                 new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")))
-        ), fakeOutput, true, true)).contains(
+        ), fakeOutput, true, true).contains(
                 "[*]Could not write header for output file #0 (incorrect codec parameters ?): Invalid argument"));
-        Assert.assertTrue(((String) TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
+        Assert.assertTrue(TestUtils.invokeMethod(FFmpeg.class, String.class, "modifyMetadataHelper", testSource,
                 FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
-                fakeOutput, true, true)).contains(
+                fakeOutput, true, true).contains(
                 "[*]Could not write header for output file #0 (incorrect codec parameters ?): Invalid argument"));
-        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+        TestUtils.assertException(NullPointerException.class, () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         null,
                         testOutput1, true, true));
-        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+        TestUtils.assertException(NullPointerException.class, () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         FFmpeg.Identifier.Global.get(), null,
                         testOutput1, true, true));
-        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+        TestUtils.assertException(NullPointerException.class, () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         null, new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
                         testOutput1, true, true));
-        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException", () ->
+        TestUtils.assertException(NullPointerException.class, () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         null, null,
                         testOutput1, true, true));
-        TestUtils.assertException(AssertionError.class, () -> //NullPointerException
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: FFmpeg::modifyMetadataHelper(null, HashMap, File, Boolean, Boolean)", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null, MapUtility.mapOf(
                         new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")))
                 ), fakeOutput, true, true));
-        TestUtils.assertException(AssertionError.class, () -> //NullPointerException
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: FFmpeg::modifyMetadataHelper(null, Global, MetadataTags, File, Boolean, Boolean)", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null,
                         FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
                         fakeOutput, true, true));
-        TestUtils.assertException(AssertionError.class, () -> //NullPointerException
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: FFmpeg::modifyMetadataHelper(File, HashMap, null, Boolean, Boolean)", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource, MapUtility.mapOf(
                         new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")))
                 ), null, true, true));
-        TestUtils.assertException(AssertionError.class, () -> //NullPointerException
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: FFmpeg::modifyMetadataHelper(File, Global, MetadataTags, null, Boolean, Boolean)", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
                         null, true, true));
-        TestUtils.assertException(AssertionError.class, () -> //NullPointerException
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: FFmpeg::modifyMetadataHelper(null, HashMap, null, Boolean, Boolean)", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null, MapUtility.mapOf(
                         new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")))
                 ), null, true, true));
-        TestUtils.assertException(AssertionError.class, () -> //NullPointerException
+        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: FFmpeg::modifyMetadataHelper(null, Global, MetadataTags, null, Boolean, Boolean)", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null,
                         FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
                         null, true, true));
@@ -4210,12 +4209,12 @@ public class FFmpegTest {
     public void testSetFFmpegExecutable() throws Exception {
         PowerMockito.mockStatic(FFmpeg.Implements.class);
         final File testExecutable = new File(testResources, "ffmpeg.exe");
-        Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffmpeg"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.class, "ffmpeg"));
         FFmpeg.setFFmpegExecutable(testExecutable);
         Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffmpeg")).getAbsolutePath());
+                TestUtils.getFieldValue(FFmpeg.class, File.class, "ffmpeg").getAbsolutePath());
         Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffmpeg")).getAbsolutePath());
+                TestUtils.getFieldValue(FFmpeg.class, File.class, "ffmpeg").getAbsolutePath());
         PowerMockito.verifyStatic(FFmpeg.Implements.class);
         FFmpeg.Implements.clearCache();
         FFmpeg.setFFmpegExecutable(testExecutable);
@@ -4233,12 +4232,12 @@ public class FFmpegTest {
     public void testSetFFprobeExecutable() throws Exception {
         PowerMockito.mockStatic(FFmpeg.Implements.class);
         final File testExecutable = new File(testResources, "ffprobe.exe");
-        Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffprobe"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.class, "ffprobe"));
         FFmpeg.setFFprobeExecutable(testExecutable);
         Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffprobe")).getAbsolutePath());
+                TestUtils.getFieldValue(FFmpeg.class, File.class, "ffprobe").getAbsolutePath());
         Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffprobe")).getAbsolutePath());
+                TestUtils.getFieldValue(FFmpeg.class, File.class, "ffprobe").getAbsolutePath());
         PowerMockito.verifyNoMoreInteractions(FFmpeg.Implements.class);
     }
     
@@ -4252,12 +4251,12 @@ public class FFmpegTest {
     public void testSetFFplayExecutable() throws Exception {
         PowerMockito.mockStatic(FFmpeg.Implements.class);
         final File testExecutable = new File(testResources, "ffplay.exe");
-        Assert.assertNull(TestUtils.getField(FFmpeg.class, "ffplay"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.class, "ffplay"));
         FFmpeg.setFFplayExecutable(testExecutable);
         Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffplay")).getAbsolutePath());
+                TestUtils.getFieldValue(FFmpeg.class, File.class, "ffplay").getAbsolutePath());
         Assert.assertEquals(testExecutable.getAbsolutePath(),
-                ((File) TestUtils.getField(FFmpeg.class, "ffplay")).getAbsolutePath());
+                TestUtils.getFieldValue(FFmpeg.class, File.class, "ffplay").getAbsolutePath());
         PowerMockito.verifyNoMoreInteractions(FFmpeg.Implements.class);
     }
     
@@ -4302,11 +4301,11 @@ public class FFmpegTest {
         //constructors
         progressBar = new FFmpeg.FFmpegProgressBar("Test FFmpeg Progress Bar", Arrays.asList(testVideo, testVideo, testOutput), testOutput, 30L);
         Assert.assertNotNull(progressBar);
-        Assert.assertEquals(Arrays.asList(testVideo, testVideo, testOutput), TestUtils.getField(progressBar, "sourceFiles"));
-        Assert.assertEquals(testOutput, TestUtils.getField(progressBar, "outputFile"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertEquals(Arrays.asList(testVideo, testVideo, testOutput), TestUtils.getFieldValue(progressBar, "sourceFiles"));
+        Assert.assertEquals(testOutput, TestUtils.getFieldValue(progressBar, "outputFile"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertEquals("Test FFmpeg Progress Bar", progressBar.getTitle());
         Assert.assertEquals(30L, progressBar.getTotal());
         Assert.assertEquals(0L, progressBar.getProgress());
@@ -4315,11 +4314,11 @@ public class FFmpegTest {
         Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
         progressBar = new FFmpeg.FFmpegProgressBar(Arrays.asList(testVideo, testVideo, testOutput), testOutput, 30L);
         Assert.assertNotNull(progressBar);
-        Assert.assertEquals(Arrays.asList(testVideo, testVideo, testOutput), TestUtils.getField(progressBar, "sourceFiles"));
-        Assert.assertEquals(testOutput, TestUtils.getField(progressBar, "outputFile"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertEquals(Arrays.asList(testVideo, testVideo, testOutput), TestUtils.getFieldValue(progressBar, "sourceFiles"));
+        Assert.assertEquals(testOutput, TestUtils.getFieldValue(progressBar, "outputFile"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertEquals("", progressBar.getTitle());
         Assert.assertEquals(30L, progressBar.getTotal());
         Assert.assertEquals(0L, progressBar.getProgress());
@@ -4328,11 +4327,11 @@ public class FFmpegTest {
         Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
         progressBar = new FFmpeg.FFmpegProgressBar("Test FFmpeg Progress Bar", testVideo, testOutput, 30L);
         Assert.assertNotNull(progressBar);
-        Assert.assertEquals(Collections.singletonList(testVideo), TestUtils.getField(progressBar, "sourceFiles"));
-        Assert.assertEquals(testOutput, TestUtils.getField(progressBar, "outputFile"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertEquals(Collections.singletonList(testVideo), TestUtils.getFieldValue(progressBar, "sourceFiles"));
+        Assert.assertEquals(testOutput, TestUtils.getFieldValue(progressBar, "outputFile"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertEquals("Test FFmpeg Progress Bar", progressBar.getTitle());
         Assert.assertEquals(30L, progressBar.getTotal());
         Assert.assertEquals(0L, progressBar.getProgress());
@@ -4341,11 +4340,11 @@ public class FFmpegTest {
         Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
         progressBar = new FFmpeg.FFmpegProgressBar(testVideo, testOutput, 30L);
         Assert.assertNotNull(progressBar);
-        Assert.assertEquals(Collections.singletonList(testVideo), TestUtils.getField(progressBar, "sourceFiles"));
-        Assert.assertEquals(testOutput, TestUtils.getField(progressBar, "outputFile"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertEquals(Collections.singletonList(testVideo), TestUtils.getFieldValue(progressBar, "sourceFiles"));
+        Assert.assertEquals(testOutput, TestUtils.getFieldValue(progressBar, "outputFile"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertEquals("", progressBar.getTitle());
         Assert.assertEquals(30L, progressBar.getTotal());
         Assert.assertEquals(0L, progressBar.getProgress());
@@ -4354,11 +4353,11 @@ public class FFmpegTest {
         Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
         progressBar = new FFmpeg.FFmpegProgressBar("Test FFmpeg Progress Bar", Arrays.asList(testVideo, testVideo, testOutput), testOutput);
         Assert.assertNotNull(progressBar);
-        Assert.assertEquals(Arrays.asList(testVideo, testVideo, testOutput), TestUtils.getField(progressBar, "sourceFiles"));
-        Assert.assertEquals(testOutput, TestUtils.getField(progressBar, "outputFile"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertEquals(Arrays.asList(testVideo, testVideo, testOutput), TestUtils.getFieldValue(progressBar, "sourceFiles"));
+        Assert.assertEquals(testOutput, TestUtils.getFieldValue(progressBar, "outputFile"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertEquals("Test FFmpeg Progress Bar", progressBar.getTitle());
         Assert.assertEquals(3L, progressBar.getTotal());
         Assert.assertEquals(0L, progressBar.getProgress());
@@ -4367,11 +4366,11 @@ public class FFmpegTest {
         Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
         progressBar = new FFmpeg.FFmpegProgressBar(Arrays.asList(testVideo, testVideo, testOutput), testOutput);
         Assert.assertNotNull(progressBar);
-        Assert.assertEquals(Arrays.asList(testVideo, testVideo, testOutput), TestUtils.getField(progressBar, "sourceFiles"));
-        Assert.assertEquals(testOutput, TestUtils.getField(progressBar, "outputFile"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertEquals(Arrays.asList(testVideo, testVideo, testOutput), TestUtils.getFieldValue(progressBar, "sourceFiles"));
+        Assert.assertEquals(testOutput, TestUtils.getFieldValue(progressBar, "outputFile"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertEquals("", progressBar.getTitle());
         Assert.assertEquals(3L, progressBar.getTotal());
         Assert.assertEquals(0L, progressBar.getProgress());
@@ -4380,11 +4379,11 @@ public class FFmpegTest {
         Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
         progressBar = new FFmpeg.FFmpegProgressBar("Test FFmpeg Progress Bar", testVideo, testOutput);
         Assert.assertNotNull(progressBar);
-        Assert.assertEquals(Collections.singletonList(testVideo), TestUtils.getField(progressBar, "sourceFiles"));
-        Assert.assertEquals(testOutput, TestUtils.getField(progressBar, "outputFile"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertEquals(Collections.singletonList(testVideo), TestUtils.getFieldValue(progressBar, "sourceFiles"));
+        Assert.assertEquals(testOutput, TestUtils.getFieldValue(progressBar, "outputFile"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertEquals("Test FFmpeg Progress Bar", progressBar.getTitle());
         Assert.assertEquals(3L, progressBar.getTotal());
         Assert.assertEquals(0L, progressBar.getProgress());
@@ -4393,11 +4392,11 @@ public class FFmpegTest {
         Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
         progressBar = new FFmpeg.FFmpegProgressBar(testVideo, testOutput);
         Assert.assertNotNull(progressBar);
-        Assert.assertEquals(Collections.singletonList(testVideo), TestUtils.getField(progressBar, "sourceFiles"));
-        Assert.assertEquals(testOutput, TestUtils.getField(progressBar, "outputFile"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertEquals(Collections.singletonList(testVideo), TestUtils.getFieldValue(progressBar, "sourceFiles"));
+        Assert.assertEquals(testOutput, TestUtils.getFieldValue(progressBar, "outputFile"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertEquals("", progressBar.getTitle());
         Assert.assertEquals(3L, progressBar.getTotal());
         Assert.assertEquals(0L, progressBar.getProgress());
@@ -4409,38 +4408,38 @@ public class FFmpegTest {
         progressBar = new FFmpeg.FFmpegProgressBar("Test FFmpeg Progress Bar", testVideo, testOutput, 30L);
         Assert.assertTrue(progressBar.processLog("out_time_us=5000000"));
         Assert.assertEquals(5L, progressBar.getProgress());
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertFalse(progressBar.processLog("progress=continue"));
         Assert.assertEquals(5L, progressBar.getProgress());
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Thread.sleep(ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 2);
         Assert.assertTrue(progressBar.processLog("out_time_us=10000000", false));
         Assert.assertEquals(10L, progressBar.getProgress());
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Thread.sleep(ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 2);
         Assert.assertFalse(progressBar.processLog("This is a warning", true));
-        Assert.assertFalse(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
-        Assert.assertEquals("This is a warning", ((List<String>) TestUtils.getField(progressBar, "errors")).get(0));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
+        Assert.assertEquals("This is a warning", TestUtils.getFieldValue(progressBar, List.class, "errors").get(0));
         Assert.assertFalse(progressBar.processLog("Press [q] to stop, [?] for help", true));
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertFalse(progressBar.processLog("  Warning", true));
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertFalse(progressBar.processLog("Input #1: Stream 3", true));
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertFalse(progressBar.processLog("Output #1: Stream 3", true));
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertFalse(progressBar.processLog("Stream mapping: 0:0->0 (copy)", true));
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertFalse(progressBar.processLog("[mp4@010981151312354] Working", true));
-        Assert.assertTrue(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertFalse(progressBar.processLog("This is another warning", true));
-        Assert.assertFalse(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
-        Assert.assertEquals("This is another warning", ((List<String>) TestUtils.getField(progressBar, "errors")).get(0));
-        Assert.assertFalse((boolean) TestUtils.getField(progressBar, "completedNaturally"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
+        Assert.assertEquals("This is another warning", TestUtils.getFieldValue(progressBar, List.class, "errors").get(0));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
         Assert.assertTrue(progressBar.processLog("progress=end"));
-        Assert.assertFalse(((List<String>) TestUtils.getField(progressBar, "errors")).isEmpty());
-        Assert.assertEquals("This is another warning", ((List<String>) TestUtils.getField(progressBar, "errors")).get(0));
-        Assert.assertTrue((boolean) TestUtils.getField(progressBar, "completedNaturally"));
+        Assert.assertFalse(TestUtils.getFieldValue(progressBar, List.class, "errors").isEmpty());
+        Assert.assertEquals("This is another warning", TestUtils.getFieldValue(progressBar, List.class, "errors").get(0));
+        Assert.assertTrue(TestUtils.getFieldValue(progressBar, boolean.class, "completedNaturally"));
         System.out.println();
         
         //complete, complete naturally
@@ -4448,7 +4447,7 @@ public class FFmpegTest {
         Mockito.doNothing().when(progressBar).complete(ArgumentMatchers.anyBoolean());
         Mockito.doNothing().when(progressBar).fail(ArgumentMatchers.anyBoolean());
         Mockito.doNothing().when(progressBar).fail(ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyString());
-        TestUtils.setField(progressBar, "completedNaturally", true);
+        TestUtils.setFieldValue(progressBar, "completedNaturally", true);
         progressBar.complete();
         Mockito.verify(progressBar).complete();
         Mockito.verify(progressBar).complete(ArgumentMatchers.eq(true));
@@ -4459,8 +4458,8 @@ public class FFmpegTest {
         Mockito.doNothing().when(progressBar).complete(ArgumentMatchers.anyBoolean());
         Mockito.doNothing().when(progressBar).fail(ArgumentMatchers.anyBoolean());
         Mockito.doNothing().when(progressBar).fail(ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyString());
-        TestUtils.setField(progressBar, "completedNaturally", false);
-        TestUtils.setField(progressBar, "errors", new ArrayList<String>());
+        TestUtils.setFieldValue(progressBar, "completedNaturally", false);
+        TestUtils.setFieldValue(progressBar, "errors", new ArrayList<String>());
         progressBar.complete();
         Mockito.verify(progressBar).complete();
         Mockito.verify(progressBar).fail(ArgumentMatchers.eq(true), ArgumentMatchers.eq(Console.ConsoleEffect.RED.apply(
@@ -4472,8 +4471,8 @@ public class FFmpegTest {
         Mockito.doNothing().when(progressBar).complete(ArgumentMatchers.anyBoolean());
         Mockito.doNothing().when(progressBar).fail(ArgumentMatchers.anyBoolean());
         Mockito.doNothing().when(progressBar).fail(ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyString());
-        TestUtils.setField(progressBar, "completedNaturally", false);
-        TestUtils.setField(progressBar, "errors", Arrays.asList("Errors:", "Error 1", "Error 2"));
+        TestUtils.setFieldValue(progressBar, "completedNaturally", false);
+        TestUtils.setFieldValue(progressBar, "errors", Arrays.asList("Errors:", "Error 1", "Error 2"));
         progressBar.complete();
         Mockito.verify(progressBar).complete();
         Mockito.verify(progressBar).fail(ArgumentMatchers.eq(true), ArgumentMatchers.eq(Console.ConsoleEffect.RED.apply(
@@ -4828,11 +4827,11 @@ public class FFmpegTest {
         Assert.assertNotNull(tags);
         Assert.assertEquals(0, tags.size());
         Assert.assertEquals("{}", tags.toString());
-        TestUtils.setField(tags, "tags", MapUtility.mapOf(LinkedHashMap.class,
+        TestUtils.setFieldValue(tags, "tags", MapUtility.mapOf(LinkedHashMap.class,
                 new ImmutablePair<>("test", "value")));
         Assert.assertEquals(1, tags.size());
         Assert.assertEquals("{test:'value'}", tags.toString());
-        TestUtils.setField(tags, "tags", MapUtility.mapOf(LinkedHashMap.class,
+        TestUtils.setFieldValue(tags, "tags", MapUtility.mapOf(LinkedHashMap.class,
                 new ImmutablePair<>("test", "value"),
                 new ImmutablePair<>("test 2", "2nd value"),
                 new ImmutablePair<>("s:o=m;t(h)i[n]g\n", "s:o=m;t(h)i[n]g\n")
@@ -4843,34 +4842,34 @@ public class FFmpegTest {
         //equals
         tags = new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>());
         tags2 = new FFmpeg.MediaInfo.MetadataTags(new LinkedHashMap<>());
-        TestUtils.setField(tags, "tags", MapUtility.mapOf(LinkedHashMap.class,
+        TestUtils.setFieldValue(tags, "tags", MapUtility.mapOf(LinkedHashMap.class,
                 new ImmutablePair<>("test", "value"),
                 new ImmutablePair<>("other", "other value")
         ));
-        TestUtils.setField(tags2, "tags", MapUtility.mapOf(LinkedHashMap.class,
+        TestUtils.setFieldValue(tags2, "tags", MapUtility.mapOf(LinkedHashMap.class,
                 new ImmutablePair<>("test", "value"),
                 new ImmutablePair<>("other", "other value")
         ));
         Assert.assertEquals(tags, tags2);
         Assert.assertEquals(tags2, tags);
-        TestUtils.setField(tags2, "tags", MapUtility.mapOf(LinkedHashMap.class,
+        TestUtils.setFieldValue(tags2, "tags", MapUtility.mapOf(LinkedHashMap.class,
                 new ImmutablePair<>("other", "other value"),
                 new ImmutablePair<>("test", "value")
         ));
         Assert.assertEquals(tags, tags2);
         Assert.assertEquals(tags2, tags);
-        TestUtils.setField(tags2, "tags", MapUtility.mapOf(LinkedHashMap.class,
+        TestUtils.setFieldValue(tags2, "tags", MapUtility.mapOf(LinkedHashMap.class,
                 new ImmutablePair<>("test", "value"),
                 new ImmutablePair<>("other", "other value"),
                 new ImmutablePair<>("last", "last value")
         ));
         Assert.assertNotEquals(tags, tags2);
         Assert.assertNotEquals(tags2, tags);
-        TestUtils.setField(tags, "tags", MapUtility.mapOf(LinkedHashMap.class,
+        TestUtils.setFieldValue(tags, "tags", MapUtility.mapOf(LinkedHashMap.class,
                 new ImmutablePair<>("test", "value"),
                 new ImmutablePair<>("other", "other value")
         ));
-        TestUtils.setField(tags2, "tags", MapUtility.mapOf(LinkedHashMap.class,
+        TestUtils.setFieldValue(tags2, "tags", MapUtility.mapOf(LinkedHashMap.class,
                 new ImmutablePair<>("another", "another value"),
                 new ImmutablePair<>("last", "last value")
         ));
@@ -4936,35 +4935,34 @@ public class FFmpegTest {
      */
     private void testMediaInfoMetadataBase() throws Exception {
         //class
-        Class<?> metadataBase = Arrays.stream(FFmpeg.MediaInfo.class.getDeclaredClasses())
-                .filter(e -> e.getSimpleName().equals("MetadataBase")).findFirst().orElseGet(null);
+        final Class<?> metadataBase = TestUtils.getClass(FFmpeg.MediaInfo.class, "MetadataBase");
         Assert.assertNotNull(metadataBase);
         
         //fields
-        Assert.assertEquals(JSONObject.class, metadataBase.getDeclaredField("data").getType());
-        Assert.assertEquals(FFmpeg.MediaInfo.MetadataTags.class, metadataBase.getDeclaredField("tags").getType());
-        Assert.assertEquals(long.class, metadataBase.getDeclaredField("duration").getType());
-        Assert.assertEquals(long.class, metadataBase.getDeclaredField("startTime").getType());
-        Assert.assertEquals(long.class, metadataBase.getDeclaredField("endTime").getType());
-        Assert.assertEquals(String.class, metadataBase.getDeclaredField("title").getType());
-        Assert.assertEquals(String.class, metadataBase.getDeclaredField("language").getType());
+        TestUtils.assertFieldExists(metadataBase, "data");
+        TestUtils.assertFieldExists(metadataBase, "tags");
+        TestUtils.assertFieldExists(metadataBase, "duration");
+        TestUtils.assertFieldExists(metadataBase, "startTime");
+        TestUtils.assertFieldExists(metadataBase, "endTime");
+        TestUtils.assertFieldExists(metadataBase, "title");
+        TestUtils.assertFieldExists(metadataBase, "language");
         
         //methods
-        Assert.assertNotNull(metadataBase.getConstructor(JSONObject.class));
-        Assert.assertNotNull(metadataBase.getDeclaredMethod("getData"));
-        Assert.assertNotNull(metadataBase.getDeclaredMethod("getMetadata"));
-        Assert.assertNotNull(metadataBase.getDeclaredMethod("getDurationExact"));
-        Assert.assertNotNull(metadataBase.getDeclaredMethod("getStartTimeExact"));
-        Assert.assertNotNull(metadataBase.getDeclaredMethod("getEndTimeExact"));
-        Assert.assertNotNull(metadataBase.getDeclaredMethod("getDuration"));
-        Assert.assertNotNull(metadataBase.getDeclaredMethod("getStartTime"));
-        Assert.assertNotNull(metadataBase.getDeclaredMethod("getEndTime"));
-        Assert.assertNotNull(metadataBase.getDeclaredMethod("getDurationTimestamp"));
-        Assert.assertNotNull(metadataBase.getDeclaredMethod("getStartTimestamp"));
-        Assert.assertNotNull(metadataBase.getDeclaredMethod("getEndTimestamp"));
-        Assert.assertNotNull(metadataBase.getDeclaredMethod("getTitle"));
-        Assert.assertNotNull(metadataBase.getDeclaredMethod("getLanguage"));
-        Assert.assertNotNull(metadataBase.getDeclaredMethod("get", String.class));
+        TestUtils.assertConstructorExists(metadataBase, JSONObject.class);
+        TestUtils.assertMethodExists(metadataBase, "getData");
+        TestUtils.assertMethodExists(metadataBase, "getMetadata");
+        TestUtils.assertMethodExists(metadataBase, "getDurationExact");
+        TestUtils.assertMethodExists(metadataBase, "getStartTimeExact");
+        TestUtils.assertMethodExists(metadataBase, "getEndTimeExact");
+        TestUtils.assertMethodExists(metadataBase, "getDuration");
+        TestUtils.assertMethodExists(metadataBase, "getStartTime");
+        TestUtils.assertMethodExists(metadataBase, "getEndTime");
+        TestUtils.assertMethodExists(metadataBase, "getDurationTimestamp");
+        TestUtils.assertMethodExists(metadataBase, "getStartTimestamp");
+        TestUtils.assertMethodExists(metadataBase, "getEndTimestamp");
+        TestUtils.assertMethodExists(metadataBase, "getTitle");
+        TestUtils.assertMethodExists(metadataBase, "getLanguage");
+        TestUtils.assertMethodExists(metadataBase, "get", String.class);
         
         //subclasses
         Assert.assertEquals(metadataBase.getSimpleName(), FFmpeg.MediaInfo.Format.class.getSuperclass().getSimpleName());
@@ -5488,18 +5486,18 @@ public class FFmpegTest {
         
         //toString
         disposition = Mockito.mock(FFmpeg.MediaInfo.Stream.Disposition.class, Mockito.CALLS_REAL_METHODS);
-        TestUtils.setField(disposition, "dispositions", Collections.emptyList());
+        TestUtils.setFieldValue(disposition, "dispositions", Collections.emptyList());
         Assert.assertNotNull(disposition);
         Assert.assertEquals(0, disposition.getAll().size());
         Assert.assertEquals("", disposition.toString());
-        TestUtils.setField(disposition, "dispositions", Collections.singletonList(
+        TestUtils.setFieldValue(disposition, "dispositions", Collections.singletonList(
                 FFmpeg.MediaInfo.Stream.Disposition.StreamDisposition.DEFAULT
         ));
         Assert.assertEquals(1, disposition.getAll().size());
         Assert.assertEquals("default", disposition.toString());
         Assert.assertEquals(1, disposition.getAll().size());
         Assert.assertEquals("default", disposition.toString());
-        TestUtils.setField(disposition, "dispositions", Arrays.asList(
+        TestUtils.setFieldValue(disposition, "dispositions", Arrays.asList(
                 FFmpeg.MediaInfo.Stream.Disposition.StreamDisposition.DEFAULT,
                 FFmpeg.MediaInfo.Stream.Disposition.StreamDisposition.VISUAL_IMPAIRED,
                 FFmpeg.MediaInfo.Stream.Disposition.StreamDisposition.HEARING_IMPAIRED,
@@ -5570,27 +5568,27 @@ public class FFmpegTest {
         
         //DTO, initialization
         chapterDTO = new FFmpeg.MediaInfo.Chapter.ChapterDTO(10000L, 18711000L, "Chapter 1");
-        Assert.assertEquals(10000L, (long) TestUtils.getField(chapterDTO, "startTime"));
-        Assert.assertEquals(18711000L, (long) TestUtils.getField(chapterDTO, "endTime"));
-        Assert.assertEquals("Chapter 1", TestUtils.getField(chapterDTO, "title"));
+        Assert.assertEquals(10000L, TestUtils.getFieldValue(chapterDTO, "startTime"));
+        Assert.assertEquals(18711000L, TestUtils.getFieldValue(chapterDTO, "endTime"));
+        Assert.assertEquals("Chapter 1", TestUtils.getFieldValue(chapterDTO, "title"));
         chapterDTO = new FFmpeg.MediaInfo.Chapter.ChapterDTO("00:00:18.722", "00:38:50.430", "Another Chapter");
-        Assert.assertEquals(18722L, (long) TestUtils.getField(chapterDTO, "startTime"));
-        Assert.assertEquals(2330430L, (long) TestUtils.getField(chapterDTO, "endTime"));
-        Assert.assertEquals("Another Chapter", TestUtils.getField(chapterDTO, "title"));
+        Assert.assertEquals(18722L, TestUtils.getFieldValue(chapterDTO, "startTime"));
+        Assert.assertEquals(2330430L, TestUtils.getFieldValue(chapterDTO, "endTime"));
+        Assert.assertEquals("Another Chapter", TestUtils.getFieldValue(chapterDTO, "title"));
         chapterDTO = new FFmpeg.MediaInfo.Chapter.ChapterDTO("00:00:00.000", "01:54:02.077", "Last=Chapter:\nA\\Really#Good=One;");
-        Assert.assertEquals(0L, (long) TestUtils.getField(chapterDTO, "startTime"));
-        Assert.assertEquals(6842077L, (long) TestUtils.getField(chapterDTO, "endTime"));
-        Assert.assertEquals("Last=Chapter:\nA\\Really#Good=One;", TestUtils.getField(chapterDTO, "title"));
+        Assert.assertEquals(0L, TestUtils.getFieldValue(chapterDTO, "startTime"));
+        Assert.assertEquals(6842077L, TestUtils.getFieldValue(chapterDTO, "endTime"));
+        Assert.assertEquals("Last=Chapter:\nA\\Really#Good=One;", TestUtils.getFieldValue(chapterDTO, "title"));
         chapterDTO = new FFmpeg.MediaInfo.Chapter.ChapterDTO(1100, 1800, null);
-        Assert.assertEquals(1100L, (long) TestUtils.getField(chapterDTO, "startTime"));
-        Assert.assertEquals(1800L, (long) TestUtils.getField(chapterDTO, "endTime"));
-        Assert.assertNull(TestUtils.getField(chapterDTO, "title"));
+        Assert.assertEquals(1100L, TestUtils.getFieldValue(chapterDTO, "startTime"));
+        Assert.assertEquals(1800L, TestUtils.getFieldValue(chapterDTO, "endTime"));
+        Assert.assertNull(TestUtils.getFieldValue(chapterDTO, "title"));
         
         //DTO, initialization, chapter
         chapterDTO = new FFmpeg.MediaInfo.Chapter.ChapterDTO(chapter);
-        Assert.assertEquals(1100L, (long) TestUtils.getField(chapterDTO, "startTime"));
-        Assert.assertEquals(1800L, (long) TestUtils.getField(chapterDTO, "endTime"));
-        Assert.assertEquals("Second Chapter", TestUtils.getField(chapterDTO, "title"));
+        Assert.assertEquals(1100L, TestUtils.getFieldValue(chapterDTO, "startTime"));
+        Assert.assertEquals(1800L, TestUtils.getFieldValue(chapterDTO, "endTime"));
+        Assert.assertEquals("Second Chapter", TestUtils.getFieldValue(chapterDTO, "title"));
         
         //DTO, toFFmetadataChapterString
         chapterDTO = new FFmpeg.MediaInfo.Chapter.ChapterDTO(10000L, 18711000L, "Chapter 1");
@@ -5684,9 +5682,9 @@ public class FFmpegTest {
         Assert.assertEquals(FFmpeg.Identifier.IdentifierType.GLOBAL, FFmpeg.Identifier.IdentifierType.values()[0]);
         Assert.assertEquals(FFmpeg.Identifier.IdentifierType.STREAM, FFmpeg.Identifier.IdentifierType.values()[1]);
         Assert.assertEquals(FFmpeg.Identifier.IdentifierType.CHAPTER, FFmpeg.Identifier.IdentifierType.values()[2]);
-        Assert.assertEquals("g", TestUtils.getField(FFmpeg.Identifier.IdentifierType.values()[0], "keys"));
-        Assert.assertEquals("xvasd", TestUtils.getField(FFmpeg.Identifier.IdentifierType.values()[1], "keys"));
-        Assert.assertEquals("c", TestUtils.getField(FFmpeg.Identifier.IdentifierType.values()[2], "keys"));
+        Assert.assertEquals("g", TestUtils.getFieldValue(FFmpeg.Identifier.IdentifierType.values()[0], "keys"));
+        Assert.assertEquals("xvasd", TestUtils.getFieldValue(FFmpeg.Identifier.IdentifierType.values()[1], "keys"));
+        Assert.assertEquals("c", TestUtils.getFieldValue(FFmpeg.Identifier.IdentifierType.values()[2], "keys"));
         Assert.assertEquals(FFmpeg.Identifier.IdentifierType.GLOBAL, TestUtils.invokeMethod(FFmpeg.Identifier.IdentifierType.class, "getType", FFmpeg.Identifier.Global.class));
         Assert.assertEquals(FFmpeg.Identifier.IdentifierType.STREAM, TestUtils.invokeMethod(FFmpeg.Identifier.IdentifierType.class, "getType", FFmpeg.Identifier.Stream.class));
         Assert.assertEquals(FFmpeg.Identifier.IdentifierType.CHAPTER, TestUtils.invokeMethod(FFmpeg.Identifier.IdentifierType.class, "getType", FFmpeg.Identifier.Chapter.class));
@@ -5834,11 +5832,11 @@ public class FFmpegTest {
         
         //methods
         entityId = Mockito.mock(FFmpeg.Identifier.class, Mockito.CALLS_REAL_METHODS);
-        TestUtils.setField(entityId, "scope", FFmpeg.Identifier.IdentifierScope.TYPE);
-        TestUtils.setField(entityId, "type", FFmpeg.Identifier.IdentifierType.CHAPTER);
-        TestUtils.setField(entityId, "streamType", FFmpeg.StreamType.SUBTITLE);
-        TestUtils.setField(entityId, "index", 20);
-        TestUtils.setField(entityId, "sourceIndex", 11);
+        TestUtils.setFieldValue(entityId, "scope", FFmpeg.Identifier.IdentifierScope.TYPE);
+        TestUtils.setFieldValue(entityId, "type", FFmpeg.Identifier.IdentifierType.CHAPTER);
+        TestUtils.setFieldValue(entityId, "streamType", FFmpeg.StreamType.SUBTITLE);
+        TestUtils.setFieldValue(entityId, "index", 20);
+        TestUtils.setFieldValue(entityId, "sourceIndex", 11);
         Assert.assertEquals(FFmpeg.Identifier.IdentifierScope.TYPE, entityId.getScope());
         Assert.assertEquals(FFmpeg.Identifier.IdentifierType.CHAPTER, entityId.getType());
         Assert.assertEquals(FFmpeg.StreamType.SUBTITLE, entityId.getStreamType());
@@ -5851,131 +5849,131 @@ public class FFmpegTest {
         
         //classifiers
         entityId = Mockito.mock(FFmpeg.Identifier.class, Mockito.CALLS_REAL_METHODS);
-        TestUtils.setField(entityId, "scope", FFmpeg.Identifier.IdentifierScope.SINGULAR);
-        TestUtils.setField(entityId, "type", FFmpeg.Identifier.IdentifierType.GLOBAL);
+        TestUtils.setFieldValue(entityId, "scope", FFmpeg.Identifier.IdentifierScope.SINGULAR);
+        TestUtils.setFieldValue(entityId, "type", FFmpeg.Identifier.IdentifierType.GLOBAL);
         Assert.assertTrue(entityId.isSingularScoped() && entityId.isGlobalId());
         Assert.assertFalse(entityId.isTypeScoped() || entityId.isAllScoped() || entityId.isStreamId() || entityId.isChapterId());
-        TestUtils.setField(entityId, "scope", FFmpeg.Identifier.IdentifierScope.SINGULAR);
-        TestUtils.setField(entityId, "type", FFmpeg.Identifier.IdentifierType.STREAM);
+        TestUtils.setFieldValue(entityId, "scope", FFmpeg.Identifier.IdentifierScope.SINGULAR);
+        TestUtils.setFieldValue(entityId, "type", FFmpeg.Identifier.IdentifierType.STREAM);
         Assert.assertTrue(entityId.isSingularScoped() && entityId.isStreamId());
         Assert.assertFalse(entityId.isTypeScoped() || entityId.isAllScoped() || entityId.isGlobalId() || entityId.isChapterId());
-        TestUtils.setField(entityId, "scope", FFmpeg.Identifier.IdentifierScope.SINGULAR);
-        TestUtils.setField(entityId, "type", FFmpeg.Identifier.IdentifierType.CHAPTER);
+        TestUtils.setFieldValue(entityId, "scope", FFmpeg.Identifier.IdentifierScope.SINGULAR);
+        TestUtils.setFieldValue(entityId, "type", FFmpeg.Identifier.IdentifierType.CHAPTER);
         Assert.assertTrue(entityId.isSingularScoped() && entityId.isChapterId());
         Assert.assertFalse(entityId.isTypeScoped() || entityId.isAllScoped() || entityId.isGlobalId() || entityId.isStreamId());
-        TestUtils.setField(entityId, "scope", FFmpeg.Identifier.IdentifierScope.TYPE);
-        TestUtils.setField(entityId, "type", FFmpeg.Identifier.IdentifierType.GLOBAL);
+        TestUtils.setFieldValue(entityId, "scope", FFmpeg.Identifier.IdentifierScope.TYPE);
+        TestUtils.setFieldValue(entityId, "type", FFmpeg.Identifier.IdentifierType.GLOBAL);
         Assert.assertTrue(entityId.isTypeScoped() && entityId.isGlobalId());
         Assert.assertFalse(entityId.isSingularScoped() || entityId.isAllScoped() || entityId.isStreamId() || entityId.isChapterId());
-        TestUtils.setField(entityId, "scope", FFmpeg.Identifier.IdentifierScope.TYPE);
-        TestUtils.setField(entityId, "type", FFmpeg.Identifier.IdentifierType.STREAM);
+        TestUtils.setFieldValue(entityId, "scope", FFmpeg.Identifier.IdentifierScope.TYPE);
+        TestUtils.setFieldValue(entityId, "type", FFmpeg.Identifier.IdentifierType.STREAM);
         Assert.assertTrue(entityId.isTypeScoped() && entityId.isStreamId());
         Assert.assertFalse(entityId.isSingularScoped() || entityId.isAllScoped() || entityId.isGlobalId() || entityId.isChapterId());
-        TestUtils.setField(entityId, "scope", FFmpeg.Identifier.IdentifierScope.TYPE);
-        TestUtils.setField(entityId, "type", FFmpeg.Identifier.IdentifierType.CHAPTER);
+        TestUtils.setFieldValue(entityId, "scope", FFmpeg.Identifier.IdentifierScope.TYPE);
+        TestUtils.setFieldValue(entityId, "type", FFmpeg.Identifier.IdentifierType.CHAPTER);
         Assert.assertTrue(entityId.isTypeScoped() && entityId.isChapterId());
         Assert.assertFalse(entityId.isSingularScoped() || entityId.isAllScoped() || entityId.isGlobalId() || entityId.isStreamId());
-        TestUtils.setField(entityId, "scope", FFmpeg.Identifier.IdentifierScope.ALL);
-        TestUtils.setField(entityId, "type", FFmpeg.Identifier.IdentifierType.GLOBAL);
+        TestUtils.setFieldValue(entityId, "scope", FFmpeg.Identifier.IdentifierScope.ALL);
+        TestUtils.setFieldValue(entityId, "type", FFmpeg.Identifier.IdentifierType.GLOBAL);
         Assert.assertTrue(entityId.isAllScoped() && entityId.isGlobalId());
         Assert.assertFalse(entityId.isSingularScoped() || entityId.isTypeScoped() || entityId.isStreamId() || entityId.isChapterId());
-        TestUtils.setField(entityId, "scope", FFmpeg.Identifier.IdentifierScope.ALL);
-        TestUtils.setField(entityId, "type", FFmpeg.Identifier.IdentifierType.STREAM);
+        TestUtils.setFieldValue(entityId, "scope", FFmpeg.Identifier.IdentifierScope.ALL);
+        TestUtils.setFieldValue(entityId, "type", FFmpeg.Identifier.IdentifierType.STREAM);
         Assert.assertTrue(entityId.isAllScoped() && entityId.isStreamId());
         Assert.assertFalse(entityId.isSingularScoped() || entityId.isTypeScoped() || entityId.isGlobalId() || entityId.isChapterId());
-        TestUtils.setField(entityId, "scope", FFmpeg.Identifier.IdentifierScope.ALL);
-        TestUtils.setField(entityId, "type", FFmpeg.Identifier.IdentifierType.CHAPTER);
+        TestUtils.setFieldValue(entityId, "scope", FFmpeg.Identifier.IdentifierScope.ALL);
+        TestUtils.setFieldValue(entityId, "type", FFmpeg.Identifier.IdentifierType.CHAPTER);
         Assert.assertTrue(entityId.isAllScoped() && entityId.isChapterId());
         Assert.assertFalse(entityId.isSingularScoped() || entityId.isTypeScoped() || entityId.isGlobalId() || entityId.isStreamId());
-        TestUtils.setField(entityId, "scope", null);
-        TestUtils.setField(entityId, "type", null);
+        TestUtils.setFieldValue(entityId, "scope", null);
+        TestUtils.setFieldValue(entityId, "type", null);
         Assert.assertFalse(entityId.isSingularScoped() || entityId.isTypeScoped() || entityId.isAllScoped() || entityId.isGlobalId() || entityId.isStreamId() || entityId.isChapterId());
         
         //compare
         entityId = Mockito.mock(FFmpeg.Identifier.class, Mockito.CALLS_REAL_METHODS);
         entityId2 = Mockito.mock(FFmpeg.Identifier.class, Mockito.CALLS_REAL_METHODS);
         Assert.assertEquals(0, entityId.compareTo(entityId2));
-        TestUtils.setField(entityId, "sourceIndex", 1);
+        TestUtils.setFieldValue(entityId, "sourceIndex", 1);
         Assert.assertEquals(1, entityId.compareTo(entityId2));
         Assert.assertEquals(-1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId2, "sourceIndex", 1);
+        TestUtils.setFieldValue(entityId2, "sourceIndex", 1);
         Assert.assertEquals(0, entityId.compareTo(entityId2));
-        TestUtils.setField(entityId2, "sourceIndex", 2);
+        TestUtils.setFieldValue(entityId2, "sourceIndex", 2);
         Assert.assertEquals(-1, entityId.compareTo(entityId2));
         Assert.assertEquals(1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId, "type", FFmpeg.Identifier.IdentifierType.CHAPTER);
-        TestUtils.setField(entityId2, "type", FFmpeg.Identifier.IdentifierType.STREAM);
+        TestUtils.setFieldValue(entityId, "type", FFmpeg.Identifier.IdentifierType.CHAPTER);
+        TestUtils.setFieldValue(entityId2, "type", FFmpeg.Identifier.IdentifierType.STREAM);
         Assert.assertEquals(-1, entityId.compareTo(entityId2));
         Assert.assertEquals(1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId, "sourceIndex", 2);
+        TestUtils.setFieldValue(entityId, "sourceIndex", 2);
         Assert.assertEquals(1, entityId.compareTo(entityId2));
         Assert.assertEquals(-1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId, "type", FFmpeg.Identifier.IdentifierType.GLOBAL);
+        TestUtils.setFieldValue(entityId, "type", FFmpeg.Identifier.IdentifierType.GLOBAL);
         Assert.assertEquals(-1, entityId.compareTo(entityId2));
         Assert.assertEquals(1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId, "type", FFmpeg.Identifier.IdentifierType.STREAM);
+        TestUtils.setFieldValue(entityId, "type", FFmpeg.Identifier.IdentifierType.STREAM);
         Assert.assertEquals(0, entityId.compareTo(entityId2));
-        TestUtils.setField(entityId2, "type", FFmpeg.Identifier.IdentifierType.GLOBAL);
+        TestUtils.setFieldValue(entityId2, "type", FFmpeg.Identifier.IdentifierType.GLOBAL);
         Assert.assertEquals(1, entityId.compareTo(entityId2));
         Assert.assertEquals(-1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId, "sourceIndex", null);
-        TestUtils.setField(entityId2, "sourceIndex", null);
+        TestUtils.setFieldValue(entityId, "sourceIndex", null);
+        TestUtils.setFieldValue(entityId2, "sourceIndex", null);
         Assert.assertEquals(1, entityId.compareTo(entityId2));
         Assert.assertEquals(-1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId, "streamType", FFmpeg.StreamType.AUDIO);
-        TestUtils.setField(entityId2, "streamType", FFmpeg.StreamType.SUBTITLE);
+        TestUtils.setFieldValue(entityId, "streamType", FFmpeg.StreamType.AUDIO);
+        TestUtils.setFieldValue(entityId2, "streamType", FFmpeg.StreamType.SUBTITLE);
         Assert.assertEquals(1, entityId.compareTo(entityId2));
         Assert.assertEquals(-1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId2, "type", FFmpeg.Identifier.IdentifierType.STREAM);
+        TestUtils.setFieldValue(entityId2, "type", FFmpeg.Identifier.IdentifierType.STREAM);
         Assert.assertEquals(-1, entityId.compareTo(entityId2));
         Assert.assertEquals(1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId, "streamType", FFmpeg.StreamType.DATA);
+        TestUtils.setFieldValue(entityId, "streamType", FFmpeg.StreamType.DATA);
         Assert.assertEquals(1, entityId.compareTo(entityId2));
         Assert.assertEquals(-1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId, "streamType", FFmpeg.StreamType.SUBTITLE);
+        TestUtils.setFieldValue(entityId, "streamType", FFmpeg.StreamType.SUBTITLE);
         Assert.assertEquals(0, entityId.compareTo(entityId2));
-        TestUtils.setField(entityId, "streamType", FFmpeg.StreamType.VIDEO);
+        TestUtils.setFieldValue(entityId, "streamType", FFmpeg.StreamType.VIDEO);
         Assert.assertEquals(-1, entityId.compareTo(entityId2));
         Assert.assertEquals(1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId, "type", null);
-        TestUtils.setField(entityId2, "type", null);
+        TestUtils.setFieldValue(entityId, "type", null);
+        TestUtils.setFieldValue(entityId2, "type", null);
         Assert.assertEquals(-1, entityId.compareTo(entityId2));
         Assert.assertEquals(1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId, "sourceIndex", 1);
+        TestUtils.setFieldValue(entityId, "sourceIndex", 1);
         Assert.assertEquals(1, entityId.compareTo(entityId2));
         Assert.assertEquals(-1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId, "sourceIndex", null);
+        TestUtils.setFieldValue(entityId, "sourceIndex", null);
         Assert.assertEquals(-1, entityId.compareTo(entityId2));
         Assert.assertEquals(1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId, "index", 2);
-        TestUtils.setField(entityId2, "index", 1);
+        TestUtils.setFieldValue(entityId, "index", 2);
+        TestUtils.setFieldValue(entityId2, "index", 1);
         Assert.assertEquals(-1, entityId.compareTo(entityId2));
         Assert.assertEquals(1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId2, "streamType", FFmpeg.StreamType.VIDEO);
+        TestUtils.setFieldValue(entityId2, "streamType", FFmpeg.StreamType.VIDEO);
         Assert.assertEquals(1, entityId.compareTo(entityId2));
         Assert.assertEquals(-1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId2, "index", 3);
+        TestUtils.setFieldValue(entityId2, "index", 3);
         Assert.assertEquals(-1, entityId.compareTo(entityId2));
         Assert.assertEquals(1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId2, "index", 2);
+        TestUtils.setFieldValue(entityId2, "index", 2);
         Assert.assertEquals(0, entityId.compareTo(entityId2));
-        TestUtils.setField(entityId2, "index", 0);
+        TestUtils.setFieldValue(entityId2, "index", 0);
         Assert.assertEquals(1, entityId.compareTo(entityId2));
         Assert.assertEquals(-1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId, "streamType", null);
-        TestUtils.setField(entityId2, "streamType", null);
+        TestUtils.setFieldValue(entityId, "streamType", null);
+        TestUtils.setFieldValue(entityId2, "streamType", null);
         Assert.assertEquals(1, entityId.compareTo(entityId2));
         Assert.assertEquals(-1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId, "type", FFmpeg.Identifier.IdentifierType.STREAM);
+        TestUtils.setFieldValue(entityId, "type", FFmpeg.Identifier.IdentifierType.STREAM);
         Assert.assertEquals(-1, entityId.compareTo(entityId2));
         Assert.assertEquals(1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId, "type", null);
+        TestUtils.setFieldValue(entityId, "type", null);
         Assert.assertEquals(1, entityId.compareTo(entityId2));
         Assert.assertEquals(-1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId2, "sourceIndex", 1);
+        TestUtils.setFieldValue(entityId2, "sourceIndex", 1);
         Assert.assertEquals(-1, entityId.compareTo(entityId2));
         Assert.assertEquals(1, entityId2.compareTo(entityId));
-        TestUtils.setField(entityId2, "sourceIndex", null);
+        TestUtils.setFieldValue(entityId2, "sourceIndex", null);
         Assert.assertEquals(1, entityId.compareTo(entityId2));
         Assert.assertEquals(-1, entityId2.compareTo(entityId));
         Assert.assertEquals(
@@ -6579,7 +6577,7 @@ public class FFmpegTest {
         Assert.assertEquals("0:s:s", streamId.fullSpecifier());
         Assert.assertEquals("0:s:s", streamId.toString());
         PowerMockito.doNothing().when(TestUtils.AssertWrapper.class, "fail", ArgumentMatchers.anyString());
-        TestUtils.assertException(AssertionError.class, "java.lang.NullPointerException: Invalid Stream Type for Stream Type Specifier: null", () ->
+        TestUtils.assertException(NullPointerException.class, () ->
                 TestUtils.invokeConstructor(FFmpeg.Identifier.Stream.StreamTypeSpecifier.class, (FFmpeg.StreamType) null));
         PowerMockito.doCallRealMethod().when(TestUtils.AssertWrapper.class, "fail", ArgumentMatchers.anyString());
         
@@ -7185,21 +7183,21 @@ public class FFmpegTest {
         
         PowerMockito.mockStatic(FFmpeg.Implements.class, Mockito.CALLS_REAL_METHODS);
         PowerMockito.doReturn(new ArrayList<>()).when(FFmpeg.Implements.class, "loadImplement", ArgumentMatchers.any(Class.class), ArgumentMatchers.any(Function.class));
-        TestUtils.setField(FFmpeg.Implements.class, "formats", null);
-        TestUtils.setField(FFmpeg.Implements.class, "demuxers", null);
-        TestUtils.setField(FFmpeg.Implements.class, "muxers", null);
-        TestUtils.setField(FFmpeg.Implements.class, "devices", null);
-        TestUtils.setField(FFmpeg.Implements.class, "codecs", null);
-        TestUtils.setField(FFmpeg.Implements.class, "decoders", null);
-        TestUtils.setField(FFmpeg.Implements.class, "encoders", null);
-        TestUtils.setField(FFmpeg.Implements.class, "bitstreamFilters", null);
-        TestUtils.setField(FFmpeg.Implements.class, "protocols", null);
-        TestUtils.setField(FFmpeg.Implements.class, "filters", null);
-        TestUtils.setField(FFmpeg.Implements.class, "pixelFormats", null);
-        TestUtils.setField(FFmpeg.Implements.class, "sampleFormats", null);
-        TestUtils.setField(FFmpeg.Implements.class, "channels", null);
-        TestUtils.setField(FFmpeg.Implements.class, "channelLayouts", null);
-        TestUtils.setField(FFmpeg.Implements.class, "colors", null);
+        TestUtils.setFieldValue(FFmpeg.Implements.class, "formats", null);
+        TestUtils.setFieldValue(FFmpeg.Implements.class, "demuxers", null);
+        TestUtils.setFieldValue(FFmpeg.Implements.class, "muxers", null);
+        TestUtils.setFieldValue(FFmpeg.Implements.class, "devices", null);
+        TestUtils.setFieldValue(FFmpeg.Implements.class, "codecs", null);
+        TestUtils.setFieldValue(FFmpeg.Implements.class, "decoders", null);
+        TestUtils.setFieldValue(FFmpeg.Implements.class, "encoders", null);
+        TestUtils.setFieldValue(FFmpeg.Implements.class, "bitstreamFilters", null);
+        TestUtils.setFieldValue(FFmpeg.Implements.class, "protocols", null);
+        TestUtils.setFieldValue(FFmpeg.Implements.class, "filters", null);
+        TestUtils.setFieldValue(FFmpeg.Implements.class, "pixelFormats", null);
+        TestUtils.setFieldValue(FFmpeg.Implements.class, "sampleFormats", null);
+        TestUtils.setFieldValue(FFmpeg.Implements.class, "channels", null);
+        TestUtils.setFieldValue(FFmpeg.Implements.class, "channelLayouts", null);
+        TestUtils.setFieldValue(FFmpeg.Implements.class, "colors", null);
         List<FFmpeg.Implements.Format> formats;
         List<FFmpeg.Implements.Demuxer> demuxers;
         List<FFmpeg.Implements.Muxer> muxers;
@@ -7352,37 +7350,37 @@ public class FFmpegTest {
                 .invoke("loadImplement", ArgumentMatchers.eq(FFmpeg.Implements.Color.class), ArgumentMatchers.any());
         
         //clear cache
-        Assert.assertNotNull(TestUtils.getField(FFmpeg.Implements.class, "formats"));
-        Assert.assertNotNull(TestUtils.getField(FFmpeg.Implements.class, "demuxers"));
-        Assert.assertNotNull(TestUtils.getField(FFmpeg.Implements.class, "muxers"));
-        Assert.assertNotNull(TestUtils.getField(FFmpeg.Implements.class, "devices"));
-        Assert.assertNotNull(TestUtils.getField(FFmpeg.Implements.class, "codecs"));
-        Assert.assertNotNull(TestUtils.getField(FFmpeg.Implements.class, "decoders"));
-        Assert.assertNotNull(TestUtils.getField(FFmpeg.Implements.class, "encoders"));
-        Assert.assertNotNull(TestUtils.getField(FFmpeg.Implements.class, "bitstreamFilters"));
-        Assert.assertNotNull(TestUtils.getField(FFmpeg.Implements.class, "protocols"));
-        Assert.assertNotNull(TestUtils.getField(FFmpeg.Implements.class, "filters"));
-        Assert.assertNotNull(TestUtils.getField(FFmpeg.Implements.class, "pixelFormats"));
-        Assert.assertNotNull(TestUtils.getField(FFmpeg.Implements.class, "sampleFormats"));
-        Assert.assertNotNull(TestUtils.getField(FFmpeg.Implements.class, "channels"));
-        Assert.assertNotNull(TestUtils.getField(FFmpeg.Implements.class, "channelLayouts"));
-        Assert.assertNotNull(TestUtils.getField(FFmpeg.Implements.class, "colors"));
+        Assert.assertNotNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "formats"));
+        Assert.assertNotNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "demuxers"));
+        Assert.assertNotNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "muxers"));
+        Assert.assertNotNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "devices"));
+        Assert.assertNotNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "codecs"));
+        Assert.assertNotNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "decoders"));
+        Assert.assertNotNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "encoders"));
+        Assert.assertNotNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "bitstreamFilters"));
+        Assert.assertNotNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "protocols"));
+        Assert.assertNotNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "filters"));
+        Assert.assertNotNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "pixelFormats"));
+        Assert.assertNotNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "sampleFormats"));
+        Assert.assertNotNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "channels"));
+        Assert.assertNotNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "channelLayouts"));
+        Assert.assertNotNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "colors"));
         FFmpeg.Implements.clearCache();
-        Assert.assertNull(TestUtils.getField(FFmpeg.Implements.class, "formats"));
-        Assert.assertNull(TestUtils.getField(FFmpeg.Implements.class, "demuxers"));
-        Assert.assertNull(TestUtils.getField(FFmpeg.Implements.class, "muxers"));
-        Assert.assertNull(TestUtils.getField(FFmpeg.Implements.class, "devices"));
-        Assert.assertNull(TestUtils.getField(FFmpeg.Implements.class, "codecs"));
-        Assert.assertNull(TestUtils.getField(FFmpeg.Implements.class, "decoders"));
-        Assert.assertNull(TestUtils.getField(FFmpeg.Implements.class, "encoders"));
-        Assert.assertNull(TestUtils.getField(FFmpeg.Implements.class, "bitstreamFilters"));
-        Assert.assertNull(TestUtils.getField(FFmpeg.Implements.class, "protocols"));
-        Assert.assertNull(TestUtils.getField(FFmpeg.Implements.class, "filters"));
-        Assert.assertNull(TestUtils.getField(FFmpeg.Implements.class, "pixelFormats"));
-        Assert.assertNull(TestUtils.getField(FFmpeg.Implements.class, "sampleFormats"));
-        Assert.assertNull(TestUtils.getField(FFmpeg.Implements.class, "channels"));
-        Assert.assertNull(TestUtils.getField(FFmpeg.Implements.class, "channelLayouts"));
-        Assert.assertNull(TestUtils.getField(FFmpeg.Implements.class, "colors"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "formats"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "demuxers"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "muxers"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "devices"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "codecs"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "decoders"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "encoders"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "bitstreamFilters"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "protocols"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "filters"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "pixelFormats"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "sampleFormats"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "channels"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "channelLayouts"));
+        Assert.assertNull(TestUtils.getFieldValue(FFmpeg.Implements.class, "colors"));
         
         //implements
         testImplementsImplement();
@@ -7413,32 +7411,30 @@ public class FFmpegTest {
     @SuppressWarnings("OptionalGetWithoutIsPresent")
     private void testImplementsImplement() throws Exception {
         //class
-        Class<?> implement = Arrays.stream(FFmpeg.Implements.class.getDeclaredClasses())
-                .filter(e -> e.getSimpleName().equals("Implement")).findFirst().orElseGet(null);
+        final Class<?> implement = TestUtils.getClass(FFmpeg.Implements.class, "Implement");
         Assert.assertNotNull(implement);
         
         //fields
-        Assert.assertEquals(String.class, implement.getDeclaredField("name").getType());
-        Assert.assertEquals(String.class, implement.getDeclaredField("description").getType());
-        Assert.assertEquals(FFmpeg.StreamType.class, implement.getDeclaredField("type").getType());
-        Assert.assertEquals(String.class, implement.getDeclaredField("logLine").getType());
-        Assert.assertEquals(Matcher.class, implement.getDeclaredField("logLineMatcher").getType());
-        Assert.assertEquals(boolean.class, implement.getDeclaredField("invalid").getType());
+        TestUtils.assertFieldExists(implement, "name");
+        TestUtils.assertFieldExists(implement, "description");
+        TestUtils.assertFieldExists(implement, "type");
+        TestUtils.assertFieldExists(implement, "logLine");
+        TestUtils.assertFieldExists(implement, "logLineMatcher");
+        TestUtils.assertFieldExists(implement, "invalid");
         
         //constructors
-        Assert.assertNotNull(implement.getConstructor(String.class, String.class));
+        TestUtils.assertConstructorExists(implement, String.class, String.class);
         
         //getters
-        Assert.assertNotNull(implement.getDeclaredMethod("getName"));
-        Assert.assertNotNull(implement.getDeclaredMethod("getDescription"));
-        Assert.assertNotNull(implement.getDeclaredMethod("getType"));
-        Assert.assertNotNull(implement.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(implement, "getName");
+        TestUtils.assertMethodExists(implement, "getDescription");
+        TestUtils.assertMethodExists(implement, "getType");
+        TestUtils.assertMethodExists(implement, "getImplementLinePattern");
         
         //subclasses
         Assert.assertEquals(implement.getSimpleName(), FFmpeg.Implements.Format.class.getSuperclass().getSimpleName());
         Assert.assertEquals(implement.getSimpleName(), FFmpeg.Implements.Codec.class.getSuperclass().getSimpleName());
-        Assert.assertEquals(implement.getSimpleName(), Arrays.stream(FFmpeg.Implements.class.getDeclaredClasses())
-                .filter(e -> e.getSimpleName().equals("Coder")).findFirst().get().getSuperclass().getSimpleName());
+        Assert.assertEquals(implement.getSimpleName(), TestUtils.getClass(FFmpeg.Implements.class, "Coder").getSuperclass().getSimpleName());
         Assert.assertEquals(implement.getSimpleName(), FFmpeg.Implements.BitstreamFilter.class.getSuperclass().getSimpleName());
         Assert.assertEquals(implement.getSimpleName(), FFmpeg.Implements.Protocol.class.getSuperclass().getSimpleName());
         Assert.assertEquals(implement.getSimpleName(), FFmpeg.Implements.Filter.class.getSuperclass().getSimpleName());
@@ -7498,7 +7494,7 @@ public class FFmpegTest {
         Assert.assertNull(format4.getType());
         Assert.assertFalse(format4.supportsDemuxing());
         Assert.assertFalse(format4.supportsMuxing());
-        Assert.assertNotNull(FFmpeg.Implements.Format.class.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(FFmpeg.Implements.Format.class, "getImplementLinePattern");
         
         //subclasses
         Assert.assertEquals("Format", FFmpeg.Implements.Demuxer.class.getSuperclass().getSimpleName());
@@ -7555,7 +7551,7 @@ public class FFmpegTest {
         Assert.assertNull(demuxer4.getType());
         Assert.assertFalse(demuxer4.supportsDemuxing());
         Assert.assertFalse(demuxer4.supportsMuxing());
-        Assert.assertNotNull(FFmpeg.Implements.Demuxer.class.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(FFmpeg.Implements.Demuxer.class, "getImplementLinePattern");
     }
     
     /**
@@ -7607,7 +7603,7 @@ public class FFmpegTest {
         Assert.assertNull(muxer4.getType());
         Assert.assertFalse(muxer4.supportsDemuxing());
         Assert.assertFalse(muxer4.supportsMuxing());
-        Assert.assertNotNull(FFmpeg.Implements.Muxer.class.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(FFmpeg.Implements.Muxer.class, "getImplementLinePattern");
     }
     
     /**
@@ -7659,7 +7655,7 @@ public class FFmpegTest {
         Assert.assertNull(device4.getType());
         Assert.assertFalse(device4.supportsDemuxing());
         Assert.assertFalse(device4.supportsMuxing());
-        Assert.assertNotNull(FFmpeg.Implements.Device.class.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(FFmpeg.Implements.Device.class, "getImplementLinePattern");
     }
     
     /**
@@ -7723,7 +7719,7 @@ public class FFmpegTest {
         Assert.assertFalse(codec4.isIntraFrameOnly());
         Assert.assertTrue(codec4.hasLossyCompression());
         Assert.assertTrue(codec4.hasLosslessCompression());
-        Assert.assertNotNull(FFmpeg.Implements.Codec.class.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(FFmpeg.Implements.Codec.class, "getImplementLinePattern");
     }
     
     /**
@@ -7734,32 +7730,31 @@ public class FFmpegTest {
      */
     private void testImplementsCoder() throws Exception {
         //class
-        Class<?> coder = Arrays.stream(FFmpeg.Implements.class.getDeclaredClasses())
-                .filter(e -> e.getSimpleName().equals("Coder")).findFirst().orElseGet(null);
+        final Class<?> coder = TestUtils.getClass(FFmpeg.Implements.class, "Coder");
         Assert.assertNotNull(coder);
         Assert.assertEquals("Implement", coder.getSuperclass().getSimpleName());
         
         //constants
         Assert.assertEquals("^\\s*(?<type>.)(?<hasFrameLevelMultithreading>.)(?<hasSliceLevelMultithreading>.)(?<isExperimental>.)(?<supportsDrawHorizontalBand>.)(?<supportsDirectRenderingMethod1>.)\\s+(?<name>[^\\s]+)\\s+(?<description>.+)\\s*$",
-                ((Pattern) TestUtils.getField(coder, "CODER_LINE_PATTERN")).pattern());
+                TestUtils.getFieldValue(coder, Pattern.class, "CODER_LINE_PATTERN").pattern());
         
         //fields
-        Assert.assertEquals(boolean.class, coder.getDeclaredField("hasFrameLevelMultithreading").getType());
-        Assert.assertEquals(boolean.class, coder.getDeclaredField("hasSliceLevelMultithreading").getType());
-        Assert.assertEquals(boolean.class, coder.getDeclaredField("isExperimental").getType());
-        Assert.assertEquals(boolean.class, coder.getDeclaredField("supportsDrawHorizontalBand").getType());
-        Assert.assertEquals(boolean.class, coder.getDeclaredField("supportsDirectRenderingMethod1").getType());
+        TestUtils.assertFieldExists(coder, "hasFrameLevelMultithreading");
+        TestUtils.assertFieldExists(coder, "hasSliceLevelMultithreading");
+        TestUtils.assertFieldExists(coder, "isExperimental");
+        TestUtils.assertFieldExists(coder, "supportsDrawHorizontalBand");
+        TestUtils.assertFieldExists(coder, "supportsDirectRenderingMethod1");
         
         //constructors
-        Assert.assertNotNull(coder.getConstructor(String.class, String.class));
+        TestUtils.assertConstructorExists(coder, String.class, String.class);
         
         //getters
-        Assert.assertNotNull(coder.getDeclaredMethod("hasFrameLevelMultithreading"));
-        Assert.assertNotNull(coder.getDeclaredMethod("hasSliceLevelMultithreading"));
-        Assert.assertNotNull(coder.getDeclaredMethod("isExperimental"));
-        Assert.assertNotNull(coder.getDeclaredMethod("supportsDrawHorizontalBand"));
-        Assert.assertNotNull(coder.getDeclaredMethod("supportsDirectRenderingMethod1"));
-        Assert.assertNotNull(coder.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(coder, "hasFrameLevelMultithreading");
+        TestUtils.assertMethodExists(coder, "hasSliceLevelMultithreading");
+        TestUtils.assertMethodExists(coder, "isExperimental");
+        TestUtils.assertMethodExists(coder, "supportsDrawHorizontalBand");
+        TestUtils.assertMethodExists(coder, "supportsDirectRenderingMethod1");
+        TestUtils.assertMethodExists(coder, "getImplementLinePattern");
         
         //subclasses
         Assert.assertEquals(coder.getSimpleName(), FFmpeg.Implements.Decoder.class.getSuperclass().getSimpleName());
@@ -7827,7 +7822,7 @@ public class FFmpegTest {
         Assert.assertFalse(decoder4.isExperimental());
         Assert.assertTrue(decoder4.supportsDrawHorizontalBand());
         Assert.assertTrue(decoder4.supportsDirectRenderingMethod1());
-        Assert.assertNotNull(FFmpeg.Implements.Decoder.class.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(FFmpeg.Implements.Decoder.class, "getImplementLinePattern");
     }
     
     /**
@@ -7891,7 +7886,7 @@ public class FFmpegTest {
         Assert.assertFalse(encoder4.isExperimental());
         Assert.assertTrue(encoder4.supportsDrawHorizontalBand());
         Assert.assertTrue(encoder4.supportsDirectRenderingMethod1());
-        Assert.assertNotNull(FFmpeg.Implements.Encoder.class.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(FFmpeg.Implements.Encoder.class, "getImplementLinePattern");
     }
     
     /**
@@ -7923,7 +7918,7 @@ public class FFmpegTest {
         Assert.assertEquals("test-2", bitstreamFilter2.getName());
         Assert.assertNull(bitstreamFilter2.getDescription());
         Assert.assertNull(bitstreamFilter2.getType());
-        Assert.assertNotNull(FFmpeg.Implements.BitstreamFilter.class.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(FFmpeg.Implements.BitstreamFilter.class, "getImplementLinePattern");
     }
     
     /**
@@ -7975,7 +7970,7 @@ public class FFmpegTest {
         Assert.assertNull(protocol4.getType());
         Assert.assertFalse(protocol4.isInput());
         Assert.assertTrue(protocol4.isOutput());
-        Assert.assertNotNull(FFmpeg.Implements.Protocol.class.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(FFmpeg.Implements.Protocol.class, "getImplementLinePattern");
     }
     
     /**
@@ -8035,7 +8030,7 @@ public class FFmpegTest {
         Assert.assertFalse(filter4.supportsTimeline());
         Assert.assertTrue(filter4.hasSliceThreading());
         Assert.assertTrue(filter4.supportsCommand());
-        Assert.assertNotNull(FFmpeg.Implements.Filter.class.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(FFmpeg.Implements.Filter.class, "getImplementLinePattern");
     }
     
     /**
@@ -8107,7 +8102,7 @@ public class FFmpegTest {
         Assert.assertFalse(pixelFormat4.isHardwareAccelerated());
         Assert.assertTrue(pixelFormat4.isPaletted());
         Assert.assertFalse(pixelFormat4.isBitstream());
-        Assert.assertNotNull(FFmpeg.Implements.PixelFormat.class.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(FFmpeg.Implements.PixelFormat.class, "getImplementLinePattern");
     }
     
     /**
@@ -8155,7 +8150,7 @@ public class FFmpegTest {
         Assert.assertNull(sampleFormat4.getDescription());
         Assert.assertNull(sampleFormat4.getType());
         Assert.assertEquals(32, sampleFormat4.getBitDepth());
-        Assert.assertNotNull(FFmpeg.Implements.SampleFormat.class.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(FFmpeg.Implements.SampleFormat.class, "getImplementLinePattern");
     }
     
     /**
@@ -8203,7 +8198,7 @@ public class FFmpegTest {
         Assert.assertEquals("wide right", channel4.getDescription());
         Assert.assertNull(channel4.getType());
         Assert.assertTrue(channel4.invalid);
-        Assert.assertNotNull(FFmpeg.Implements.Channel.class.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(FFmpeg.Implements.Channel.class, "getImplementLinePattern");
     }
     
     /**
@@ -8255,7 +8250,7 @@ public class FFmpegTest {
         Assert.assertNull(channelLayout4.getType());
         Assert.assertNull(channelLayout4.getDecomposition());
         Assert.assertTrue(channelLayout4.invalid);
-        Assert.assertNotNull(FFmpeg.Implements.ChannelLayout.class.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(FFmpeg.Implements.ChannelLayout.class, "getImplementLinePattern");
     }
     
     /**
@@ -8303,7 +8298,7 @@ public class FFmpegTest {
         Assert.assertNull(color4.getDescription());
         Assert.assertNull(color4.getType());
         Assert.assertEquals("#dcdcdc", color4.getHexCode());
-        Assert.assertNotNull(FFmpeg.Implements.Color.class.getDeclaredMethod("getImplementLinePattern"));
+        TestUtils.assertMethodExists(FFmpeg.Implements.Color.class, "getImplementLinePattern");
     }
     
 }

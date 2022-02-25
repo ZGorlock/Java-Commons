@@ -204,7 +204,7 @@ public class CmdLineTest {
         Thread.sleep(8);
         processInputStreamWriter.write("answer is 42\n".getBytes(StandardCharsets.UTF_8));
         processInputStreamWriter.flush();
-        Assert.assertTrue(((Map<Process, String>) TestUtils.getField(CmdLine.class, "runningProcesses")).containsKey(mockProcess));
+        Assert.assertTrue(TestUtils.getFieldValue(CmdLine.class, Map.class, "runningProcesses").containsKey(mockProcess));
         processInputStreamWriter.close();
         processErrorStreamWriter.close();
         processAlive.set(false);
@@ -212,7 +212,7 @@ public class CmdLineTest {
         Thread.sleep(100);
         Mockito.verify(mockProcess).waitFor();
         Mockito.verify(mockProcess).destroy();
-        Assert.assertFalse(((Map<Process, String>) TestUtils.getField(CmdLine.class, "runningProcesses")).containsKey(mockProcess));
+        Assert.assertFalse(TestUtils.getFieldValue(CmdLine.class, Map.class, "runningProcesses").containsKey(mockProcess));
         Assert.assertEquals(6, testResponseLines.size());
         Assert.assertEquals("test cmd starting up", testResponseLines.get(0));
         Assert.assertEquals("[*]Version 1.0.0 ... please update to version 1.0.1", testResponseLines.get(1));
@@ -277,7 +277,7 @@ public class CmdLineTest {
         Thread.sleep(8);
         processInputStreamWriter.write("answer is 42\n".getBytes(StandardCharsets.UTF_8));
         processInputStreamWriter.flush();
-        Assert.assertTrue(((Map<Process, String>) TestUtils.getField(CmdLine.class, "runningProcesses")).containsKey(mockProcess));
+        Assert.assertTrue(TestUtils.getFieldValue(CmdLine.class, Map.class, "runningProcesses").containsKey(mockProcess));
         processInputStreamWriter.close();
         processErrorStreamWriter.close();
         processAlive.set(false);
@@ -285,7 +285,7 @@ public class CmdLineTest {
         Thread.sleep(100);
         Mockito.verify(mockProcess).waitFor();
         Mockito.verify(mockProcess).destroy();
-        Assert.assertFalse(((Map<Process, String>) TestUtils.getField(CmdLine.class, "runningProcesses")).containsKey(mockProcess));
+        Assert.assertFalse(TestUtils.getFieldValue(CmdLine.class, Map.class, "runningProcesses").containsKey(mockProcess));
         Assert.assertEquals(6, testResponseLines.size());
         Assert.assertEquals("test cmd starting up", testResponseLines.get(0));
         Assert.assertEquals("[*]Version 1.0.0 ... please update to version 1.0.1", testResponseLines.get(1));
@@ -570,7 +570,7 @@ public class CmdLineTest {
      */
     @Test
     public void testKillProcess() throws Exception {
-        final Class<?> ProcessKiller = TestUtils.getEnum(CmdLine.class, "ProcessKiller");
+        final Class<?> ProcessKiller = TestUtils.getClass(CmdLine.class, "ProcessKiller");
         final Process mockProcess = Mockito.mock(Process.class);
         
         //standard
@@ -594,7 +594,7 @@ public class CmdLineTest {
      */
     @Test
     public void testProcessKiller() throws Exception {
-        final Class<?> ProcessKiller = TestUtils.getEnum(CmdLine.class, "ProcessKiller");
+        final Class<?> ProcessKiller = TestUtils.getClass(CmdLine.class, "ProcessKiller");
         final Class<?> KillStage = TestUtils.getEnum(ProcessKiller, "KillStage");
         final Object[] enumValues = KillStage.getEnumConstants();
         final AtomicReference<OperatingSystem.OS> operatingSystem = new AtomicReference<>(null);
@@ -607,15 +607,15 @@ public class CmdLineTest {
         operatingSystem.set(OperatingSystem.OS.WINDOWS);
         Assert.assertEquals(
                 "[DESTROY->DESTROY_FORCIBLY | DESTROY_FORCIBLY->CMD_KILL_WINDOWS | CMD_KILL->CMD_KILL_HARD | CMD_KILL_HARD->null | CMD_KILL_WINDOWS->null]",
-                ((LinkedHashMap<Object, Object>) TestUtils.getField(ProcessKiller, "KILL_SEQUENCE")).entrySet().stream()
+                ((Map<?, ?>) TestUtils.getFieldValue(ProcessKiller, LinkedHashMap.class, "KILL_SEQUENCE")).entrySet().stream()
                         .map(e -> e.getKey() + "->" + ((Supplier<Object>) e.getValue()).get()).collect(Collectors.joining(" | ", "[", "]")));
         operatingSystem.set(OperatingSystem.OS.UNIX);
         Assert.assertEquals(
                 "[DESTROY->DESTROY_FORCIBLY | DESTROY_FORCIBLY->CMD_KILL | CMD_KILL->CMD_KILL_HARD | CMD_KILL_HARD->null | CMD_KILL_WINDOWS->null]",
-                ((LinkedHashMap<Object, Object>) TestUtils.getField(ProcessKiller, "KILL_SEQUENCE")).entrySet().stream()
+                ((Map<?, ?>) TestUtils.getFieldValue(ProcessKiller, LinkedHashMap.class, "KILL_SEQUENCE")).entrySet().stream()
                         .map(e -> e.getKey() + "->" + ((Supplier<Object>) e.getValue()).get()).collect(Collectors.joining(" | ", "[", "]")));
         operatingSystem.set(null);
-        Assert.assertEquals(250L, TestUtils.getField(ProcessKiller, "DEFAULT_VALIDATION_DELAY"));
+        Assert.assertEquals(250L, TestUtils.getFieldValue(ProcessKiller, "DEFAULT_VALIDATION_DELAY"));
         
         //kill stage
         Assert.assertEquals(5, enumValues.length);
@@ -624,17 +624,17 @@ public class CmdLineTest {
         Assert.assertEquals("CMD_KILL", enumValues[2].toString());
         Assert.assertEquals("CMD_KILL_HARD", enumValues[3].toString());
         Assert.assertEquals("CMD_KILL_WINDOWS", enumValues[4].toString());
-        Assert.assertTrue(Arrays.stream(enumValues).map(e -> TestUtils.getField(e, "action")).allMatch(Objects::nonNull));
-        Assert.assertTrue(Arrays.stream(enumValues).allMatch(e -> ((long) TestUtils.getField(e, "validationDelay")) == (e.toString().equals("DESTROY_FORCIBLY") ? 750 : 250)));
-        Assert.assertTrue(Arrays.stream(enumValues).allMatch(e -> (!(boolean) TestUtils.getField(e, "reverseTree") || e.toString().matches("^CMD_KILL(?:_WINDOWS)?$"))));
+        Assert.assertTrue(Arrays.stream(enumValues).map(e -> TestUtils.getFieldValue(e, "action")).allMatch(Objects::nonNull));
+        Assert.assertTrue(Arrays.stream(enumValues).allMatch(e -> TestUtils.getFieldValue(e, long.class, "validationDelay") == (e.toString().equals("DESTROY_FORCIBLY") ? 750 : 250)));
+        Assert.assertTrue(Arrays.stream(enumValues).allMatch(e -> !TestUtils.getFieldValue(e, boolean.class, "reverseTree") || e.toString().matches("^CMD_KILL(?:_WINDOWS)?$")));
         
         //instance
-        Assert.assertEquals(List.class, ProcessKiller.getDeclaredField("processTree").getType());
-        Assert.assertEquals(KillStage, ProcessKiller.getDeclaredField("stage").getType());
-        Assert.assertNotNull(ProcessKiller.getDeclaredConstructor(Process.class));
-        Assert.assertNotNull(ProcessKiller.getDeclaredMethod("nextStage"));
-        Assert.assertNotNull(ProcessKiller.getDeclaredMethod("finished"));
-        Assert.assertNotNull(ProcessKiller.getDeclaredMethod("succeeded"));
+        TestUtils.assertFieldExists(ProcessKiller, "processTree");
+        TestUtils.assertFieldExists(ProcessKiller, "stage");
+        TestUtils.assertConstructorExists(ProcessKiller, Process.class);
+        TestUtils.assertMethodExists(ProcessKiller, "nextStage");
+        TestUtils.assertMethodExists(ProcessKiller, "finished");
+        TestUtils.assertMethodExists(ProcessKiller, "succeeded");
         
         //kill
         testProcessKillerKill();

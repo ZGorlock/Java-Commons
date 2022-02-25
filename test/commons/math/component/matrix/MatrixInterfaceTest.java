@@ -1259,8 +1259,8 @@ public class MatrixInterfaceTest {
         //standard
         
         sut = Mockito.spy(RawMatrix.class);
-        TestUtils.setField(sut, "components", new Number[] {1, 2, 3, 4, 5, 6, 7, 8, 9});
-        TestUtils.setField(sut, "dimensionality", 3);
+        TestUtils.setFieldValue(sut, "components", new Number[] {1, 2, 3, 4, 5, 6, 7, 8, 9});
+        TestUtils.setFieldValue(sut, "dimensionality", 3);
         
         sut.getRaw(0, 0);
         Mockito.verify(sut).toIndex(ArgumentMatchers.eq(0), ArgumentMatchers.eq(0));
@@ -1307,8 +1307,8 @@ public class MatrixInterfaceTest {
         //standard
         
         sut = Mockito.spy(RawMatrix.class);
-        TestUtils.setField(sut, "components", new Number[] {1, 2, 3, 4, 5, 6, 7, 8, 9});
-        TestUtils.setField(sut, "dimensionality", 3);
+        TestUtils.setFieldValue(sut, "components", new Number[] {1, 2, 3, 4, 5, 6, 7, 8, 9});
+        TestUtils.setFieldValue(sut, "dimensionality", 3);
         
         sut.get(0, 0);
         Mockito.verify(sut).toIndex(ArgumentMatchers.eq(0), ArgumentMatchers.eq(0));
@@ -1421,8 +1421,8 @@ public class MatrixInterfaceTest {
         //standard
         
         sut = Mockito.spy(RawMatrix.class);
-        TestUtils.setField(sut, "components", new Number[] {1, 2, 3, 4, 5, 6, 7, 8, 9});
-        TestUtils.setField(sut, "dimensionality", 3);
+        TestUtils.setFieldValue(sut, "components", new Number[] {1, 2, 3, 4, 5, 6, 7, 8, 9});
+        TestUtils.setFieldValue(sut, "dimensionality", 3);
         
         sut.set(0, 0, 5);
         Mockito.verify(sut).toIndex(ArgumentMatchers.eq(0), ArgumentMatchers.eq(0));

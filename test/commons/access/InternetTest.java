@@ -129,21 +129,21 @@ public class InternetTest {
         long duration;
         
         //connected
-        Assert.assertEquals(Internet.DEFAULT_TEST_HOST, TestUtils.getField(Internet.class, "testHost"));
+        Assert.assertEquals(Internet.DEFAULT_TEST_HOST, TestUtils.getFieldValue(Internet.class, "testHost"));
         startTime = System.currentTimeMillis();
         Assert.assertTrue(Internet.isOnline());
         duration = System.currentTimeMillis() - startTime;
         Assert.assertTrue(BoundUtility.inBounds(duration, 0, (200 * 1.01)));
         
         //"not connected"
-        TestUtils.setField(Internet.class, "testHost", "n0t4w3bs1t3.com");
-        Assert.assertEquals("n0t4w3bs1t3.com", TestUtils.getField(Internet.class, "testHost"));
+        TestUtils.setFieldValue(Internet.class, "testHost", "n0t4w3bs1t3.com");
+        Assert.assertEquals("n0t4w3bs1t3.com", TestUtils.getFieldValue(Internet.class, "testHost"));
         startTime = System.currentTimeMillis();
         Assert.assertFalse(Internet.isOnline());
         duration = System.currentTimeMillis() - startTime;
         Assert.assertTrue(BoundUtility.inBounds(duration, 0, (200 * 1.01)));
-        TestUtils.setField(Internet.class, "testHost", Internet.DEFAULT_TEST_HOST);
-        Assert.assertEquals(Internet.DEFAULT_TEST_HOST, TestUtils.getField(Internet.class, "testHost"));
+        TestUtils.setFieldValue(Internet.class, "testHost", Internet.DEFAULT_TEST_HOST);
+        Assert.assertEquals(Internet.DEFAULT_TEST_HOST, TestUtils.getFieldValue(Internet.class, "testHost"));
     }
     
     /**
@@ -248,15 +248,15 @@ public class InternetTest {
         
         //"not connected"
         
-        TestUtils.setField(Internet.class, "testHost", "n0t4w3bs1t3.com");
-        Assert.assertEquals("n0t4w3bs1t3.com", TestUtils.getField(Internet.class, "testHost"));
+        TestUtils.setFieldValue(Internet.class, "testHost", "n0t4w3bs1t3.com");
+        Assert.assertEquals("n0t4w3bs1t3.com", TestUtils.getFieldValue(Internet.class, "testHost"));
         startTime = System.currentTimeMillis();
         download = Internet.downloadFile("https://github.com/ytdl-org/youtube-dl/releases/download/2021.05.16/youtube-dl.exe");
         duration = System.currentTimeMillis() - startTime;
         Assert.assertTrue(duration < (200 * 1.01));
         Assert.assertNull(download);
-        TestUtils.setField(Internet.class, "testHost", Internet.DEFAULT_TEST_HOST);
-        Assert.assertEquals(Internet.DEFAULT_TEST_HOST, TestUtils.getField(Internet.class, "testHost"));
+        TestUtils.setFieldValue(Internet.class, "testHost", Internet.DEFAULT_TEST_HOST);
+        Assert.assertEquals(Internet.DEFAULT_TEST_HOST, TestUtils.getFieldValue(Internet.class, "testHost"));
         
         //invalid
         

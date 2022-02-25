@@ -140,29 +140,29 @@ public class HotKeyTest {
         
         sut = new HotKey(KeyEvent.VK_Z, true, true, false, false, callback);
         Assert.assertNotNull(sut);
-        Assert.assertEquals(KeyEvent.VK_Z, (int) TestUtils.getField(sut, "code"));
-        modifiers = (Map<HotKey.ModifierKey, Boolean>) TestUtils.getField(sut, "modifiers");
+        Assert.assertEquals(KeyEvent.VK_Z, TestUtils.getFieldValue(sut, "code"));
+        modifiers = TestUtils.getFieldValue(sut, Map.class, "modifiers");
         Assert.assertTrue(modifiers.get(HotKey.ModifierKey.CONTROL));
         Assert.assertTrue(modifiers.get(HotKey.ModifierKey.SHIFT));
         Assert.assertFalse(modifiers.get(HotKey.ModifierKey.ALT));
         Assert.assertFalse(modifiers.get(HotKey.ModifierKey.META));
-        Assert.assertEquals(callback, TestUtils.getField(sut, "callback"));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(sut, "active")).get());
-        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(sut, "hit")).get());
+        Assert.assertEquals(callback, TestUtils.getFieldValue(sut, "callback"));
+        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "active").get());
+        Assert.assertFalse(TestUtils.getFieldValue(sut, AtomicBoolean.class, "hit").get());
         
         sut = new HotKey(HotKey.NO_KEY, true, true, true, true, callback);
         Assert.assertNotNull(sut);
-        Assert.assertEquals(HotKey.NO_KEY, (int) TestUtils.getField(sut, "code"));
+        Assert.assertEquals(HotKey.NO_KEY, TestUtils.getFieldValue(sut, "code"));
         
         //invalid
         
         sut = new HotKey(5566110, false, false, false, false, callback);
         Assert.assertNotNull(sut);
-        Assert.assertEquals(5566110, (int) TestUtils.getField(sut, "code"));
+        Assert.assertEquals(5566110, TestUtils.getFieldValue(sut, "code"));
         
         sut = new HotKey(-5432151, false, false, false, false, callback);
         Assert.assertNotNull(sut);
-        Assert.assertEquals(HotKey.NO_KEY, (int) TestUtils.getField(sut, "code"));
+        Assert.assertEquals(HotKey.NO_KEY, TestUtils.getFieldValue(sut, "code"));
         
         TestUtils.assertNoException(() ->
                 new HotKey(KeyEvent.VK_Z, true, true, false, false, null));
@@ -295,7 +295,7 @@ public class HotKeyTest {
         Assert.assertTrue(sut.isActive());
         sut.activate();
         Assert.assertTrue(sut.isActive());
-        TestUtils.setField(sut, "active", new AtomicBoolean(false));
+        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(false));
         Assert.assertFalse(sut.isActive());
         sut.activate();
         Assert.assertTrue(sut.isActive());
@@ -313,7 +313,7 @@ public class HotKeyTest {
         Assert.assertTrue(sut.isActive());
         sut.deactivate();
         Assert.assertFalse(sut.isActive());
-        TestUtils.setField(sut, "active", new AtomicBoolean(false));
+        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(false));
         Assert.assertFalse(sut.isActive());
         sut.deactivate();
         Assert.assertFalse(sut.isActive());
@@ -337,10 +337,10 @@ public class HotKeyTest {
         Assert.assertTrue(sut.isHit());
         Mockito.verify(callback, VerificationModeFactory.times(1))
                 .hit();
-        TestUtils.setField(sut, "hit", new AtomicBoolean(false));
+        TestUtils.setFieldValue(sut, "hit", new AtomicBoolean(false));
         
         //not active
-        TestUtils.setField(sut, "active", new AtomicBoolean(false));
+        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(false));
         Assert.assertFalse(sut.isActive());
         Assert.assertFalse(sut.isHit());
         sut.hit();
@@ -348,10 +348,10 @@ public class HotKeyTest {
         Assert.assertFalse(sut.isHit());
         Mockito.verify(callback, VerificationModeFactory.noMoreInteractions())
                 .hit();
-        TestUtils.setField(sut, "active", new AtomicBoolean(true));
+        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(true));
         
         //already hit
-        TestUtils.setField(sut, "hit", new AtomicBoolean(true));
+        TestUtils.setFieldValue(sut, "hit", new AtomicBoolean(true));
         Assert.assertTrue(sut.isActive());
         Assert.assertTrue(sut.isHit());
         sut.hit();
@@ -359,17 +359,17 @@ public class HotKeyTest {
         Assert.assertTrue(sut.isHit());
         Mockito.verify(callback, VerificationModeFactory.noMoreInteractions())
                 .hit();
-        TestUtils.setField(sut, "hit", new AtomicBoolean(false));
+        TestUtils.setFieldValue(sut, "hit", new AtomicBoolean(false));
         
         //null callback
-        TestUtils.setField(sut, "callback", null);
+        TestUtils.setFieldValue(sut, "callback", null);
         Assert.assertTrue(sut.isActive());
         Assert.assertFalse(sut.isHit());
         TestUtils.assertNoException(() ->
                 sut.hit());
         Assert.assertTrue(sut.isActive());
         Assert.assertTrue(sut.isHit());
-        TestUtils.setField(sut, "callback", callback);
+        TestUtils.setFieldValue(sut, "callback", callback);
     }
     
     /**
@@ -383,7 +383,7 @@ public class HotKeyTest {
         sut = new HotKey(KeyEvent.VK_Z, true, true, false, false, callback);
         
         //standard
-        TestUtils.setField(sut, "hit", new AtomicBoolean(true));
+        TestUtils.setFieldValue(sut, "hit", new AtomicBoolean(true));
         Assert.assertTrue(sut.isActive());
         Assert.assertTrue(sut.isHit());
         sut.release();
@@ -391,10 +391,10 @@ public class HotKeyTest {
         Assert.assertFalse(sut.isHit());
         Mockito.verify(callback, VerificationModeFactory.times(1))
                 .release();
-        TestUtils.setField(sut, "hit", new AtomicBoolean(true));
+        TestUtils.setFieldValue(sut, "hit", new AtomicBoolean(true));
         
         //not active
-        TestUtils.setField(sut, "active", new AtomicBoolean(false));
+        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(false));
         Assert.assertFalse(sut.isActive());
         Assert.assertTrue(sut.isHit());
         sut.release();
@@ -402,10 +402,10 @@ public class HotKeyTest {
         Assert.assertTrue(sut.isHit());
         Mockito.verify(callback, VerificationModeFactory.noMoreInteractions())
                 .release();
-        TestUtils.setField(sut, "active", new AtomicBoolean(true));
+        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(true));
         
         //already hit
-        TestUtils.setField(sut, "hit", new AtomicBoolean(false));
+        TestUtils.setFieldValue(sut, "hit", new AtomicBoolean(false));
         Assert.assertTrue(sut.isActive());
         Assert.assertFalse(sut.isHit());
         sut.release();
@@ -413,17 +413,17 @@ public class HotKeyTest {
         Assert.assertFalse(sut.isHit());
         Mockito.verify(callback, VerificationModeFactory.noMoreInteractions())
                 .release();
-        TestUtils.setField(sut, "hit", new AtomicBoolean(true));
+        TestUtils.setFieldValue(sut, "hit", new AtomicBoolean(true));
         
         //null callback
-        TestUtils.setField(sut, "callback", null);
+        TestUtils.setFieldValue(sut, "callback", null);
         Assert.assertTrue(sut.isActive());
         Assert.assertTrue(sut.isHit());
         TestUtils.assertNoException(() ->
                 sut.release());
         Assert.assertTrue(sut.isActive());
         Assert.assertFalse(sut.isHit());
-        TestUtils.setField(sut, "callback", callback);
+        TestUtils.setFieldValue(sut, "callback", callback);
     }
     
     /**
@@ -476,7 +476,7 @@ public class HotKeyTest {
         Assert.assertTrue(sut.isMatch(HotKey.NO_KEY, modiferDown, true));
         
         //no key
-        TestUtils.setField(sut, "code", HotKey.NO_KEY);
+        TestUtils.setFieldValue(sut, "code", HotKey.NO_KEY);
         modiferDown.put(HotKey.ModifierKey.CONTROL, new AtomicBoolean(true));
         modiferDown.put(HotKey.ModifierKey.SHIFT, new AtomicBoolean(true));
         modiferDown.put(HotKey.ModifierKey.ALT, new AtomicBoolean(false));
@@ -499,7 +499,7 @@ public class HotKeyTest {
         Assert.assertTrue(sut.isMatch(KeyEvent.VK_ESCAPE, modiferDown, true));
         Assert.assertTrue(sut.isMatch(4949415, modiferDown, true));
         Assert.assertTrue(sut.isMatch(-1900751, modiferDown, true));
-        TestUtils.setField(sut, "code", KeyEvent.VK_Z);
+        TestUtils.setFieldValue(sut, "code", KeyEvent.VK_Z);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -520,7 +520,7 @@ public class HotKeyTest {
         sut = new HotKey(KeyEvent.VK_Z, true, true, false, false, callback);
         Assert.assertEquals(KeyEvent.VK_Z, sut.getCode());
         Assert.assertEquals(KeyEvent.VK_Z, sut.getCode());
-        TestUtils.setField(sut, "code", KeyEvent.VK_NUMPAD0);
+        TestUtils.setFieldValue(sut, "code", KeyEvent.VK_NUMPAD0);
         Assert.assertEquals(KeyEvent.VK_NUMPAD0, sut.getCode());
         Assert.assertEquals(KeyEvent.VK_NUMPAD0, sut.getCode());
     }
@@ -538,7 +538,7 @@ public class HotKeyTest {
         Assert.assertTrue(sut.hasModifier(HotKey.ModifierKey.SHIFT));
         Assert.assertFalse(sut.hasModifier(HotKey.ModifierKey.ALT));
         Assert.assertFalse(sut.hasModifier(HotKey.ModifierKey.META));
-        Map<HotKey.ModifierKey, Boolean> modifiers = (Map<HotKey.ModifierKey, Boolean>) TestUtils.getField(sut, "modifiers");
+        Map<HotKey.ModifierKey, Boolean> modifiers = TestUtils.getFieldValue(sut, Map.class, "modifiers");
         modifiers.replace(HotKey.ModifierKey.CONTROL, false);
         modifiers.replace(HotKey.ModifierKey.SHIFT, false);
         modifiers.replace(HotKey.ModifierKey.ALT, true);
@@ -573,7 +573,7 @@ public class HotKeyTest {
         sut = new HotKey(KeyEvent.VK_Z, true, true, false, false, callback);
         Assert.assertTrue(sut.isActive());
         Assert.assertTrue(sut.isActive());
-        TestUtils.setField(sut, "active", new AtomicBoolean(false));
+        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(false));
         Assert.assertFalse(sut.isActive());
         Assert.assertFalse(sut.isActive());
     }
@@ -589,7 +589,7 @@ public class HotKeyTest {
         sut = new HotKey(KeyEvent.VK_Z, true, true, false, false, callback);
         Assert.assertFalse(sut.isHit());
         Assert.assertFalse(sut.isHit());
-        TestUtils.setField(sut, "hit", new AtomicBoolean(true));
+        TestUtils.setFieldValue(sut, "hit", new AtomicBoolean(true));
         Assert.assertTrue(sut.isHit());
         Assert.assertTrue(sut.isHit());
     }

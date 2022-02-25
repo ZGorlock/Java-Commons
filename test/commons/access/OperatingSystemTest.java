@@ -133,7 +133,7 @@ public class OperatingSystemTest {
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertNotNull(TestUtils.getField(OperatingSystem.class, "DEBUGGING"));
+        Assert.assertNotNull(TestUtils.getFieldValue(OperatingSystem.class, "DEBUGGING"));
     }
     
     /**
@@ -591,7 +591,7 @@ public class OperatingSystemTest {
      */
     @Test
     public void testIsDebugging() throws Exception {
-        boolean isDebugging = (boolean) TestUtils.getField(OperatingSystem.class, "DEBUGGING");
+        boolean isDebugging = TestUtils.getFieldValue(OperatingSystem.class, boolean.class, "DEBUGGING");
         Assert.assertEquals(isDebugging, OperatingSystem.isDebugging());
         Assert.assertEquals(isDebugging, OperatingSystem.isDebugging());
     }

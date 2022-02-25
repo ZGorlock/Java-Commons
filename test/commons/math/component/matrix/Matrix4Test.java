@@ -1606,7 +1606,7 @@ public class Matrix4Test {
         
         //standard
         Assert.assertEquals(4, sut.getDimensionality());
-        TestUtils.setField(sut, "dimensionality", 5);
+        TestUtils.setFieldValue(sut, "dimensionality", 5);
         Assert.assertEquals(5, sut.getDimensionality());
         sut.calculateDimensionality();
         Assert.assertEquals(4, sut.getDimensionality());

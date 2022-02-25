@@ -101,20 +101,20 @@ public class SpeechSynthesizerTest {
         PowerMockito.spy(SpeechSynthesizer.class);
         sut = Mockito.spy(SpeechSynthesizer.class);
         
-        marytts = Mockito.spy((MaryInterface) TestUtils.getField(sut, "marytts"));
-        TestUtils.setField(sut, "marytts", marytts);
+        marytts = Mockito.spy(TestUtils.getFieldValue(sut, MaryInterface.class, "marytts"));
+        TestUtils.setFieldValue(sut, "marytts", marytts);
         
-        audioPlayer = Mockito.spy((AudioPlayer) TestUtils.getField(sut, "audioPlayer"));
-        TestUtils.setField(sut, "audioPlayer", audioPlayer);
+        audioPlayer = Mockito.spy(TestUtils.getFieldValue(sut, AudioPlayer.class, "audioPlayer"));
+        TestUtils.setFieldValue(sut, "audioPlayer", audioPlayer);
         
-        TestUtils.setField(sut, "speaking", new AtomicBoolean(false));
-        TestUtils.setField(sut, "voice", SpeechSynthesizer.DEFAULT_VOICE);
-        TestUtils.setField(sut, "volume", SpeechSynthesizer.DEFAULT_VOLUME);
-        TestUtils.setField(sut, "effects", new HashMap<>());
-        TestUtils.setField(sut, "setup", new AtomicBoolean(false));
-        TestUtils.setField(SpeechSynthesizer.class, "instance", null);
-        TestUtils.setField(SpeechSynthesizer.class, "instanced", new AtomicBoolean(false));
-        TestUtils.setField(SpeechSynthesizer.class, "loggingConfigured", new AtomicBoolean(false));
+        TestUtils.setFieldValue(sut, "speaking", new AtomicBoolean(false));
+        TestUtils.setFieldValue(sut, "voice", SpeechSynthesizer.DEFAULT_VOICE);
+        TestUtils.setFieldValue(sut, "volume", SpeechSynthesizer.DEFAULT_VOLUME);
+        TestUtils.setFieldValue(sut, "effects", new HashMap<>());
+        TestUtils.setFieldValue(sut, "setup", new AtomicBoolean(false));
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "instance", null);
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "instanced", new AtomicBoolean(false));
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "loggingConfigured", new AtomicBoolean(false));
     }
     
     /**
@@ -226,51 +226,51 @@ public class SpeechSynthesizerTest {
     @Test
     public void testSetup() throws Exception {
         //instantiation
-        TestUtils.setField(SpeechSynthesizer.class, "instanced", new AtomicBoolean(false));
-        TestUtils.setField(SpeechSynthesizer.class, "loggingConfigured", new AtomicBoolean(false));
-        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(SpeechSynthesizer.class, "instanced")).get());
-        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(SpeechSynthesizer.class, "loggingConfigured")).get());
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "instanced", new AtomicBoolean(false));
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "loggingConfigured", new AtomicBoolean(false));
+        Assert.assertFalse(TestUtils.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "instanced").get());
+        Assert.assertFalse(TestUtils.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "loggingConfigured").get());
         sut = Mockito.spy(SpeechSynthesizer.getInstance());
-        Assert.assertNotNull(TestUtils.getField(sut, "marytts"));
-        Assert.assertNotNull(TestUtils.getField(sut, "audioPlayer"));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(sut, "setup")).get());
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(SpeechSynthesizer.class, "instanced")).get());
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(SpeechSynthesizer.class, "loggingConfigured")).get());
+        Assert.assertNotNull(TestUtils.getFieldValue(sut, "marytts"));
+        Assert.assertNotNull(TestUtils.getFieldValue(sut, "audioPlayer"));
+        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "setup").get());
+        Assert.assertTrue(TestUtils.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "instanced").get());
+        Assert.assertTrue(TestUtils.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "loggingConfigured").get());
         
         //direct call
         sut = Mockito.spy(SpeechSynthesizer.class);
-        TestUtils.setField(sut, "voice", SpeechSynthesizer.DEFAULT_VOICE);
-        TestUtils.setField(sut, "volume", SpeechSynthesizer.DEFAULT_VOLUME);
-        TestUtils.setField(sut, "setup", new AtomicBoolean(false));
-        TestUtils.setField(sut, "marytts", null);
-        TestUtils.setField(sut, "audioPlayer", null);
-        TestUtils.setField(SpeechSynthesizer.class, "instanced", new AtomicBoolean(false));
-        TestUtils.setField(SpeechSynthesizer.class, "loggingConfigured", new AtomicBoolean(false));
-        Assert.assertTrue((boolean) TestUtils.invokeMethod(sut, "setup"));
+        TestUtils.setFieldValue(sut, "voice", SpeechSynthesizer.DEFAULT_VOICE);
+        TestUtils.setFieldValue(sut, "volume", SpeechSynthesizer.DEFAULT_VOLUME);
+        TestUtils.setFieldValue(sut, "setup", new AtomicBoolean(false));
+        TestUtils.setFieldValue(sut, "marytts", null);
+        TestUtils.setFieldValue(sut, "audioPlayer", null);
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "instanced", new AtomicBoolean(false));
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "loggingConfigured", new AtomicBoolean(false));
+        Assert.assertTrue(TestUtils.invokeMethod(sut, boolean.class, "setup"));
         Mockito.verify(sut, VerificationModeFactory.times(1))
                 .setVoice(SpeechSynthesizer.DEFAULT_VOICE);
         Mockito.verify(sut, VerificationModeFactory.times(1))
                 .setVolume(SpeechSynthesizer.DEFAULT_VOLUME);
-        Assert.assertNotNull(TestUtils.getField(sut, "marytts"));
-        Assert.assertNotNull(TestUtils.getField(sut, "audioPlayer"));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(sut, "setup")).get());
-        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(SpeechSynthesizer.class, "instanced")).get());
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(SpeechSynthesizer.class, "loggingConfigured")).get());
+        Assert.assertNotNull(TestUtils.getFieldValue(sut, "marytts"));
+        Assert.assertNotNull(TestUtils.getFieldValue(sut, "audioPlayer"));
+        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "setup").get());
+        Assert.assertFalse(TestUtils.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "instanced").get());
+        Assert.assertTrue(TestUtils.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "loggingConfigured").get());
         
         //already setup
-        marytts = (MaryInterface) TestUtils.getField(sut, "marytts");
-        audioPlayer = (AudioPlayer) TestUtils.getField(sut, "audioPlayer");
+        marytts = TestUtils.getFieldValue(sut, MaryInterface.class, "marytts");
+        audioPlayer = TestUtils.getFieldValue(sut, AudioPlayer.class, "audioPlayer");
         Assert.assertNotNull(marytts);
         Assert.assertNotNull(audioPlayer);
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(sut, "setup")).get());
-        Assert.assertFalse((boolean) TestUtils.invokeMethod(sut, "setup"));
+        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "setup").get());
+        Assert.assertFalse(TestUtils.invokeMethod(sut, boolean.class, "setup"));
         Mockito.verify(sut, VerificationModeFactory.times(1)) //still just one
                 .setVolume(SpeechSynthesizer.DEFAULT_VOLUME);
-        Assert.assertEquals(marytts, TestUtils.getField(sut, "marytts"));
-        Assert.assertEquals(audioPlayer, TestUtils.getField(sut, "audioPlayer"));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(sut, "setup")).get());
-        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(SpeechSynthesizer.class, "instanced")).get());
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(SpeechSynthesizer.class, "loggingConfigured")).get());
+        Assert.assertEquals(marytts, TestUtils.getFieldValue(sut, "marytts"));
+        Assert.assertEquals(audioPlayer, TestUtils.getFieldValue(sut, "audioPlayer"));
+        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "setup").get());
+        Assert.assertFalse(TestUtils.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "instanced").get());
+        Assert.assertTrue(TestUtils.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "loggingConfigured").get());
     }
     
     /**
@@ -282,7 +282,7 @@ public class SpeechSynthesizerTest {
     @Test
     public void testSay() throws Exception {
         PowerMockito.when(SpeechSynthesizer.class, "quietMode").thenReturn(false);
-        TestUtils.setField(sut, "setup", new AtomicBoolean(true));
+        TestUtils.setFieldValue(sut, "setup", new AtomicBoolean(true));
         MaryInterface oldMarytts;
         AudioPlayer oldAudioPlayer;
         
@@ -294,8 +294,8 @@ public class SpeechSynthesizerTest {
                 .cancel();
         Mockito.verify(marytts, VerificationModeFactory.times(1))
                 .generateAudio(ArgumentMatchers.eq("testing"));
-        marytts = (MaryInterface) TestUtils.getField(sut, "marytts");
-        audioPlayer = (AudioPlayer) TestUtils.getField(sut, "audioPlayer");
+        marytts = TestUtils.getFieldValue(sut, MaryInterface.class, "marytts");
+        audioPlayer = TestUtils.getFieldValue(sut, AudioPlayer.class, "audioPlayer");
         Assert.assertEquals(oldMarytts, marytts);
         Assert.assertNotEquals(oldAudioPlayer, audioPlayer);
         
@@ -303,8 +303,8 @@ public class SpeechSynthesizerTest {
         PowerMockito.when(SpeechSynthesizer.class, "quietMode").thenReturn(true);
         marytts = Mockito.mock(MaryInterface.class);
         audioPlayer = Mockito.mock(AudioPlayer.class);
-        TestUtils.setField(sut, "marytts", marytts);
-        TestUtils.setField(sut, "audioPlayer", audioPlayer);
+        TestUtils.setFieldValue(sut, "marytts", marytts);
+        TestUtils.setFieldValue(sut, "audioPlayer", audioPlayer);
         oldMarytts = marytts;
         oldAudioPlayer = audioPlayer;
         sut.say("testing");
@@ -316,10 +316,10 @@ public class SpeechSynthesizerTest {
         Assert.assertEquals(oldAudioPlayer, audioPlayer);
         
         //not setup
-        TestUtils.setField(sut, "setup", new AtomicBoolean(false));
+        TestUtils.setFieldValue(sut, "setup", new AtomicBoolean(false));
         PowerMockito.when(SpeechSynthesizer.class, "quietMode").thenReturn(false);
         audioPlayer = Mockito.mock(AudioPlayer.class);
-        TestUtils.setField(sut, "audioPlayer", audioPlayer);
+        TestUtils.setFieldValue(sut, "audioPlayer", audioPlayer);
         oldMarytts = marytts;
         oldAudioPlayer = audioPlayer;
         sut.say("testing");
@@ -339,7 +339,7 @@ public class SpeechSynthesizerTest {
      */
     @Test
     public void testApplySpeechEffects() throws Exception {
-        Map<String, String> effects = (Map<String, String>) TestUtils.getField(sut, "effects");
+        Map<String, String> effects = TestUtils.getFieldValue(sut, Map.class, "effects");
         Assert.assertNotNull(effects);
         String effectString;
         
@@ -478,7 +478,7 @@ public class SpeechSynthesizerTest {
      */
     @Test
     public void testMute() throws Exception {
-        Map<String, String> effects = (Map<String, String>) TestUtils.getField(sut, "effects");
+        Map<String, String> effects = TestUtils.getFieldValue(sut, Map.class, "effects");
         Assert.assertNotNull(effects);
         float volume = sut.getVolume();
         Assert.assertEquals(SpeechSynthesizer.DEFAULT_VOLUME, volume, TestUtils.DELTA_FLOAT);
@@ -500,7 +500,7 @@ public class SpeechSynthesizerTest {
      */
     @Test
     public void testUnmute() throws Exception {
-        Map<String, String> effects = (Map<String, String>) TestUtils.getField(sut, "effects");
+        Map<String, String> effects = TestUtils.getFieldValue(sut, Map.class, "effects");
         Assert.assertNotNull(effects);
         float volume = sut.getVolume();
         Assert.assertEquals(SpeechSynthesizer.DEFAULT_VOLUME, volume, TestUtils.DELTA_FLOAT);
@@ -528,7 +528,7 @@ public class SpeechSynthesizerTest {
      */
     @Test
     public void testAddSpeechEffect() throws Exception {
-        Map<String, String> effects = (Map<String, String>) TestUtils.getField(sut, "effects");
+        Map<String, String> effects = TestUtils.getFieldValue(sut, Map.class, "effects");
         Assert.assertNotNull(effects);
         Assert.assertTrue(effects.isEmpty());
         
@@ -599,7 +599,7 @@ public class SpeechSynthesizerTest {
      */
     @Test
     public void testRemoveSpeechEffect() throws Exception {
-        Map<String, String> effects = (Map<String, String>) TestUtils.getField(sut, "effects");
+        Map<String, String> effects = TestUtils.getFieldValue(sut, Map.class, "effects");
         Assert.assertNotNull(effects);
         Assert.assertTrue(effects.isEmpty());
         
@@ -677,7 +677,7 @@ public class SpeechSynthesizerTest {
      */
     @Test
     public void testClearSpeechEffects() throws Exception {
-        Map<String, String> effects = (Map<String, String>) TestUtils.getField(sut, "effects");
+        Map<String, String> effects = TestUtils.getFieldValue(sut, Map.class, "effects");
         Assert.assertNotNull(effects);
         Assert.assertTrue(effects.isEmpty());
         
@@ -720,19 +720,19 @@ public class SpeechSynthesizerTest {
     public void testGetInstance() throws Exception {
         sut = null;
         PowerMockito.spy(SpeechSynthesizer.class);
-        Assert.assertNull(TestUtils.getField(SpeechSynthesizer.class, "instance"));
-        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(SpeechSynthesizer.class, "instanced")).get());
-        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(SpeechSynthesizer.class, "loggingConfigured")).get());
+        Assert.assertNull(TestUtils.getFieldValue(SpeechSynthesizer.class, "instance"));
+        Assert.assertFalse(TestUtils.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "instanced").get());
+        Assert.assertFalse(TestUtils.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "loggingConfigured").get());
         
         //standard
         sut = SpeechSynthesizer.getInstance();
         Assert.assertNotNull(sut);
-        Assert.assertNotNull(TestUtils.getField(sut, "marytts"));
-        Assert.assertNotNull(TestUtils.getField(sut, "audioPlayer"));
-        Assert.assertNotNull(TestUtils.getField(SpeechSynthesizer.class, "instance"));
-        Assert.assertEquals(sut, TestUtils.getField(SpeechSynthesizer.class, "instance"));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(SpeechSynthesizer.class, "instanced")).get());
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(SpeechSynthesizer.class, "loggingConfigured")).get());
+        Assert.assertNotNull(TestUtils.getFieldValue(sut, "marytts"));
+        Assert.assertNotNull(TestUtils.getFieldValue(sut, "audioPlayer"));
+        Assert.assertNotNull(TestUtils.getFieldValue(SpeechSynthesizer.class, "instance"));
+        Assert.assertEquals(sut, TestUtils.getFieldValue(SpeechSynthesizer.class, "instance"));
+        Assert.assertTrue(TestUtils.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "instanced").get());
+        Assert.assertTrue(TestUtils.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "loggingConfigured").get());
         
         //already instanced
         SpeechSynthesizer oldSut = sut;
@@ -740,7 +740,7 @@ public class SpeechSynthesizerTest {
         sut = SpeechSynthesizer.getInstance();
         Assert.assertNotNull(sut);
         Assert.assertEquals(oldSut, sut);
-        Assert.assertEquals(sut, TestUtils.getField(SpeechSynthesizer.class, "instance"));
+        Assert.assertEquals(sut, TestUtils.getFieldValue(SpeechSynthesizer.class, "instance"));
     }
     
     /**
@@ -752,7 +752,7 @@ public class SpeechSynthesizerTest {
     @Test
     public void testGetVoice() throws Exception {
         Assert.assertEquals(SpeechSynthesizer.DEFAULT_VOICE, sut.getVoice());
-        TestUtils.setField(sut, "voice", SpeechSynthesizer.Voice.POPPY);
+        TestUtils.setFieldValue(sut, "voice", SpeechSynthesizer.Voice.POPPY);
         Assert.assertEquals(SpeechSynthesizer.Voice.POPPY, sut.getVoice());
     }
     
@@ -765,7 +765,7 @@ public class SpeechSynthesizerTest {
     @Test
     public void testGetVolume() throws Exception {
         Assert.assertEquals(SpeechSynthesizer.DEFAULT_VOLUME, sut.getVolume(), TestUtils.DELTA_FLOAT);
-        TestUtils.setField(sut, "volume", 18.9f);
+        TestUtils.setFieldValue(sut, "volume", 18.9f);
         Assert.assertEquals(18.9f, sut.getVolume(), TestUtils.DELTA_FLOAT);
     }
     
@@ -778,7 +778,7 @@ public class SpeechSynthesizerTest {
     @Test
     public void testIsSpeaking() throws Exception {
         Assert.assertFalse(sut.isSpeaking());
-        TestUtils.setField(sut, "speaking", new AtomicBoolean(true));
+        TestUtils.setFieldValue(sut, "speaking", new AtomicBoolean(true));
         Assert.assertTrue(sut.isSpeaking());
     }
     
@@ -793,26 +793,26 @@ public class SpeechSynthesizerTest {
         //standard
         
         Assert.assertTrue(sut.setVoice(SpeechSynthesizer.Voice.DAVID));
-        Assert.assertEquals(SpeechSynthesizer.Voice.DAVID, TestUtils.getField(sut, "voice"));
+        Assert.assertEquals(SpeechSynthesizer.Voice.DAVID, TestUtils.getFieldValue(sut, "voice"));
         Mockito.verify(marytts, VerificationModeFactory.times(1))
                 .setVoice(SpeechSynthesizer.Voice.DAVID.getCode());
         
         //invalid
         
         Assert.assertFalse(sut.setVoice(null));
-        Assert.assertEquals(SpeechSynthesizer.Voice.DAVID, TestUtils.getField(sut, "voice"));
+        Assert.assertEquals(SpeechSynthesizer.Voice.DAVID, TestUtils.getFieldValue(sut, "voice"));
         Mockito.verify(marytts, VerificationModeFactory.noMoreInteractions())
                 .setVoice(ArgumentMatchers.anyString());
         
         Assert.assertFalse(sut.setVoice(SpeechSynthesizer.Voice.DAVID));
-        Assert.assertEquals(SpeechSynthesizer.Voice.DAVID, TestUtils.getField(sut, "voice"));
+        Assert.assertEquals(SpeechSynthesizer.Voice.DAVID, TestUtils.getFieldValue(sut, "voice"));
         Mockito.verify(marytts, VerificationModeFactory.noMoreInteractions())
                 .setVoice(ArgumentMatchers.anyString());
         
-        TestUtils.setField(sut, "marytts", null);
-        Assert.assertNull(TestUtils.getField(sut, "marytts"));
+        TestUtils.setFieldValue(sut, "marytts", null);
+        Assert.assertNull(TestUtils.getFieldValue(sut, "marytts"));
         Assert.assertFalse(sut.setVoice(SpeechSynthesizer.Voice.TOM));
-        Assert.assertEquals(SpeechSynthesizer.Voice.DAVID, TestUtils.getField(sut, "voice"));
+        Assert.assertEquals(SpeechSynthesizer.Voice.DAVID, TestUtils.getFieldValue(sut, "voice"));
         Mockito.verify(marytts, VerificationModeFactory.noMoreInteractions())
                 .setVoice(ArgumentMatchers.anyString());
     }
@@ -826,18 +826,18 @@ public class SpeechSynthesizerTest {
     @Test
     public void testSpeaking() throws Exception {
         sut = SpeechSynthesizer.getInstance();
-        TestUtils.setField(SpeechSynthesizer.class, "instance", sut);
-        TestUtils.setField(SpeechSynthesizer.class, "instanced", new AtomicBoolean(true));
-        Assert.assertEquals(sut, TestUtils.getField(SpeechSynthesizer.class, "instance"));
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "instance", sut);
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "instanced", new AtomicBoolean(true));
+        Assert.assertEquals(sut, TestUtils.getFieldValue(SpeechSynthesizer.class, "instance"));
         
         //standard
-        TestUtils.setField(sut, "speaking", new AtomicBoolean(false));
+        TestUtils.setFieldValue(sut, "speaking", new AtomicBoolean(false));
         Assert.assertFalse(SpeechSynthesizer.speaking());
-        TestUtils.setField(sut, "speaking", new AtomicBoolean(true));
+        TestUtils.setFieldValue(sut, "speaking", new AtomicBoolean(true));
         Assert.assertTrue(SpeechSynthesizer.speaking());
         
         //invalid
-        TestUtils.setField(SpeechSynthesizer.class, "instance", null);
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "instance", null);
         Assert.assertFalse(SpeechSynthesizer.speaking());
     }
     
@@ -850,9 +850,9 @@ public class SpeechSynthesizerTest {
     @Test
     public void testWaitUntilSpeaking() throws Exception {
         sut = SpeechSynthesizer.getInstance();
-        TestUtils.setField(SpeechSynthesizer.class, "instance", sut);
-        TestUtils.setField(SpeechSynthesizer.class, "instanced", new AtomicBoolean(true));
-        Assert.assertEquals(sut, TestUtils.getField(SpeechSynthesizer.class, "instance"));
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "instance", sut);
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "instanced", new AtomicBoolean(true));
+        Assert.assertEquals(sut, TestUtils.getFieldValue(SpeechSynthesizer.class, "instance"));
         PowerMockito.spy(SpeechSynthesizer.class);
         final AtomicInteger wait = new AtomicInteger(0);
         long startTime;
@@ -877,7 +877,7 @@ public class SpeechSynthesizerTest {
         Assert.assertTrue(BoundUtility.inBounds(duration, 0, 25));
         
         PowerMockito.doReturn(false).when(SpeechSynthesizer.class, "quietMode");
-        TestUtils.setField(SpeechSynthesizer.class, "instance", null);
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "instance", null);
         startTime = System.currentTimeMillis();
         SpeechSynthesizer.waitUntilSpeaking();
         duration = System.currentTimeMillis() - startTime;
@@ -893,9 +893,9 @@ public class SpeechSynthesizerTest {
     @Test
     public void testWaitUntilDoneSpeaking() throws Exception {
         sut = SpeechSynthesizer.getInstance();
-        TestUtils.setField(SpeechSynthesizer.class, "instance", sut);
-        TestUtils.setField(SpeechSynthesizer.class, "instanced", new AtomicBoolean(true));
-        Assert.assertEquals(sut, TestUtils.getField(SpeechSynthesizer.class, "instance"));
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "instance", sut);
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "instanced", new AtomicBoolean(true));
+        Assert.assertEquals(sut, TestUtils.getFieldValue(SpeechSynthesizer.class, "instance"));
         PowerMockito.spy(SpeechSynthesizer.class);
         final AtomicInteger wait = new AtomicInteger(0);
         long startTime;
@@ -920,7 +920,7 @@ public class SpeechSynthesizerTest {
         Assert.assertTrue(BoundUtility.inBounds(duration, 0, 25));
         
         PowerMockito.doReturn(false).when(SpeechSynthesizer.class, "quietMode");
-        TestUtils.setField(SpeechSynthesizer.class, "instance", null);
+        TestUtils.setFieldValue(SpeechSynthesizer.class, "instance", null);
         startTime = System.currentTimeMillis();
         SpeechSynthesizer.waitUntilDoneSpeaking();
         duration = System.currentTimeMillis() - startTime;

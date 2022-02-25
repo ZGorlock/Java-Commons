@@ -128,7 +128,7 @@ public class BaseComponentTest {
     @Test
     public void testConstants() throws Exception {
         //static
-        Object errorHandler = TestUtils.getField(BaseComponent.class, "errorHandler");
+        Object errorHandler = TestUtils.getFieldValue(BaseComponent.class, "errorHandler");
         Assert.assertNotNull(errorHandler);
         Assert.assertEquals(ComponentErrorHandlerProvider.getErrorHandler(), errorHandler);
     }
@@ -1356,7 +1356,7 @@ public class BaseComponentTest {
         
         //standard
         Assert.assertEquals(3, sut.getDimensionality());
-        TestUtils.setField(sut, "dimensionality", 5);
+        TestUtils.setFieldValue(sut, "dimensionality", 5);
         Assert.assertEquals(5, sut.getDimensionality());
         sut.calculateDimensionality();
         Assert.assertEquals(3, sut.getDimensionality());

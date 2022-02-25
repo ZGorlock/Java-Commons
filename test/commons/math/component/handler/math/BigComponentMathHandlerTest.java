@@ -651,10 +651,10 @@ public class BigComponentMathHandlerTest {
      */
     @Test
     public void testGetMathPrecision() throws Exception {
-        MathContext mathContext = (MathContext) TestUtils.getField(sut, "mathContext");
+        MathContext mathContext = TestUtils.getFieldValue(sut, MathContext.class, "mathContext");
         Assert.assertEquals(64, sut.getMathPrecision());
         MathContext newMathContext = new MathContext(0, RoundingMode.HALF_UP);
-        TestUtils.setField(sut, "mathContext", newMathContext);
+        TestUtils.setFieldValue(sut, "mathContext", newMathContext);
         Assert.assertEquals(0, sut.getMathPrecision());
     }
     
@@ -666,10 +666,10 @@ public class BigComponentMathHandlerTest {
      */
     @Test
     public void testSetMathPrecision() throws Exception {
-        MathContext mathContext = (MathContext) TestUtils.getField(sut, "mathContext");
+        MathContext mathContext = TestUtils.getFieldValue(sut, MathContext.class, "mathContext");
         Assert.assertEquals(64, mathContext.getPrecision());
         sut.setMathPrecision(128);
-        mathContext = (MathContext) TestUtils.getField(sut, "mathContext");
+        mathContext = TestUtils.getFieldValue(sut, MathContext.class, "mathContext");
         Assert.assertEquals(128, mathContext.getPrecision());
     }
     

@@ -102,7 +102,7 @@ public class ListUtilityTest {
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertEquals(ArrayList.class, TestUtils.getField(ListUtility.class, "DEFAULT_LIST_CLASS"));
+        Assert.assertEquals(ArrayList.class, TestUtils.getFieldValue(ListUtility.class, "DEFAULT_LIST_CLASS"));
     }
     
     /**

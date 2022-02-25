@@ -1634,7 +1634,7 @@ public class VectorTest {
         
         //standard
         Assert.assertEquals(3, sut.getDimensionality());
-        TestUtils.setField(sut, "dimensionality", 5);
+        TestUtils.setFieldValue(sut, "dimensionality", 5);
         Assert.assertEquals(5, sut.getDimensionality());
         sut.calculateDimensionality();
         Assert.assertEquals(3, sut.getDimensionality());

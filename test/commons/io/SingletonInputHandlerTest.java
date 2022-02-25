@@ -81,9 +81,9 @@ public class SingletonInputHandlerTest {
         });
         Assert.assertFalse(sut.isManager(new SingletonInputHandlerTest()));
         Assert.assertEquals(owner, Optional.ofNullable((AtomicReference<Object>)
-                TestUtils.getField(sut, "owner")).map(AtomicReference::get).orElse(null));
+                TestUtils.getFieldValue(sut, "owner")).map(AtomicReference::get).orElse(null));
         Assert.assertEquals(manager, Optional.ofNullable((AtomicReference<Object>)
-                TestUtils.getField(sut, "manager")).map(AtomicReference::get).orElse(null));
+                TestUtils.getFieldValue(sut, "manager")).map(AtomicReference::get).orElse(null));
         Assert.assertEquals(interrupted, interrupt.getAndSet(false));
     };
     
@@ -118,7 +118,7 @@ public class SingletonInputHandlerTest {
     @Before
     public void setup() throws Exception {
         sut = new TestInputHandler();
-        TestUtils.setField(sut, "interrupt", (Runnable) () -> interrupt.set(true));
+        TestUtils.setFieldValue(sut, "interrupt", (Runnable) () -> interrupt.set(true));
     }
     
     /**
@@ -154,72 +154,72 @@ public class SingletonInputHandlerTest {
     public void testIsOwner() throws Exception {
         //owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertTrue(sut.isOwner(e));
             stateValidator.accept(new Object[] {e, null, false});
         });
         
         //does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertFalse(sut.isOwner(e));
             stateValidator.accept(new Object[] {SystemInTest.class, null, false});
         });
         
         //no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertFalse(sut.isOwner(e));
             stateValidator.accept(new Object[] {null, null, false});
         });
         
         //manages, owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertTrue(sut.isOwner(e));
             stateValidator.accept(new Object[] {e, SingletonInputHandlerTest.class, false});
         });
         
         //manages, does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertFalse(sut.isOwner(e));
             stateValidator.accept(new Object[] {SystemInTest.class, SingletonInputHandlerTest.class, false});
         });
         
         //manages, no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertFalse(sut.isOwner(e));
             stateValidator.accept(new Object[] {null, SingletonInputHandlerTest.class, false});
         });
         
         //does not manage, owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertTrue(sut.isOwner(e));
             stateValidator.accept(new Object[] {e, SystemInTest.class, false});
         });
         
         //does not manage, does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertFalse(sut.isOwner(e));
             stateValidator.accept(new Object[] {SystemInTest.class, SystemInTest.class, false});
         });
         
         //does not manage, no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertFalse(sut.isOwner(e));
             stateValidator.accept(new Object[] {null, SystemInTest.class, false});
         });
@@ -238,72 +238,72 @@ public class SingletonInputHandlerTest {
     public void testIsManager() throws Exception {
         //owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertFalse(sut.isManager(e));
             stateValidator.accept(new Object[] {e, null, false});
         });
         
         //does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertFalse(sut.isManager(e));
             stateValidator.accept(new Object[] {SystemInTest.class, null, false});
         });
         
         //no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertFalse(sut.isManager(e));
             stateValidator.accept(new Object[] {null, null, false});
         });
         
         //manages, owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertEquals((e instanceof Class<?>), sut.isManager(e));
             stateValidator.accept(new Object[] {e, SingletonInputHandlerTest.class, false});
         });
         
         //manages, does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertEquals((e instanceof Class<?>), sut.isManager(e));
             stateValidator.accept(new Object[] {SystemInTest.class, SingletonInputHandlerTest.class, false});
         });
         
         //manages, no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertEquals((e instanceof Class<?>), sut.isManager(e));
             stateValidator.accept(new Object[] {null, SingletonInputHandlerTest.class, false});
         });
         
         //does not manage, owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertFalse(sut.isManager(e));
             stateValidator.accept(new Object[] {e, SystemInTest.class, false});
         });
         
         //does not manage, does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertFalse(sut.isManager(e));
             stateValidator.accept(new Object[] {SystemInTest.class, SystemInTest.class, false});
         });
         
         //does not manage, no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertFalse(sut.isManager(e));
             stateValidator.accept(new Object[] {null, SystemInTest.class, false});
         });
@@ -322,72 +322,72 @@ public class SingletonInputHandlerTest {
     public void testAcquireOwnership() throws Exception {
         //owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertFalse(sut.acquireOwnership(e));
             stateValidator.accept(new Object[] {e, null, false});
         });
         
         //does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertFalse(sut.acquireOwnership(e));
             stateValidator.accept(new Object[] {SystemInTest.class, null, false});
         });
         
         //no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertTrue(sut.acquireOwnership(e));
             stateValidator.accept(new Object[] {e, null, true});
         });
         
         //manages, owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertFalse(sut.acquireOwnership(e));
             stateValidator.accept(new Object[] {e, SingletonInputHandlerTest.class, false});
         });
         
         //manages, does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertEquals((e instanceof Class<?>), sut.acquireOwnership(e));
             stateValidator.accept(new Object[] {((e instanceof Class<?>) ? e : SystemInTest.class), SingletonInputHandlerTest.class, (e instanceof Class<?>)});
         });
         
         //manages, no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertTrue(sut.acquireOwnership(e));
             stateValidator.accept(new Object[] {e, SingletonInputHandlerTest.class, true});
         });
         
         //does not manage, owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertFalse(sut.acquireOwnership(e));
             stateValidator.accept(new Object[] {e, SystemInTest.class, false});
         });
         
         //does not manage, does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertFalse(sut.acquireOwnership(e));
             stateValidator.accept(new Object[] {SystemInTest.class, SystemInTest.class, false});
         });
         
         //does not manage, no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertTrue(sut.acquireOwnership(e));
             stateValidator.accept(new Object[] {e, SystemInTest.class, true});
         });
@@ -406,72 +406,72 @@ public class SingletonInputHandlerTest {
     public void testReleaseOwnership() throws Exception {
         //owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertTrue(sut.releaseOwnership(e));
             stateValidator.accept(new Object[] {null, null, true});
         });
         
         //does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertFalse(sut.releaseOwnership(e));
             stateValidator.accept(new Object[] {SystemInTest.class, null, false});
         });
         
         //no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertFalse(sut.releaseOwnership(e));
             stateValidator.accept(new Object[] {null, null, false});
         });
         
         //manages, owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertTrue(sut.releaseOwnership(e));
             stateValidator.accept(new Object[] {null, SingletonInputHandlerTest.class, true});
         });
         
         //manages, does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertEquals((e instanceof Class<?>), sut.releaseOwnership(e));
             stateValidator.accept(new Object[] {((e instanceof Class<?>) ? null : SystemInTest.class), SingletonInputHandlerTest.class, (e instanceof Class<?>)});
         });
         
         //manages, no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SingletonInputHandlerTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertFalse(sut.releaseOwnership(e));
             stateValidator.accept(new Object[] {null, SingletonInputHandlerTest.class, false});
         });
         
         //does not manage, owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertTrue(sut.releaseOwnership(e));
             stateValidator.accept(new Object[] {null, SystemInTest.class, true});
         });
         
         //does not manage, does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertFalse(sut.releaseOwnership(e));
             stateValidator.accept(new Object[] {SystemInTest.class, SystemInTest.class, false});
         });
         
         //does not manage, no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertFalse(sut.releaseOwnership(e));
             stateValidator.accept(new Object[] {null, SystemInTest.class, false});
         });
@@ -490,72 +490,72 @@ public class SingletonInputHandlerTest {
     public void testAcquireManagement() throws Exception {
         //owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertTrue(sut.acquireManagement(e));
             stateValidator.accept(new Object[] {e, e, false});
         });
         
         //does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertTrue(sut.acquireManagement(e));
             stateValidator.accept(new Object[] {SystemInTest.class, e, false});
         });
         
         //no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertTrue(sut.acquireManagement(e));
             stateValidator.accept(new Object[] {null, e, false});
         });
         
         //manages, owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(e));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertFalse(sut.acquireManagement(e));
             stateValidator.accept(new Object[] {e, e, false});
         });
         
         //manages, does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(e));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertFalse(sut.acquireManagement(e));
             stateValidator.accept(new Object[] {SystemInTest.class, e, false});
         });
         
         //manages, no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(e));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertFalse(sut.acquireManagement(e));
             stateValidator.accept(new Object[] {null, e, false});
         });
         
         //does not manage, owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertFalse(sut.acquireManagement(e));
             stateValidator.accept(new Object[] {e, SystemInTest.class, false});
         });
         
         //does not manage, does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertFalse(sut.acquireManagement(e));
             stateValidator.accept(new Object[] {SystemInTest.class, SystemInTest.class, false});
         });
         
         //does not manage, no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertFalse(sut.acquireManagement(e));
             stateValidator.accept(new Object[] {null, SystemInTest.class, false});
         });
@@ -574,72 +574,72 @@ public class SingletonInputHandlerTest {
     public void testReleaseManagement() throws Exception {
         //owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertFalse(sut.releaseManagement(e));
             stateValidator.accept(new Object[] {e, null, false});
         });
         
         //does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertFalse(sut.releaseManagement(e));
             stateValidator.accept(new Object[] {SystemInTest.class, null, false});
         });
         
         //no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(null));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertFalse(sut.releaseManagement(e));
             stateValidator.accept(new Object[] {null, null, false});
         });
         
         //manages, owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(e));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertTrue(sut.releaseManagement(e));
             stateValidator.accept(new Object[] {e, null, false});
         });
         
         //manages, does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(e));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertTrue(sut.releaseManagement(e));
             stateValidator.accept(new Object[] {SystemInTest.class, null, false});
         });
         
         //manages, no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(e));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertTrue(sut.releaseManagement(e));
             stateValidator.accept(new Object[] {null, null, false});
         });
         
         //does not manage, owns
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(e));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(e));
             Assert.assertFalse(sut.releaseManagement(e));
             stateValidator.accept(new Object[] {e, SystemInTest.class, false});
         });
         
         //does not manage, does not own
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(SystemInTest.class));
             Assert.assertFalse(sut.releaseManagement(e));
             stateValidator.accept(new Object[] {SystemInTest.class, SystemInTest.class, false});
         });
         
         //does not manage, no owner
         Arrays.stream(callers).forEach(e -> {
-            TestUtils.setField(sut, "manager", new AtomicReference<>(SystemInTest.class));
-            TestUtils.setField(sut, "owner", new AtomicReference<>(null));
+            TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(SystemInTest.class));
+            TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(null));
             Assert.assertFalse(sut.releaseManagement(e));
             stateValidator.accept(new Object[] {null, SystemInTest.class, false});
         });

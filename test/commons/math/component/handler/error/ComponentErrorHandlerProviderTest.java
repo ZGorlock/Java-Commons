@@ -99,7 +99,7 @@ public class ComponentErrorHandlerProviderTest {
     @Test
     public void testConstants() throws Exception {
         //static
-        Object errorHandler = TestUtils.getField(ComponentErrorHandlerProvider.class, "errorHandler");
+        Object errorHandler = TestUtils.getFieldValue(ComponentErrorHandlerProvider.class, "errorHandler");
         Assert.assertNotNull(errorHandler);
         Assert.assertTrue(errorHandler instanceof ComponentErrorHandlerInterface);
     }
@@ -112,10 +112,10 @@ public class ComponentErrorHandlerProviderTest {
      */
     @Test
     public void testGetErrorHandler() throws Exception {
-        ComponentErrorHandlerInterface errorHandler = (ComponentErrorHandlerInterface) TestUtils.getField(ComponentErrorHandlerProvider.class, "errorHandler");
+        ComponentErrorHandlerInterface errorHandler = TestUtils.getFieldValue(ComponentErrorHandlerProvider.class, ComponentErrorHandlerInterface.class, "errorHandler");
         Assert.assertEquals(errorHandler, ComponentErrorHandlerProvider.getErrorHandler());
         ComponentErrorHandlerInterface newErrorHandler = new ComponentErrorHandler();
-        TestUtils.setField(ComponentErrorHandlerProvider.class, "errorHandler", newErrorHandler);
+        TestUtils.setFieldValue(ComponentErrorHandlerProvider.class, "errorHandler", newErrorHandler);
         Assert.assertEquals(newErrorHandler, ComponentErrorHandlerProvider.getErrorHandler());
     }
     
@@ -129,7 +129,7 @@ public class ComponentErrorHandlerProviderTest {
     public void testSetErrorHandler() throws Exception {
         ComponentErrorHandlerInterface newErrorHandler = new ComponentErrorHandler();
         ComponentErrorHandlerProvider.setErrorHandler(newErrorHandler);
-        ComponentErrorHandlerInterface errorHandler = (ComponentErrorHandlerInterface) TestUtils.getField(ComponentErrorHandlerProvider.class, "errorHandler");
+        ComponentErrorHandlerInterface errorHandler = TestUtils.getFieldValue(ComponentErrorHandlerProvider.class, ComponentErrorHandlerInterface.class, "errorHandler");
         Assert.assertEquals(newErrorHandler, errorHandler);
     }
     

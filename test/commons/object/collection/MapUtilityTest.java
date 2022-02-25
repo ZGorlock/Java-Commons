@@ -104,7 +104,7 @@ public class MapUtilityTest {
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertEquals(HashMap.class, TestUtils.getField(MapUtility.class, "DEFAULT_MAP_CLASS"));
+        Assert.assertEquals(HashMap.class, TestUtils.getFieldValue(MapUtility.class, "DEFAULT_MAP_CLASS"));
     }
     
     /**

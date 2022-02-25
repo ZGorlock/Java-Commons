@@ -116,8 +116,8 @@ public class HotKeyManagerTest {
         sampleHotkeys.add(new HotKey(HotKey.NO_KEY, false, false, false, true, callback));
         callback = Mockito.mock(HotKey.HotKeyCallback.class);
         
-        TestUtils.setField(HotKeyManager.class, "instance", null);
-        TestUtils.setField(HotKeyManager.class, "instanced", new AtomicBoolean(false));
+        TestUtils.setFieldValue(HotKeyManager.class, "instance", null);
+        TestUtils.setFieldValue(HotKeyManager.class, "instanced", new AtomicBoolean(false));
     }
     
     /**
@@ -141,7 +141,7 @@ public class HotKeyManagerTest {
     @Test
     public void testConstants() throws Exception {
         //static
-        Map<HotKey.ModifierKey, AtomicBoolean> modifierDown = (Map<HotKey.ModifierKey, AtomicBoolean>) TestUtils.getField(HotKeyManager.class, "modifierDown");
+        Map<HotKey.ModifierKey, AtomicBoolean> modifierDown = TestUtils.getFieldValue(HotKeyManager.class, Map.class, "modifierDown");
         Assert.assertNotNull(modifierDown);
         Assert.assertEquals(HotKey.ModifierKey.values().length, modifierDown.size());
         Assert.assertTrue(modifierDown.containsKey(HotKey.ModifierKey.CONTROL));
@@ -159,49 +159,49 @@ public class HotKeyManagerTest {
     @Test
     public void testSetup() throws Exception {
         //instantiation
-        TestUtils.setField(HotKeyManager.class, "instanced", new AtomicBoolean(false));
-        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(HotKeyManager.class, "instanced")).get());
+        TestUtils.setFieldValue(HotKeyManager.class, "instanced", new AtomicBoolean(false));
+        Assert.assertFalse(TestUtils.getFieldValue(HotKeyManager.class, AtomicBoolean.class, "instanced").get());
         sut = Mockito.spy(HotKeyManager.getInstance());
-        Assert.assertNotNull(TestUtils.getField(sut, "keyboardHook"));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(sut, "setup")).get());
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(HotKeyManager.class, "instanced")).get());
+        Assert.assertNotNull(TestUtils.getFieldValue(sut, "keyboardHook"));
+        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "setup").get());
+        Assert.assertTrue(TestUtils.getFieldValue(HotKeyManager.class, AtomicBoolean.class, "instanced").get());
         
         //direct call
         sut = PowerMockito.spy(sut);
-        TestUtils.setField(sut, "hotKeys", new ArrayList<>());
-        TestUtils.setField(sut, "keyboardHook", null);
-        TestUtils.setField(sut, "setup", new AtomicBoolean(false));
-        TestUtils.setField(HotKeyManager.class, "instanced", new AtomicBoolean(false));
-        Assert.assertTrue((boolean) TestUtils.invokeMethod(sut, "setup"));
-        keyboardHook = (NativeKeyListener) TestUtils.getField(sut, "keyboardHook");
+        TestUtils.setFieldValue(sut, "hotKeys", new ArrayList<>());
+        TestUtils.setFieldValue(sut, "keyboardHook", null);
+        TestUtils.setFieldValue(sut, "setup", new AtomicBoolean(false));
+        TestUtils.setFieldValue(HotKeyManager.class, "instanced", new AtomicBoolean(false));
+        Assert.assertTrue(TestUtils.invokeMethod(sut, boolean.class, "setup"));
+        keyboardHook = TestUtils.getFieldValue(sut, NativeKeyListener.class, "keyboardHook");
         PowerMockito.verifyStatic(HotKeyManager.GlobalScreenWrapper.class, VerificationModeFactory.times(2));
         HotKeyManager.GlobalScreenWrapper.registerNativeHook();
         PowerMockito.verifyStatic(HotKeyManager.GlobalScreenWrapper.class, VerificationModeFactory.times(2));
         HotKeyManager.GlobalScreenWrapper.addNativeKeyListener(ArgumentMatchers.any(NativeKeyListener.class));
         PowerMockito.verifyStatic(HotKeyManager.GlobalScreenWrapper.class, VerificationModeFactory.times(1));
         HotKeyManager.GlobalScreenWrapper.addNativeKeyListener(ArgumentMatchers.eq(keyboardHook));
-        Assert.assertNotNull(TestUtils.getField(sut, "keyboardHook"));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(sut, "setup")).get());
-        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(HotKeyManager.class, "instanced")).get());
+        Assert.assertNotNull(TestUtils.getFieldValue(sut, "keyboardHook"));
+        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "setup").get());
+        Assert.assertFalse(TestUtils.getFieldValue(HotKeyManager.class, AtomicBoolean.class, "instanced").get());
         
         //already setup
-        keyboardHook = (NativeKeyListener) TestUtils.getField(sut, "keyboardHook");
+        keyboardHook = TestUtils.getFieldValue(sut, NativeKeyListener.class, "keyboardHook");
         Assert.assertNotNull(keyboardHook);
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(sut, "setup")).get());
-        Assert.assertFalse((boolean) TestUtils.invokeMethod(sut, "setup"));
+        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "setup").get());
+        Assert.assertFalse(TestUtils.invokeMethod(sut, boolean.class, "setup"));
         PowerMockito.verifyStatic(HotKeyManager.GlobalScreenWrapper.class, VerificationModeFactory.noMoreInteractions());
         HotKeyManager.GlobalScreenWrapper.registerNativeHook();
         PowerMockito.verifyStatic(HotKeyManager.GlobalScreenWrapper.class, VerificationModeFactory.noMoreInteractions());
         HotKeyManager.GlobalScreenWrapper.addNativeKeyListener(ArgumentMatchers.any(NativeKeyListener.class));
-        Assert.assertEquals(keyboardHook, TestUtils.getField(sut, "keyboardHook"));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(sut, "setup")).get());
-        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(HotKeyManager.class, "instanced")).get());
+        Assert.assertEquals(keyboardHook, TestUtils.getFieldValue(sut, "keyboardHook"));
+        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "setup").get());
+        Assert.assertFalse(TestUtils.getFieldValue(HotKeyManager.class, AtomicBoolean.class, "instanced").get());
         
         //keyboard hook
         PowerMockito.doNothing().when(sut, "hit", ArgumentMatchers.any(NativeKeyEvent.class));
         PowerMockito.doNothing().when(sut, "release", ArgumentMatchers.any(NativeKeyEvent.class));
         NativeKeyEvent keyEvent = Mockito.mock(NativeKeyEvent.class);
-        keyboardHook = (NativeKeyListener) TestUtils.getField(sut, "keyboardHook");
+        keyboardHook = TestUtils.getFieldValue(sut, NativeKeyListener.class, "keyboardHook");
         Assert.assertNotNull(keyboardHook);
         keyboardHook.nativeKeyPressed(keyEvent);
         PowerMockito.verifyPrivate(sut, VerificationModeFactory.times(1))
@@ -219,8 +219,8 @@ public class HotKeyManagerTest {
         PowerMockito.doThrow(new NativeHookException()).when(HotKeyManager.GlobalScreenWrapper.class, "registerNativeHook");
         PowerMockito.doReturn(false).when(HotKeyManager.GlobalScreenWrapper.class, "isNativeHookRegistered");
         sut = PowerMockito.spy(sut);
-        TestUtils.setField(sut, "setup", new AtomicBoolean(false));
-        Assert.assertFalse((boolean) TestUtils.invokeMethod(sut, "setup"));
+        TestUtils.setFieldValue(sut, "setup", new AtomicBoolean(false));
+        Assert.assertFalse(TestUtils.invokeMethod(sut, boolean.class, "setup"));
         PowerMockito.verifyStatic(HotKeyManager.GlobalScreenWrapper.class, VerificationModeFactory.times(3));
         HotKeyManager.GlobalScreenWrapper.registerNativeHook();
         PowerMockito.verifyStatic(HotKeyManager.GlobalScreenWrapper.class, VerificationModeFactory.times(1));
@@ -229,8 +229,8 @@ public class HotKeyManagerTest {
         PowerMockito.doThrow(new RuntimeException()).when(HotKeyManager.GlobalScreenWrapper.class, "addNativeKeyListener", ArgumentMatchers.any(NativeKeyListener.class));
         PowerMockito.doReturn(true).when(HotKeyManager.GlobalScreenWrapper.class, "isNativeHookRegistered");
         sut = PowerMockito.spy(sut);
-        TestUtils.setField(sut, "setup", new AtomicBoolean(false));
-        Assert.assertFalse((boolean) TestUtils.invokeMethod(sut, "setup"));
+        TestUtils.setFieldValue(sut, "setup", new AtomicBoolean(false));
+        Assert.assertFalse(TestUtils.invokeMethod(sut, boolean.class, "setup"));
         PowerMockito.verifyStatic(HotKeyManager.GlobalScreenWrapper.class, VerificationModeFactory.times(4));
         HotKeyManager.GlobalScreenWrapper.registerNativeHook();
         PowerMockito.verifyStatic(HotKeyManager.GlobalScreenWrapper.class, VerificationModeFactory.times(3));
@@ -247,8 +247,8 @@ public class HotKeyManagerTest {
         //debugging
         PowerMockito.doReturn(true).when(OperatingSystem.class, "isDebugging");
         sut = PowerMockito.spy(sut);
-        TestUtils.setField(sut, "setup", new AtomicBoolean(false));
-        Assert.assertFalse((boolean) TestUtils.invokeMethod(sut, "setup"));
+        TestUtils.setFieldValue(sut, "setup", new AtomicBoolean(false));
+        Assert.assertFalse(TestUtils.invokeMethod(sut, boolean.class, "setup"));
         PowerMockito.doReturn(false).when(OperatingSystem.class, "isDebugging");
     }
     
@@ -262,10 +262,10 @@ public class HotKeyManagerTest {
     public void testShutdown() throws Exception {
         //standard
         sut = Mockito.spy(HotKeyManager.getInstance());
-        TestUtils.setField(sut, "keyboardHook", keyboardHook);
+        TestUtils.setFieldValue(sut, "keyboardHook", keyboardHook);
         PowerMockito.doReturn(true).when(HotKeyManager.GlobalScreenWrapper.class, "isNativeHookRegistered");
         TestUtils.invokeMethod(sut, "shutdown");
-        Assert.assertNull(TestUtils.getField(sut, "keyboardHook"));
+        Assert.assertNull(TestUtils.getFieldValue(sut, "keyboardHook"));
         PowerMockito.verifyStatic(HotKeyManager.GlobalScreenWrapper.class, VerificationModeFactory.times(1));
         HotKeyManager.GlobalScreenWrapper.removeNativeKeyListener(ArgumentMatchers.eq(keyboardHook));
         PowerMockito.verifyStatic(HotKeyManager.GlobalScreenWrapper.class, VerificationModeFactory.times(1));
@@ -274,10 +274,10 @@ public class HotKeyManagerTest {
         HotKeyManager.GlobalScreenWrapper.unregisterNativeHook();
         
         //keyboardHook null
-        TestUtils.setField(sut, "keyboardHook", null);
+        TestUtils.setFieldValue(sut, "keyboardHook", null);
         PowerMockito.doReturn(true).when(HotKeyManager.GlobalScreenWrapper.class, "isNativeHookRegistered");
         TestUtils.invokeMethod(sut, "shutdown");
-        Assert.assertNull(TestUtils.getField(sut, "keyboardHook"));
+        Assert.assertNull(TestUtils.getFieldValue(sut, "keyboardHook"));
         PowerMockito.verifyStatic(HotKeyManager.GlobalScreenWrapper.class, VerificationModeFactory.times(1)); //still 1
         HotKeyManager.GlobalScreenWrapper.removeNativeKeyListener(ArgumentMatchers.eq(keyboardHook));
         PowerMockito.verifyStatic(HotKeyManager.GlobalScreenWrapper.class, VerificationModeFactory.times(2));
@@ -286,10 +286,10 @@ public class HotKeyManagerTest {
         HotKeyManager.GlobalScreenWrapper.unregisterNativeHook();
         
         //not registered
-        TestUtils.setField(sut, "keyboardHook", keyboardHook);
+        TestUtils.setFieldValue(sut, "keyboardHook", keyboardHook);
         PowerMockito.doReturn(false).when(HotKeyManager.GlobalScreenWrapper.class, "isNativeHookRegistered");
         TestUtils.invokeMethod(sut, "shutdown");
-        Assert.assertNull(TestUtils.getField(sut, "keyboardHook"));
+        Assert.assertNull(TestUtils.getFieldValue(sut, "keyboardHook"));
         PowerMockito.verifyStatic(HotKeyManager.GlobalScreenWrapper.class, VerificationModeFactory.times(2));
         HotKeyManager.GlobalScreenWrapper.removeNativeKeyListener(ArgumentMatchers.eq(keyboardHook));
         PowerMockito.verifyStatic(HotKeyManager.GlobalScreenWrapper.class, VerificationModeFactory.times(3));
@@ -307,7 +307,7 @@ public class HotKeyManagerTest {
     @Test
     public void testRegister() throws Exception {
         sut = Mockito.spy(HotKeyManager.getInstance());
-        List<HotKey> hotKeys = (List<HotKey>) TestUtils.getField(sut, "hotKeys");
+        List<HotKey> hotKeys = TestUtils.getFieldValue(sut, List.class, "hotKeys");
         Assert.assertNotNull(hotKeys);
         Assert.assertTrue(hotKeys.isEmpty());
         
@@ -335,7 +335,7 @@ public class HotKeyManagerTest {
     @Test
     public void testUnregister() throws Exception {
         sut = Mockito.spy(HotKeyManager.getInstance());
-        List<HotKey> hotKeys = (List<HotKey>) TestUtils.getField(sut, "hotKeys");
+        List<HotKey> hotKeys = TestUtils.getFieldValue(sut, List.class, "hotKeys");
         Assert.assertNotNull(hotKeys);
         hotKeys.add(sampleHotkeys.get(0));
         hotKeys.add(sampleHotkeys.get(1));
@@ -366,7 +366,7 @@ public class HotKeyManagerTest {
     @Test
     public void testHas() throws Exception {
         sut = Mockito.spy(HotKeyManager.getInstance());
-        List<HotKey> hotKeys = (List<HotKey>) TestUtils.getField(sut, "hotKeys");
+        List<HotKey> hotKeys = TestUtils.getFieldValue(sut, List.class, "hotKeys");
         Assert.assertNotNull(hotKeys);
         hotKeys.add(sampleHotkeys.get(0));
         hotKeys.add(sampleHotkeys.get(2));
@@ -391,10 +391,10 @@ public class HotKeyManagerTest {
     @Test
     public void testHit() throws Exception {
         sut = Mockito.spy(HotKeyManager.getInstance());
-        List<HotKey> hotKeys = (List<HotKey>) TestUtils.getField(sut, "hotKeys");
+        List<HotKey> hotKeys = TestUtils.getFieldValue(sut, List.class, "hotKeys");
         hotKeys.addAll(sampleHotkeys);
         Assert.assertEquals(sampleHotkeys.size(), hotKeys.size());
-        Map<HotKey.ModifierKey, AtomicBoolean> modifierDown = (Map<HotKey.ModifierKey, AtomicBoolean>) TestUtils.getField(HotKeyManager.class, "modifierDown");
+        Map<HotKey.ModifierKey, AtomicBoolean> modifierDown = TestUtils.getFieldValue(HotKeyManager.class, Map.class, "modifierDown");
         Assert.assertFalse(modifierDown.get(HotKey.ModifierKey.CONTROL).get());
         Assert.assertFalse(modifierDown.get(HotKey.ModifierKey.SHIFT).get());
         Assert.assertFalse(modifierDown.get(HotKey.ModifierKey.ALT).get());
@@ -455,13 +455,13 @@ public class HotKeyManagerTest {
     @Test
     public void testRelease() throws Exception {
         sut = Mockito.spy(HotKeyManager.getInstance());
-        List<HotKey> hotKeys = (List<HotKey>) TestUtils.getField(sut, "hotKeys");
+        List<HotKey> hotKeys = TestUtils.getFieldValue(sut, List.class, "hotKeys");
         hotKeys.addAll(sampleHotkeys);
         Assert.assertEquals(sampleHotkeys.size(), hotKeys.size());
-        Map<HotKey.ModifierKey, AtomicBoolean> modifierDown = (Map<HotKey.ModifierKey, AtomicBoolean>) TestUtils.getField(HotKeyManager.class, "modifierDown");
+        Map<HotKey.ModifierKey, AtomicBoolean> modifierDown = TestUtils.getFieldValue(HotKeyManager.class, Map.class, "modifierDown");
         modifierDown.get(HotKey.ModifierKey.CONTROL).set(true);
         modifierDown.get(HotKey.ModifierKey.SHIFT).set(true);
-        TestUtils.setField(hotKeys.get(1), "hit", new AtomicBoolean(true));
+        TestUtils.setFieldValue(hotKeys.get(1), "hit", new AtomicBoolean(true));
         Assert.assertTrue(modifierDown.get(HotKey.ModifierKey.CONTROL).get());
         Assert.assertTrue(modifierDown.get(HotKey.ModifierKey.SHIFT).get());
         Assert.assertFalse(modifierDown.get(HotKey.ModifierKey.ALT).get());
@@ -514,7 +514,7 @@ public class HotKeyManagerTest {
         
         modifierDown.get(HotKey.ModifierKey.CONTROL).set(true);
         modifierDown.get(HotKey.ModifierKey.SHIFT).set(true);
-        TestUtils.setField(hotKeys.get(1), "hit", new AtomicBoolean(true));
+        TestUtils.setFieldValue(hotKeys.get(1), "hit", new AtomicBoolean(true));
         Assert.assertTrue(modifierDown.get(HotKey.ModifierKey.CONTROL).get());
         Assert.assertTrue(modifierDown.get(HotKey.ModifierKey.SHIFT).get());
         Assert.assertFalse(modifierDown.get(HotKey.ModifierKey.ALT).get());
@@ -575,15 +575,15 @@ public class HotKeyManagerTest {
     public void testGetInstance() throws Exception {
         sut = null;
         PowerMockito.spy(HotKeyManager.class);
-        Assert.assertNull(TestUtils.getField(HotKeyManager.class, "instance"));
-        Assert.assertFalse(((AtomicBoolean) TestUtils.getField(HotKeyManager.class, "instanced")).get());
+        Assert.assertNull(TestUtils.getFieldValue(HotKeyManager.class, "instance"));
+        Assert.assertFalse(TestUtils.getFieldValue(HotKeyManager.class, AtomicBoolean.class, "instanced").get());
         
         //standard
         sut = HotKeyManager.getInstance();
         Assert.assertNotNull(sut);
-        Assert.assertNotNull(TestUtils.getField(HotKeyManager.class, "instance"));
-        Assert.assertEquals(sut, TestUtils.getField(HotKeyManager.class, "instance"));
-        Assert.assertTrue(((AtomicBoolean) TestUtils.getField(HotKeyManager.class, "instanced")).get());
+        Assert.assertNotNull(TestUtils.getFieldValue(HotKeyManager.class, "instance"));
+        Assert.assertEquals(sut, TestUtils.getFieldValue(HotKeyManager.class, "instance"));
+        Assert.assertTrue(TestUtils.getFieldValue(HotKeyManager.class, AtomicBoolean.class, "instanced").get());
         
         //already instanced
         HotKeyManager oldSut = sut;
@@ -591,7 +591,7 @@ public class HotKeyManagerTest {
         sut = HotKeyManager.getInstance();
         Assert.assertNotNull(sut);
         Assert.assertEquals(oldSut, sut);
-        Assert.assertEquals(sut, TestUtils.getField(HotKeyManager.class, "instance"));
+        Assert.assertEquals(sut, TestUtils.getFieldValue(HotKeyManager.class, "instance"));
     }
     
     /**
@@ -604,8 +604,8 @@ public class HotKeyManagerTest {
     public void testRegisterHotkey() throws Exception {
         sut = Mockito.mock(HotKeyManager.class);
         HotKey hotKey = Mockito.mock(HotKey.class);
-        TestUtils.setField(HotKeyManager.class, "instance", sut);
-        TestUtils.setField(HotKeyManager.class, "instanced", new AtomicBoolean(true));
+        TestUtils.setFieldValue(HotKeyManager.class, "instance", sut);
+        TestUtils.setFieldValue(HotKeyManager.class, "instanced", new AtomicBoolean(true));
         
         //standard
         Mockito.doReturn(true).when(sut).register(ArgumentMatchers.any(HotKey.class));
@@ -619,7 +619,7 @@ public class HotKeyManagerTest {
         Mockito.doCallRealMethod().when(sut).register(ArgumentMatchers.any(HotKey.class));
         
         //unable to get instance
-        TestUtils.setField(HotKeyManager.class, "instance", null);
+        TestUtils.setFieldValue(HotKeyManager.class, "instance", null);
         Assert.assertFalse(HotKeyManager.registerHotkey(hotKey));
         Mockito.verify(sut, VerificationModeFactory.noMoreInteractions())
                 .register(ArgumentMatchers.any(HotKey.class));
@@ -635,8 +635,8 @@ public class HotKeyManagerTest {
     public void testUnregisterHotkey() throws Exception {
         sut = Mockito.mock(HotKeyManager.class);
         HotKey hotKey = Mockito.mock(HotKey.class);
-        TestUtils.setField(HotKeyManager.class, "instance", sut);
-        TestUtils.setField(HotKeyManager.class, "instanced", new AtomicBoolean(true));
+        TestUtils.setFieldValue(HotKeyManager.class, "instance", sut);
+        TestUtils.setFieldValue(HotKeyManager.class, "instanced", new AtomicBoolean(true));
         
         //standard
         Mockito.doReturn(true).when(sut).unregister(ArgumentMatchers.any(HotKey.class));
@@ -650,7 +650,7 @@ public class HotKeyManagerTest {
         Mockito.doCallRealMethod().when(sut).register(ArgumentMatchers.any(HotKey.class));
         
         //unable to get instance
-        TestUtils.setField(HotKeyManager.class, "instance", null);
+        TestUtils.setFieldValue(HotKeyManager.class, "instance", null);
         Assert.assertFalse(HotKeyManager.unregisterHotkey(hotKey));
         Mockito.verify(sut, VerificationModeFactory.noMoreInteractions())
                 .unregister(ArgumentMatchers.any(HotKey.class));
@@ -666,8 +666,8 @@ public class HotKeyManagerTest {
     public void testHasHotkey() throws Exception {
         sut = Mockito.mock(HotKeyManager.class);
         HotKey hotKey = Mockito.mock(HotKey.class);
-        TestUtils.setField(HotKeyManager.class, "instance", sut);
-        TestUtils.setField(HotKeyManager.class, "instanced", new AtomicBoolean(true));
+        TestUtils.setFieldValue(HotKeyManager.class, "instance", sut);
+        TestUtils.setFieldValue(HotKeyManager.class, "instanced", new AtomicBoolean(true));
         
         //standard
         Mockito.doReturn(true).when(sut).has(ArgumentMatchers.any(HotKey.class));
@@ -681,7 +681,7 @@ public class HotKeyManagerTest {
         Mockito.doCallRealMethod().when(sut).register(ArgumentMatchers.any(HotKey.class));
         
         //unable to get instance
-        TestUtils.setField(HotKeyManager.class, "instance", null);
+        TestUtils.setFieldValue(HotKeyManager.class, "instance", null);
         Assert.assertFalse(HotKeyManager.hasHotkey(hotKey));
         Mockito.verify(sut, VerificationModeFactory.noMoreInteractions())
                 .has(ArgumentMatchers.any(HotKey.class));

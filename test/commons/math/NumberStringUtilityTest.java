@@ -119,7 +119,7 @@ public class NumberStringUtilityTest {
     public void testConstants() throws Exception {
         //constants
         
-        String[][] NUMBER_NAMES = (String[][]) TestUtils.getField(NumberStringUtility.class, "NUMBER_NAMES");
+        String[][] NUMBER_NAMES = TestUtils.getFieldValue(NumberStringUtility.class, String[][].class, "NUMBER_NAMES");
         Assert.assertEquals(13, NUMBER_NAMES.length);
         Assert.assertArrayEquals(
                 new String[] {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"},
@@ -161,7 +161,7 @@ public class NumberStringUtilityTest {
                 new String[] {"negative", "point", "and", "oh", "o", "times X to the", "s"},
                 NUMBER_NAMES[12]);
         
-        List<String> validTokens = (List<String>) TestUtils.getField(NumberStringUtility.class, "VALID_TOKENS");
+        List<String> validTokens = TestUtils.getFieldValue(NumberStringUtility.class, List.class, "VALID_TOKENS");
         Assert.assertArrayEquals(
                 new String[] {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
                               "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety",
@@ -178,7 +178,7 @@ public class NumberStringUtilityTest {
                               "negative", "point", "and", "oh", "o", "times ten to the", "s"
                 }, validTokens.toArray());
         
-        List<String> validLatinPowerNameTokens = (List<String>) TestUtils.getField(NumberStringUtility.class, "VALID_LATIN_POWER_NAME_TOKENS");
+        List<String> validLatinPowerNameTokens = TestUtils.getFieldValue(NumberStringUtility.class, List.class, "VALID_LATIN_POWER_NAME_TOKENS");
         Assert.assertArrayEquals(
                 new String[] {"quinquagin", "quadringen", "quadragin", "septuagin", "septingen", "thousand", "quattuor", "octingen",
                               "sexagin", "octogin", "nonagin", "quingen", "quadri", "quinti", "septen", "trigin", "duocen", "trecen",

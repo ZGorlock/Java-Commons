@@ -1591,7 +1591,7 @@ public class Matrix2Test {
         
         //standard
         Assert.assertEquals(2, sut.getDimensionality());
-        TestUtils.setField(sut, "dimensionality", 5);
+        TestUtils.setFieldValue(sut, "dimensionality", 5);
         Assert.assertEquals(5, sut.getDimensionality());
         sut.calculateDimensionality();
         Assert.assertEquals(2, sut.getDimensionality());

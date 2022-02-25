@@ -7,23 +7,29 @@
 
 package commons.test;
 
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.InvalidClassException;
 import java.lang.invoke.MethodHandles;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.IntStream;
 
+import commons.function.Action;
+import commons.object.ObjectCastUtility;
 import commons.object.string.StringUtility;
 import org.junit.Assert;
 import org.powermock.reflect.Whitebox;
 import org.powermock.reflect.exceptions.ConstructorNotFoundException;
+import org.powermock.reflect.exceptions.FieldNotFoundException;
 import org.powermock.reflect.exceptions.MethodNotFoundException;
-import org.powermock.reflect.internal.primitivesupport.PrimitiveWrapper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +37,8 @@ import org.slf4j.LoggerFactory;
  * A resource class that provides test utilities.
  */
 public final class TestUtils {
+    
+    //Logger
     
     /**
      * The logger.
@@ -64,24 +72,24 @@ public final class TestUtils {
     //Static Methods
     
     /**
-     * Asserts that a call throws an exception with a particular message.
+     * Asserts that an action throws an exception with a particular message.
      *
-     * @param throwable       The expected throwable class.
+     * @param thrown          The expected exception.
      * @param expectedMessage The expected message.
-     * @param call            The call.
+     * @param action          The action.
      */
-    public static void assertException(Class<? extends Throwable> throwable, String expectedMessage, Runnable call) {
+    public static void assertException(Class<? extends Throwable> thrown, String expectedMessage, Action action) {
         try {
-            call.run();
+            action.perform();
             
         } catch (Throwable e) {
-            if (throwable != null) {
-                AssertWrapper.assertEquals("Expected code to produce " + StringUtility.justifyAOrAn(throwable.getSimpleName()) +
+            if (thrown != null) {
+                AssertWrapper.assertEquals("Expected code to produce " + StringUtility.justifyAOrAn(thrown.getSimpleName()) +
                                 " but instead it produced " + StringUtility.justifyAOrAn(e.getClass().getSimpleName()),
-                        throwable, e.getClass());
+                        thrown, e.getClass());
             }
             if (expectedMessage != null) {
-                AssertWrapper.assertEquals("Expected the error message of the " + ((throwable != null) ? throwable.getSimpleName() : "exception") +
+                AssertWrapper.assertEquals("Expected the error message of the " + ((thrown != null) ? thrown.getSimpleName() : "exception") +
                                 " to be: " + StringUtility.quote(expectedMessage) +
                                 " but the error message was: " + StringUtility.quote(e.getMessage()),
                         expectedMessage, e.getMessage());
@@ -89,39 +97,39 @@ public final class TestUtils {
             return;
         }
         
-        AssertWrapper.fail("Expected code to produce " + ((throwable != null) ? StringUtility.justifyAOrAn(throwable.getSimpleName()) : "an exception") +
+        AssertWrapper.fail("Expected code to produce " + ((thrown != null) ? StringUtility.justifyAOrAn(thrown.getSimpleName()) : "an exception") +
                 " but no exception was produced");
     }
     
     /**
-     * Asserts that a call throws an exception.
+     * Asserts that an action throws an exception.
      *
-     * @param throwable The expected throwable class.
-     * @param call      The call.
-     * @see #assertException(Class, String, Runnable)
+     * @param thrown The expected exception.
+     * @param action The action.
+     * @see #assertException(Class, String, Action)
      */
-    public static void assertException(Class<? extends Throwable> throwable, Runnable call) {
-        assertException(throwable, null, call);
+    public static void assertException(Class<? extends Throwable> thrown, Action action) {
+        assertException(thrown, null, action);
     }
     
     /**
-     * Asserts that a call throws an exception.
+     * Asserts that an action throws an exception.
      *
-     * @param call The call.
-     * @see #assertException(Class, String, Runnable)
+     * @param action The action.
+     * @see #assertException(Class, String, Action)
      */
-    public static void assertException(Runnable call) {
-        assertException(null, null, call);
+    public static void assertException(Action action) {
+        assertException(null, null, action);
     }
     
     /**
-     * Asserts that a call does not throw an exception.
+     * Asserts that an action does not throw an exception.
      *
-     * @param call The call.
+     * @param action The action.
      */
-    public static void assertNoException(Runnable call) {
+    public static void assertNoException(Action action) {
         try {
-            call.run();
+            action.perform();
             
         } catch (Throwable e) {
             AssertWrapper.fail("Expected code to produce no Exception" +
@@ -130,164 +138,658 @@ public final class TestUtils {
     }
     
     /**
-     * Asserts that a read from an input stream throws an exception.
+     * Asserts that a class exists.
      *
-     * @param exception The expected exception class.
-     * @param in        The input stream.
-     * @param buffer    The buffer to store the read bytes in.
-     * @param offset    The offset to read from in the input stream.
-     * @param length    The number of bytes of read.
+     * @param qualifiedClassName The qualified name of the class.
+     * @see #getClass(String)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void assertInputStreamReadThrowsException(Class<? extends Exception> exception, InputStream in, byte[] buffer, int offset, int length) {
-        try {
-            in.read(buffer, offset, length);
-            
-        } catch (Throwable e) {
-            AssertWrapper.assertEquals("Expected input stream read operation to produce " + StringUtility.justifyAOrAn(exception.getSimpleName()) +
-                            " but instead it produced " + StringUtility.justifyAOrAn(e.getClass().getSimpleName()),
-                    exception, e.getClass());
-            return;
-        }
-        
-        AssertWrapper.fail("Expected input stream read operation to produce " + StringUtility.justifyAOrAn(exception.getSimpleName()) +
-                " but no exception was produced");
-    }
-    
-    /**
-     * Asserts that a read from an input stream does not throw an exception.
-     *
-     * @param in     The input stream.
-     * @param buffer The buffer to store the read bytes in.
-     * @param offset The offset to read from in the input stream.
-     * @param length The number of bytes of read.
-     */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
-    public static void assertInputStreamReadDoesNotThrowException(InputStream in, byte[] buffer, int offset, int length) {
-        try {
-            in.read(buffer, offset, length);
-            
-        } catch (Throwable e) {
-            AssertWrapper.fail("Expected input stream read operation to produce no Exception" +
-                    " but instead it produced " + StringUtility.justifyAOrAn(e.getClass().getSimpleName()));
+    public static void assertClassExists(String qualifiedClassName) {
+        if (getClass(qualifiedClassName) == null) {
+            AssertWrapper.fail("Expected class " + qualifiedClassName + " to exist" +
+                    " but it does not");
         }
     }
     
     /**
-     * Asserts that a write to an output stream throws an exception.
+     * Asserts that an inner class exists.
      *
-     * @param exception The expected exception class.
-     * @param out       The output stream.
-     * @param buffer    The buffer storing the bytes to write.
-     * @param offset    The offset to write to in the output stream.
-     * @param length    The number of bytes of write.
+     * @param clazz     The class.
+     * @param className The name of the inner class.
+     * @see #getClass(Class, String)
      */
-    public static void assertOutputStreamWriteThrowsException(Class<? extends Exception> exception, OutputStream out, byte[] buffer, int offset, int length) {
-        try {
-            out.write(buffer, offset, length);
-            
-        } catch (Throwable e) {
-            AssertWrapper.assertEquals("Expected output stream write operation to produce " + StringUtility.justifyAOrAn(exception.getSimpleName()) +
-                            " but instead it produced " + StringUtility.justifyAOrAn(e.getClass().getSimpleName()),
-                    exception, e.getClass());
-            return;
-        }
-        
-        AssertWrapper.fail("Expected output stream write operation to produce " + StringUtility.justifyAOrAn(exception.getSimpleName()) +
-                " but no exception was produced");
-    }
-    
-    /**
-     * Asserts that a write to an output stream does not throw an exception.
-     *
-     * @param output The output stream.
-     * @param buffer The buffer store the bytes to write.
-     * @param offset The offset to write to in the output stream.
-     * @param length The number of bytes of write.
-     */
-    public static void assertOutputStreamWriteDoesNotThrowException(OutputStream output, byte[] buffer, int offset, int length) {
-        try {
-            output.write(buffer, offset, length);
-            
-        } catch (Throwable e) {
-            AssertWrapper.fail("Expected output stream write operation to produce no Exception" +
-                    " but instead it produced " + StringUtility.justifyAOrAn(e.getClass().getSimpleName()));
+    public static void assertClassExists(Class<?> clazz, String className) {
+        if (getClass(clazz, className) == null) {
+            AssertWrapper.fail("Expected class " + StringUtility.innerClassString(clazz, className) + " to exist" +
+                    " but it does not");
         }
     }
     
     /**
-     * Asserts that a method for a class exists.
+     * Asserts that a class does not exist.
+     *
+     * @param qualifiedClassName The qualified name of the class.
+     * @see #getClass(String)
+     */
+    public static void assertClassDoesNotExist(String qualifiedClassName) {
+        if (getClass(qualifiedClassName) != null) {
+            AssertWrapper.fail("Expected class " + qualifiedClassName + " to not exist" +
+                    " but it does");
+        }
+    }
+    
+    /**
+     * Asserts that an inner class does not exist.
+     *
+     * @param clazz     The class.
+     * @param className The name of the inner class.
+     * @see #getClass(Class, String)
+     */
+    public static void assertClassDoesNotExist(Class<?> clazz, String className) {
+        if (getClass(clazz, className) != null) {
+            AssertWrapper.fail("Expected class " + StringUtility.innerClassString(clazz, className) + " to not exist" +
+                    " but it does");
+        }
+    }
+    
+    /**
+     * Asserts that an interface exists.
+     *
+     * @param qualifiedInterfaceName The qualified name of the interface.
+     * @see #getInterface(String)
+     */
+    public static void assertInterfaceExists(String qualifiedInterfaceName) {
+        if (getInterface(qualifiedInterfaceName) == null) {
+            AssertWrapper.fail("Expected interface " + qualifiedInterfaceName + " to exist" +
+                    " but it does not");
+        }
+    }
+    
+    /**
+     * Asserts that an inner interface exists.
+     *
+     * @param clazz         The class.
+     * @param interfaceName The name of the inner interface.
+     * @see #getInterface(Class, String)
+     */
+    public static void assertInterfaceExists(Class<?> clazz, String interfaceName) {
+        if (getInterface(clazz, interfaceName) == null) {
+            AssertWrapper.fail("Expected interface " + StringUtility.innerClassString(clazz, interfaceName) + " to exist" +
+                    " but it does not");
+        }
+    }
+    
+    /**
+     * Asserts that an interface does not exist.
+     *
+     * @param qualifiedInterfaceName The qualified name of the interface.
+     * @see #getInterface(String)
+     */
+    public static void assertInterfaceDoesNotExist(String qualifiedInterfaceName) {
+        if (getInterface(qualifiedInterfaceName) != null) {
+            AssertWrapper.fail("Expected interface " + qualifiedInterfaceName + " to not exist" +
+                    " but it does");
+        }
+    }
+    
+    /**
+     * Asserts that an inner interface does not exist.
+     *
+     * @param clazz         The class.
+     * @param interfaceName The name of the inner interface.
+     * @see #getInterface(Class, String)
+     */
+    public static void assertInterfaceDoesNotExist(Class<?> clazz, String interfaceName) {
+        if (getInterface(clazz, interfaceName) != null) {
+            AssertWrapper.fail("Expected interface " + StringUtility.innerClassString(clazz, interfaceName) + " to not exist" +
+                    " but it does");
+        }
+    }
+    
+    /**
+     * Asserts that an enum exists.
+     *
+     * @param qualifiedEnumName The qualified name of the enum.
+     * @see #getEnum(String)
+     */
+    public static void assertEnumExists(String qualifiedEnumName) {
+        if (getEnum(qualifiedEnumName) == null) {
+            AssertWrapper.fail("Expected enum " + qualifiedEnumName + " to exist" +
+                    " but it does not");
+        }
+    }
+    
+    /**
+     * Asserts that an inner enum exists.
+     *
+     * @param clazz    The class.
+     * @param enumName The name of the inner enum.
+     * @see #getEnum(Class, String)
+     */
+    public static void assertEnumExists(Class<?> clazz, String enumName) {
+        if (getEnum(clazz, enumName) == null) {
+            AssertWrapper.fail("Expected enum " + StringUtility.innerClassString(clazz, enumName) + " to exist" +
+                    " but it does not");
+        }
+    }
+    
+    /**
+     * Asserts that an enum does not exist.
+     *
+     * @param qualifiedEnumName The qualified name of the enum.
+     * @see #getEnum(String)
+     */
+    public static void assertEnumDoesNotExist(String qualifiedEnumName) {
+        if (getEnum(qualifiedEnumName) != null) {
+            AssertWrapper.fail("Expected enum " + qualifiedEnumName + " to not exist" +
+                    " but it does");
+        }
+    }
+    
+    /**
+     * Asserts that an inner enum does not exist.
+     *
+     * @param clazz    The class.
+     * @param enumName The name of the inner enum.
+     * @see #getEnum(Class, String)
+     */
+    public static void assertEnumDoesNotExist(Class<?> clazz, String enumName) {
+        if (getEnum(clazz, enumName) != null) {
+            AssertWrapper.fail("Expected enum " + StringUtility.innerClassString(clazz, enumName) + " to not exist" +
+                    " but it does");
+        }
+    }
+    
+    /**
+     * Asserts that a method exists.
      *
      * @param clazz           The class.
      * @param methodName      The name of the method.
      * @param argumentClasses The classes of the arguments to the method.
+     * @see #getMethod(Class, String, Class[])
      */
     public static void assertMethodExists(Class<?> clazz, String methodName, Class<?>... argumentClasses) {
-        try {
-            Method method = clazz.getDeclaredMethod(methodName, argumentClasses);
-            
-        } catch (Throwable e) {
+        if (getMethod(clazz, methodName, argumentClasses) == null) {
             AssertWrapper.fail("Expected method " + StringUtility.methodString(clazz, methodName, argumentClasses) + " to exist" +
                     " but it does not");
         }
     }
     
     /**
-     * Asserts that a method for a class does not exist.
+     * Asserts that a method exists.
+     *
+     * @param object          The object.
+     * @param methodName      The name of the method.
+     * @param argumentClasses The classes of the arguments to the method.
+     * @see #getMethod(Object, String, Class[])
+     */
+    public static void assertMethodExists(Object object, String methodName, Class<?>... argumentClasses) {
+        if (getMethod(object, methodName, argumentClasses) == null) {
+            AssertWrapper.fail("Expected method " + StringUtility.methodString(object, methodName, argumentClasses) + " to exist" +
+                    " but it does not");
+        }
+    }
+    
+    /**
+     * Asserts that a method does not exist.
      *
      * @param clazz           The class.
      * @param methodName      The name of the method.
      * @param argumentClasses The classes of the arguments to the method.
+     * @see #getMethod(Class, String, Class[])
      */
     public static void assertMethodDoesNotExist(Class<?> clazz, String methodName, Class<?>... argumentClasses) {
-        try {
-            Method method = clazz.getDeclaredMethod(methodName, argumentClasses);
-            
-        } catch (Throwable e) {
-            return;
+        if (getMethod(clazz, methodName, argumentClasses) != null) {
+            AssertWrapper.fail("Expected method " + StringUtility.methodString(clazz, methodName, argumentClasses) + " to not exist" +
+                    " but it does");
         }
-        
-        AssertWrapper.fail("Expected method " + StringUtility.methodString(clazz, methodName, argumentClasses) + " to not exist" +
-                " but it does");
     }
     
     /**
-     * Gets the value of a field from an object or class.
+     * Asserts that a method does not exist.
+     *
+     * @param object          The object.
+     * @param methodName      The name of the method.
+     * @param argumentClasses The classes of the arguments to the method.
+     * @see #getMethod(Object, String, Class[])
+     */
+    public static void assertMethodDoesNotExist(Object object, String methodName, Class<?>... argumentClasses) {
+        if (getMethod(object, methodName, argumentClasses) != null) {
+            AssertWrapper.fail("Expected method " + StringUtility.methodString(object, methodName, argumentClasses) + " to not exist" +
+                    " but it does");
+        }
+    }
+    
+    /**
+     * Asserts that a constructor exists.
+     *
+     * @param clazz           The class.
+     * @param argumentClasses The classes of the arguments to the constructor.
+     * @see #getConstructor(Class, Class[])
+     */
+    public static void assertConstructorExists(Class<?> clazz, Class<?>... argumentClasses) {
+        if (getConstructor(clazz, argumentClasses) == null) {
+            AssertWrapper.fail("Expected constructor " + StringUtility.constructorString(clazz, argumentClasses) + " to exist" +
+                    " but it does not");
+        }
+    }
+    
+    /**
+     * Asserts that a constructor exists.
+     *
+     * @param object          The object.
+     * @param argumentClasses The classes of the arguments to the constructor.
+     * @see #getConstructor(Object, Class[])
+     */
+    public static void assertConstructorExists(Object object, Class<?>... argumentClasses) {
+        if (getConstructor(object, argumentClasses) == null) {
+            AssertWrapper.fail("Expected constructor " + StringUtility.constructorString(object, argumentClasses) + " to exist" +
+                    " but it does not");
+        }
+    }
+    
+    /**
+     * Asserts that a constructor does not exist.
+     *
+     * @param clazz           The class.
+     * @param argumentClasses The classes of the arguments to the constructor.
+     * @see #getConstructor(Class, Class[])
+     */
+    public static void assertConstructorDoesNotExist(Class<?> clazz, Class<?>... argumentClasses) {
+        if (getConstructor(clazz, argumentClasses) != null) {
+            AssertWrapper.fail("Expected constructor " + StringUtility.constructorString(clazz, argumentClasses) + " to not exist" +
+                    " but it does");
+        }
+    }
+    
+    /**
+     * Asserts that a constructor does not exist.
+     *
+     * @param object          The object.
+     * @param argumentClasses The classes of the arguments to the constructor.
+     * @see #getConstructor(Object, Class[])
+     */
+    public static void assertConstructorDoesNotExist(Object object, Class<?>... argumentClasses) {
+        if (getConstructor(object, argumentClasses) != null) {
+            AssertWrapper.fail("Expected constructor " + StringUtility.constructorString(object, argumentClasses) + " to not exist" +
+                    " but it does");
+        }
+    }
+    
+    /**
+     * Asserts that a field exists.
      *
      * @param clazz     The class.
-     * @param object    The object.
-     * @param fieldName The name of the field to get.
-     * @return The value of the field from the object or class.
-     * @throws AssertionError When there is an exception while getting the field.
+     * @param fieldName The name of the field.
+     * @see #getField(Class, String)
      */
-    @SuppressWarnings("deprecation")
-    private static Object getField(Class<?> clazz, Object object, String fieldName) throws AssertionError {
+    public static void assertFieldExists(Class<?> clazz, String fieldName) {
+        if (getField(clazz, fieldName) == null) {
+            AssertWrapper.fail("Expected field " + StringUtility.fieldString(clazz, fieldName) + " to exist" +
+                    " but it does not");
+        }
+    }
+    
+    /**
+     * Asserts that a field exists.
+     *
+     * @param object    The object.
+     * @param fieldName The name of the field.
+     * @see #getField(Object, String)
+     */
+    public static void assertFieldExists(Object object, String fieldName) {
+        if (getField(object, fieldName) == null) {
+            AssertWrapper.fail("Expected field " + StringUtility.fieldString(object, fieldName) + " to exist" +
+                    " but it does not");
+        }
+    }
+    
+    /**
+     * Asserts that a field does not exist.
+     *
+     * @param clazz     The class.
+     * @param fieldName The name of the field.
+     * @see #getField(Class, String)
+     */
+    public static void assertFieldDoesNotExist(Class<?> clazz, String fieldName) {
+        if (getField(clazz, fieldName) != null) {
+            AssertWrapper.fail("Expected field " + StringUtility.fieldString(clazz, fieldName) + " to not exist" +
+                    " but it does");
+        }
+    }
+    
+    /**
+     * Asserts that a field does not exist.
+     *
+     * @param object    The object.
+     * @param fieldName The name of the field.
+     * @see #getField(Object, String)
+     */
+    public static void assertFieldDoesNotExist(Object object, String fieldName) {
+        if (getField(object, fieldName) != null) {
+            AssertWrapper.fail("Expected field " + StringUtility.fieldString(object, fieldName) + " to not exist" +
+                    " but it does");
+        }
+    }
+    
+    /**
+     * Gets a class.
+     *
+     * @param qualifiedClassName The qualified name of the class.
+     * @return The class, or null if it cannot be retrieved.
+     */
+    public static Class<?> getClass(String qualifiedClassName) {
         try {
-            if (clazz.getSimpleName().contains("MockitoMock")) {
-                return Whitebox.getInternalState(((object == null) ? clazz : object), Objects.requireNonNull(fieldName));
+            final Class<?> clazz = Class.forName(Objects.requireNonNull(qualifiedClassName));
+            
+            return (clazz.isInterface() || clazz.isEnum()) ? null : clazz;
+            
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+    
+    /**
+     * Gets an inner class from a class.
+     *
+     * @param clazz     The class.
+     * @param className The name of the inner class.
+     * @return The inner class from the class, or null if it cannot be retrieved.
+     * @see #getClass(String)
+     */
+    public static Class<?> getClass(Class<?> clazz, String className) {
+        return getClass(((clazz == null) ? "null" : clazz.getName()) + '$' + className);
+    }
+    
+    /**
+     * Gets a interface.
+     *
+     * @param qualifiedInterfaceName The qualified name of the interface.
+     * @return The interface, or null if it cannot be retrieved.
+     */
+    public static Class<?> getInterface(String qualifiedInterfaceName) {
+        try {
+            final Class<?> interfaceClazz = Class.forName(Objects.requireNonNull(qualifiedInterfaceName));
+            
+            return (!interfaceClazz.isInterface()) ? null : interfaceClazz;
+            
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+    
+    /**
+     * Gets an inner interface from a class.
+     *
+     * @param clazz         The class.
+     * @param interfaceName The name of the inner interface.
+     * @return The inner interface from the class, or null if it cannot be retrieved.
+     * @see #getInterface(String)
+     */
+    public static Class<?> getInterface(Class<?> clazz, String interfaceName) {
+        return getInterface(((clazz == null) ? "null" : clazz.getName()) + '$' + interfaceName);
+    }
+    
+    /**
+     * Gets an enum.
+     *
+     * @param qualifiedEnumName The qualified name of the enum.
+     * @return The enum, or null if it cannot be retrieved.
+     */
+    public static Class<?> getEnum(String qualifiedEnumName) {
+        try {
+            final Class<?> enumClazz = Class.forName(Objects.requireNonNull(qualifiedEnumName));
+            
+            return (!enumClazz.isEnum()) ? null : enumClazz;
+            
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+    
+    /**
+     * Gets an inner enum from a class.
+     *
+     * @param clazz    The class.
+     * @param enumName The name of the enum.
+     * @return The inner enum from the class, or null if it cannot be retrieved.
+     * @see #getEnum(String)
+     */
+    public static Class<?> getEnum(Class<?> clazz, String enumName) {
+        return getEnum(((clazz == null) ? "null" : clazz.getName()) + '$' + enumName);
+    }
+    
+    /**
+     * Gets a list of all methods from a class.
+     *
+     * @param clazz The class.
+     * @return The list of all methods from the class, or an empty list if it cannot be retrieved.
+     * @see #getAllMethods(Object)
+     */
+    public static List<Method> getAllMethods(Class<?> clazz) {
+        return getAllMethods((Object) clazz);
+    }
+    
+    /**
+     * Gets a list of all methods from an object.
+     *
+     * @param object The object.
+     * @return The list of all methods from the object, or an empty list if it cannot be retrieved.
+     */
+    public static List<Method> getAllMethods(Object object) {
+        try {
+            final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+            
+            final List<Method> methods = new ArrayList<>();
+            for (Class<?> current = clazz; current != null; current = current.getSuperclass()) {
+                methods.addAll(Arrays.asList(current.getDeclaredMethods()));
+            }
+            return methods;
+            
+        } catch (Exception ignored) {
+            return new ArrayList<>();
+        }
+    }
+    
+    /**
+     * Gets a method from a class.
+     *
+     * @param clazz         The class.
+     * @param methodName    The name of the method.
+     * @param argumentTypes The types of the arguments to the method.
+     * @return The method from the class, or null if it cannot be retrieved.
+     * @see #getMethod(Object, String, Class[])
+     */
+    public static Method getMethod(Class<?> clazz, String methodName, Class<?>... argumentTypes) {
+        return getMethod((Object) clazz, methodName, argumentTypes);
+    }
+    
+    /**
+     * Gets a method from an object.
+     *
+     * @param object        The object.
+     * @param methodName    The name of the method.
+     * @param argumentTypes The types of the arguments to the method.
+     * @return The method from the object, or null if it cannot be retrieved.
+     */
+    public static Method getMethod(Object object, String methodName, Class<?>... argumentTypes) {
+        try {
+            final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+            
+            try {
+                return clazz.getDeclaredMethod(methodName, argumentTypes);
+            } catch (NoSuchMethodException | SecurityException ignored) {
             }
             
             try {
-                Field field = clazz.getDeclaredField(Objects.requireNonNull(fieldName));
-                boolean isAccessible = field.isAccessible();
-                field.setAccessible(true);
-                Object value = field.get(object);
-                field.setAccessible(isAccessible);
-                return value;
-                
-            } catch (NoSuchFieldException retry) {
-                Class<?> superClazz = clazz.getSuperclass();
-                if (superClazz != null) {
-                    return getField(superClazz, object, Objects.requireNonNull(fieldName));
-                } else {
-                    throw retry;
-                }
+                return clazz.getMethod(methodName, argumentTypes);
+            } catch (NoSuchMethodException | SecurityException ignored) {
             }
             
-        } catch (Exception e) {
-            AssertWrapper.fail("Attempted to get the field " + StringUtility.fieldString(clazz, fieldName) +
-                    " but an exception occurred");
-            throw new AssertionError(e);
+            return getAllMethods(clazz).stream().filter(e -> {
+                final Class<?>[] methodArgumentTypes = e.getParameterTypes();
+                return (e.getName().equals(methodName) && (methodArgumentTypes.length == argumentTypes.length) &&
+                        Arrays.stream(methodArgumentTypes).noneMatch(arg -> arg.getSimpleName().equals("IndicateReloadClass")) &&
+                        IntStream.range(0, argumentTypes.length).boxed().noneMatch(i ->
+                                (argumentTypes[i] == null) ? methodArgumentTypes[i].isPrimitive() :
+                                ((methodArgumentTypes[i] != argumentTypes[i]) &&
+                                        (ObjectCastUtility.toPrimitiveClass(methodArgumentTypes[i]) != ObjectCastUtility.toPrimitiveClass(argumentTypes[i])))));
+            }).findFirst().orElseThrow(() -> new MethodNotFoundException(StringUtility.methodString(clazz, methodName, argumentTypes)));
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+    
+    /**
+     * Gets a list of all constructors from a class.
+     *
+     * @param clazz The class.
+     * @return The list of all constructors from the class, or an empty list if it cannot be retrieved.
+     * @see #getAllConstructors(Object)
+     */
+    public static List<Constructor<?>> getAllConstructors(Class<?> clazz) {
+        return getAllConstructors((Object) clazz);
+    }
+    
+    /**
+     * Gets a list of all constructors from an object.
+     *
+     * @param object The object.
+     * @return The list of all constructors from the object, or an empty list if it cannot be retrieved.
+     */
+    public static List<Constructor<?>> getAllConstructors(Object object) {
+        try {
+            final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+            
+            final List<Constructor<?>> constructors = new ArrayList<>();
+            for (Class<?> current = clazz; current != null; current = current.getSuperclass()) {
+                constructors.addAll(Arrays.asList(current.getDeclaredConstructors()));
+            }
+            return constructors;
+            
+        } catch (Exception ignored) {
+            return new ArrayList<>();
+        }
+    }
+    
+    /**
+     * Gets a constructor from a class.
+     *
+     * @param clazz         The class.
+     * @param argumentTypes The types of the arguments to the constructor.
+     * @return The constructor from the class, or null if it cannot be retrieved.
+     * @see #getConstructor(Object, Class[])
+     */
+    public static Constructor<?> getConstructor(Class<?> clazz, Class<?>... argumentTypes) {
+        return getConstructor((Object) clazz, argumentTypes);
+    }
+    
+    /**
+     * Gets a constructor from an object.
+     *
+     * @param object        The object.
+     * @param argumentTypes The types of the arguments to the constructor.
+     * @return The constructor from the object, or null if it cannot be retrieved.
+     */
+    public static Constructor<?> getConstructor(Object object, Class<?>... argumentTypes) {
+        try {
+            final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+            
+            try {
+                return clazz.getDeclaredConstructor(argumentTypes);
+            } catch (NoSuchMethodException | SecurityException ignored) {
+            }
+            
+            try {
+                return clazz.getConstructor(argumentTypes);
+            } catch (NoSuchMethodException | SecurityException ignored) {
+            }
+            
+            return getAllConstructors(clazz).stream().filter(e -> {
+                final Class<?>[] constructorArgumentTypes = e.getParameterTypes();
+                return ((constructorArgumentTypes.length == argumentTypes.length) &&
+                        Arrays.stream(constructorArgumentTypes).noneMatch(arg -> arg.getSimpleName().equals("IndicateReloadClass")) &&
+                        IntStream.range(0, argumentTypes.length).boxed().noneMatch(i ->
+                                (argumentTypes[i] == null) ? constructorArgumentTypes[i].isPrimitive() :
+                                ((constructorArgumentTypes[i] != argumentTypes[i]) &&
+                                        (ObjectCastUtility.toPrimitiveClass(constructorArgumentTypes[i]) != ObjectCastUtility.toPrimitiveClass(argumentTypes[i])))));
+            }).findFirst().orElseThrow(() -> new MethodNotFoundException(StringUtility.constructorString(clazz, argumentTypes)));
+            
+        } catch (Exception ignored) {
+            return null;
+        }
+    }
+    
+    /**
+     * Gets a list of all fields from a class.
+     *
+     * @param clazz The class.
+     * @return The list of all fields from the class, or an empty list if it cannot be retrieved.
+     * @see #getAllFields(Object)
+     */
+    public static List<Field> getAllFields(Class<?> clazz) {
+        return getAllFields((Object) clazz);
+    }
+    
+    /**
+     * Gets a list of all fields from an object.
+     *
+     * @param object The object.
+     * @return The list of all fields from the object, or an empty list if it cannot be retrieved.
+     */
+    public static List<Field> getAllFields(Object object) {
+        try {
+            final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+            
+            final Map<String, Field> fields = new LinkedHashMap<>();
+            for (Class<?> current = clazz; current != null; current = current.getSuperclass()) {
+                Arrays.stream(current.getDeclaredFields()).forEachOrdered(e ->
+                        fields.put(StringUtility.fieldString(clazz, e.getName()), e));
+            }
+            return new ArrayList<>(fields.values());
+            
+        } catch (Exception ignored) {
+            return new ArrayList<>();
+        }
+    }
+    
+    /**
+     * Gets a field from a class.
+     *
+     * @param clazz     The class.
+     * @param fieldName The name of the field.
+     * @return The field from the class, or null if it cannot be retrieved.
+     * @see #getField(Object, String)
+     */
+    public static Field getField(Class<?> clazz, String fieldName) {
+        return getField((Object) clazz, fieldName);
+    }
+    
+    /**
+     * Gets a field from an object.
+     *
+     * @param object    The object.
+     * @param fieldName The name of the field.
+     * @return The field from the object, or null if it cannot be retrieved.
+     */
+    public static Field getField(Object object, String fieldName) {
+        try {
+            final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+            
+            try {
+                return clazz.getDeclaredField(fieldName);
+            } catch (NoSuchFieldException | SecurityException ignored) {
+            }
+            
+            try {
+                return clazz.getField(fieldName);
+            } catch (NoSuchFieldException | SecurityException ignored) {
+            }
+            
+            return getAllFields(clazz).stream().filter(e -> e.getName().equals(fieldName))
+                    .findFirst().orElseThrow(() -> new FieldNotFoundException(StringUtility.fieldString(clazz, fieldName)));
+            
+        } catch (Exception ignored) {
+            return null;
         }
     }
     
@@ -298,10 +800,26 @@ public final class TestUtils {
      * @param fieldName The name of the field to get.
      * @return The value of the field from the class.
      * @throws AssertionError When there is an exception while getting the field.
-     * @see #getField(Class, Object, String)
+     * @see #getFieldValue(Object, String)
      */
-    public static Object getField(Class<?> clazz, String fieldName) throws AssertionError {
-        return getField(clazz, null, fieldName);
+    public static Object getFieldValue(Class<?> clazz, String fieldName) throws AssertionError {
+        return getFieldValue((Object) clazz, fieldName);
+    }
+    
+    /**
+     * Gets the value of a field from a class.
+     *
+     * @param clazz     The class.
+     * @param type      The type of the field.
+     * @param fieldName The name of the field to get.
+     * @param <T>       The type of the field.
+     * @return The value of the field from the class.
+     * @throws AssertionError When there is an exception while getting the field.
+     * @see #getFieldValue(Class, String)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T getFieldValue(Class<?> clazz, Class<T> type, String fieldName) throws AssertionError {
+        return (T) getFieldValue(clazz, fieldName);
     }
     
     /**
@@ -311,155 +829,110 @@ public final class TestUtils {
      * @param fieldName The name of the field to get.
      * @return The value of the field from the object.
      * @throws AssertionError When there is an exception while getting the field.
-     * @see #getField(Class, Object, String)
-     */
-    public static Object getField(Object object, String fieldName) throws AssertionError {
-        return getField(((object != null) ? object.getClass() : null), object, fieldName);
-    }
-    
-    /**
-     * Sets the value of a field of an object or class.
-     *
-     * @param clazz     The class.
-     * @param object    The object.
-     * @param fieldName The name of the field to set.
-     * @param value     The value to set.
-     * @return Whether the field of the object or class was successfully set or not.
-     * @throws AssertionError When there is an exception while setting the field.
      */
     @SuppressWarnings("deprecation")
-    private static boolean setField(Class<?> clazz, Object object, String fieldName, Object value) throws AssertionError {
-        try {
-            if (clazz.getSimpleName().contains("MockitoMock")) {
-                Whitebox.setInternalState(((object == null) ? clazz : object), fieldName, value);
-                return Objects.equals(getField(clazz, object, fieldName), value);
-            }
-            
-            try {
-                Field field = clazz.getDeclaredField(fieldName);
-                boolean isAccessible = field.isAccessible();
-                field.setAccessible(true);
-                field.set(object, value);
-                boolean success = Objects.equals(field.get(object), value);
-                field.setAccessible(isAccessible);
-                return success;
-                
-            } catch (NoSuchFieldException retry) {
-                Class<?> superClazz = clazz.getSuperclass();
-                if (superClazz != null) {
-                    return setField(superClazz, object, fieldName, value);
-                } else {
-                    throw retry;
-                }
-            }
-            
-        } catch (Exception e) {
-            AssertWrapper.fail("Attempted to set the field " + StringUtility.fieldString(clazz, fieldName) +
-                    " but an exception occurred");
-            throw new AssertionError(e);
-        }
-    }
-    
-    /**
-     * Sets the value of a field of a class.
-     *
-     * @param clazz     The class.
-     * @param fieldName The name of the field to set.
-     * @param value     The value to set.
-     * @return Whether the field of the class was successfully set or not.
-     * @throws AssertionError When there is an exception while setting the field.
-     * @see #setField(Class, Object, String, Object)
-     */
-    public static boolean setField(Class<?> clazz, String fieldName, Object value) throws AssertionError {
-        return setField(clazz, null, fieldName, value);
-    }
-    
-    /**
-     * Sets the value of a field of an object.
-     *
-     * @param object    The object.
-     * @param fieldName The name of the field to set.
-     * @param value     The value to set.
-     * @return Whether the field of the object was successfully set or not.
-     * @throws AssertionError When there is an exception while setting the field.
-     * @see #setField(Class, Object, String, Object)
-     */
-    public static boolean setField(Object object, String fieldName, Object value) throws AssertionError {
-        return setField(((object != null) ? object.getClass() : null), object, fieldName, value);
-    }
-    
-    /**
-     * Gets an enum from a class.
-     *
-     * @param clazz    The class.
-     * @param enumName The name of the enum.
-     * @return The enum from the class, or null if it cannot be retrieved.
-     */
-    public static Class<?> getEnum(Class<?> clazz, String enumName) {
-        try {
-            return Class.forName(clazz.getName() + '$' + enumName);
-            
-        } catch (Exception e) {
-            AssertWrapper.fail("Attempted to get the enum " + StringUtility.fieldString(clazz, enumName) +
-                    " but an exception occurred");
-            throw new AssertionError(e);
-        }
-    }
-    
-    /**
-     * Invokes a method of an object.
-     *
-     * @param object     The object.
-     * @param methodName The name of the method.
-     * @param arguments  The arguments to the method.
-     * @return The result of the method invocation.
-     * @throws AssertionError When there is an exception while invoking the method.
-     */
-    public static Object invokeMethod(Object object, String methodName, Object... arguments) throws AssertionError {
-        Class<?> clazz = (object instanceof Class<?>) ? (Class<?>) object : object.getClass();
+    public static Object getFieldValue(Object object, String fieldName) throws AssertionError {
+        final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
         
         try {
             try {
-                return Whitebox.invokeMethod(((object instanceof Class<?>) ? clazz : object), Objects.requireNonNull(methodName), arguments);
+                return Whitebox.getInternalState(object, Objects.requireNonNull(fieldName));
                 
-            } catch (MethodNotFoundException | IllegalAccessException retry) {
-                Class<?>[] argumentTypes = Arrays.stream(arguments).map(arg -> (arg == null) ? null : arg.getClass()).toArray(Class<?>[]::new);
-                
-                for (Method method : clazz.getDeclaredMethods()) {
-                    Class<?>[] methodArgumentTypes = method.getParameterTypes();
-                    if (!method.getName().equals(methodName) || (methodArgumentTypes.length != arguments.length)) {
-                        continue;
-                    }
-                    
-                    boolean hit = true;
-                    for (int i = 0; i < argumentTypes.length; i++) {
-                        if (((argumentTypes[i] != null) && (methodArgumentTypes[i] != argumentTypes[i]) &&
-                                (methodArgumentTypes[i] != PrimitiveWrapper.getPrimitiveFromWrapperType(argumentTypes[i]))) ||
-                                ((argumentTypes[i] == null) && methodArgumentTypes[i].isPrimitive()) ||
-                                (methodArgumentTypes[i].getSimpleName().equals("IndicateReloadClass"))) {
-                            hit = false;
-                            break;
-                        }
-                    }
-                    if (hit) {
-                        argumentTypes = methodArgumentTypes;
-                        break;
-                    }
+            } catch (Exception ignored) {
+                final Field field = getField(clazz, fieldName);
+                if (field == null) {
+                    throw new FieldNotFoundException(StringUtility.fieldString(clazz, fieldName));
                 }
                 
-                return Whitebox.invokeMethod(((object instanceof Class<?>) ? clazz : object), methodName, argumentTypes, arguments);
+                final boolean isAccessible = field.isAccessible();
+                try {
+                    field.setAccessible(true);
+                    return field.get(object);
+                } finally {
+                    field.setAccessible(isAccessible);
+                }
             }
             
-        } catch (Throwable e) {
-            AssertWrapper.fail("Attempted to invoke the method " + StringUtility.methodString(clazz, methodName,
-                    Arrays.stream(arguments).map(arg -> (arg == null) ? null : arg.getClass()).toArray(Class<?>[]::new)) +
-                    " but an exception occurred");
+        } catch (Exception e) {
+            AssertWrapper.fail("Attempted to get the value of the field " + StringUtility.fieldString(clazz, fieldName) +
+                    " but an exception occurred", e);
             throw new AssertionError(e);
         }
     }
     
     /**
-     * Invokes a method of a class.
+     * Gets the value of a field from an object.
+     *
+     * @param object    The object.
+     * @param type      The type of the field.
+     * @param fieldName The name of the field to get.
+     * @param <T>       The type of the field.
+     * @return The value of the field from the object.
+     * @throws AssertionError When there is an exception while getting the field.
+     * @see #getFieldValue(Object, String)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T getFieldValue(Object object, Class<T> type, String fieldName) throws AssertionError {
+        return (T) getFieldValue(object, fieldName);
+    }
+    
+    /**
+     * Sets the value of a field from a class.
+     *
+     * @param clazz     The class.
+     * @param fieldName The name of the field to set.
+     * @param value     The value to set.
+     * @return Whether the field from the class was successfully set or not.
+     * @throws AssertionError When there is an exception while setting the field.
+     * @see #setFieldValue(Object, String, Object)
+     */
+    public static boolean setFieldValue(Class<?> clazz, String fieldName, Object value) throws AssertionError {
+        return setFieldValue((Object) clazz, fieldName, value);
+    }
+    
+    /**
+     * Sets the value of a field from an object.
+     *
+     * @param object    The object.
+     * @param fieldName The name of the field to set.
+     * @param value     The value to set.
+     * @return Whether the field from the object was successfully set or not.
+     * @throws AssertionError When there is an exception while setting the field.
+     */
+    @SuppressWarnings("deprecation")
+    public static boolean setFieldValue(Object object, String fieldName, Object value) throws AssertionError {
+        final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+        
+        try {
+            try {
+                Whitebox.setInternalState(object, Objects.requireNonNull(fieldName), value);
+                return Objects.equals(Whitebox.getInternalState(object, fieldName), value);
+                
+            } catch (Exception ignored) {
+                final Field field = getField(clazz, fieldName);
+                if (field == null) {
+                    throw new FieldNotFoundException(StringUtility.fieldString(clazz, fieldName));
+                }
+                
+                final boolean isAccessible = field.isAccessible();
+                try {
+                    field.setAccessible(true);
+                    field.set(object, value);
+                    return Objects.equals(field.get(object), value);
+                } finally {
+                    field.setAccessible(isAccessible);
+                }
+            }
+            
+        } catch (Exception e) {
+            AssertWrapper.fail("Attempted to set the value of the field " + StringUtility.fieldString(clazz, fieldName) +
+                    " but an exception occurred", e);
+            throw new AssertionError(e);
+        }
+    }
+    
+    /**
+     * Invokes a method from a class.
      *
      * @param clazz      The class.
      * @param methodName The name of the method.
@@ -473,7 +946,81 @@ public final class TestUtils {
     }
     
     /**
-     * Invokes a constructor of a class.
+     * Invokes a method from a class.
+     *
+     * @param clazz      The class.
+     * @param returnType The return type of the method.
+     * @param methodName The name of the method.
+     * @param arguments  The arguments to the method.
+     * @param <T>        The return type of the method.
+     * @return The result of the method invocation.
+     * @throws AssertionError When there is an exception while invoking the method.
+     * @see #invokeMethod(Class, String, Object...)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T invokeMethod(Class<?> clazz, Class<T> returnType, String methodName, Object... arguments) throws AssertionError {
+        return (T) invokeMethod(clazz, methodName, arguments);
+    }
+    
+    /**
+     * Invokes a method from an object.
+     *
+     * @param object     The object.
+     * @param methodName The name of the method.
+     * @param arguments  The arguments to the method.
+     * @return The result of the method invocation.
+     * @throws AssertionError When there is an exception while invoking the method.
+     */
+    @SuppressWarnings("deprecation")
+    public static Object invokeMethod(Object object, String methodName, Object... arguments) throws AssertionError {
+        final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+        final Class<?>[] argumentTypes = Arrays.stream(arguments).map(ObjectCastUtility::toClass).toArray(Class<?>[]::new);
+        
+        try {
+            try {
+                return Whitebox.invokeMethod(object, Objects.requireNonNull(methodName), arguments);
+                
+            } catch (Exception ignored) {
+                final Method method = getMethod(clazz, methodName, argumentTypes);
+                if (method == null) {
+                    throw new MethodNotFoundException(StringUtility.methodString(clazz, methodName, argumentTypes));
+                }
+                
+                final boolean isAccessible = method.isAccessible();
+                try {
+                    method.setAccessible(true);
+                    return method.invoke(object, arguments);
+                } finally {
+                    method.setAccessible(isAccessible);
+                }
+            }
+            
+        } catch (Throwable e) {
+            AssertWrapper.fail("Attempted to invoke the method " + StringUtility.methodString(object, methodName, argumentTypes) +
+                    " but an exception occurred", e);
+            throw new AssertionError(e);
+        }
+    }
+    
+    /**
+     * Invokes a method from an object.
+     *
+     * @param object     The object.
+     * @param returnType The return type of the method.
+     * @param methodName The name of the method.
+     * @param arguments  The arguments to the method.
+     * @param <T>        The return type of the method.
+     * @return The result of the method invocation.
+     * @throws AssertionError When there is an exception while invoking the method.
+     * @see #invokeMethod(Object, String, Object...)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T invokeMethod(Object object, Class<T> returnType, String methodName, Object... arguments) throws AssertionError {
+        return (T) invokeMethod(object, methodName, arguments);
+    }
+    
+    /**
+     * Invokes a constructor.
      *
      * @param clazz     The class.
      * @param arguments The arguments to the constructor.
@@ -481,43 +1028,33 @@ public final class TestUtils {
      * @return The constructed instance of the class, or null if there was there was an error.
      * @throws AssertionError When there is an exception while invoking the constructor.
      */
+    @SuppressWarnings({"deprecation", "unchecked"})
     public static <T> T invokeConstructor(Class<T> clazz, Object... arguments) throws AssertionError {
+        Objects.requireNonNull(clazz);
+        final Class<?>[] argumentTypes = Arrays.stream(arguments).map(ObjectCastUtility::toClass).toArray(Class<?>[]::new);
+        
         try {
             try {
                 return Whitebox.invokeConstructor(clazz, arguments);
                 
-            } catch (ConstructorNotFoundException | IllegalAccessException retry) {
-                Class<?>[] argumentTypes = Arrays.stream(arguments).map(arg -> (arg == null) ? null : arg.getClass()).toArray(Class<?>[]::new);
-                
-                for (Constructor<?> constructor : clazz.getDeclaredConstructors()) {
-                    Class<?>[] constructorArgumentTypes = constructor.getParameterTypes();
-                    if (constructorArgumentTypes.length != arguments.length) {
-                        continue;
-                    }
-                    
-                    boolean hit = true;
-                    for (int i = 0; i < argumentTypes.length; i++) {
-                        if (((argumentTypes[i] != null) && (constructorArgumentTypes[i] != argumentTypes[i]) &&
-                                (constructorArgumentTypes[i] != PrimitiveWrapper.getPrimitiveFromWrapperType(argumentTypes[i]))) ||
-                                ((argumentTypes[i] == null) && constructorArgumentTypes[i].isPrimitive()) ||
-                                (constructorArgumentTypes[i].getSimpleName().equals("IndicateReloadClass"))) {
-                            hit = false;
-                            break;
-                        }
-                    }
-                    if (hit) {
-                        argumentTypes = constructorArgumentTypes;
-                        break;
-                    }
+            } catch (Exception ignored) {
+                final Constructor<T> constructor = (Constructor<T>) getConstructor(clazz, argumentTypes);
+                if ((constructor == null) || (constructor.getDeclaringClass() != clazz)) {
+                    throw new ConstructorNotFoundException(StringUtility.constructorString(clazz, argumentTypes));
                 }
                 
-                return Whitebox.invokeConstructor(clazz, argumentTypes, arguments);
+                final boolean isAccessible = constructor.isAccessible();
+                try {
+                    constructor.setAccessible(true);
+                    return constructor.newInstance(arguments);
+                } finally {
+                    constructor.setAccessible(isAccessible);
+                }
             }
             
         } catch (Throwable e) {
-            AssertWrapper.fail("Attempted to invoke the constructor " + StringUtility.methodString(clazz, ((clazz != null) ? clazz.getSimpleName() : null),
-                    Arrays.stream(arguments).map(arg -> (arg == null) ? null : arg.getClass()).toArray(Class<?>[]::new)) +
-                    " but an exception occurred");
+            AssertWrapper.fail("Attempted to invoke the constructor " + StringUtility.constructorString(clazz, argumentTypes) +
+                    " but an exception occurred", e);
             throw new AssertionError(e);
         }
     }
@@ -533,23 +1070,48 @@ public final class TestUtils {
      */
     @SuppressWarnings("SuspiciousInvocationHandlerImplementation")
     public static Object invokeInterfaceDefaultMethod(Class<?> clazz, String methodName, Object... arguments) throws AssertionError {
+        Objects.requireNonNull(clazz);
+        final Class<?>[] argumentTypes = Arrays.stream(arguments).map(ObjectCastUtility::toClass).toArray(Class<?>[]::new);
+        
         try {
-            final Object target = Proxy.newProxyInstance(
-                    Thread.currentThread().getContextClassLoader(), new Class[] {clazz},
-                    (Object proxy, Method method, Object[] args) -> null);
-            final Method method = clazz.getMethod(Objects.requireNonNull(methodName));
-            final Field field = MethodHandles.Lookup.class.getDeclaredField("IMPL_LOOKUP");
-            field.setAccessible(true);
-            final MethodHandles.Lookup lookup = (MethodHandles.Lookup) field.get(null);
-            return lookup.unreflectSpecial(method, method.getDeclaringClass())
-                    .bindTo(target).invokeWithArguments(arguments);
+            if (!clazz.isInterface()) {
+                throw new InvalidClassException(clazz.getSimpleName() + " is not an interface");
+            }
+            
+            final Method interfaceMethod = getMethod(clazz, methodName, argumentTypes);
+            if (interfaceMethod == null) {
+                throw new MethodNotFoundException(StringUtility.methodString(clazz, methodName, argumentTypes));
+            }
+            
+            return (getFieldValue(MethodHandles.Lookup.class, MethodHandles.Lookup.class, "IMPL_LOOKUP"))
+                    .unreflectSpecial(interfaceMethod, interfaceMethod.getDeclaringClass())
+                    .bindTo(Proxy.newProxyInstance(
+                            Thread.currentThread().getContextClassLoader(), new Class[] {clazz},
+                            (Object proxy, Method method, Object[] args) -> null))
+                    .invokeWithArguments(arguments);
             
         } catch (Throwable e) {
-            AssertWrapper.fail("Attempted to invoke the method " + StringUtility.methodString(clazz, methodName,
-                    Arrays.stream(arguments).map(arg -> (arg == null) ? null : arg.getClass()).toArray(Class<?>[]::new)) +
-                    " but an exception occurred");
+            AssertWrapper.fail("Attempted to invoke the interface method " + StringUtility.methodString(clazz, methodName, argumentTypes) +
+                    " but an exception occurred", e);
             throw new AssertionError(e);
         }
+    }
+    
+    /**
+     * Invokes a default method of an interface and returns the result.
+     *
+     * @param clazz      The class.
+     * @param returnType The return type of the method.
+     * @param methodName The name of the method.
+     * @param arguments  The arguments to the method.
+     * @param <T>        The return type of the method.
+     * @return The result of the invocation.
+     * @throws AssertionError When there is an exception while invoking the interface default method.
+     * @see #invokeInterfaceDefaultMethod(Class, String, Object...)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> T invokeInterfaceDefaultMethod(Class<?> clazz, Class<T> returnType, String methodName, Object... arguments) throws AssertionError {
+        return (T) invokeInterfaceDefaultMethod(clazz, methodName, arguments);
     }
     
     
@@ -566,9 +1128,23 @@ public final class TestUtils {
          * Calls Assert.fail().
          *
          * @param message The message.
+         * @see Assert#fail(String)
          */
         public static void fail(String message) {
             Assert.fail(message);
+        }
+        
+        /**
+         * Calls Assert.fail().
+         *
+         * @param message The message.
+         * @param cause   The throwable cause of the failure,
+         * @see #fail(String, Throwable)
+         */
+        public static void fail(String message, Throwable cause) {
+            final String causeMessage = (cause == null) ? "" : (StringUtility.classString(cause.getClass()) + ": " +
+                    cause.getMessage().replaceAll("\\$MockitoMock\\$\\d*", ""));
+            fail(message + ": [" + causeMessage + ']');
         }
         
         /**
@@ -577,6 +1153,7 @@ public final class TestUtils {
          * @param message  The message on a failure.
          * @param expected The expected object.
          * @param actual   The actual object.
+         * @see Assert#assertEquals(Object, Object)
          */
         public static void assertEquals(String message, Object expected, Object actual) {
             Assert.assertEquals(message, expected, actual);

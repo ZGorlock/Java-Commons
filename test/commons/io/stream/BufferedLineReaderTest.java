@@ -148,8 +148,8 @@ public class BufferedLineReaderTest {
         Assert.assertNotNull(sut);
         Assert.assertTrue(sut instanceof BufferedLineReader);
         Assert.assertTrue(sut instanceof BufferedReader);
-        Assert.assertEquals(mockReader, TestUtils.getField(sut, "in"));
-        Assert.assertEquals(BufferedLineReader.BUFFER_SIZE, ((char[]) TestUtils.getField(sut, "cb")).length);
+        Assert.assertEquals(mockReader, TestUtils.getFieldValue(sut, "in"));
+        Assert.assertEquals(BufferedLineReader.BUFFER_SIZE, TestUtils.getFieldValue(sut, char[].class, "cb").length);
     }
     
     /**

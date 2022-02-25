@@ -138,7 +138,7 @@ public class FileTransferInterceptorTest {
         context.setInputStream(inputStream);
         Mockito.doAnswer(invocationOnMock -> {
             ProgressBarInputStream progressBarInputStream = invocationOnMock.getArgument(0);
-            ProgressBar progressBar = (ProgressBar) TestUtils.getField(progressBarInputStream, "progressBar");
+            ProgressBar progressBar = TestUtils.getFieldValue(progressBarInputStream, ProgressBar.class, "progressBar");
             Assert.assertEquals("test.txt", progressBar.getTitle());
             Assert.assertEquals(500, progressBar.getTotal());
             Assert.assertEquals("B", progressBar.getUnits());
@@ -232,7 +232,7 @@ public class FileTransferInterceptorTest {
         context.setOutputStream(outputStream);
         Mockito.doAnswer(invocationOnMock -> {
             ProgressBarOutputStream progressBarOutputStream = invocationOnMock.getArgument(0);
-            ProgressBar progressBar = (ProgressBar) TestUtils.getField(progressBarOutputStream, "progressBar");
+            ProgressBar progressBar = TestUtils.getFieldValue(progressBarOutputStream, ProgressBar.class, "progressBar");
             Assert.assertEquals("test.txt", progressBar.getTitle());
             Assert.assertEquals(660, progressBar.getTotal());
             Assert.assertEquals("B", progressBar.getUnits());
@@ -261,7 +261,7 @@ public class FileTransferInterceptorTest {
         context.setOutputStream(outputStream);
         Mockito.doAnswer(invocationOnMock -> {
             ProgressBarOutputStream progressBarOutputStream = invocationOnMock.getArgument(0);
-            ProgressBar progressBar = (ProgressBar) TestUtils.getField(progressBarOutputStream, "progressBar");
+            ProgressBar progressBar = TestUtils.getFieldValue(progressBarOutputStream, ProgressBar.class, "progressBar");
             Assert.assertEquals("test.txt", progressBar.getTitle());
             Assert.assertEquals(500, progressBar.getTotal());
             Assert.assertEquals("B", progressBar.getUnits());

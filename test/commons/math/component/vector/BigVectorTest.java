@@ -1790,7 +1790,7 @@ public class BigVectorTest {
         component1.copyMeta(component2);
         Assert.assertEquals(3, component2.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("9.1"), new BigDecimal("6.3"), new BigDecimal("1.7")}, component2.getRawComponents());
-        MathContext component2MathContext = (MathContext) TestUtils.getField(component2.getHandler(), "mathContext");
+        MathContext component2MathContext = TestUtils.getFieldValue(component2.getHandler(), MathContext.class, "mathContext");
         Assert.assertEquals(mathContext.getPrecision(), component2MathContext.getPrecision());
         Assert.assertEquals(mathContext.getRoundingMode(), component2MathContext.getRoundingMode());
         
@@ -1805,7 +1805,7 @@ public class BigVectorTest {
         component3.copyMeta(component4);
         Assert.assertEquals(5, component4.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("9.1"), new BigDecimal("6.3"), new BigDecimal("1.7"), new BigDecimal("0.8"), new BigDecimal("5.2")}, component4.getRawComponents());
-        MathContext component4MathContext = (MathContext) TestUtils.getField(component4.getHandler(), "mathContext");
+        MathContext component4MathContext = TestUtils.getFieldValue(component4.getHandler(), MathContext.class, "mathContext");
         Assert.assertEquals(mathContext.getPrecision(), component4MathContext.getPrecision());
         Assert.assertEquals(mathContext.getRoundingMode(), component4MathContext.getRoundingMode());
     }
@@ -2035,7 +2035,7 @@ public class BigVectorTest {
         //standard
         sut = new BigVector(8.5, 1.5, -5.006);
         Assert.assertEquals(3, sut.getDimensionality());
-        TestUtils.setField(sut, "dimensionality", 5);
+        TestUtils.setFieldValue(sut, "dimensionality", 5);
         Assert.assertEquals(5, sut.getDimensionality());
         sut.calculateDimensionality();
         Assert.assertEquals(3, sut.getDimensionality());
@@ -2043,7 +2043,7 @@ public class BigVectorTest {
         //big
         sut = new BigVector(new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654"));
         Assert.assertEquals(5, sut.getDimensionality());
-        TestUtils.setField(sut, "dimensionality", 3);
+        TestUtils.setFieldValue(sut, "dimensionality", 3);
         Assert.assertEquals(3, sut.getDimensionality());
         sut.calculateDimensionality();
         Assert.assertEquals(5, sut.getDimensionality());
@@ -2239,7 +2239,7 @@ public class BigVectorTest {
     public void testGetMathPrecision() throws Exception {
         BigVector component = new BigVector(new BigDecimal("8.1018948065165015410948016"), new BigDecimal("6.689907845103061051849840560"), new BigDecimal("7.087487098020624098401951984149"), new BigDecimal("2.670084540981798465797874161453451313"));
         MathContext newMathContext = new MathContext(MathUtility.dice(6, 4), RoundingMode.DOWN);
-        TestUtils.setField(component.getHandler(), "mathContext", newMathContext);
+        TestUtils.setFieldValue(component.getHandler(), "mathContext", newMathContext);
         Assert.assertEquals(newMathContext.getPrecision(), component.getMathPrecision());
     }
     
@@ -2848,7 +2848,7 @@ public class BigVectorTest {
         BigVector component = new BigVector(new BigDecimal("8.1018948065165015410948016"), new BigDecimal("6.689907845103061051849840560"), new BigDecimal("7.087487098020624098401951984149"), new BigDecimal("2.670084540981798465797874161453451313"));
         MathContext newMathContext = new MathContext(MathUtility.dice(6, 4), RoundingMode.DOWN);
         component.setMathPrecision(newMathContext.getPrecision());
-        MathContext mathContext = (MathContext) TestUtils.getField(component.getHandler(), "mathContext");
+        MathContext mathContext = TestUtils.getFieldValue(component.getHandler(), MathContext.class, "mathContext");
         Assert.assertEquals(newMathContext.getPrecision(), mathContext.getPrecision());
     }
     
