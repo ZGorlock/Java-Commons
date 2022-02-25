@@ -1,5 +1,5 @@
 /*
- * File:    ObjectCastUtility.java
+ * File:    CastUtility.java
  * Package: commons.object
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
@@ -18,14 +18,14 @@ import org.slf4j.LoggerFactory;
 /**
  * A resource class that provides additional object casting functionality.
  */
-public final class ObjectCastUtility {
+public final class CastUtility {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(ObjectCastUtility.class);
+    private static final Logger logger = LoggerFactory.getLogger(CastUtility.class);
     
     
     //Static Methods

@@ -20,7 +20,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import commons.math.BoundUtility;
-import commons.object.ObjectCastUtility;
+import commons.object.CastUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1218,7 +1218,7 @@ public final class StringUtility {
      * @return The class string.
      */
     public static String classString(Object object) {
-        final Class<?> clazz = ObjectCastUtility.toClass(object);
+        final Class<?> clazz = CastUtility.toClass(object);
         return ((clazz == null) ? "null" : clazz.getSimpleName()
                 .replaceAll("\\$MockitoMock\\$\\d*", "").replaceAll("^.*\\$", ""));
     }
@@ -1243,7 +1243,7 @@ public final class StringUtility {
      * @return The inner class string.
      */
     public static String innerClassString(Object object, String innerClassName) {
-        final Class<?> clazz = ObjectCastUtility.toClass(object);
+        final Class<?> clazz = CastUtility.toClass(object);
         return classString(clazz) + '$' + innerClassName;
     }
     
@@ -1269,7 +1269,7 @@ public final class StringUtility {
      * @return The method string.
      */
     public static String methodString(Object object, String methodName, Class<?>... argumentClasses) {
-        final Class<?> clazz = ObjectCastUtility.toClass(object);
+        final Class<?> clazz = CastUtility.toClass(object);
         return classString(clazz) + "::" + methodName +
                 Arrays.stream(argumentClasses).sequential().map(StringUtility::classString)
                         .collect(Collectors.joining(", ", "(", ")"));
@@ -1296,7 +1296,7 @@ public final class StringUtility {
      * @see #methodString(Class, String, Class[])
      */
     public static String constructorString(Object object, Class<?>... argumentClasses) {
-        final Class<?> clazz = ObjectCastUtility.toClass(object);
+        final Class<?> clazz = CastUtility.toClass(object);
         return methodString(clazz, classString(clazz), argumentClasses);
     }
     
@@ -1320,7 +1320,7 @@ public final class StringUtility {
      * @return The field string.
      */
     public static String fieldString(Object object, String fieldName) {
-        final Class<?> clazz = ObjectCastUtility.toClass(object);
+        final Class<?> clazz = CastUtility.toClass(object);
         return classString(clazz) + "::" + fieldName;
     }
     

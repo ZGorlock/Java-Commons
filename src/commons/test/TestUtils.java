@@ -23,7 +23,7 @@ import java.util.Objects;
 import java.util.stream.IntStream;
 
 import commons.function.Action;
-import commons.object.ObjectCastUtility;
+import commons.object.CastUtility;
 import commons.object.string.StringUtility;
 import org.junit.Assert;
 import org.powermock.reflect.Whitebox;
@@ -577,7 +577,7 @@ public final class TestUtils {
      */
     public static List<Method> getAllMethods(Object object) {
         try {
-            final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+            final Class<?> clazz = Objects.requireNonNull(CastUtility.toClass(object));
             
             final List<Method> methods = new ArrayList<>();
             for (Class<?> current = clazz; current != null; current = current.getSuperclass()) {
@@ -613,7 +613,7 @@ public final class TestUtils {
      */
     public static Method getMethod(Object object, String methodName, Class<?>... argumentTypes) {
         try {
-            final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+            final Class<?> clazz = Objects.requireNonNull(CastUtility.toClass(object));
             
             try {
                 return clazz.getDeclaredMethod(methodName, argumentTypes);
@@ -632,7 +632,7 @@ public final class TestUtils {
                         IntStream.range(0, argumentTypes.length).boxed().noneMatch(i ->
                                 (argumentTypes[i] == null) ? methodArgumentTypes[i].isPrimitive() :
                                 ((methodArgumentTypes[i] != argumentTypes[i]) &&
-                                        (ObjectCastUtility.toPrimitiveClass(methodArgumentTypes[i]) != ObjectCastUtility.toPrimitiveClass(argumentTypes[i])))));
+                                        (CastUtility.toPrimitiveClass(methodArgumentTypes[i]) != CastUtility.toPrimitiveClass(argumentTypes[i])))));
             }).findFirst().orElseThrow(() -> new MethodNotFoundException(StringUtility.methodString(clazz, methodName, argumentTypes)));
         } catch (Exception ignored) {
             return null;
@@ -658,7 +658,7 @@ public final class TestUtils {
      */
     public static List<Constructor<?>> getAllConstructors(Object object) {
         try {
-            final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+            final Class<?> clazz = Objects.requireNonNull(CastUtility.toClass(object));
             
             final List<Constructor<?>> constructors = new ArrayList<>();
             for (Class<?> current = clazz; current != null; current = current.getSuperclass()) {
@@ -692,7 +692,7 @@ public final class TestUtils {
      */
     public static Constructor<?> getConstructor(Object object, Class<?>... argumentTypes) {
         try {
-            final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+            final Class<?> clazz = Objects.requireNonNull(CastUtility.toClass(object));
             
             try {
                 return clazz.getDeclaredConstructor(argumentTypes);
@@ -711,7 +711,7 @@ public final class TestUtils {
                         IntStream.range(0, argumentTypes.length).boxed().noneMatch(i ->
                                 (argumentTypes[i] == null) ? constructorArgumentTypes[i].isPrimitive() :
                                 ((constructorArgumentTypes[i] != argumentTypes[i]) &&
-                                        (ObjectCastUtility.toPrimitiveClass(constructorArgumentTypes[i]) != ObjectCastUtility.toPrimitiveClass(argumentTypes[i])))));
+                                        (CastUtility.toPrimitiveClass(constructorArgumentTypes[i]) != CastUtility.toPrimitiveClass(argumentTypes[i])))));
             }).findFirst().orElseThrow(() -> new MethodNotFoundException(StringUtility.constructorString(clazz, argumentTypes)));
             
         } catch (Exception ignored) {
@@ -738,7 +738,7 @@ public final class TestUtils {
      */
     public static List<Field> getAllFields(Object object) {
         try {
-            final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+            final Class<?> clazz = Objects.requireNonNull(CastUtility.toClass(object));
             
             final Map<String, Field> fields = new LinkedHashMap<>();
             for (Class<?> current = clazz; current != null; current = current.getSuperclass()) {
@@ -773,7 +773,7 @@ public final class TestUtils {
      */
     public static Field getField(Object object, String fieldName) {
         try {
-            final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+            final Class<?> clazz = Objects.requireNonNull(CastUtility.toClass(object));
             
             try {
                 return clazz.getDeclaredField(fieldName);
@@ -832,7 +832,7 @@ public final class TestUtils {
      */
     @SuppressWarnings("deprecation")
     public static Object getFieldValue(Object object, String fieldName) throws AssertionError {
-        final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+        final Class<?> clazz = Objects.requireNonNull(CastUtility.toClass(object));
         
         try {
             try {
@@ -901,7 +901,7 @@ public final class TestUtils {
      */
     @SuppressWarnings("deprecation")
     public static boolean setFieldValue(Object object, String fieldName, Object value) throws AssertionError {
-        final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
+        final Class<?> clazz = Objects.requireNonNull(CastUtility.toClass(object));
         
         try {
             try {
@@ -973,8 +973,8 @@ public final class TestUtils {
      */
     @SuppressWarnings("deprecation")
     public static Object invokeMethod(Object object, String methodName, Object... arguments) throws AssertionError {
-        final Class<?> clazz = Objects.requireNonNull(ObjectCastUtility.toClass(object));
-        final Class<?>[] argumentTypes = Arrays.stream(arguments).map(ObjectCastUtility::toClass).toArray(Class<?>[]::new);
+        final Class<?> clazz = Objects.requireNonNull(CastUtility.toClass(object));
+        final Class<?>[] argumentTypes = Arrays.stream(arguments).map(CastUtility::toClass).toArray(Class<?>[]::new);
         
         try {
             try {
@@ -1031,7 +1031,7 @@ public final class TestUtils {
     @SuppressWarnings({"deprecation", "unchecked"})
     public static <T> T invokeConstructor(Class<T> clazz, Object... arguments) throws AssertionError {
         Objects.requireNonNull(clazz);
-        final Class<?>[] argumentTypes = Arrays.stream(arguments).map(ObjectCastUtility::toClass).toArray(Class<?>[]::new);
+        final Class<?>[] argumentTypes = Arrays.stream(arguments).map(CastUtility::toClass).toArray(Class<?>[]::new);
         
         try {
             try {
@@ -1071,7 +1071,7 @@ public final class TestUtils {
     @SuppressWarnings("SuspiciousInvocationHandlerImplementation")
     public static Object invokeInterfaceDefaultMethod(Class<?> clazz, String methodName, Object... arguments) throws AssertionError {
         Objects.requireNonNull(clazz);
-        final Class<?>[] argumentTypes = Arrays.stream(arguments).map(ObjectCastUtility::toClass).toArray(Class<?>[]::new);
+        final Class<?>[] argumentTypes = Arrays.stream(arguments).map(CastUtility::toClass).toArray(Class<?>[]::new);
         
         try {
             if (!clazz.isInterface()) {

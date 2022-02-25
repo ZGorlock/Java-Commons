@@ -9,7 +9,7 @@ package commons.io;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import commons.object.ObjectCastUtility;
+import commons.object.CastUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -54,7 +54,7 @@ public abstract class SingletonInputHandler {
      * @return Whether the caller is the owner of the Input Handler or not.
      */
     protected boolean isOwner(Object caller) {
-        return (caller != null) && ((caller == owner.get()) || (ObjectCastUtility.toClass(caller) == owner.get()));
+        return (caller != null) && ((caller == owner.get()) || (CastUtility.toClass(caller) == owner.get()));
     }
     
     /**
