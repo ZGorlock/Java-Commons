@@ -59,7 +59,7 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({FFmpeg.class, FFmpeg.Implements.class, FFmpeg.Identifier.class, FFmpeg.Identifier.Stream.class, FFmpeg.Identifier.Chapter.class, FFmpeg.Identifier.Global.class, CmdLine.class, CommonsLogging.class, TestUtils.AssertWrapper.class})
+@PrepareForTest({FFmpeg.class, FFmpeg.Implements.class, FFmpeg.Identifier.class, FFmpeg.Identifier.Stream.class, FFmpeg.Identifier.Chapter.class, FFmpeg.Identifier.Global.class, CmdLine.class, CommonsLogging.class})
 public class FFmpegTest {
     
     //Logger
@@ -1975,7 +1975,6 @@ public class FFmpegTest {
         }
         
         PowerMockito.mockStatic(FFmpeg.class, Mockito.CALLS_REAL_METHODS);
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class, Mockito.CALLS_REAL_METHODS);
         final File testSourceOriginal = new File(testResources, "test.mkv");
         final File testDir = Filesystem.createTemporaryDirectory();
         final File testSource = new File(testDir, "source.mkv");
@@ -2424,7 +2423,6 @@ public class FFmpegTest {
                 "modifyMetadata", ArgumentMatchers.any(File.class), ArgumentMatchers.anyMap(), ArgumentMatchers.any(File.class), ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyBoolean());
         
         //invalid
-        PowerMockito.doNothing().when(TestUtils.AssertWrapper.class, "fail", ArgumentMatchers.anyString());
         Assert.assertTrue(TestUtils.invokeMethod(FFmpeg.class, String.class, "modifyMetadataHelper", testSource, MapUtility.mapOf(
                 new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")))
         ), fakeOutput, true, true).contains(
@@ -2437,7 +2435,7 @@ public class FFmpegTest {
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         null,
                         testOutput1, true, true));
-        TestUtils.assertException(NullPointerException.class, () ->
+        TestUtils.assertNoException(() ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         FFmpeg.Identifier.Global.get(), null,
                         testOutput1, true, true));
@@ -2449,31 +2447,30 @@ public class FFmpegTest {
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         null, null,
                         testOutput1, true, true));
-        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: FFmpeg::modifyMetadataHelper(null, HashMap, File, Boolean, Boolean)", () ->
+        TestUtils.assertException(AssertionError.class, "Attempted to invoke the method FFmpeg::modifyMetadataHelper(null, HashMap, File, Boolean, Boolean) but an exception occurred: [MethodNotFoundException: FFmpeg::modifyMetadataHelper(null, HashMap, File, Boolean, Boolean)]", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null, MapUtility.mapOf(
                         new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")))
                 ), fakeOutput, true, true));
-        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: FFmpeg::modifyMetadataHelper(null, Global, MetadataTags, File, Boolean, Boolean)", () ->
+        TestUtils.assertException(AssertionError.class, "Attempted to invoke the method FFmpeg::modifyMetadataHelper(null, Global, MetadataTags, File, Boolean, Boolean) but an exception occurred: [MethodNotFoundException: FFmpeg::modifyMetadataHelper(null, Global, MetadataTags, File, Boolean, Boolean)]", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null,
                         FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
                         fakeOutput, true, true));
-        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: FFmpeg::modifyMetadataHelper(File, HashMap, null, Boolean, Boolean)", () ->
+        TestUtils.assertException(AssertionError.class, "Attempted to invoke the method FFmpeg::modifyMetadataHelper(File, HashMap, null, Boolean, Boolean) but an exception occurred: [MethodNotFoundException: FFmpeg::modifyMetadataHelper(File, HashMap, null, Boolean, Boolean)]", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource, MapUtility.mapOf(
                         new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")))
                 ), null, true, true));
-        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: FFmpeg::modifyMetadataHelper(File, Global, MetadataTags, null, Boolean, Boolean)", () ->
+        TestUtils.assertException(AssertionError.class, "Attempted to invoke the method FFmpeg::modifyMetadataHelper(File, Global, MetadataTags, null, Boolean, Boolean) but an exception occurred: [MethodNotFoundException: FFmpeg::modifyMetadataHelper(File, Global, MetadataTags, null, Boolean, Boolean)]", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", testSource,
                         FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
                         null, true, true));
-        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: FFmpeg::modifyMetadataHelper(null, HashMap, null, Boolean, Boolean)", () ->
+        TestUtils.assertException(AssertionError.class, "Attempted to invoke the method FFmpeg::modifyMetadataHelper(null, HashMap, null, Boolean, Boolean) but an exception occurred: [MethodNotFoundException: FFmpeg::modifyMetadataHelper(null, HashMap, null, Boolean, Boolean)]", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null, MapUtility.mapOf(
                         new ImmutablePair<>(FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")))
                 ), null, true, true));
-        TestUtils.assertException(AssertionError.class, "org.powermock.reflect.exceptions.MethodNotFoundException: FFmpeg::modifyMetadataHelper(null, Global, MetadataTags, null, Boolean, Boolean)", () ->
+        TestUtils.assertException(AssertionError.class, "Attempted to invoke the method FFmpeg::modifyMetadataHelper(null, Global, MetadataTags, null, Boolean, Boolean) but an exception occurred: [MethodNotFoundException: FFmpeg::modifyMetadataHelper(null, Global, MetadataTags, null, Boolean, Boolean)]", () ->
                 TestUtils.invokeMethod(FFmpeg.class, "modifyMetadataHelper", null,
                         FFmpeg.Identifier.Global.get(), new FFmpeg.MediaInfo.MetadataTags(List.of("title")),
                         null, true, true));
-        PowerMockito.doCallRealMethod().when(TestUtils.AssertWrapper.class, "fail", ArgumentMatchers.anyString());
     }
     
     /**
@@ -6488,7 +6485,6 @@ public class FFmpegTest {
      * @see FFmpeg.Identifier.Stream.AllStreams
      */
     private void testIdentifierStream() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class, Mockito.CALLS_REAL_METHODS);
         FFmpeg.Identifier.Stream<?> streamId;
         Assert.assertEquals("Identifier", FFmpeg.Identifier.Stream.class.getSuperclass().getSimpleName());
         Assert.assertEquals("Stream", FFmpeg.Identifier.Stream.StreamSpecifier.class.getSuperclass().getSimpleName());
@@ -6576,10 +6572,8 @@ public class FFmpegTest {
         Assert.assertEquals("s:s", streamId.classSpecifier());
         Assert.assertEquals("0:s:s", streamId.fullSpecifier());
         Assert.assertEquals("0:s:s", streamId.toString());
-        PowerMockito.doNothing().when(TestUtils.AssertWrapper.class, "fail", ArgumentMatchers.anyString());
         TestUtils.assertException(NullPointerException.class, () ->
                 TestUtils.invokeConstructor(FFmpeg.Identifier.Stream.StreamTypeSpecifier.class, (FFmpeg.StreamType) null));
-        PowerMockito.doCallRealMethod().when(TestUtils.AssertWrapper.class, "fail", ArgumentMatchers.anyString());
         
         //all streams
         streamId = TestUtils.invokeConstructor(FFmpeg.Identifier.Stream.AllStreams.class);

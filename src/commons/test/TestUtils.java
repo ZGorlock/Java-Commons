@@ -1120,9 +1120,9 @@ public final class TestUtils {
     /**
      * Wraps the Assert calls from TestUtils.
      */
-    public static final class AssertWrapper {
+    private static final class AssertWrapper {
         
-        //Methods
+        //Static Methods
         
         /**
          * Calls Assert.fail().
@@ -1130,7 +1130,7 @@ public final class TestUtils {
          * @param message The message.
          * @see Assert#fail(String)
          */
-        public static void fail(String message) {
+        private static void fail(String message) {
             Assert.fail(message);
         }
         
@@ -1141,7 +1141,7 @@ public final class TestUtils {
          * @param cause   The throwable cause of the failure,
          * @see #fail(String, Throwable)
          */
-        public static void fail(String message, Throwable cause) {
+        private static void fail(String message, Throwable cause) {
             final String causeMessage = (cause == null) ? "" : (StringUtility.classString(cause.getClass()) + ": " +
                     cause.getMessage().replaceAll("\\$MockitoMock\\$\\d*", ""));
             fail(message + ": [" + causeMessage + ']');
@@ -1155,7 +1155,7 @@ public final class TestUtils {
          * @param actual   The actual object.
          * @see Assert#assertEquals(Object, Object)
          */
-        public static void assertEquals(String message, Object expected, Object actual) {
+        private static void assertEquals(String message, Object expected, Object actual) {
             Assert.assertEquals(message, expected, actual);
         }
         

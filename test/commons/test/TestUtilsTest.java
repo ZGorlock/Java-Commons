@@ -77,6 +77,11 @@ public class TestUtilsTest {
      */
     private static final Object[] instances = new Object[] {new TestClass(), new TestSubClass(), Mockito.spy(new TestClass()), Mockito.spy(new TestSubClass())};
     
+    /**
+     * The AssertWrapper class.
+     */
+    private static Class<?> AssertWrapper = TestUtils.getClass(TestUtils.class, "AssertWrapper");
+    
     
     //Initialization
     
@@ -151,102 +156,102 @@ public class TestUtilsTest {
      */
     @Test
     public void testAssertException() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        PowerMockito.mockStatic(AssertWrapper);
         
         //exception
         TestUtils.assertException(() ->
                 new BigDecimal("15a4"));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //exception, correct throwable
         TestUtils.assertException(NumberFormatException.class, () ->
                 new BigDecimal("15a4"));
-        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-        TestUtils.AssertWrapper.assertEquals(
-                ArgumentMatchers.eq("Expected code to produce a NumberFormatException but instead it produced a NumberFormatException"),
-                ArgumentMatchers.eq(NumberFormatException.class), ArgumentMatchers.eq(NumberFormatException.class));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                .invoke("assertEquals",
+                        ArgumentMatchers.eq("Expected code to produce a NumberFormatException but instead it produced a NumberFormatException"),
+                        ArgumentMatchers.eq(NumberFormatException.class), ArgumentMatchers.eq(NumberFormatException.class));
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //exception, correct throwable, correct message
         TestUtils.assertException(NumberFormatException.class, "Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
                 new BigDecimal("15a4"));
-        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(2));
-        TestUtils.AssertWrapper.assertEquals(
-                ArgumentMatchers.eq("Expected code to produce a NumberFormatException but instead it produced a NumberFormatException"),
-                ArgumentMatchers.eq(NumberFormatException.class), ArgumentMatchers.eq(NumberFormatException.class));
-        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-        TestUtils.AssertWrapper.assertEquals(
-                ArgumentMatchers.eq("Expected the error message of the NumberFormatException to be: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\" but the error message was: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\""),
-                ArgumentMatchers.eq("Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark."), ArgumentMatchers.eq("Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark."));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(2))
+                .invoke("assertEquals",
+                        ArgumentMatchers.eq("Expected code to produce a NumberFormatException but instead it produced a NumberFormatException"),
+                        ArgumentMatchers.eq(NumberFormatException.class), ArgumentMatchers.eq(NumberFormatException.class));
+        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                .invoke("assertEquals",
+                        ArgumentMatchers.eq("Expected the error message of the NumberFormatException to be: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\" but the error message was: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\""),
+                        ArgumentMatchers.eq("Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark."), ArgumentMatchers.eq("Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark."));
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //exception, correct throwable, wrong message
         TestUtils.assertException(NumberFormatException.class, "Could not parse BigDecimal", () ->
                 new BigDecimal("15a4"));
-        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(3));
-        TestUtils.AssertWrapper.assertEquals(
-                ArgumentMatchers.eq("Expected code to produce a NumberFormatException but instead it produced a NumberFormatException"),
-                ArgumentMatchers.eq(NumberFormatException.class), ArgumentMatchers.eq(NumberFormatException.class));
-        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-        TestUtils.AssertWrapper.assertEquals(
-                ArgumentMatchers.eq("Expected the error message of the NumberFormatException to be: \"Could not parse BigDecimal\" but the error message was: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\""),
-                ArgumentMatchers.eq("Could not parse BigDecimal"), ArgumentMatchers.eq("Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark."));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(3))
+                .invoke("assertEquals",
+                        ArgumentMatchers.eq("Expected code to produce a NumberFormatException but instead it produced a NumberFormatException"),
+                        ArgumentMatchers.eq(NumberFormatException.class), ArgumentMatchers.eq(NumberFormatException.class));
+        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                .invoke("assertEquals",
+                        ArgumentMatchers.eq("Expected the error message of the NumberFormatException to be: \"Could not parse BigDecimal\" but the error message was: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\""),
+                        ArgumentMatchers.eq("Could not parse BigDecimal"), ArgumentMatchers.eq("Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark."));
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //exception, wrong throwable
         TestUtils.assertException(NullPointerException.class, () ->
                 new BigDecimal("15a4"));
-        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-        TestUtils.AssertWrapper.assertEquals(
-                ArgumentMatchers.eq("Expected code to produce a NullPointerException but instead it produced a NumberFormatException"),
-                ArgumentMatchers.eq(NullPointerException.class), ArgumentMatchers.eq(NumberFormatException.class));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                .invoke("assertEquals",
+                        ArgumentMatchers.eq("Expected code to produce a NullPointerException but instead it produced a NumberFormatException"),
+                        ArgumentMatchers.eq(NullPointerException.class), ArgumentMatchers.eq(NumberFormatException.class));
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //exception, wrong throwable, wrong message
         TestUtils.assertException(NullPointerException.class, "Could not parse BigDecimal", () ->
                 new BigDecimal("15a4"));
-        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(2));
-        TestUtils.AssertWrapper.assertEquals(
-                ArgumentMatchers.eq("Expected code to produce a NullPointerException but instead it produced a NumberFormatException"),
-                ArgumentMatchers.eq(NullPointerException.class), ArgumentMatchers.eq(NumberFormatException.class));
-        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-        TestUtils.AssertWrapper.assertEquals(
-                ArgumentMatchers.eq("Expected the error message of the NullPointerException to be: \"Could not parse BigDecimal\" but the error message was: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\""),
-                ArgumentMatchers.eq("Could not parse BigDecimal"), ArgumentMatchers.eq("Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark."));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(2))
+                .invoke("assertEquals",
+                        ArgumentMatchers.eq("Expected code to produce a NullPointerException but instead it produced a NumberFormatException"),
+                        ArgumentMatchers.eq(NullPointerException.class), ArgumentMatchers.eq(NumberFormatException.class));
+        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                .invoke("assertEquals",
+                        ArgumentMatchers.eq("Expected the error message of the NullPointerException to be: \"Could not parse BigDecimal\" but the error message was: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\""),
+                        ArgumentMatchers.eq("Could not parse BigDecimal"), ArgumentMatchers.eq("Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark."));
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //exception, null throwable, wrong message
         TestUtils.assertException(null, "Could not parse BigDecimal", () ->
                 new BigDecimal("15a4"));
-        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-        TestUtils.AssertWrapper.assertEquals(
-                ArgumentMatchers.eq("Expected the error message of the exception to be: \"Could not parse BigDecimal\" but the error message was: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\""),
-                ArgumentMatchers.eq("Could not parse BigDecimal"), ArgumentMatchers.eq("Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark."));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                .invoke("assertEquals",
+                        ArgumentMatchers.eq("Expected the error message of the exception to be: \"Could not parse BigDecimal\" but the error message was: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\""),
+                        ArgumentMatchers.eq("Could not parse BigDecimal"), ArgumentMatchers.eq("Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark."));
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //no exception, wrong throwable
         TestUtils.assertException(NullPointerException.class, () ->
                 new BigDecimal("1564"));
-        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-        TestUtils.AssertWrapper.fail(
-                ArgumentMatchers.eq("Expected code to produce a NullPointerException but no exception was produced"));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                .invoke("fail",
+                        ArgumentMatchers.eq("Expected code to produce a NullPointerException but no exception was produced"));
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //no exception, null throwable
         TestUtils.assertException(null, () ->
                 new BigDecimal("1564"));
-        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-        TestUtils.AssertWrapper.fail(
-                ArgumentMatchers.eq("Expected code to produce an exception but no exception was produced"));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                .invoke("fail",
+                        ArgumentMatchers.eq("Expected code to produce an exception but no exception was produced"));
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //no exception
         TestUtils.assertException(() ->
                 new BigDecimal("1564"));
-        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(2));
-        TestUtils.AssertWrapper.fail(
-                ArgumentMatchers.eq("Expected code to produce an exception but no exception was produced"));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(2))
+                .invoke("fail",
+                        ArgumentMatchers.eq("Expected code to produce an exception but no exception was produced"));
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
     
     /**
@@ -257,20 +262,20 @@ public class TestUtilsTest {
      */
     @Test
     public void testAssertNoException() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        PowerMockito.mockStatic(AssertWrapper);
         
         //exception
         TestUtils.assertNoException(() ->
                 new BigDecimal("15a4"));
-        PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-        TestUtils.AssertWrapper.fail(
-                ArgumentMatchers.eq("Expected code to produce no Exception but instead it produced a NumberFormatException"));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                .invoke("fail",
+                        ArgumentMatchers.eq("Expected code to produce no Exception but instead it produced a NumberFormatException"));
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //no exception
         TestUtils.assertNoException(() ->
                 new BigDecimal("1564"));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
     
     /**
@@ -282,12 +287,12 @@ public class TestUtilsTest {
      */
     @Test
     public void testAssertClassExists() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        PowerMockito.mockStatic(AssertWrapper);
         
         //exists
         TestUtils.assertClassExists(TestUtilsTest.class, "TestClass");
         TestUtils.assertClassExists("commons.test.TestUtilsTest$TestSubClass");
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //does not exist
         TestUtils.assertClassExists(TestUtilsTest.class, "MissingClass");
@@ -295,10 +300,13 @@ public class TestUtilsTest {
         List.of("Expected class TestUtilsTest$MissingClass to exist but it does not",
                 "Expected class commons.test.TestUtilsTest$TestClass$MissingClass to exist but it does not"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //not a class
         TestUtils.assertClassExists(TestUtilsTest.class, "TestInterface");
@@ -306,10 +314,13 @@ public class TestUtilsTest {
         List.of("Expected class TestUtilsTest$TestInterface to exist but it does not",
                 "Expected class commons.test.TestUtilsTest$TestClass$Enum0 to exist but it does not"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //invalid
         Stream.of(TestUtilsTest.class, null).forEach(e -> {
@@ -318,16 +329,22 @@ public class TestUtilsTest {
             List.of("Expected class " + StringUtility.classString(e) + "$ to exist but it does not",
                     "Expected class " + StringUtility.classString(e) + "$null to exist but it does not"
             ).forEach(failure -> {
-                PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-                TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+                try {
+                    PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                            .invoke("fail", ArgumentMatchers.eq(failure));
+                } catch (Exception ignored) {
+                }
             });
         });
         Stream.of("", null).forEach(e -> {
             TestUtils.assertClassExists(e);
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq("Expected class " + e + " to exist but it does not"));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                        .invoke("fail", ArgumentMatchers.eq("Expected class " + e + " to exist but it does not"));
+            } catch (Exception ignored) {
+            }
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
     
     /**
@@ -339,7 +356,7 @@ public class TestUtilsTest {
      */
     @Test
     public void testAssertClassDoesNotExist() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        PowerMockito.mockStatic(AssertWrapper);
         
         //exists
         TestUtils.assertClassDoesNotExist(TestUtilsTest.class, "TestClass");
@@ -347,20 +364,23 @@ public class TestUtilsTest {
         List.of("Expected class TestUtilsTest$TestClass to not exist but it does",
                 "Expected class commons.test.TestUtilsTest$TestSubClass to not exist but it does"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //does not exist
         TestUtils.assertClassDoesNotExist(TestUtilsTest.class, "MissingClass");
         TestUtils.assertClassDoesNotExist("commons.test.TestUtilsTest$TestClass$MissingClass");
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //not a class
         TestUtils.assertClassDoesNotExist(TestUtilsTest.class, "TestInterface");
         TestUtils.assertClassDoesNotExist("commons.test.TestUtilsTest$TestClass$Enum0");
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //invalid
         Stream.of(TestUtilsTest.class, null).forEach(e -> {
@@ -368,7 +388,7 @@ public class TestUtilsTest {
             TestUtils.assertClassDoesNotExist(e, null);
         });
         Stream.of("", null).forEach(TestUtils::assertClassDoesNotExist);
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
     
     /**
@@ -380,12 +400,12 @@ public class TestUtilsTest {
      */
     @Test
     public void testAssertInterfaceExists() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        PowerMockito.mockStatic(AssertWrapper);
         
         //exists
         TestUtils.assertInterfaceExists(TestUtilsTest.class, "TestInterface");
         TestUtils.assertInterfaceExists("commons.test.TestUtilsTest$TestInterface");
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //does not exist
         TestUtils.assertInterfaceExists(TestUtilsTest.class, "MissingInterface");
@@ -393,10 +413,13 @@ public class TestUtilsTest {
         List.of("Expected interface TestUtilsTest$MissingInterface to exist but it does not",
                 "Expected interface commons.test.TestUtilsTest$TestClass$MissingInterface to exist but it does not"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //not an interface
         TestUtils.assertInterfaceExists(TestUtilsTest.class, "TestClass");
@@ -404,10 +427,13 @@ public class TestUtilsTest {
         List.of("Expected interface TestUtilsTest$TestClass to exist but it does not",
                 "Expected interface commons.test.TestUtilsTest$TestClass$Enum0 to exist but it does not"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //invalid
         Stream.of(TestUtilsTest.class, null).forEach(e -> {
@@ -416,16 +442,22 @@ public class TestUtilsTest {
             List.of("Expected interface " + StringUtility.classString(e) + "$ to exist but it does not",
                     "Expected interface " + StringUtility.classString(e) + "$null to exist but it does not"
             ).forEach(failure -> {
-                PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-                TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+                try {
+                    PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                            .invoke("fail", ArgumentMatchers.eq(failure));
+                } catch (Exception ignored) {
+                }
             });
         });
         Stream.of("", null).forEach(e -> {
             TestUtils.assertInterfaceExists(e);
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq("Expected interface " + e + " to exist but it does not"));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                        .invoke("fail", ArgumentMatchers.eq("Expected interface " + e + " to exist but it does not"));
+            } catch (Exception ignored) {
+            }
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
     
     /**
@@ -437,7 +469,7 @@ public class TestUtilsTest {
      */
     @Test
     public void testAssertInterfaceDoesNotExist() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        PowerMockito.mockStatic(AssertWrapper);
         
         //exists
         TestUtils.assertInterfaceDoesNotExist(TestUtilsTest.class, "TestInterface");
@@ -445,20 +477,23 @@ public class TestUtilsTest {
         List.of("Expected interface TestUtilsTest$TestInterface to not exist but it does",
                 "Expected interface commons.test.TestUtilsTest$TestInterface to not exist but it does"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //does not exist
         TestUtils.assertInterfaceDoesNotExist(TestUtilsTest.class, "MissingInterface");
         TestUtils.assertInterfaceDoesNotExist("commons.test.TestUtilsTest$MissingInterface");
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //not an interface
         TestUtils.assertInterfaceDoesNotExist(TestUtilsTest.class, "TestClass");
         TestUtils.assertInterfaceDoesNotExist("commons.test.TestUtilsTest$TestClass$Enum0");
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //invalid
         Stream.of(TestUtilsTest.class, null).forEach(e -> {
@@ -466,7 +501,7 @@ public class TestUtilsTest {
             TestUtils.assertInterfaceDoesNotExist(e, null);
         });
         Stream.of("", null).forEach(TestUtils::assertInterfaceDoesNotExist);
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
     
     /**
@@ -478,12 +513,12 @@ public class TestUtilsTest {
      */
     @Test
     public void testAssertEnumExists() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        PowerMockito.mockStatic(AssertWrapper);
         
         //exists
         TestUtils.assertEnumExists(TestClass.class, "Enum0");
         TestUtils.assertEnumExists("commons.test.TestUtilsTest$TestClass$Enum0");
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //does not exist
         TestUtils.assertEnumExists(TestUtilsTest.class, "MissingEnum");
@@ -491,10 +526,13 @@ public class TestUtilsTest {
         List.of("Expected enum TestUtilsTest$MissingEnum to exist but it does not",
                 "Expected enum commons.test.TestUtilsTest$TestClass$MissingEnum to exist but it does not"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //not an enum
         TestUtils.assertEnumExists(TestUtilsTest.class, "TestClass");
@@ -502,10 +540,13 @@ public class TestUtilsTest {
         List.of("Expected enum TestUtilsTest$TestClass to exist but it does not",
                 "Expected enum commons.test.TestUtilsTest$TestInterface to exist but it does not"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //invalid
         Stream.of(TestUtilsTest.class, null).forEach(e -> {
@@ -514,16 +555,22 @@ public class TestUtilsTest {
             List.of("Expected enum " + StringUtility.classString(e) + "$ to exist but it does not",
                     "Expected enum " + StringUtility.classString(e) + "$null to exist but it does not"
             ).forEach(failure -> {
-                PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-                TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+                try {
+                    PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                            .invoke("fail", ArgumentMatchers.eq(failure));
+                } catch (Exception ignored) {
+                }
             });
         });
         Stream.of("", null).forEach(e -> {
             TestUtils.assertEnumExists(e);
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq("Expected enum " + e + " to exist but it does not"));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                        .invoke("fail", ArgumentMatchers.eq("Expected enum " + e + " to exist but it does not"));
+            } catch (Exception ignored) {
+            }
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
     
     /**
@@ -535,7 +582,7 @@ public class TestUtilsTest {
      */
     @Test
     public void testAssertEnumDoesNotExist() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        PowerMockito.mockStatic(AssertWrapper);
         
         //exists
         TestUtils.assertEnumDoesNotExist(TestClass.class, "Enum0");
@@ -543,20 +590,23 @@ public class TestUtilsTest {
         List.of("Expected enum TestClass$Enum0 to not exist but it does",
                 "Expected enum commons.test.TestUtilsTest$TestClass$Enum1 to not exist but it does"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(1));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //does not exist
         TestUtils.assertEnumDoesNotExist(TestUtilsTest.class, "MissingEnum");
         TestUtils.assertEnumDoesNotExist("commons.test.TestUtilsTest$MissingEnum");
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //not an enum
         TestUtils.assertEnumDoesNotExist(TestUtilsTest.class, "TestClass");
         TestUtils.assertEnumDoesNotExist("commons.test.TestUtilsTest$TestInterface");
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //invalid
         Stream.of(TestUtilsTest.class, null).forEach(e -> {
@@ -564,7 +614,7 @@ public class TestUtilsTest {
             TestUtils.assertEnumDoesNotExist(e, null);
         });
         Stream.of("", null).forEach(TestUtils::assertEnumDoesNotExist);
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
     
     /**
@@ -576,7 +626,7 @@ public class TestUtilsTest {
      */
     @Test
     public void testAssertMethodExists() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        PowerMockito.mockStatic(AssertWrapper);
         
         final Consumer<Object[]> methodExistsAsserter = (Object[] params) -> {
             final Object caller = params[0];
@@ -594,7 +644,7 @@ public class TestUtilsTest {
             methodExistsAsserter.accept(new Object[] {e, "voidMethod", new Class<?>[] {int.class, Long.class, StringBuilder.class}});
             methodExistsAsserter.accept(new Object[] {e, "voidMethod", new Class<?>[] {Integer.class, long.class, StringBuilder.class}});
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //does not exist
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e -> {
@@ -607,10 +657,13 @@ public class TestUtilsTest {
                 "Expected method " + StringUtility.methodString(e, "voidMethod", Integer.class, Long.class, String.class) + " to exist but it does not",
                 "Expected method " + StringUtility.methodString(e, "missingMethod") + " to exist but it does not"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(3));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(3))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         }));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //invalid
         Stream.of(classes, instances, new Class<?>[] {null}, new Object[] {null}).flatMap(Arrays::stream).forEach(e -> {
@@ -625,10 +678,13 @@ public class TestUtilsTest {
                 "Expected method " + StringUtility.methodString(e, null, String.class) + " to exist but it does not",
                 "Expected method " + StringUtility.methodString(e, null, (Class<?>) null) + " to exist but it does not"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times((e == null) ? 2 : 3));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times((e == null) ? 2 : 3))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         }));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
     
     /**
@@ -640,7 +696,7 @@ public class TestUtilsTest {
      */
     @Test
     public void testAssertMethodDoesNotExist() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        PowerMockito.mockStatic(AssertWrapper);
         
         final Consumer<Object[]> methodDoesNotExistAsserter = (Object[] params) -> {
             final Object caller = params[0];
@@ -662,17 +718,20 @@ public class TestUtilsTest {
                 "Expected method " + StringUtility.methodString(e, "voidMethod", int.class, Long.class, StringBuilder.class) + " to not exist but it does",
                 "Expected method " + StringUtility.methodString(e, "voidMethod", Integer.class, long.class, StringBuilder.class) + " to not exist but it does"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(3));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(3))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         }));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //does not exist
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e -> {
             methodDoesNotExistAsserter.accept(new Object[] {e, "voidMethod", new Class<?>[] {int.class, long.class, String.class}});
             methodDoesNotExistAsserter.accept(new Object[] {e, "voidMethod", new Class<?>[] {Integer.class, Long.class, String.class}});
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //invalid
         Stream.of(classes, instances, new Class<?>[] {null}, new Object[] {null}).flatMap(Arrays::stream).forEach(e -> {
@@ -683,7 +742,7 @@ public class TestUtilsTest {
             methodDoesNotExistAsserter.accept(new Object[] {e, null, new Class<?>[] {String.class}});
             methodDoesNotExistAsserter.accept(new Object[] {e, null, new Class<?>[] {null}});
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
     
     /**
@@ -695,7 +754,7 @@ public class TestUtilsTest {
      */
     @Test
     public void testAssertConstructorExists() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        PowerMockito.mockStatic(AssertWrapper);
         
         final Consumer<Object[]> constructorExistsAsserter = (Object[] params) -> {
             final Object caller = params[0];
@@ -712,7 +771,7 @@ public class TestUtilsTest {
             constructorExistsAsserter.accept(new Object[] {e, new Class<?>[] {String.class, Exception.class, int.class, Long.class, boolean.class}});
             constructorExistsAsserter.accept(new Object[] {e, new Class<?>[] {String.class, Exception.class, Integer.class, Long.class, Boolean.class}});
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //does not exist
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e -> {
@@ -723,10 +782,13 @@ public class TestUtilsTest {
                 "Expected constructor " + StringUtility.constructorString(e, StringBuilder.class, Exception.class, int.class, Long.class, boolean.class) + " to exist but it does not",
                 "Expected constructor " + StringUtility.constructorString(e, StringBuilder.class, Exception.class, Integer.class, Long.class, Boolean.class) + " to exist but it does not"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(3));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(3))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         }));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //invalid
         Stream.of(classes, instances, new Class<?>[] {null}, new Object[] {null}).flatMap(Arrays::stream).forEach(e -> {
@@ -737,10 +799,13 @@ public class TestUtilsTest {
                 "Expected constructor " + StringUtility.constructorString(e, String.class) + " to exist but it does not",
                 "Expected constructor " + StringUtility.constructorString(e, (Class<?>) null) + " to exist but it does not"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times((e == null) ? 2 : 3));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times((e == null) ? 2 : 3))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         }));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
     
     /**
@@ -752,7 +817,7 @@ public class TestUtilsTest {
      */
     @Test
     public void testAssertConstructorDoesNotExist() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        PowerMockito.mockStatic(AssertWrapper);
         
         final Consumer<Object[]> constructorDoesNotExistAsserter = (Object[] params) -> {
             final Object caller = params[0];
@@ -773,24 +838,27 @@ public class TestUtilsTest {
                 "Expected constructor " + StringUtility.constructorString(e, String.class, Exception.class, int.class, Long.class, boolean.class) + " to not exist but it does",
                 "Expected constructor " + StringUtility.constructorString(e, String.class, Exception.class, Integer.class, Long.class, Boolean.class) + " to not exist but it does"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(3));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(3))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         }));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //does not exist
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e -> {
             constructorDoesNotExistAsserter.accept(new Object[] {e, new Class<?>[] {StringBuilder.class, Exception.class, int.class, Long.class, boolean.class}});
             constructorDoesNotExistAsserter.accept(new Object[] {e, new Class<?>[] {StringBuilder.class, Exception.class, Integer.class, Long.class, Boolean.class}});
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //invalid
         Stream.of(classes, instances, new Class<?>[] {null}, new Object[] {null}).flatMap(Arrays::stream).forEach(e -> {
             constructorDoesNotExistAsserter.accept(new Object[] {e, new Class<?>[] {String.class}});
             constructorDoesNotExistAsserter.accept(new Object[] {e, new Class<?>[] {null}});
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
     
     /**
@@ -802,7 +870,7 @@ public class TestUtilsTest {
      */
     @Test
     public void testAssertFieldExists() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        PowerMockito.mockStatic(AssertWrapper);
         
         final Consumer<Object[]> fieldExistsAsserter = (Object[] params) -> {
             final Object caller = params[0];
@@ -819,7 +887,7 @@ public class TestUtilsTest {
             fieldExistsAsserter.accept(new Object[] {e, "field2"});
             fieldExistsAsserter.accept(new Object[] {e, "field7"});
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //does not exist
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e -> {
@@ -830,10 +898,13 @@ public class TestUtilsTest {
                 "Expected field " + StringUtility.fieldString(e, "Field7") + " to exist but it does not",
                 "Expected field " + StringUtility.fieldString(e, "field15") + " to exist but it does not"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(3));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(3))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         }));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //invalid
         Stream.of(classes, instances, new Class<?>[] {null}, new Object[] {null}).flatMap(Arrays::stream).forEach(e -> {
@@ -844,10 +915,13 @@ public class TestUtilsTest {
                 "Expected field " + StringUtility.fieldString(e, "") + " to exist but it does not",
                 "Expected field " + StringUtility.fieldString(e, null) + " to exist but it does not"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times((e == null) ? 2 : 3));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times((e == null) ? 2 : 3))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         }));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
     
     /**
@@ -859,7 +933,7 @@ public class TestUtilsTest {
      */
     @Test
     public void testAssertFieldDoesNotExist() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
+        PowerMockito.mockStatic(AssertWrapper);
         
         final Consumer<Object[]> fieldDoesNotExistAsserter = (Object[] params) -> {
             final Object caller = params[0];
@@ -880,24 +954,27 @@ public class TestUtilsTest {
                 "Expected field " + StringUtility.fieldString(e, "field2") + " to not exist but it does",
                 "Expected field " + StringUtility.fieldString(e, "field7") + " to not exist but it does"
         ).forEach(failure -> {
-            PowerMockito.verifyStatic(TestUtils.AssertWrapper.class, VerificationModeFactory.times(3));
-            TestUtils.AssertWrapper.fail(ArgumentMatchers.eq(failure));
+            try {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(3))
+                        .invoke("fail", ArgumentMatchers.eq(failure));
+            } catch (Exception ignored) {
+            }
         }));
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //does not exist
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e -> {
             fieldDoesNotExistAsserter.accept(new Object[] {e, "Field7"});
             fieldDoesNotExistAsserter.accept(new Object[] {e, "field15"});
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //invalid
         Stream.of(classes, instances, new Class<?>[] {null}, new Object[] {null}).flatMap(Arrays::stream).forEach(e -> {
             fieldDoesNotExistAsserter.accept(new Object[] {e, ""});
             fieldDoesNotExistAsserter.accept(new Object[] {e, null});
         });
-        PowerMockito.verifyNoMoreInteractions(TestUtils.AssertWrapper.class);
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
     
     /**
@@ -1735,11 +1812,11 @@ public class TestUtilsTest {
     @Test
     public void testAssertWrapper() throws Exception {
         //fail
-        TestUtils.assertMethodExists(TestUtils.AssertWrapper.class, "fail", String.class);
-        TestUtils.assertMethodExists(TestUtils.AssertWrapper.class, "fail", String.class, Throwable.class);
+        TestUtils.assertMethodExists(AssertWrapper, "fail", String.class);
+        TestUtils.assertMethodExists(AssertWrapper, "fail", String.class, Throwable.class);
         
         //assertEquals
-        TestUtils.assertMethodExists(TestUtils.AssertWrapper.class, "assertEquals", String.class, Object.class, Object.class);
+        TestUtils.assertMethodExists(AssertWrapper, "assertEquals", String.class, Object.class, Object.class);
     }
     
     

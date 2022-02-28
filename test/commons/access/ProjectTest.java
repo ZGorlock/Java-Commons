@@ -36,7 +36,7 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Project.class, Filesystem.class, TestUtils.AssertWrapper.class})
+@PrepareForTest({Project.class, Filesystem.class})
 public class ProjectTest {
     
     //Logger
@@ -414,8 +414,6 @@ public class ProjectTest {
      */
     @Test
     public void testClassDir() throws Exception {
-        PowerMockito.mockStatic(TestUtils.AssertWrapper.class);
-        
         //standard
         Assert.assertEquals(String.join(File.separator, "src", "commons", "access", "Project"),
                 TestUtils.invokeMethod(Project.class, "classDir", Project.SOURCE_DIR, "", Project.class, true).toString());
@@ -439,9 +437,9 @@ public class ProjectTest {
                 TestUtils.invokeMethod(Project.class, "classDir", Project.TMP_DIR, "", BigComponentMathHandler.class, false).toString());
         
         //invalid
-        TestUtils.assertException(NullPointerException.class, () ->
+        TestUtils.assertException(AssertionError.class, "Attempted to invoke the method Project::classDir(null, String, Project, Boolean) but an exception occurred: [MethodNotFoundException: Project::classDir(null, String, Project, Boolean)]", () ->
                 TestUtils.invokeMethod(Project.class, "classDir", null, "", Project.class, true));
-        TestUtils.assertException(NullPointerException.class, () ->
+        TestUtils.assertException(AssertionError.class, "Attempted to invoke the method Project::classDir(File, null, Project, Boolean) but an exception occurred: [MethodNotFoundException: Project::classDir(File, null, Project, Boolean)]", () ->
                 TestUtils.invokeMethod(Project.class, "classDir", Project.SOURCE_DIR, null, Project.class, true));
         TestUtils.assertException(NullPointerException.class, () ->
                 TestUtils.invokeMethod(Project.class, "classDir", Project.SOURCE_DIR, "", null, true));
