@@ -7,7 +7,6 @@
 
 package commons.access;
 
-import java.awt.Desktop;
 import java.io.File;
 import java.net.URI;
 import java.util.regex.Pattern;
@@ -26,7 +25,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -322,21 +321,24 @@ public class InternetTest {
      * @throws Exception When there is an exception.
      * @see Internet#openUrl(String)
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testOpenUrl() throws Exception {
-        Desktop mockDesktop = Mockito.mock(Desktop.class);
-        PowerMockito.mockStatic(Desktop.class);
-        PowerMockito.when(Desktop.isDesktopSupported()).thenReturn(true);
-        PowerMockito.when(Desktop.getDesktop()).thenReturn(mockDesktop);
+        final Class<?> DesktopWrapper = TestUtils.getClass(Desktop.class, "DesktopWrapper");
+        
+        PowerMockito.mockStatic(DesktopWrapper);
         
         //standard
-        Internet.openUrl("https://www.google.com/search?q=cute+cats");
-        Mockito.verify(mockDesktop).browse(ArgumentMatchers.eq(URI.create("https://www.google.com/search?q=cute+cats")));
+        TestUtils.setFieldValue(Desktop.class, "desktop", PowerMockito.mock(java.awt.Desktop.class));
+        Assert.assertTrue(Internet.openUrl("https://www.google.com/search?q=cute+cats"));
+        PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.times(1))
+                .invoke("navigate", ArgumentMatchers.eq(URI.create("https://www.google.com/search?q=cute+cats")));
         
         //unsupported
-        PowerMockito.when(Desktop.isDesktopSupported()).thenReturn(false);
-        Internet.openUrl("https://www.google.com/search?q=cute+cats");
-        Mockito.verifyNoMoreInteractions(mockDesktop);
+        TestUtils.setFieldValue(Desktop.class, "desktop", null);
+        Assert.assertFalse(Internet.openUrl("https://www.google.com/search?q=cute+cats"));
+        PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.noMoreInteractions())
+                .invoke("navigate", ArgumentMatchers.eq(URI.create("https://www.google.com/search?q=cute+cats")));
     }
     
     /**

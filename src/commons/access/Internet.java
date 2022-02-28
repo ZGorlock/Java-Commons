@@ -7,7 +7,6 @@
 
 package commons.access;
 
-import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -204,21 +203,18 @@ public final class Internet {
      * Opens a url in the default web browser of the system.
      *
      * @param url The url to open.
-     * @throws IOException When the url is not valid.
+     * @return Whether the url was opened or not.
      */
-    public static void openUrl(String url) throws IOException {
-        if (Desktop.isDesktopSupported()) {
-            try {
-                if (logInternet()) {
-                    logger.trace("Opening url: {}", url);
-                }
-                
-                Desktop.getDesktop().browse(URI.create(url));
-            } catch (IOException e) {
-                logger.trace("Unable to open URL: " + url + " in local web browser");
-                throw e;
-            }
+    public static boolean openUrl(String url) throws IOException {
+        if (logInternet()) {
+            logger.trace("Opening url: {}", url);
         }
+        
+        if (!Desktop.navigate(URI.create(url))) {
+            logger.trace("Unable to open URL: " + url + " in local web browser");
+            return false;
+        }
+        return true;
     }
     
     /**
