@@ -1,5 +1,5 @@
 /*
- * File:    ScreenSize.java
+ * File:    Screen.java
  * Package: commons.graphics
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
@@ -26,16 +26,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A resource class that provides access to the screen.
+ * A resource class that provides details about the screen.
  */
-public final class ScreenSize {
+public final class Screen {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(ScreenSize.class);
+    private static final Logger logger = LoggerFactory.getLogger(Screen.class);
     
     
     //Enums
