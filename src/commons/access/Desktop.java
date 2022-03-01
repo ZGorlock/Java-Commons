@@ -11,6 +11,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.Objects;
 
+import commons.function.TrySupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,16 +33,7 @@ public final class Desktop {
     /**
      * The handle to the desktop.
      */
-    private static java.awt.Desktop desktop;
-    
-    //Populates the desktop handle
-    static {
-        try {
-            desktop = java.awt.Desktop.getDesktop();
-        } catch (Exception ignored) {
-            desktop = null;
-        }
-    }
+    private static java.awt.Desktop desktop = ((TrySupplier<java.awt.Desktop>) java.awt.Desktop::getDesktop).get();
     
     
     //Static Methods
