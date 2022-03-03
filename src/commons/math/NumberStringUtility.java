@@ -880,8 +880,7 @@ public final class NumberStringUtility {
                     
                     final Matcher integerStringMatcher = INTEGER_STRING_PATTERN.matcher(StringUtility.removeWhiteSpace(simpleFractional));
                     if (integerStringMatcher.matches()) {
-                        fractionalTokens = StringUtility.removeWhiteSpace(simpleFractional).chars()
-                                .mapToObj(i -> String.valueOf((char) i)).collect(Collectors.toList());
+                        fractionalTokens = StringUtility.stringStream(StringUtility.removeWhiteSpace(simpleFractional)).collect(Collectors.toList());
                     }
                     
                     int chunk = 0;

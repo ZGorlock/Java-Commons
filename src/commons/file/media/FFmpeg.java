@@ -3382,8 +3382,7 @@ public class FFmpeg {
                                 List.of(StringUtility.lSnip(e.name(), 1), StringUtility.lSnip(e.keys, 1)))
                         .flatMap(List::stream).map(String::toLowerCase).distinct()
                         .collect(Collectors.joining("", "(?:(?<type>[", "]):?)?")) +
-                StringUtility.lShear(IdentifierType.STREAM.keys, 1).chars().boxed().map(i -> String.valueOf((char) i.intValue()))
-                        .map(String::toLowerCase).distinct()
+                StringUtility.stringStream(StringUtility.lShear(IdentifierType.STREAM.keys, 1).toLowerCase()).distinct()
                         .collect(Collectors.joining("", "(?:(?<streamType>[", "]):?)?")) +
                 "(?<index>\\d+)?$");
         

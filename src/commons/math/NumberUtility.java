@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import commons.object.string.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -83,15 +84,13 @@ public class NumberUtility {
     /**
      * Extracts the number characters out of a string.
      *
-     * @param str The string.
+     * @param string The string.
      * @return The string of extracted number characters.
      */
-    public static String extractNumberChars(String str) {
-        return str.chars().boxed()
-                .map(i -> (char) i.intValue())
+    public static String extractNumberChars(String string) {
+        return StringUtility.charStream(string)
                 .filter(NumberUtility::isNumberChar)
-                .map(String::valueOf)
-                .collect(Collectors.joining());
+                .map(String::valueOf).collect(Collectors.joining());
     }
     
     /**

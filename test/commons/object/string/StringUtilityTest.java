@@ -513,6 +513,85 @@ public class StringUtilityTest {
     }
     
     /**
+     * JUnit test of toChar.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#toChar(int)
+     */
+    @Test
+    public void testToChar() throws Exception {
+        //standard
+        Assert.assertEquals('a', StringUtility.toChar(97));
+        Assert.assertEquals('z', StringUtility.toChar(122));
+        Assert.assertEquals('A', StringUtility.toChar(65));
+        Assert.assertEquals('Z', StringUtility.toChar(90));
+        Assert.assertEquals('-', StringUtility.toChar(45));
+        Assert.assertEquals('&', StringUtility.toChar(38));
+        Assert.assertEquals(' ', StringUtility.toChar(32));
+        Assert.assertEquals((char) 13, StringUtility.toChar(13));
+        Assert.assertEquals('\0', StringUtility.toChar(0));
+        
+        //utf-8
+        Assert.assertEquals('¬', StringUtility.toChar(172));
+        Assert.assertEquals('Þ', StringUtility.toChar(222));
+        
+        //utf-16
+        Assert.assertEquals('Ā', StringUtility.toChar(256));
+        Assert.assertEquals('Ɓ', StringUtility.toChar(385));
+        
+        //invalid
+        Assert.assertEquals((char) 65535, StringUtility.toChar(-1));
+    }
+    
+    /**
+     * JUnit test of charStream.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#charStream(String)
+     */
+    @Test
+    public void testCharStream() throws Exception {
+        //standard
+        Assert.assertArrayEquals(
+                new Character[] {'t', 'e', 's', 't'},
+                StringUtility.charStream("test").toArray(Character[]::new));
+        Assert.assertArrayEquals(
+                new Character[] {'#', 't', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', '.', ' ', '2', '!'},
+                StringUtility.charStream("#this is a test. 2!").toArray(Character[]::new));
+        Assert.assertArrayEquals(
+                new Character[] {},
+                StringUtility.charStream("").toArray(Character[]::new));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.charStream(null));
+    }
+    
+    /**
+     * JUnit test of stringStream.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#stringStream(String)
+     */
+    @Test
+    public void testStringStream() throws Exception {
+        //standard
+        Assert.assertArrayEquals(
+                new String[] {"t", "e", "s", "t"},
+                StringUtility.stringStream("test").toArray(String[]::new));
+        Assert.assertArrayEquals(
+                new String[] {"#", "t", "h", "i", "s", " ", "i", "s", " ", "a", " ", "t", "e", "s", "t", ".", " ", "2", "!"},
+                StringUtility.stringStream("#this is a test. 2!").toArray(String[]::new));
+        Assert.assertArrayEquals(
+                new String[] {},
+                StringUtility.stringStream("").toArray(String[]::new));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.stringStream(null));
+    }
+    
+    /**
      * JUnit test of trim.
      *
      * @throws Exception When there is an exception.
@@ -1240,46 +1319,29 @@ public class StringUtilityTest {
      */
     @Test
     public void testIsAlphanumeric() throws Exception {
-        //vowels
-        for (char c : vowels.toCharArray()) {
-            Assert.assertTrue(StringUtility.isAlphanumeric(c));
-        }
+        //character
+        Assert.assertTrue(StringUtility.charStream(vowels).allMatch(StringUtility::isAlphanumeric));
+        Assert.assertTrue(StringUtility.charStream(consonants).allMatch(StringUtility::isAlphanumeric));
+        Assert.assertTrue(StringUtility.charStream(numbers).allMatch(StringUtility::isAlphanumeric));
+        Assert.assertTrue(StringUtility.charStream(symbols).noneMatch(StringUtility::isAlphanumeric));
+        Assert.assertTrue(StringUtility.charStream(whiteSpace).noneMatch(StringUtility::isAlphanumeric));
         
-        //consonants
-        for (char c : consonants.toCharArray()) {
-            Assert.assertTrue(StringUtility.isAlphanumeric(c));
-        }
-        
-        //numbers
-        for (char c : numbers.toCharArray()) {
-            Assert.assertTrue(StringUtility.isAlphanumeric(c));
-        }
-        
-        //symbols
-        for (char c : symbols.toCharArray()) {
-            Assert.assertFalse(StringUtility.isAlphanumeric(c));
-        }
-        
-        //white space
-        for (char c : whiteSpace.toCharArray()) {
-            Assert.assertFalse(StringUtility.isAlphanumeric(c));
-        }
-        
-        //valid strings
+        //string
         Assert.assertTrue(StringUtility.isAlphanumeric("agaerg"));
         Assert.assertTrue(StringUtility.isAlphanumeric("FADHAED"));
         Assert.assertTrue(StringUtility.isAlphanumeric("84945"));
         Assert.assertTrue(StringUtility.isAlphanumeric("ASF456"));
         Assert.assertTrue(StringUtility.isAlphanumeric("afeAGA3t3tEA46"));
-        Assert.assertFalse(StringUtility.isAlphanumeric(""));
-        
-        //invalid strings
         Assert.assertFalse(StringUtility.isAlphanumeric("aga erg"));
         Assert.assertFalse(StringUtility.isAlphanumeric("FA#DHAE$D"));
         Assert.assertFalse(StringUtility.isAlphanumeric("   84945"));
         Assert.assertFalse(StringUtility.isAlphanumeric("84945 "));
         Assert.assertFalse(StringUtility.isAlphanumeric("ASF\n456"));
         Assert.assertFalse(StringUtility.isAlphanumeric("a!feAGA#3t3tE$A46\n"));
+        
+        //invalid
+        Assert.assertFalse(StringUtility.isAlphanumeric(""));
+        Assert.assertFalse(StringUtility.isAlphanumeric(null));
     }
     
     /**
@@ -1291,39 +1353,18 @@ public class StringUtilityTest {
      */
     @Test
     public void testIsAlphabetic() throws Exception {
-        //vowels
-        for (char c : vowels.toCharArray()) {
-            Assert.assertTrue(StringUtility.isAlphabetic(c));
-        }
+        //character
+        Assert.assertTrue(StringUtility.charStream(vowels).allMatch(StringUtility::isAlphabetic));
+        Assert.assertTrue(StringUtility.charStream(consonants).allMatch(StringUtility::isAlphabetic));
+        Assert.assertTrue(StringUtility.charStream(numbers).noneMatch(StringUtility::isAlphabetic));
+        Assert.assertTrue(StringUtility.charStream(symbols).noneMatch(StringUtility::isAlphabetic));
+        Assert.assertTrue(StringUtility.charStream(whiteSpace).noneMatch(StringUtility::isAlphabetic));
         
-        //consonants
-        for (char c : consonants.toCharArray()) {
-            Assert.assertTrue(StringUtility.isAlphabetic(c));
-        }
-        
-        //numbers
-        for (char c : numbers.toCharArray()) {
-            Assert.assertFalse(StringUtility.isAlphabetic(c));
-        }
-        
-        //symbols
-        for (char c : symbols.toCharArray()) {
-            Assert.assertFalse(StringUtility.isAlphabetic(c));
-        }
-        
-        //white space
-        for (char c : whiteSpace.toCharArray()) {
-            Assert.assertFalse(StringUtility.isAlphabetic(c));
-        }
-        
-        //valid strings
+        //string
         Assert.assertTrue(StringUtility.isAlphabetic("agaerg"));
         Assert.assertTrue(StringUtility.isAlphabetic("FADHAED"));
         Assert.assertTrue(StringUtility.isAlphabetic("FaeADHAasfsdgED"));
         Assert.assertTrue(StringUtility.isAlphabetic("agfFaeADHAasfsdgEDjkl"));
-        Assert.assertFalse(StringUtility.isAlphabetic(""));
-        
-        //invalid strings
         Assert.assertFalse(StringUtility.isAlphabetic("aga erg"));
         Assert.assertFalse(StringUtility.isAlphabetic("FA#DHAE$D"));
         Assert.assertFalse(StringUtility.isAlphabetic("ASF456"));
@@ -1333,6 +1374,10 @@ public class StringUtilityTest {
         Assert.assertFalse(StringUtility.isAlphabetic("ASF\n456"));
         Assert.assertFalse(StringUtility.isAlphabetic("afeAGA3t3tEA46"));
         Assert.assertFalse(StringUtility.isAlphabetic("a!feAGA#3t3tE$A46\n"));
+        
+        //invalid
+        Assert.assertFalse(StringUtility.isAlphabetic(""));
+        Assert.assertFalse(StringUtility.isAlphabetic(null));
     }
     
     /**
@@ -1343,30 +1388,12 @@ public class StringUtilityTest {
      */
     @Test
     public void testIsVowel() throws Exception {
-        //vowels
-        for (char c : vowels.toCharArray()) {
-            Assert.assertTrue(StringUtility.isVowel(c));
-        }
-        
-        //consonants
-        for (char c : consonants.toCharArray()) {
-            Assert.assertFalse(StringUtility.isVowel(c));
-        }
-        
-        //numbers
-        for (char c : numbers.toCharArray()) {
-            Assert.assertFalse(StringUtility.isVowel(c));
-        }
-        
-        //symbols
-        for (char c : symbols.toCharArray()) {
-            Assert.assertFalse(StringUtility.isVowel(c));
-        }
-        
-        //white space
-        for (char c : whiteSpace.toCharArray()) {
-            Assert.assertFalse(StringUtility.isVowel(c));
-        }
+        //character
+        Assert.assertTrue(StringUtility.charStream(vowels).allMatch(StringUtility::isVowel));
+        Assert.assertTrue(StringUtility.charStream(consonants).noneMatch(StringUtility::isVowel));
+        Assert.assertTrue(StringUtility.charStream(numbers).noneMatch(StringUtility::isVowel));
+        Assert.assertTrue(StringUtility.charStream(symbols).noneMatch(StringUtility::isVowel));
+        Assert.assertTrue(StringUtility.charStream(whiteSpace).noneMatch(StringUtility::isVowel));
     }
     
     /**
@@ -1377,30 +1404,12 @@ public class StringUtilityTest {
      */
     @Test
     public void testIsConsonant() throws Exception {
-        //vowels
-        for (char c : vowels.toCharArray()) {
-            Assert.assertFalse(StringUtility.isConsonant(c));
-        }
-        
-        //consonants
-        for (char c : consonants.toCharArray()) {
-            Assert.assertTrue(StringUtility.isConsonant(c));
-        }
-        
-        //numbers
-        for (char c : numbers.toCharArray()) {
-            Assert.assertFalse(StringUtility.isConsonant(c));
-        }
-        
-        //symbols
-        for (char c : symbols.toCharArray()) {
-            Assert.assertFalse(StringUtility.isConsonant(c));
-        }
-        
-        //white space
-        for (char c : whiteSpace.toCharArray()) {
-            Assert.assertFalse(StringUtility.isConsonant(c));
-        }
+        //character
+        Assert.assertTrue(StringUtility.charStream(vowels).noneMatch(StringUtility::isConsonant));
+        Assert.assertTrue(StringUtility.charStream(consonants).allMatch(StringUtility::isConsonant));
+        Assert.assertTrue(StringUtility.charStream(numbers).noneMatch(StringUtility::isConsonant));
+        Assert.assertTrue(StringUtility.charStream(symbols).noneMatch(StringUtility::isConsonant));
+        Assert.assertTrue(StringUtility.charStream(whiteSpace).noneMatch(StringUtility::isConsonant));
     }
     
     /**
@@ -1412,37 +1421,17 @@ public class StringUtilityTest {
      */
     @Test
     public void testIsNumeric() throws Exception {
-        //vowels
-        for (char c : vowels.toCharArray()) {
-            Assert.assertFalse(StringUtility.isNumeric(c));
-        }
+        //character
+        Assert.assertTrue(StringUtility.charStream(vowels).noneMatch(StringUtility::isNumeric));
+        Assert.assertTrue(StringUtility.charStream(consonants).noneMatch(StringUtility::isNumeric));
+        Assert.assertTrue(StringUtility.charStream(numbers).allMatch(StringUtility::isNumeric));
+        Assert.assertTrue(StringUtility.charStream(symbols).noneMatch(StringUtility::isNumeric));
+        Assert.assertTrue(StringUtility.charStream(whiteSpace).noneMatch(StringUtility::isNumeric));
         
-        //consonants
-        for (char c : consonants.toCharArray()) {
-            Assert.assertFalse(StringUtility.isNumeric(c));
-        }
-        
-        //numbers
-        for (char c : numbers.toCharArray()) {
-            Assert.assertTrue(StringUtility.isNumeric(c));
-        }
-        
-        //symbols
-        for (char c : symbols.toCharArray()) {
-            Assert.assertFalse(StringUtility.isNumeric(c));
-        }
-        
-        //white space
-        for (char c : whiteSpace.toCharArray()) {
-            Assert.assertFalse(StringUtility.isNumeric(c));
-        }
-        
-        //valid strings
+        //string
         Assert.assertTrue(StringUtility.isNumeric("84945"));
         Assert.assertTrue(StringUtility.isNumeric("126549821668"));
         Assert.assertTrue(StringUtility.isNumeric("05648004887"));
-        
-        //invalid strings
         Assert.assertFalse(StringUtility.isNumeric("agaerg"));
         Assert.assertFalse(StringUtility.isNumeric("FADHAED"));
         Assert.assertFalse(StringUtility.isNumeric("FaeADHAasfsdgED"));
@@ -1455,7 +1444,10 @@ public class StringUtilityTest {
         Assert.assertFalse(StringUtility.isNumeric("ASF\n456"));
         Assert.assertFalse(StringUtility.isNumeric("afeAGA3t3tEA46"));
         Assert.assertFalse(StringUtility.isNumeric("a!feAGA#3t3tE$A46\n"));
+        
+        //invalid
         Assert.assertFalse(StringUtility.isNumeric(""));
+        Assert.assertFalse(StringUtility.isNumeric(null));
     }
     
     /**
@@ -1467,38 +1459,17 @@ public class StringUtilityTest {
      */
     @Test
     public void testIsSymbol() throws Exception {
-        //vowels
-        for (char c : vowels.toCharArray()) {
-            Assert.assertFalse(StringUtility.isSymbol(c));
-        }
+        //character
+        Assert.assertTrue(StringUtility.charStream(vowels).noneMatch(StringUtility::isSymbol));
+        Assert.assertTrue(StringUtility.charStream(consonants).noneMatch(StringUtility::isSymbol));
+        Assert.assertTrue(StringUtility.charStream(numbers).noneMatch(StringUtility::isSymbol));
+        Assert.assertTrue(StringUtility.charStream(symbols).allMatch(StringUtility::isSymbol));
+        Assert.assertTrue(StringUtility.charStream(whiteSpace).noneMatch(StringUtility::isSymbol));
         
-        //consonants
-        for (char c : consonants.toCharArray()) {
-            Assert.assertFalse(StringUtility.isSymbol(c));
-        }
-        
-        //numbers
-        for (char c : numbers.toCharArray()) {
-            Assert.assertFalse(StringUtility.isSymbol(c));
-        }
-        
-        //symbols
-        for (char c : symbols.toCharArray()) {
-            Assert.assertTrue(StringUtility.isSymbol(c));
-        }
-        
-        //white space
-        for (char c : whiteSpace.toCharArray()) {
-            Assert.assertFalse(StringUtility.isSymbol(c));
-        }
-        
-        //valid strings
+        //string
         Assert.assertTrue(StringUtility.isSymbol("?!."));
         Assert.assertTrue(StringUtility.isSymbol("+$#)_"));
         Assert.assertTrue(StringUtility.isSymbol("#@%@&{:{}<:>,.;[];]"));
-        Assert.assertFalse(StringUtility.isSymbol(""));
-        
-        //invalid strings
         Assert.assertFalse(StringUtility.isSymbol("agaerg"));
         Assert.assertFalse(StringUtility.isSymbol("FADHAED"));
         Assert.assertFalse(StringUtility.isSymbol("FaeADHAasfsdgED"));
@@ -1513,6 +1484,10 @@ public class StringUtilityTest {
         Assert.assertFalse(StringUtility.isSymbol("ASF\n456"));
         Assert.assertFalse(StringUtility.isSymbol("afeAGA3t3tEA46"));
         Assert.assertFalse(StringUtility.isSymbol("a!feAGA#3t3tE$A46\n"));
+        
+        //invalid
+        Assert.assertFalse(StringUtility.isSymbol(""));
+        Assert.assertFalse(StringUtility.isSymbol(null));
     }
     
     /**
@@ -1524,41 +1499,20 @@ public class StringUtilityTest {
      */
     @Test
     public void testIsWhitespace() throws Exception {
-        //vowels
-        for (char c : vowels.toCharArray()) {
-            Assert.assertFalse(StringUtility.isWhitespace(c));
-        }
+        //character
+        Assert.assertTrue(StringUtility.charStream(vowels).noneMatch(StringUtility::isWhitespace));
+        Assert.assertTrue(StringUtility.charStream(consonants).noneMatch(StringUtility::isWhitespace));
+        Assert.assertTrue(StringUtility.charStream(numbers).noneMatch(StringUtility::isWhitespace));
+        Assert.assertTrue(StringUtility.charStream(symbols).noneMatch(StringUtility::isWhitespace));
+        Assert.assertTrue(StringUtility.charStream(whiteSpace).allMatch(StringUtility::isWhitespace));
         
-        //consonants
-        for (char c : consonants.toCharArray()) {
-            Assert.assertFalse(StringUtility.isWhitespace(c));
-        }
-        
-        //numbers
-        for (char c : numbers.toCharArray()) {
-            Assert.assertFalse(StringUtility.isWhitespace(c));
-        }
-        
-        //symbols
-        for (char c : symbols.toCharArray()) {
-            Assert.assertFalse(StringUtility.isWhitespace(c));
-        }
-        
-        //white space
-        for (char c : whiteSpace.toCharArray()) {
-            Assert.assertTrue(StringUtility.isWhitespace(c));
-        }
-        
-        //valid strings
+        //string
         Assert.assertTrue(StringUtility.isWhitespace("    "));
         Assert.assertTrue(StringUtility.isWhitespace("\t\t"));
         Assert.assertTrue(StringUtility.isWhitespace("\n\n\n\n"));
         Assert.assertTrue(StringUtility.isWhitespace("\r\n\r\n\r\n\r\n"));
         Assert.assertTrue(StringUtility.isWhitespace("\0\0\0\0"));
         Assert.assertTrue(StringUtility.isWhitespace(" \t \0 \n\r\n\0  \t "));
-        Assert.assertFalse(StringUtility.isWhitespace(""));
-        
-        //invalid strings
         Assert.assertFalse(StringUtility.isWhitespace("agaerg"));
         Assert.assertFalse(StringUtility.isWhitespace("FADHAED"));
         Assert.assertFalse(StringUtility.isWhitespace("FaeADHAasfsdgED"));
@@ -1573,6 +1527,10 @@ public class StringUtilityTest {
         Assert.assertFalse(StringUtility.isWhitespace("ASF\n456"));
         Assert.assertFalse(StringUtility.isWhitespace("afeAGA3t3tEA46"));
         Assert.assertFalse(StringUtility.isWhitespace("a!feAGA#3t3tE$A46\n"));
+        
+        //invalid
+        Assert.assertFalse(StringUtility.isWhitespace(""));
+        Assert.assertFalse(StringUtility.isWhitespace(null));
     }
     
     /**

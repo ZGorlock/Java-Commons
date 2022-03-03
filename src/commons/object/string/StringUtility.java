@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import commons.math.BoundUtility;
 import commons.object.CastUtility;
@@ -83,21 +84,21 @@ public final class StringUtility {
     /**
      * Determines if a string is null or empty.
      *
-     * @param str The string.
+     * @param string The string.
      * @return Whether the string is null or empty.
      */
-    public static boolean isNullOrEmpty(String str) {
-        return (str == null) || str.isEmpty();
+    public static boolean isNullOrEmpty(String string) {
+        return (string == null) || string.isEmpty();
     }
     
     /**
      * Determines if a string is null or blank.
      *
-     * @param str The string.
+     * @param string The string.
      * @return Whether the string is null or blank.
      */
-    public static boolean isNullOrBlank(String str) {
-        return (str == null) || str.isBlank();
+    public static boolean isNullOrBlank(String string) {
+        return (string == null) || string.isBlank();
     }
     
     /**
@@ -126,402 +127,434 @@ public final class StringUtility {
     /**
      * Determines if a string contains a substring.
      *
-     * @param str    The string.
+     * @param string The string.
      * @param search The substring to search for.
      * @return Whether or not the string contains the substring.
      */
-    public static boolean contains(String str, String search) {
-        return (str != null) && (search != null) &&
-                str.contains(search);
+    public static boolean contains(String string, String search) {
+        return (string != null) && (search != null) &&
+                string.contains(search);
     }
     
     /**
      * Determines if a string contains a substring, regardless of case.
      *
-     * @param str    The string.
+     * @param string The string.
      * @param search The substring to search for.
      * @return Whether or not the string contains the substring, regardless of case.
      */
-    public static boolean containsIgnoreCase(String str, String search) {
-        return (str != null) && (search != null) &&
-                str.toUpperCase().contains(search.toUpperCase());
+    public static boolean containsIgnoreCase(String string, String search) {
+        return (string != null) && (search != null) &&
+                string.toUpperCase().contains(search.toUpperCase());
     }
     
     /**
      * Determines if a string contains any of a set of substrings.
      *
-     * @param str    The string.
+     * @param string The string.
      * @param search The set of substrings to search for.
      * @return Whether or not the string contains any of the set of substrings.
      */
-    public static boolean containsAny(String str, String[] search) {
-        return (str != null) &&
-                Arrays.stream(search).filter(Objects::nonNull).anyMatch(str::contains);
+    public static boolean containsAny(String string, String[] search) {
+        return (string != null) &&
+                Arrays.stream(search).filter(Objects::nonNull).anyMatch(string::contains);
     }
     
     /**
      * Determines if a string contains any of a set of substrings, regardless of case.
      *
-     * @param str    The string.
+     * @param string The string.
      * @param search The set of substrings to search for.
      * @return Whether or not the string contains any of the set of substrings, regardless of case.
      * @see #containsAny(String, String[])
      */
-    public static boolean containsAnyIgnoreCase(String str, String[] search) {
-        return (str != null) &&
-                containsAny(str.toUpperCase(), Arrays.stream(search).filter(Objects::nonNull).map(String::toUpperCase).toArray(String[]::new));
+    public static boolean containsAnyIgnoreCase(String string, String[] search) {
+        return (string != null) &&
+                containsAny(string.toUpperCase(), Arrays.stream(search).filter(Objects::nonNull).map(String::toUpperCase).toArray(String[]::new));
     }
     
     /**
      * Determines if a string contains a character.
      *
-     * @param str    The string.
+     * @param string The string.
      * @param search The character to search for.
      * @return Whether or not the string contains the character.
      */
-    public static boolean containsChar(String str, char search) {
-        return (str != null) &&
-                (str.indexOf(search) != -1);
+    public static boolean containsChar(String string, char search) {
+        return (string != null) &&
+                (string.indexOf(search) != -1);
     }
     
     /**
      * Determines if a string contains a character, regardless of case.
      *
-     * @param str    The string.
+     * @param string The string.
      * @param search The character to search for.
      * @return Whether or not the string contains the character, regardless of case.
      * @see #containsChar(String, char)
      */
-    public static boolean containsCharIgnoreCase(String str, char search) {
-        return (str != null) &&
-                containsChar(str.toUpperCase(), Character.toUpperCase(search));
+    public static boolean containsCharIgnoreCase(String string, char search) {
+        return (string != null) &&
+                containsChar(string.toUpperCase(), Character.toUpperCase(search));
     }
     
     /**
      * Determines if a string contains any of a set of characters.
      *
-     * @param str    The string.
+     * @param string The string.
      * @param search The set of characters to search for.
      * @return Whether or not the string contains any of the set of characters.
      */
-    public static boolean containsAnyChar(String str, Character[] search) {
-        return (str != null) &&
-                Arrays.stream(search).filter(Objects::nonNull).anyMatch(e -> (str.indexOf(e) != -1));
+    public static boolean containsAnyChar(String string, Character[] search) {
+        return (string != null) &&
+                Arrays.stream(search).filter(Objects::nonNull).anyMatch(e -> (string.indexOf(e) != -1));
     }
     
     /**
      * Determines if a string contains any of a set of characters, regardless of case.
      *
-     * @param str    The string.
+     * @param string The string.
      * @param search The set of characters to search for.
      * @return Whether or not the string contains any of the set of characters, regardless of case.
      * @see #containsAnyChar(String, Character[])
      */
-    public static boolean containsAnyCharIgnoreCase(String str, Character[] search) {
-        return (str != null) &&
-                containsAnyChar(str.toUpperCase(), Arrays.stream(search).filter(Objects::nonNull).map(Character::toUpperCase).toArray(Character[]::new));
+    public static boolean containsAnyCharIgnoreCase(String string, Character[] search) {
+        return (string != null) &&
+                containsAnyChar(string.toUpperCase(), Arrays.stream(search).filter(Objects::nonNull).map(Character::toUpperCase).toArray(Character[]::new));
     }
     
     /**
      * Reverses a string.
      *
-     * @param str The string.
+     * @param string The string.
      * @return The reversed string.
      */
-    public static String reverse(String str) {
-        return new StringBuilder(str).reverse().toString();
+    public static String reverse(String string) {
+        return new StringBuilder(string).reverse().toString();
+    }
+    
+    /**
+     * Converts a code point to a character.
+     *
+     * @param codePoint The code point.
+     * @return The corresponding character.
+     */
+    public static char toChar(int codePoint) {
+        return (char) codePoint;
+    }
+    
+    /**
+     * Converts a string to a stream of characters.
+     *
+     * @param string The string.
+     * @return The stream of characters of the string.
+     * @see #toChar(int)
+     */
+    public static Stream<Character> charStream(String string) {
+        return string.chars().mapToObj(StringUtility::toChar);
+    }
+    
+    /**
+     * Converts a string to a stream of string characters.
+     *
+     * @param string The string.
+     * @return The stream of string characters of the string.
+     * @see #charStream(String)
+     */
+    public static Stream<String> stringStream(String string) {
+        return charStream(string).map(String::valueOf);
     }
     
     /**
      * Trims the whitespace off of the front and back ends of a string.
      *
-     * @param str The string to trim.
+     * @param string The string to trim.
      * @return The trimmed string.
      * @see #lTrim(String)
      * @see #rTrim(String)
      */
-    public static String trim(String str) {
-        return lTrim(rTrim(str));
+    public static String trim(String string) {
+        return lTrim(rTrim(string));
     }
     
     /**
      * Trims the whitespace off the left end of a string.
      *
-     * @param str The string to trim.
+     * @param string The string to trim.
      * @return The trimmed string.
      */
-    public static String lTrim(String str) {
-        return str.replaceAll("^[\\s\0]+", "");
+    public static String lTrim(String string) {
+        return string.replaceAll("^[\\s\0]+", "");
     }
     
     /**
      * Trims the whitespace off the right end of a string.
      *
-     * @param str The string to trim.
+     * @param string The string to trim.
      * @return The trimmed string.
      */
-    public static String rTrim(String str) {
-        return str.replaceAll("[\\s\0]+$", "");
+    public static String rTrim(String string) {
+        return string.replaceAll("[\\s\0]+$", "");
     }
     
     /**
      * Removes the first n characters from the beginning of a string and the last n characters from the end of a string.
      *
-     * @param str  The string to skin.
-     * @param skin The number of characters to skin.
+     * @param string The string to skin.
+     * @param skin   The number of characters to skin.
      * @return The string with the first n characters and last n characters removed.
      * @see #lShear(String, int)
      * @see #rShear(String, int)
      */
-    public static String skin(String str, int skin) {
-        return lShear(rShear(str, skin), skin);
+    public static String skin(String string, int skin) {
+        return lShear(rShear(string, skin), skin);
     }
     
     /**
      * Removes the first n characters from the beginning of a string.
      *
-     * @param str   The string to shear.
-     * @param shear The number of characters to shear.
+     * @param string The string to shear.
+     * @param shear  The number of characters to shear.
      * @return The string with the first n characters removed.
      */
-    public static String lShear(String str, int shear) {
+    public static String lShear(String string, int shear) {
         if (shear <= 0) {
-            return str;
+            return string;
         }
-        if (shear >= str.length()) {
+        if (shear >= string.length()) {
             return "";
         }
-        return str.substring(shear);
+        return string.substring(shear);
     }
     
     /**
      * Removes the last n characters from the end of a string.
      *
-     * @param str   The string to shear.
-     * @param shear The number of characters to shear.
+     * @param string The string to shear.
+     * @param shear  The number of characters to shear.
      * @return The string with the last n characters removed.
      */
-    public static String rShear(String str, int shear) {
+    public static String rShear(String string, int shear) {
         if (shear <= 0) {
-            return str;
+            return string;
         }
-        if (shear >= str.length()) {
+        if (shear >= string.length()) {
             return "";
         }
-        return str.substring(0, (str.length() - shear));
+        return string.substring(0, (string.length() - shear));
     }
     
     /**
      * Returns the first n characters from the beginning of a string and the last n characters from the end of a string.
      *
-     * @param str  The string to gut.
-     * @param skin The number of characters to not gut.
+     * @param string The string to gut.
+     * @param skin   The number of characters to not gut.
      * @return The first n characters and the last n characters of the string.
      * @see #lSnip(String, int)
      * @see #rSnip(String, int)
      */
-    public static String gut(String str, int skin) {
-        if (skin >= (str.length() / 2)) {
-            return str;
+    public static String gut(String string, int skin) {
+        if (skin >= (string.length() / 2)) {
+            return string;
         }
-        return lSnip(str, skin) + rSnip(str, skin);
+        return lSnip(string, skin) + rSnip(string, skin);
     }
     
     /**
      * Returns the first n characters from the beginning of a string.
      *
-     * @param str  The string to snip.
-     * @param snip The number of characters to return.
+     * @param string The string to snip.
+     * @param snip   The number of characters to return.
      * @return The first n characters of the string.
      */
-    public static String lSnip(String str, int snip) {
+    public static String lSnip(String string, int snip) {
         if (snip <= 0) {
             return "";
         }
-        if (snip >= str.length()) {
-            return str;
+        if (snip >= string.length()) {
+            return string;
         }
-        return str.substring(0, snip);
+        return string.substring(0, snip);
     }
     
     /**
      * Returns the last n characters from the end of a string.
      *
-     * @param str  The string to snip.
-     * @param snip The number of characters to return.
+     * @param string The string to snip.
+     * @param snip   The number of characters to return.
      * @return The last n characters of the string.
      */
-    public static String rSnip(String str, int snip) {
+    public static String rSnip(String string, int snip) {
         if (snip <= 0) {
             return "";
         }
-        if (snip >= str.length()) {
-            return str;
+        if (snip >= string.length()) {
+            return string;
         }
-        return str.substring(str.length() - snip);
+        return string.substring(string.length() - snip);
     }
     
     /**
      * Pads a string on both sides to a specified length.
      *
-     * @param str     The string to pad.
+     * @param string  The string to pad.
      * @param size    The target size of the string.
      * @param padding The character to pad with.
      * @return The padded string.
      * @see #padAbsolute(String, int, char)
      */
-    public static String pad(String str, int size, char padding) {
-        return (str.length() >= size) ? str :
-               padAbsolute(str, ((size - str.length()) / 2), padding);
+    public static String pad(String string, int size, char padding) {
+        return (string.length() >= size) ? string :
+               padAbsolute(string, ((size - string.length()) / 2), padding);
     }
     
     /**
      * Pads a string on both sides to a specified length.
      *
-     * @param str  The string to pad.
-     * @param size The target size of the string.
+     * @param string The string to pad.
+     * @param size   The target size of the string.
      * @return The padded string.
      * @see #pad(String, int, char)
      */
-    public static String pad(String str, int size) {
-        return pad(str, size, ' ');
+    public static String pad(String string, int size) {
+        return pad(string, size, ' ');
     }
     
     /**
      * Pads a string on both sides with a specified amount of padding.
      *
-     * @param str     The string to pad.
+     * @param string  The string to pad.
      * @param size    The amount of padding.
      * @param padding The character to pad with.
      * @return The padded string.
      */
-    public static String padAbsolute(String str, int size, char padding) {
+    public static String padAbsolute(String string, int size, char padding) {
         final String pad = fillStringOfLength(padding, size);
-        return pad + str + pad;
+        return pad + string + pad;
     }
     
     /**
      * Pads a string on both sides with a specified amount of padding.
      *
-     * @param str  The string to pad.
-     * @param size The amount of padding.
+     * @param string The string to pad.
+     * @param size   The amount of padding.
      * @return The padded string.
      * @see #padAbsolute(String, int, char)
      */
-    public static String padAbsolute(String str, int size) {
-        return padAbsolute(str, size, ' ');
+    public static String padAbsolute(String string, int size) {
+        return padAbsolute(string, size, ' ');
     }
     
     /**
      * Pads a string on the left to a specified length.
      *
-     * @param str     The string to pad.
+     * @param string  The string to pad.
      * @param size    The target size of the string.
      * @param padding The character to pad with.
      * @return The padded string.
      * @see #padLeftAbsolute(String, int, char)
      */
-    public static String padLeft(String str, int size, char padding) {
-        return (str.length() >= size) ? str :
-               padLeftAbsolute(str, (size - str.length()), padding);
+    public static String padLeft(String string, int size, char padding) {
+        return (string.length() >= size) ? string :
+               padLeftAbsolute(string, (size - string.length()), padding);
     }
     
     /**
      * Pads a string on the left to a specified length.
      *
-     * @param str  The string to pad.
-     * @param size The target size of the string.
+     * @param string The string to pad.
+     * @param size   The target size of the string.
      * @return The padded string.
      * @see #padLeft(String, int, char)
      */
-    public static String padLeft(String str, int size) {
-        return padLeft(str, size, ' ');
+    public static String padLeft(String string, int size) {
+        return padLeft(string, size, ' ');
     }
     
     /**
      * Pads a string on the left with a specified amount of padding.
      *
-     * @param str     The string to pad.
+     * @param string  The string to pad.
      * @param size    The amount of padding.
      * @param padding The character to pad with.
      * @return The padded string.
      */
-    public static String padLeftAbsolute(String str, int size, char padding) {
-        return fillStringOfLength(padding, size) + str;
+    public static String padLeftAbsolute(String string, int size, char padding) {
+        return fillStringOfLength(padding, size) + string;
     }
     
     /**
      * Pads a string on the left with a specified amount of padding.
      *
-     * @param str  The string to pad.
-     * @param size The amount of padding.
+     * @param string The string to pad.
+     * @param size   The amount of padding.
      * @return The padded string.
      * @see #padLeftAbsolute(String, int, char)
      */
-    public static String padLeftAbsolute(String str, int size) {
-        return padLeftAbsolute(str, size, ' ');
+    public static String padLeftAbsolute(String string, int size) {
+        return padLeftAbsolute(string, size, ' ');
     }
     
     /**
      * Pads a string on the right to a specified length.
      *
-     * @param str     The string to pad.
+     * @param string  The string to pad.
      * @param size    The target size of the string.
      * @param padding The character to pad with.
      * @return The padded string.
      * @see #padRightAbsolute(String, int, char)
      */
-    public static String padRight(String str, int size, char padding) {
-        return (str.length() >= size) ? str :
-               padRightAbsolute(str, (size - str.length()), padding);
+    public static String padRight(String string, int size, char padding) {
+        return (string.length() >= size) ? string :
+               padRightAbsolute(string, (size - string.length()), padding);
     }
     
     /**
      * Pads a string on the right to a specified length.
      *
-     * @param str  The string to pad.
-     * @param size The target size of the string.
+     * @param string The string to pad.
+     * @param size   The target size of the string.
      * @return The padded string.
      * @see #padRight(String, int, char)
      */
-    public static String padRight(String str, int size) {
-        return padRight(str, size, ' ');
+    public static String padRight(String string, int size) {
+        return padRight(string, size, ' ');
     }
     
     /**
      * Pads a string on the right with a specified amount of padding.
      *
-     * @param str     The string to pad.
+     * @param string  The string to pad.
      * @param size    The amount of padding.
      * @param padding The character to pad with.
      * @return The padded string.
      */
-    public static String padRightAbsolute(String str, int size, char padding) {
-        return str + fillStringOfLength(padding, size);
+    public static String padRightAbsolute(String string, int size, char padding) {
+        return string + fillStringOfLength(padding, size);
     }
     
     /**
      * Pads a string on the left with a specified amount of padding.
      *
-     * @param str  The string to pad.
-     * @param size The amount of padding.
+     * @param string The string to pad.
+     * @param size   The amount of padding.
      * @return The padded string.
      * @see #padRightAbsolute(String, int, char)
      */
-    public static String padRightAbsolute(String str, int size) {
-        return padRightAbsolute(str, size, ' ');
+    public static String padRightAbsolute(String string, int size) {
+        return padRightAbsolute(string, size, ' ');
     }
     
     /**
      * Pads a number string with leading zeros to fit a particular size.
      *
-     * @param str  The number string to pad.
-     * @param size The specified size of the final string.
+     * @param string The number string to pad.
+     * @param size   The specified size of the final string.
      * @return The padded number string.
      * @see #padLeft(String, int, char)
      */
-    public static String padZero(String str, int size) {
-        return padLeft(str, size, '0');
+    public static String padZero(String string, int size) {
+        return padLeft(string, size, '0');
     }
     
     /**
@@ -559,24 +592,24 @@ public final class StringUtility {
     /**
      * Quotes a string.
      *
-     * @param str          The string to quote.
+     * @param string       The string to quote.
      * @param singleQuotes Whether to use single quotes, otherwise double quotes will be used.
      * @return The quoted string.
      * @see #padAbsolute(String, int, char)
      */
-    public static String quote(String str, boolean singleQuotes) {
-        return padAbsolute(str, 1, (singleQuotes ? '\'' : '"'));
+    public static String quote(String string, boolean singleQuotes) {
+        return padAbsolute(string, 1, (singleQuotes ? '\'' : '"'));
     }
     
     /**
      * Quotes a string.
      *
-     * @param str The string to quote.
+     * @param string The string to quote.
      * @return The quoted string.
      * @see #quote(String, boolean)
      */
-    public static String quote(String str) {
-        return quote(str, false);
+    public static String quote(String string) {
+        return quote(string, false);
     }
     
     /**
@@ -606,14 +639,14 @@ public final class StringUtility {
     /**
      * Repeats a string a certain number of times.
      *
-     * @param str The string to repeat.
-     * @param num The number of times to repeat the string.
+     * @param string The string to repeat.
+     * @param num    The number of times to repeat the string.
      * @return A string containing the base string repeated a number of times.
      * @see String#repeat(int)
      */
-    public static String repeatString(String str, int num) {
+    public static String repeatString(String string, int num) {
         return (num <= 0) ? "" :
-               String.valueOf(str).repeat(num);
+               String.valueOf(string).repeat(num);
     }
     
     /**
@@ -652,13 +685,9 @@ public final class StringUtility {
      * @return The string with punctuation gently removed.
      */
     public static String removePunctuationSoft(String string, List<Character> save) {
-        StringBuilder depuncted = new StringBuilder();
-        for (char c : string.toCharArray()) {
-            if (!isSymbol(c) || save.contains(c)) {
-                depuncted.append(c);
-            }
-        }
-        return depuncted.toString();
+        return charStream(string)
+                .filter(c -> !isSymbol(c) || save.contains(c))
+                .map(String::valueOf).collect(Collectors.joining());
     }
     
     /**
@@ -698,12 +727,12 @@ public final class StringUtility {
     /**
      * Determines if a string is alphanumeric or not.
      *
-     * @param str The string.
+     * @param string The string.
      * @return Whether the string is alphanumeric or not.
      * @see #isAlphanumeric(char)
      */
-    public static boolean isAlphanumeric(String str) {
-        return !isNullOrEmpty(str) && str.chars().allMatch(i -> isAlphanumeric((char) i));
+    public static boolean isAlphanumeric(String string) {
+        return !isNullOrEmpty(string) && charStream(string).allMatch(StringUtility::isAlphanumeric);
     }
     
     /**
@@ -720,12 +749,12 @@ public final class StringUtility {
     /**
      * Determines if a string is alphabetic or not.
      *
-     * @param str The string.
+     * @param string The string.
      * @return Whether the string is alphabetic or not.
      * @see #isAlphabetic(char)
      */
-    public static boolean isAlphabetic(String str) {
-        return !isNullOrEmpty(str) && str.chars().allMatch(i -> isAlphabetic((char) i));
+    public static boolean isAlphabetic(String string) {
+        return !isNullOrEmpty(string) && charStream(string).allMatch(StringUtility::isAlphabetic);
     }
     
     /**
@@ -764,12 +793,12 @@ public final class StringUtility {
     /**
      * Determines if a string is numeric or not.
      *
-     * @param str The string.
+     * @param string The string.
      * @return Whether the string is numeric or not.
      * @see #isNumeric(char)
      */
-    public static boolean isNumeric(String str) {
-        return !isNullOrEmpty(str) && str.chars().allMatch(i -> isNumeric((char) i));
+    public static boolean isNumeric(String string) {
+        return !isNullOrEmpty(string) && charStream(string).allMatch(StringUtility::isNumeric);
     }
     
     /**
@@ -787,12 +816,12 @@ public final class StringUtility {
     /**
      * Determines if a string is punctuation or not.
      *
-     * @param str The string.
+     * @param string The string.
      * @return Whether the string is punctuation or not.
      * @see #isSymbol(char)
      */
-    public static boolean isSymbol(String str) {
-        return !isNullOrEmpty(str) && str.chars().allMatch(i -> isSymbol((char) i));
+    public static boolean isSymbol(String string) {
+        return !isNullOrEmpty(string) && charStream(string).allMatch(StringUtility::isSymbol);
     }
     
     /**
@@ -809,12 +838,12 @@ public final class StringUtility {
     /**
      * Determines if a string is whitespace or not.
      *
-     * @param str The string.
+     * @param string The string.
      * @return Whether the string is whitespace or not.
      * @see #isWhitespace(char)
      */
-    public static boolean isWhitespace(String str) {
-        return !isNullOrEmpty(str) && str.chars().allMatch(i -> isWhitespace((char) i));
+    public static boolean isWhitespace(String string) {
+        return !isNullOrEmpty(string) && charStream(string).allMatch(StringUtility::isWhitespace);
     }
     
     /**
@@ -846,110 +875,110 @@ public final class StringUtility {
     /**
      * Replaces a character in a string with another character.
      *
-     * @param str     The string to operate on.
+     * @param string  The string to operate on.
      * @param index   The index in the string to replace at.
      * @param replace The character to replace with at the specified index.
      * @return The string with the replacement performed.
      */
-    public static String replaceCharAt(String str, int index, char replace) {
-        if ((index < 0) || (index > (str.length() - 1))) {
-            return str;
+    public static String replaceCharAt(String string, int index, char replace) {
+        if ((index < 0) || (index > (string.length() - 1))) {
+            return string;
         }
-        return lSnip(str, index) + replace + lShear(str, index + 1);
+        return lSnip(string, index) + replace + lShear(string, index + 1);
     }
     
     /**
      * Inserts a character in a string at.
      *
-     * @param str    The string to operate on.
+     * @param string The string to operate on.
      * @param index  The index in the string to insert at.
      * @param insert The character to insert at the specified index.
      * @return The string with the insertion performed.
      */
-    public static String insertCharAt(String str, int index, char insert) {
-        if ((index < 0) || (index > (str.length()))) {
-            return str;
+    public static String insertCharAt(String string, int index, char insert) {
+        if ((index < 0) || (index > (string.length()))) {
+            return string;
         }
-        if (index == str.length()) {
-            return str + insert;
+        if (index == string.length()) {
+            return string + insert;
         }
-        return lSnip(str, index) + insert + lShear(str, index);
+        return lSnip(string, index) + insert + lShear(string, index);
     }
     
     /**
      * Deletes a character from a string.
      *
-     * @param str   The string to operate on.
-     * @param index The index in the string to delete from.
+     * @param string The string to operate on.
+     * @param index  The index in the string to delete from.
      * @return The string with the deletion performed.
      */
-    public static String deleteCharAt(String str, int index) {
-        if ((index < 0) || (index > (str.length() - 1))) {
-            return str;
+    public static String deleteCharAt(String string, int index) {
+        if ((index < 0) || (index > (string.length() - 1))) {
+            return string;
         }
-        return lSnip(str, index) + lShear(str, index + 1);
+        return lSnip(string, index) + lShear(string, index + 1);
     }
     
     /**
      * Replaces a substring in a string with another substring.
      *
-     * @param str        The string to operate on.
+     * @param string     The string to operate on.
      * @param startIndex The starting index of the substring in the string.
      * @param endIndex   The ending index of the substring in the string.
      * @param replace    The substring to replace with.
      * @return The string with the replacement performed.
      */
-    public static String replaceSubstringAt(String str, int startIndex, int endIndex, String replace) {
-        if ((startIndex < 0) || (startIndex > str.length()) ||
-                (endIndex < 0) || (endIndex > str.length()) ||
+    public static String replaceSubstringAt(String string, int startIndex, int endIndex, String replace) {
+        if ((startIndex < 0) || (startIndex > string.length()) ||
+                (endIndex < 0) || (endIndex > string.length()) ||
                 (startIndex > endIndex)) {
-            return str;
+            return string;
         }
-        if (startIndex == str.length()) {
-            return str + replace;
+        if (startIndex == string.length()) {
+            return string + replace;
         }
-        if (endIndex == str.length()) {
-            return lSnip(str, startIndex) + replace;
+        if (endIndex == string.length()) {
+            return lSnip(string, startIndex) + replace;
         }
-        return lSnip(str, startIndex) + replace + lShear(str, endIndex);
+        return lSnip(string, startIndex) + replace + lShear(string, endIndex);
     }
     
     /**
      * Inserts a substring in a string.
      *
-     * @param str    The string to operate on.
+     * @param string The string to operate on.
      * @param index  The index in the string to insert at.
      * @param insert The substring to insert.
      * @return The string with the insertion performed.
      */
-    public static String insertSubstringAt(String str, int index, String insert) {
-        if ((index < 0) || (index > (str.length()))) {
-            return str;
+    public static String insertSubstringAt(String string, int index, String insert) {
+        if ((index < 0) || (index > (string.length()))) {
+            return string;
         }
-        if (index == str.length()) {
-            return str + insert;
+        if (index == string.length()) {
+            return string + insert;
         }
-        return lSnip(str, index) + insert + lShear(str, index);
+        return lSnip(string, index) + insert + lShear(string, index);
     }
     
     /**
      * Deletes a substring from a string.
      *
-     * @param str        The string to operate on.
+     * @param string     The string to operate on.
      * @param startIndex The starting index of the substring in the string.
      * @param endIndex   The ending index of the substring in the string.
      * @return The string with the deletion performed.
      */
-    public static String deleteSubstringAt(String str, int startIndex, int endIndex) {
-        if ((startIndex < 0) || (startIndex > (str.length() - 1)) ||
-                (endIndex < 0) || (endIndex > str.length()) ||
+    public static String deleteSubstringAt(String string, int startIndex, int endIndex) {
+        if ((startIndex < 0) || (startIndex > (string.length() - 1)) ||
+                (endIndex < 0) || (endIndex > string.length()) ||
                 (startIndex > endIndex)) {
-            return str;
+            return string;
         }
-        if (endIndex == str.length()) {
-            return lSnip(str, startIndex);
+        if (endIndex == string.length()) {
+            return lSnip(string, startIndex);
         }
-        return lSnip(str, startIndex) + lShear(str, endIndex);
+        return lSnip(string, startIndex) + lShear(string, endIndex);
     }
     
     /**
@@ -1146,24 +1175,24 @@ public final class StringUtility {
     /**
      * Returns '[aA] {str}' or '[aA]n {str}' depending on the string.
      *
-     * @param str       The string to justify.
+     * @param string    The string to justify.
      * @param uppercase Whether or not to capitalize the first letter.
      * @return '[aA] {str}' or '[aA]n {str}'.
      */
-    public static String justifyAOrAn(String str, boolean uppercase) {
-        return isNullOrBlank(str) ? "" :
-               (uppercase ? 'A' : 'a') + (isVowel(str.charAt(0)) ? "n" : "") + ' ' + str;
+    public static String justifyAOrAn(String string, boolean uppercase) {
+        return isNullOrBlank(string) ? "" :
+               (uppercase ? 'A' : 'a') + (isVowel(string.charAt(0)) ? "n" : "") + ' ' + string;
     }
     
     /**
      * Returns 'a {str}' or 'an {str}' depending on the string.
      *
-     * @param str The string to justify.
+     * @param string The string to justify.
      * @return 'a {str}' or 'an {str}'.
      * @see #justifyAOrAn(String, boolean)
      */
-    public static String justifyAOrAn(String str) {
-        return justifyAOrAn(str, false);
+    public static String justifyAOrAn(String string) {
+        return justifyAOrAn(string, false);
     }
     
     /**
@@ -1327,68 +1356,68 @@ public final class StringUtility {
     /**
      * Tokenizes a passed string into its tokens and returns a list of those tokens.
      *
-     * @param str   The string to tokenize.
-     * @param delim The regex delimiter to separate tokens by.
-     * @param hard  Whether or not to include empty tokens.
+     * @param string The string to tokenize.
+     * @param delim  The regex delimiter to separate tokens by.
+     * @param hard   Whether or not to include empty tokens.
      * @return The list of all the tokens from the passed string.
      */
-    public static List<String> tokenize(String str, String delim, boolean hard) {
-        return new ArrayList<>(Arrays.asList(str.split(delim, (hard ? -1 : 0))));
+    public static List<String> tokenize(String string, String delim, boolean hard) {
+        return new ArrayList<>(Arrays.asList(string.split(delim, (hard ? -1 : 0))));
     }
     
     /**
      * Tokenizes a passed string into its tokens and returns a list of those tokens.
      *
-     * @param str   The string to tokenize.
-     * @param delim The regex delimiter to separate tokens by.
+     * @param string The string to tokenize.
+     * @param delim  The regex delimiter to separate tokens by.
      * @return The list of all the tokens from the passed string.
      * @see #tokenize(String, String, boolean)
      */
-    public static List<String> tokenize(String str, String delim) {
-        return tokenize(str, delim, false);
+    public static List<String> tokenize(String string, String delim) {
+        return tokenize(string, delim, false);
     }
     
     /**
      * Tokenizes a passed string into its tokens and returns a list of those tokens.
      *
-     * @param str The string to tokenize.
+     * @param string The string to tokenize.
      * @return The list of all the tokens from the passed string.
      * @see #tokenize(String, String)
      */
-    public static List<String> tokenize(String str) {
-        return tokenize(str, "\\s+");
+    public static List<String> tokenize(String string) {
+        return tokenize(string, "\\s+");
     }
     
     /**
      * Tokenizes a string into a list of tokens of a certain length.
      *
-     * @param str    The string to tokenize.
+     * @param string The string to tokenize.
      * @param length The length of the tokens.
      * @return The list of all the tokens from the passed string.
      */
-    public static List<String> tokenize(String str, int length) {
-        return new ArrayList<>(Arrays.asList(str.split("(?<=\\G.{" + length + "})")));
+    public static List<String> tokenize(String string, int length) {
+        return new ArrayList<>(Arrays.asList(string.split("(?<=\\G.{" + length + "})")));
     }
     
     /**
      * Tokenizes a string into a list of tokens based on a list of valid tokens.
      *
-     * @param str         The string to tokenize.
+     * @param string      The string to tokenize.
      * @param validTokens The list of valid tokens.
      * @param sortList    Whether or not to sort the valid tokens list for best performance.
      * @return The list of all the tokens from the passed string, or null when the string cannot be tokenized.
      */
-    public static List<String> tokenize(String str, List<String> validTokens, boolean sortList) {
+    public static List<String> tokenize(String string, List<String> validTokens, boolean sortList) {
         final List<String> validTokenList = new ArrayList<>(validTokens);
         if (sortList) {
             validTokenList.sort((o1, o2) -> Integer.compare(o2.length(), o1.length()));
         }
         
         final Map<Character, String> placeholders = new HashMap<>();
-        int originalMaxCharacter = (str + String.join("", validTokenList)).codePoints().max().orElse(0);
+        int originalMaxCharacter = (string + String.join("", validTokenList)).codePoints().max().orElse(0);
         int placeholderChar = originalMaxCharacter + 1;
         for (String validToken : validTokenList) {
-            if (!str.contains(validToken)) {
+            if (!string.contains(validToken)) {
                 continue;
             }
             if (placeholderChar > 65535) {
@@ -1396,49 +1425,49 @@ public final class StringUtility {
             }
             char placeholder = (char) placeholderChar++;
             placeholders.put(placeholder, validToken);
-            str = str.replace(validToken, String.valueOf(placeholder));
+            string = string.replace(validToken, String.valueOf(placeholder));
         }
         
-        int newMinCharacter = str.codePoints().min().orElse(0);
+        int newMinCharacter = string.codePoints().min().orElse(0);
         if (newMinCharacter <= originalMaxCharacter) {
             return null;
         }
         
-        return str.codePoints().mapToObj(e -> (char) e).map(placeholders::get).collect(Collectors.toList());
+        return string.codePoints().mapToObj(StringUtility::toChar).map(placeholders::get).collect(Collectors.toList());
     }
     
     /**
      * Tokenizes a string into a list of tokens based on a list of valid tokens.
      *
-     * @param str         The string to tokenize.
+     * @param string      The string to tokenize.
      * @param validTokens The list of valid tokens.
      * @return The list of all the tokens from the passed string, or null when the string cannot be tokenized.
      * @see #tokenize(String, List)
      */
-    public static List<String> tokenize(String str, List<String> validTokens) {
-        return tokenize(str, validTokens, true);
+    public static List<String> tokenize(String string, List<String> validTokens) {
+        return tokenize(string, validTokens, true);
     }
     
     /**
      * Tokenizes a passed string into its a list of arguments delimited either by spaces or quotes.
      *
-     * @param str The string to tokenize.
+     * @param string The string to tokenize.
      * @return The list of all the args from the passed string.
      */
-    public static List<String> tokenizeArgs(String str) {
+    public static List<String> tokenizeArgs(String string) {
         List<String> args = new ArrayList<>();
         
         StringBuilder argBuilder = new StringBuilder();
-        for (int i = 0; i < str.length(); i++) {
-            char c = str.charAt(i);
+        for (int i = 0; i < string.length(); i++) {
+            char c = string.charAt(i);
             if (c == ' ') {
                 if ((argBuilder.length() > 0)) {
                     args.add(argBuilder.toString());
                     argBuilder = new StringBuilder();
                 }
             } else if (c == '"') {
-                for (i = i + 1; i < str.length(); i++) {
-                    char k = str.charAt(i);
+                for (i = i + 1; i < string.length(); i++) {
+                    char k = string.charAt(i);
                     if (k == '"') {
                         args.add(argBuilder.toString());
                         argBuilder = new StringBuilder();
@@ -1449,7 +1478,7 @@ public final class StringUtility {
                 }
             } else {
                 argBuilder.append(c);
-                if (i == (str.length() - 1)) {
+                if (i == (string.length() - 1)) {
                     args.add(argBuilder.toString());
                 }
             }
@@ -1483,12 +1512,12 @@ public final class StringUtility {
     /**
      * Splits a passed string by line separators and returns a list of lines.
      *
-     * @param str The string to split.
+     * @param string The string to split.
      * @return The list of the lines in the passed string.
      * @see #tokenize(String, String, boolean)
      */
-    public static List<String> splitLines(String str) {
-        return tokenize(str, "\\r?\\n", true);
+    public static List<String> splitLines(String string) {
+        return tokenize(string, "\\r?\\n", true);
     }
     
     /**
