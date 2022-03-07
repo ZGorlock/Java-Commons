@@ -22,7 +22,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
-import commons.function.Action;
+import commons.lambda.function.Action;
 import commons.object.CastUtility;
 import commons.object.string.StringUtility;
 import org.junit.Assert;

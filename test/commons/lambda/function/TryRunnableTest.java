@@ -1,11 +1,11 @@
 /*
- * File:    TrySupplierTest.java
- * Package: commons.function
+ * File:    TryRunnableTest.java
+ * Package: commons.lambda.function
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.function;
+package commons.lambda.function;
 
 import commons.test.TestUtils;
 import org.junit.After;
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of TrySupplier.
+ * JUnit test of TryRunnable.
  *
- * @see TrySupplier
+ * @see TryRunnable
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TrySupplier.class})
-public class TrySupplierTest {
+@PrepareForTest({TryRunnable.class})
+public class TryRunnableTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(TrySupplierTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(TryRunnableTest.class);
     
     
     //Initialization
@@ -96,24 +96,24 @@ public class TrySupplierTest {
      * JUnit test of tryRun.
      *
      * @throws Exception When there is an exception.
-     * @see TrySupplier#tryGet()
+     * @see TryRunnable#tryRun()
      */
     @Test
-    public void testTryGet() throws Exception {
+    public void testTryRun() throws Exception {
         //standard
-        TestUtils.assertMethodExists(TrySupplier.class, "tryGet");
+        TestUtils.assertMethodExists(TryRunnable.class, "tryRun");
     }
     
     /**
-     * JUnit test of get.
+     * JUnit test of run.
      *
      * @throws Exception When there is an exception.
-     * @see TrySupplier#get()
+     * @see TryRunnable#run()
      */
     @Test
-    public void testGet() throws Exception {
+    public void testRun() throws Exception {
         //standard
-        TestUtils.assertMethodExists(TrySupplier.class, "get");
+        TestUtils.assertMethodExists(TryRunnable.class, "run");
     }
     
 }

@@ -1,11 +1,11 @@
 /*
- * File:    TryRunnableTest.java
- * Package: commons.function
+ * File:    ActionTest.java
+ * Package: commons.lambda.function
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.function;
+package commons.lambda.function;
 
 import commons.test.TestUtils;
 import org.junit.After;
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of TryRunnable.
+ * JUnit test of Action.
  *
- * @see TryRunnable
+ * @see Action
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TryRunnable.class})
-public class TryRunnableTest {
+@PrepareForTest({Action.class})
+public class ActionTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(TryRunnableTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActionTest.class);
     
     
     //Initialization
@@ -93,27 +93,27 @@ public class TryRunnableTest {
     }
     
     /**
-     * JUnit test of tryRun.
+     * JUnit test of perform.
      *
      * @throws Exception When there is an exception.
-     * @see TryRunnable#tryRun()
+     * @see Action#perform()
      */
     @Test
-    public void testTryRun() throws Exception {
+    public void testPerform() throws Exception {
         //standard
-        TestUtils.assertMethodExists(TryRunnable.class, "tryRun");
+        TestUtils.assertMethodExists(Action.class, "perform");
     }
     
     /**
-     * JUnit test of run.
+     * JUnit test of call.
      *
      * @throws Exception When there is an exception.
-     * @see TryRunnable#run()
+     * @see Action#call()
      */
     @Test
-    public void testRun() throws Exception {
+    public void testCall() throws Exception {
         //standard
-        TestUtils.assertMethodExists(TryRunnable.class, "run");
+        TestUtils.assertMethodExists(Action.class, "call");
     }
     
 }

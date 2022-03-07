@@ -1,11 +1,11 @@
 /*
- * File:    ActionTest.java
- * Package: commons.function
+ * File:    TrySupplierTest.java
+ * Package: commons.lambda.function
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.function;
+package commons.lambda.function;
 
 import commons.test.TestUtils;
 import org.junit.After;
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of Action.
+ * JUnit test of TrySupplier.
  *
- * @see Action
+ * @see TrySupplier
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Action.class})
-public class ActionTest {
+@PrepareForTest({TrySupplier.class})
+public class TrySupplierTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(ActionTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(TrySupplierTest.class);
     
     
     //Initialization
@@ -93,27 +93,27 @@ public class ActionTest {
     }
     
     /**
-     * JUnit test of perform.
+     * JUnit test of tryRun.
      *
      * @throws Exception When there is an exception.
-     * @see Action#perform()
+     * @see TrySupplier#tryGet()
      */
     @Test
-    public void testPerform() throws Exception {
+    public void testTryGet() throws Exception {
         //standard
-        TestUtils.assertMethodExists(Action.class, "perform");
+        TestUtils.assertMethodExists(TrySupplier.class, "tryGet");
     }
     
     /**
-     * JUnit test of call.
+     * JUnit test of get.
      *
      * @throws Exception When there is an exception.
-     * @see Action#call()
+     * @see TrySupplier#get()
      */
     @Test
-    public void testCall() throws Exception {
+    public void testGet() throws Exception {
         //standard
-        TestUtils.assertMethodExists(Action.class, "call");
+        TestUtils.assertMethodExists(TrySupplier.class, "get");
     }
     
 }

@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import commons.function.Action;
+import commons.lambda.function.Action;
 import commons.math.BoundUtility;
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;

@@ -11,7 +11,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.Objects;
 
-import commons.function.TrySupplier;
+import commons.lambda.function.TrySupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

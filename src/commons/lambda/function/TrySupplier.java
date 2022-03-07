@@ -1,11 +1,11 @@
 /*
  * File:    TrySupplier.java
- * Package: commons.function
+ * Package: commons.lambda.function
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.function;
+package commons.lambda.function;
 
 import java.util.function.Supplier;
 
