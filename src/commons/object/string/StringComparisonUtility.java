@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.regex.Matcher;
 
 import commons.math.BoundUtility;
 import org.apache.commons.codec.language.Metaphone;
@@ -82,7 +83,7 @@ public final class StringComparisonUtility {
             return 0.0;
         }
         
-        pattern = pattern.replaceAll("[" + VARCHAR_STRING + "]+", VARCHAR_STRING); //remove double vars
+        pattern = pattern.replaceAll("[" + VARCHAR_STRING + "]+", Matcher.quoteReplacement(VARCHAR_STRING)); //remove double vars
         pattern = ignorePunctuation ? StringUtility.removePunctuationSoft(pattern, Collections.singletonList(VARCHAR)) : pattern;
         
         if (pattern.isEmpty()) {
@@ -219,7 +220,7 @@ public final class StringComparisonUtility {
     @SuppressWarnings({"AssignmentToMethodParameter", "SillyAssignment"})
     public static int stringEditDistance(String pattern, String text, List<List<String>> vars, List<List<String>> tokens, boolean ignoreCase, boolean ignorePunctuation) {
         pattern = ignorePunctuation ? StringUtility.removePunctuationSoft(pattern, Collections.singletonList(VARCHAR)) : pattern;
-        pattern = pattern.replaceAll("[" + VARCHAR_STRING + "]+", VARCHAR_STRING); //remove double vars
+        pattern = pattern.replaceAll("[" + VARCHAR_STRING + "]+", Matcher.quoteReplacement(VARCHAR_STRING)); //remove double vars
         
         int m = pattern.length(); //i
         int n = text.length(); //j

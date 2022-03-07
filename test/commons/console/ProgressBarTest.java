@@ -1515,7 +1515,7 @@ public class ProgressBarTest {
         Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete",
-                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
         );
         Assert.assertFalse(out.toString().contains(" "));
         System.setOut(saveOut);
@@ -1543,7 +1543,7 @@ public class ProgressBarTest {
         Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete (16h 0m 53s)",
-                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
         );
         Assert.assertFalse(out.toString().contains(" "));
         Mockito.when(progressBar.getTotalDuration()).thenCallRealMethod();
@@ -1568,7 +1568,7 @@ public class ProgressBarTest {
         Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete - Press any key to continue...",
-                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
         );
         Assert.assertFalse(out.toString().contains(" "));
         System.setOut(saveOut);
@@ -1596,7 +1596,7 @@ public class ProgressBarTest {
         Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete (16h 0m 53s) - Press any key to continue...",
-                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
         );
         Assert.assertFalse(out.toString().contains(" "));
         Mockito.when(progressBar.getTotalDuration()).thenCallRealMethod();
@@ -1622,7 +1622,7 @@ public class ProgressBarTest {
         Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 "Test Bar: " + "100% [====================] 10000B/10000B - Complete",
-                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
         );
         Assert.assertFalse(out.toString().contains(" "));
         System.setOut(saveOut);
@@ -1704,7 +1704,7 @@ public class ProgressBarTest {
         Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 " 50% [==========          ]  5000B/10000B - Failed",
-                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
         );
         Assert.assertFalse(out.toString().contains(" "));
         System.setOut(saveOut);
@@ -1732,7 +1732,7 @@ public class ProgressBarTest {
         Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 " 50% [==========          ]  5000B/10000B - Failed (16h 0m 53s)",
-                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
         );
         Assert.assertFalse(out.toString().contains(" "));
         Mockito.when(progressBar.getTotalDuration()).thenCallRealMethod();
@@ -1757,7 +1757,7 @@ public class ProgressBarTest {
         Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 " 50% [==========          ]  5000B/10000B - Failed - Press any key to continue...",
-                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
         );
         Assert.assertFalse(out.toString().contains(" "));
         System.setOut(saveOut);
@@ -1785,7 +1785,7 @@ public class ProgressBarTest {
         Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 " 50% [==========          ]  5000B/10000B - Failed (16h 0m 53s) - Press any key to continue...",
-                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
         );
         Assert.assertFalse(out.toString().contains(" "));
         Mockito.when(progressBar.getTotalDuration()).thenCallRealMethod();
@@ -1811,7 +1811,7 @@ public class ProgressBarTest {
         Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 "Test Bar:  50% [==========          ]  5000B/10000B - Failed",
-                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replaceAll(" ", ""))
+                StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
         );
         Assert.assertFalse(out.toString().contains(" "));
         System.setOut(saveOut);

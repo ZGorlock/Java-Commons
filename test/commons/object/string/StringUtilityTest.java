@@ -10,6 +10,7 @@ package commons.object.string;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.OutputStream;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -510,6 +511,35 @@ public class StringUtilityTest {
         Assert.assertEquals("", StringUtility.reverse(""));
         TestUtils.assertException(NullPointerException.class, () ->
                 Assert.assertEquals("", StringUtility.reverse(null)));
+    }
+    
+    /**
+     * JUnit test of format.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#format(String, Object...)
+     */
+    @Test
+    public void testFormat() throws Exception {
+        Assert.assertEquals("test", StringUtility.format("test"));
+        Assert.assertEquals("test 2", StringUtility.format("test {}", 2));
+        Assert.assertEquals("test 3", StringUtility.format("{}{}{}{}{}{}", 't', "e", 's', "t", new StringBuilder(" "), new BigInteger("3")));
+        Assert.assertEquals("Hello World, this is not another test", StringUtility.format("{} {}, this is {} a{} test", "Hello", "World", "not", "nother"));
+        Assert.assertEquals("Hello\\ Wor(ld), this is not another$ test", StringUtility.format("{} {}, this is {} a{} test", "Hello\\", "Wor(ld)", "n{}ot", "nother$"));
+        Assert.assertEquals("Hello null, this is 9840 ajava.lang.NullPointerException test", StringUtility.format("{} {}, this is {} a{} test", "Hello", null, 9840L, new NullPointerException()));
+        
+        //bad arguments
+        Assert.assertEquals("1: Another test {}", StringUtility.format("{}: {} test {}", 1, "Another"));
+        Assert.assertEquals("1: Another test here", StringUtility.format("{}: {} test {}", 1, "Another", "here", "for", "testing", 5));
+        
+        //invalid
+        Assert.assertEquals("", StringUtility.format(""));
+        Assert.assertEquals("", StringUtility.format("", (Object) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.format("", (Object[]) null));
+        Assert.assertNull(StringUtility.format(null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.format(null, "arg"));
     }
     
     /**

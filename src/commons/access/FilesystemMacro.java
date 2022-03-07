@@ -10,6 +10,7 @@ package commons.access;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
 
 import commons.file.ArchiveUtility;
 import commons.object.string.StringUtility;
@@ -236,7 +237,7 @@ public final class FilesystemMacro {
         List<String> newLines = new ArrayList<>();
         
         for (String line : Filesystem.readLines(file)) {
-            newLines.add(line.replaceAll(regexSearch, replace));
+            newLines.add(line.replaceAll(regexSearch, Matcher.quoteReplacement(replace)));
         }
         
         return Filesystem.writeLines(file, newLines);

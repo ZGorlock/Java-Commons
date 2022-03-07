@@ -234,6 +234,20 @@ public final class StringUtility {
     }
     
     /**
+     * Formats a string with arguments.
+     *
+     * @param string    The format string.
+     * @param arguments The arguments.
+     * @return The formatted string.
+     */
+    public static String format(String string, Object... arguments) {
+        final String argumentPlaceholder = Pattern.quote("{}");
+        return Arrays.stream(arguments).map(Objects::toString)
+                .map(e -> e.replaceAll(argumentPlaceholder, "")).map(Matcher::quoteReplacement)
+                .reduce(string, (s, e) -> s.replaceFirst(argumentPlaceholder, e));
+    }
+    
+    /**
      * Converts a code point to a character.
      *
      * @param codePoint The code point.

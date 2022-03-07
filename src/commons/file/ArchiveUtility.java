@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.JarOutputStream;
+import java.util.regex.Matcher;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -162,7 +163,7 @@ public final class ArchiveUtility {
      * @see JarArchive#extractResource(File, String, File)
      */
     public static boolean extractResource(File archive, String resource, File outputDirectory) {
-        resource = resource.replaceAll("[\\\\/]", ARCHIVE_PATH_SEPARATOR);
+        resource = resource.replaceAll("[\\\\/]", Matcher.quoteReplacement(ARCHIVE_PATH_SEPARATOR));
         String resourceName = resource.contains(ARCHIVE_PATH_SEPARATOR) ? resource.substring(resource.lastIndexOf(ARCHIVE_PATH_SEPARATOR)) : resource;
         
         if ((archive == null) || !archive.exists()) {
@@ -220,7 +221,7 @@ public final class ArchiveUtility {
      * @see JarArchive#extractDirectory(File, String, File)
      */
     public static boolean extractDirectory(File archive, String directory, File outputDirectory) {
-        directory = directory.replaceAll("[\\\\/]", ARCHIVE_PATH_SEPARATOR);
+        directory = directory.replaceAll("[\\\\/]", Matcher.quoteReplacement(ARCHIVE_PATH_SEPARATOR));
         directory = directory.replaceAll(ARCHIVE_PATH_SEPARATOR + '$', "");
         
         if ((archive == null) || !archive.exists()) {
@@ -1193,7 +1194,7 @@ public final class ArchiveUtility {
             
             for (File file : Filesystem.getFilesAndDirs(directory)) {
                 String resourcePath = file.getPath().substring(currentDirectory.length() + 1);
-                String resource = resourcePath.replaceAll("[\\\\/]", ARCHIVE_PATH_SEPARATOR);
+                String resource = resourcePath.replaceAll("[\\\\/]", Matcher.quoteReplacement(ARCHIVE_PATH_SEPARATOR));
                 
                 if (file.isHidden()) {
                     continue;
@@ -1493,7 +1494,7 @@ public final class ArchiveUtility {
             
             for (File file : Filesystem.getFilesAndDirs(directory)) {
                 String resourcePath = file.getPath().substring(currentDirectory.length() + 1);
-                String resource = resourcePath.replaceAll("[\\\\/]", ARCHIVE_PATH_SEPARATOR);
+                String resource = resourcePath.replaceAll("[\\\\/]", Matcher.quoteReplacement(ARCHIVE_PATH_SEPARATOR));
                 
                 if (file.isHidden()) {
                     continue;
