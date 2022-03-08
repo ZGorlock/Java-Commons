@@ -1,5 +1,5 @@
 /*
- * File:    TryRunnable.java
+ * File:    CheckedRunnable.java
  * Package: commons.lambda.function
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
@@ -8,10 +8,10 @@
 package commons.lambda.function;
 
 /**
- * A function that tries to run a task and returns no value and ignores errors.
+ * A lambda function that tries to run a task and returns no value and ignores errors.
  */
 @FunctionalInterface
-public interface TryRunnable extends Runnable {
+public interface CheckedRunnable extends Runnable {
     
     //Methods
     

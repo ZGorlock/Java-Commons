@@ -1,5 +1,5 @@
 /*
- * File:    TryRunnableTest.java
+ * File:    CheckedRunnableTest.java
  * Package: commons.lambda.function
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of TryRunnable.
+ * JUnit test of CheckedRunnable.
  *
- * @see TryRunnable
+ * @see CheckedRunnable
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TryRunnable.class})
-public class TryRunnableTest {
+@PrepareForTest({CheckedRunnable.class})
+public class CheckedRunnableTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(TryRunnableTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheckedRunnableTest.class);
     
     
     //Initialization
@@ -96,24 +96,24 @@ public class TryRunnableTest {
      * JUnit test of tryRun.
      *
      * @throws Exception When there is an exception.
-     * @see TryRunnable#tryRun()
+     * @see CheckedRunnable#tryRun()
      */
     @Test
     public void testTryRun() throws Exception {
         //standard
-        TestUtils.assertMethodExists(TryRunnable.class, "tryRun");
+        TestUtils.assertMethodExists(CheckedRunnable.class, "tryRun");
     }
     
     /**
      * JUnit test of run.
      *
      * @throws Exception When there is an exception.
-     * @see TryRunnable#run()
+     * @see CheckedRunnable#run()
      */
     @Test
     public void testRun() throws Exception {
         //standard
-        TestUtils.assertMethodExists(TryRunnable.class, "run");
+        TestUtils.assertMethodExists(CheckedRunnable.class, "run");
     }
     
 }
