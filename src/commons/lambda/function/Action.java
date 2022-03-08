@@ -10,7 +10,7 @@ package commons.lambda.function;
 import java.util.concurrent.Callable;
 
 /**
- * Represents an action that returns no value but may throw an exception.
+ * Represents a lambda function that run a task and returns no value and may throw an exception.
  */
 @FunctionalInterface
 public interface Action extends Callable<Void> {
