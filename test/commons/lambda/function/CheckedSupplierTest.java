@@ -1,5 +1,5 @@
 /*
- * File:    TrySupplierTest.java
+ * File:    CheckedSupplierTest.java
  * Package: commons.lambda.function
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of TrySupplier.
+ * JUnit test of CheckedSupplier.
  *
- * @see TrySupplier
+ * @see CheckedSupplier
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TrySupplier.class})
-public class TrySupplierTest {
+@PrepareForTest({CheckedSupplier.class})
+public class CheckedSupplierTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(TrySupplierTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheckedSupplierTest.class);
     
     
     //Initialization
@@ -96,24 +96,24 @@ public class TrySupplierTest {
      * JUnit test of tryRun.
      *
      * @throws Exception When there is an exception.
-     * @see TrySupplier#tryGet()
+     * @see CheckedSupplier#tryGet()
      */
     @Test
     public void testTryGet() throws Exception {
         //standard
-        TestUtils.assertMethodExists(TrySupplier.class, "tryGet");
+        TestUtils.assertMethodExists(CheckedSupplier.class, "tryGet");
     }
     
     /**
      * JUnit test of get.
      *
      * @throws Exception When there is an exception.
-     * @see TrySupplier#get()
+     * @see CheckedSupplier#get()
      */
     @Test
     public void testGet() throws Exception {
         //standard
-        TestUtils.assertMethodExists(TrySupplier.class, "get");
+        TestUtils.assertMethodExists(CheckedSupplier.class, "get");
     }
     
 }

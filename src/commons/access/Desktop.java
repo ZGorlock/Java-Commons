@@ -11,7 +11,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.Objects;
 
-import commons.lambda.function.TrySupplier;
+import commons.lambda.function.CheckedSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -33,7 +33,7 @@ public final class Desktop {
     /**
      * The handle to the desktop.
      */
-    private static java.awt.Desktop desktop = ((TrySupplier<java.awt.Desktop>) java.awt.Desktop::getDesktop).get();
+    private static java.awt.Desktop desktop = ((CheckedSupplier<java.awt.Desktop>) java.awt.Desktop::getDesktop).get();
     
     
     //Static Methods

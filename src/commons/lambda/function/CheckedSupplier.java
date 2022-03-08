@@ -1,5 +1,5 @@
 /*
- * File:    TrySupplier.java
+ * File:    CheckedSupplier.java
  * Package: commons.lambda.function
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
@@ -10,12 +10,12 @@ package commons.lambda.function;
 import java.util.function.Supplier;
 
 /**
- * A function that tries to supply a result and ignores errors.
+ * A lambda function that tries to supply a result and ignores errors.
  *
  * @param <T> The type of the result.
  */
 @FunctionalInterface
-public interface TrySupplier<T> extends Supplier<T> {
+public interface CheckedSupplier<T> extends Supplier<T> {
     
     //Methods
     
@@ -28,7 +28,7 @@ public interface TrySupplier<T> extends Supplier<T> {
     T tryGet() throws Throwable;
     
     /**
-     * Tries to supply a result and ignored errors.
+     * Tries to supply a result and ignores errors.
      *
      * @return The result, or null if there was an error.
      * @see Supplier#get()
