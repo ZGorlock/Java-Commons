@@ -104,16 +104,4 @@ public class ActionTest {
         TestUtils.assertMethodExists(Action.class, "perform");
     }
     
-    /**
-     * JUnit test of call.
-     *
-     * @throws Exception When there is an exception.
-     * @see Action#call()
-     */
-    @Test
-    public void testCall() throws Exception {
-        //standard
-        TestUtils.assertMethodExists(Action.class, "call");
-    }
-    
 }

@@ -7,34 +7,19 @@
 
 package commons.lambda.function;
 
-import java.util.concurrent.Callable;
-
 /**
- * Represents a lambda function that run a task and returns no value and may throw an exception.
+ * Represents a lambda function that run a task and returns no value and may throw an error.
  */
 @FunctionalInterface
-public interface Action extends Callable<Void> {
+public interface Action {
     
     //Methods
     
     /**
      * Performs the action.
      *
-     * @throws Exception When there is an exception.
+     * @throws Throwable When there is an error.
      */
-    void perform() throws Exception;
-    
-    /**
-     * Performs the action and returns null.
-     *
-     * @return Null.
-     * @throws Exception When there is an exception.
-     * @see Callable#call()
-     * @see #perform()
-     */
-    default Void call() throws Exception {
-        perform();
-        return null;
-    }
+    void perform() throws Throwable;
     
 }

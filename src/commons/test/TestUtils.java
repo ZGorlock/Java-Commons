@@ -80,7 +80,7 @@ public final class TestUtils {
      */
     public static void assertException(Class<? extends Throwable> thrown, String expectedMessage, Action action) {
         try {
-            action.call();
+            action.perform();
             
         } catch (Throwable e) {
             if (thrown != null) {
@@ -129,7 +129,7 @@ public final class TestUtils {
      */
     public static void assertNoException(Action action) {
         try {
-            action.call();
+            action.perform();
             
         } catch (Throwable e) {
             AssertWrapper.fail("Expected code to produce no Exception" +
