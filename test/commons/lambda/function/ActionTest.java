@@ -1,11 +1,11 @@
 /*
  * File:    ActionTest.java
- * Package: commons.lambda.function.checked
+ * Package: commons.lambda.function
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.lambda.function.checked;
+package commons.lambda.function;
 
 import commons.test.TestUtils;
 import org.junit.After;
