@@ -21,7 +21,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import commons.math.BoundUtility;
-import commons.object.CastUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -1241,130 +1240,6 @@ public final class StringUtility {
      */
     public static String fileString(File file) {
         return fileString(file, true);
-    }
-    
-    /**
-     * Returns a string representing a class.
-     *
-     * @param clazz The class.
-     * @return The class string.
-     * @see #classString(Object)
-     */
-    public static String classString(Class<?> clazz) {
-        return classString((Object) clazz);
-    }
-    
-    /**
-     * Returns a string representing a class.
-     *
-     * @param object The object.
-     * @return The class string.
-     */
-    public static String classString(Object object) {
-        final Class<?> clazz = CastUtility.toClass(object);
-        return ((clazz == null) ? "null" : clazz.getSimpleName()
-                .replaceAll("\\$MockitoMock\\$\\d*", "").replaceAll("^.*\\$", ""));
-    }
-    
-    /**
-     * Returns a string representing an inner class.
-     *
-     * @param clazz          The class that has the inner class.
-     * @param innerClassName The name of the inner class.
-     * @return The inner class string.
-     * @see #innerClassString(Object, String)
-     */
-    public static String innerClassString(Class<?> clazz, String innerClassName) {
-        return innerClassString((Object) clazz, innerClassName);
-    }
-    
-    /**
-     * Returns a string representing an inner class.
-     *
-     * @param object         The object that has the inner class.
-     * @param innerClassName The name of the inner class.
-     * @return The inner class string.
-     */
-    public static String innerClassString(Object object, String innerClassName) {
-        final Class<?> clazz = CastUtility.toClass(object);
-        return classString(clazz) + '$' + innerClassName;
-    }
-    
-    /**
-     * Returns a string representing a method.
-     *
-     * @param clazz           The class that has the method.
-     * @param methodName      The name of the method.
-     * @param argumentClasses The classes of the arguments of the method.
-     * @return The method string.
-     * @see #methodString(Object, String, Class[])
-     */
-    public static String methodString(Class<?> clazz, String methodName, Class<?>... argumentClasses) {
-        return methodString((Object) clazz, methodName, argumentClasses);
-    }
-    
-    /**
-     * Returns a string representing a method.
-     *
-     * @param object          The object that has the method.
-     * @param methodName      The name of the method.
-     * @param argumentClasses The classes of the arguments of the method.
-     * @return The method string.
-     */
-    public static String methodString(Object object, String methodName, Class<?>... argumentClasses) {
-        final Class<?> clazz = CastUtility.toClass(object);
-        return classString(clazz) + "::" + methodName +
-                Arrays.stream(argumentClasses).sequential().map(StringUtility::classString)
-                        .collect(Collectors.joining(", ", "(", ")"));
-    }
-    
-    /**
-     * Returns a string representing a constructor.
-     *
-     * @param clazz           The class that has the constructor.
-     * @param argumentClasses The classes of the arguments of the constructor.
-     * @return The constructor string.
-     * @see #constructorString(Object, Class[])
-     */
-    public static String constructorString(Class<?> clazz, Class<?>... argumentClasses) {
-        return constructorString((Object) clazz, argumentClasses);
-    }
-    
-    /**
-     * Returns a string representing a constructor.
-     *
-     * @param object          The object that has the constructor.
-     * @param argumentClasses The classes of the arguments of the constructor.
-     * @return The constructor string.
-     * @see #methodString(Class, String, Class[])
-     */
-    public static String constructorString(Object object, Class<?>... argumentClasses) {
-        final Class<?> clazz = CastUtility.toClass(object);
-        return methodString(clazz, classString(clazz), argumentClasses);
-    }
-    
-    /**
-     * Returns a string representing a field.
-     *
-     * @param clazz     The class that has the field.
-     * @param fieldName The name of the field.
-     * @return The field string.
-     * @see #fieldString(Object, String)
-     */
-    public static String fieldString(Class<?> clazz, String fieldName) {
-        return fieldString((Object) clazz, fieldName);
-    }
-    
-    /**
-     * Returns a string representing a field.
-     *
-     * @param object    The object that has the field.
-     * @param fieldName The name of the field.
-     * @return The field string.
-     */
-    public static String fieldString(Object object, String fieldName) {
-        final Class<?> clazz = CastUtility.toClass(object);
-        return classString(clazz) + "::" + fieldName;
     }
     
     /**

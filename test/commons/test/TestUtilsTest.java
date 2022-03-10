@@ -28,6 +28,7 @@ import commons.lambda.function.Action;
 import commons.math.BoundUtility;
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
+import commons.object.string.EntityStringUtility;
 import commons.object.string.StringUtility;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.After;
@@ -326,8 +327,8 @@ public class TestUtilsTest {
         Stream.of(TestUtilsTest.class, null).forEach(e -> {
             TestUtils.assertClassExists(e, "");
             TestUtils.assertClassExists(e, null);
-            List.of("Expected class " + StringUtility.classString(e) + "$ to exist but it does not",
-                    "Expected class " + StringUtility.classString(e) + "$null to exist but it does not"
+            List.of("Expected class " + EntityStringUtility.classString(e) + "$ to exist but it does not",
+                    "Expected class " + EntityStringUtility.classString(e) + "$null to exist but it does not"
             ).forEach(failure -> {
                 try {
                     PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
@@ -439,8 +440,8 @@ public class TestUtilsTest {
         Stream.of(TestUtilsTest.class, null).forEach(e -> {
             TestUtils.assertInterfaceExists(e, "");
             TestUtils.assertInterfaceExists(e, null);
-            List.of("Expected interface " + StringUtility.classString(e) + "$ to exist but it does not",
-                    "Expected interface " + StringUtility.classString(e) + "$null to exist but it does not"
+            List.of("Expected interface " + EntityStringUtility.classString(e) + "$ to exist but it does not",
+                    "Expected interface " + EntityStringUtility.classString(e) + "$null to exist but it does not"
             ).forEach(failure -> {
                 try {
                     PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
@@ -552,8 +553,8 @@ public class TestUtilsTest {
         Stream.of(TestUtilsTest.class, null).forEach(e -> {
             TestUtils.assertEnumExists(e, "");
             TestUtils.assertEnumExists(e, null);
-            List.of("Expected enum " + StringUtility.classString(e) + "$ to exist but it does not",
-                    "Expected enum " + StringUtility.classString(e) + "$null to exist but it does not"
+            List.of("Expected enum " + EntityStringUtility.classString(e) + "$ to exist but it does not",
+                    "Expected enum " + EntityStringUtility.classString(e) + "$null to exist but it does not"
             ).forEach(failure -> {
                 try {
                     PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
@@ -653,9 +654,9 @@ public class TestUtilsTest {
             methodExistsAsserter.accept(new Object[] {e, "missingMethod", new Class<?>[] {}});
         });
         Arrays.stream(classes).forEach(e -> List.of(
-                "Expected method " + StringUtility.methodString(e, "voidMethod", int.class, long.class, String.class) + " to exist but it does not",
-                "Expected method " + StringUtility.methodString(e, "voidMethod", Integer.class, Long.class, String.class) + " to exist but it does not",
-                "Expected method " + StringUtility.methodString(e, "missingMethod") + " to exist but it does not"
+                "Expected method " + EntityStringUtility.methodString(e, "voidMethod", int.class, long.class, String.class) + " to exist but it does not",
+                "Expected method " + EntityStringUtility.methodString(e, "voidMethod", Integer.class, Long.class, String.class) + " to exist but it does not",
+                "Expected method " + EntityStringUtility.methodString(e, "missingMethod") + " to exist but it does not"
         ).forEach(failure -> {
             try {
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(3))
@@ -673,10 +674,10 @@ public class TestUtilsTest {
             methodExistsAsserter.accept(new Object[] {e, null, new Class<?>[] {null}});
         });
         Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream).forEach(e -> List.of(
-                "Expected method " + StringUtility.methodString(e, "", String.class) + " to exist but it does not",
-                "Expected method " + StringUtility.methodString(e, "", (Class<?>) null) + " to exist but it does not",
-                "Expected method " + StringUtility.methodString(e, null, String.class) + " to exist but it does not",
-                "Expected method " + StringUtility.methodString(e, null, (Class<?>) null) + " to exist but it does not"
+                "Expected method " + EntityStringUtility.methodString(e, "", String.class) + " to exist but it does not",
+                "Expected method " + EntityStringUtility.methodString(e, "", (Class<?>) null) + " to exist but it does not",
+                "Expected method " + EntityStringUtility.methodString(e, null, String.class) + " to exist but it does not",
+                "Expected method " + EntityStringUtility.methodString(e, null, (Class<?>) null) + " to exist but it does not"
         ).forEach(failure -> {
             try {
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times((e == null) ? 2 : 3))
@@ -715,8 +716,8 @@ public class TestUtilsTest {
             methodDoesNotExistAsserter.accept(new Object[] {e, "voidMethod", new Class<?>[] {Integer.class, long.class, StringBuilder.class}});
         });
         Arrays.stream(classes).forEach(e -> List.of(
-                "Expected method " + StringUtility.methodString(e, "voidMethod", int.class, Long.class, StringBuilder.class) + " to not exist but it does",
-                "Expected method " + StringUtility.methodString(e, "voidMethod", Integer.class, long.class, StringBuilder.class) + " to not exist but it does"
+                "Expected method " + EntityStringUtility.methodString(e, "voidMethod", int.class, Long.class, StringBuilder.class) + " to not exist but it does",
+                "Expected method " + EntityStringUtility.methodString(e, "voidMethod", Integer.class, long.class, StringBuilder.class) + " to not exist but it does"
         ).forEach(failure -> {
             try {
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(3))
@@ -779,8 +780,8 @@ public class TestUtilsTest {
             constructorExistsAsserter.accept(new Object[] {e, new Class<?>[] {StringBuilder.class, Exception.class, Integer.class, Long.class, Boolean.class}});
         });
         Arrays.stream(classes).forEach(e -> List.of(
-                "Expected constructor " + StringUtility.constructorString(e, StringBuilder.class, Exception.class, int.class, Long.class, boolean.class) + " to exist but it does not",
-                "Expected constructor " + StringUtility.constructorString(e, StringBuilder.class, Exception.class, Integer.class, Long.class, Boolean.class) + " to exist but it does not"
+                "Expected constructor " + EntityStringUtility.constructorString(e, StringBuilder.class, Exception.class, int.class, Long.class, boolean.class) + " to exist but it does not",
+                "Expected constructor " + EntityStringUtility.constructorString(e, StringBuilder.class, Exception.class, Integer.class, Long.class, Boolean.class) + " to exist but it does not"
         ).forEach(failure -> {
             try {
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(3))
@@ -796,8 +797,8 @@ public class TestUtilsTest {
             constructorExistsAsserter.accept(new Object[] {e, new Class<?>[] {null}});
         });
         Stream.of(classes, new Class<?>[] {null}, new Object[] {null}).flatMap(Arrays::stream).forEach(e -> List.of(
-                "Expected constructor " + StringUtility.constructorString(e, String.class) + " to exist but it does not",
-                "Expected constructor " + StringUtility.constructorString(e, (Class<?>) null) + " to exist but it does not"
+                "Expected constructor " + EntityStringUtility.constructorString(e, String.class) + " to exist but it does not",
+                "Expected constructor " + EntityStringUtility.constructorString(e, (Class<?>) null) + " to exist but it does not"
         ).forEach(failure -> {
             try {
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times((e == null) ? 2 : 3))
@@ -835,8 +836,8 @@ public class TestUtilsTest {
             constructorDoesNotExistAsserter.accept(new Object[] {e, new Class<?>[] {String.class, Exception.class, Integer.class, Long.class, Boolean.class}});
         });
         Arrays.stream(classes).forEach(e -> List.of(
-                "Expected constructor " + StringUtility.constructorString(e, String.class, Exception.class, int.class, Long.class, boolean.class) + " to not exist but it does",
-                "Expected constructor " + StringUtility.constructorString(e, String.class, Exception.class, Integer.class, Long.class, Boolean.class) + " to not exist but it does"
+                "Expected constructor " + EntityStringUtility.constructorString(e, String.class, Exception.class, int.class, Long.class, boolean.class) + " to not exist but it does",
+                "Expected constructor " + EntityStringUtility.constructorString(e, String.class, Exception.class, Integer.class, Long.class, Boolean.class) + " to not exist but it does"
         ).forEach(failure -> {
             try {
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(3))
@@ -895,8 +896,8 @@ public class TestUtilsTest {
             fieldExistsAsserter.accept(new Object[] {e, "field15"});
         });
         Arrays.stream(classes).forEach(e -> List.of(
-                "Expected field " + StringUtility.fieldString(e, "Field7") + " to exist but it does not",
-                "Expected field " + StringUtility.fieldString(e, "field15") + " to exist but it does not"
+                "Expected field " + EntityStringUtility.fieldString(e, "Field7") + " to exist but it does not",
+                "Expected field " + EntityStringUtility.fieldString(e, "field15") + " to exist but it does not"
         ).forEach(failure -> {
             try {
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(3))
@@ -912,8 +913,8 @@ public class TestUtilsTest {
             fieldExistsAsserter.accept(new Object[] {e, null});
         });
         Stream.of(classes, new Class<?>[] {null}, new Object[] {null}).flatMap(Arrays::stream).forEach(e -> List.of(
-                "Expected field " + StringUtility.fieldString(e, "") + " to exist but it does not",
-                "Expected field " + StringUtility.fieldString(e, null) + " to exist but it does not"
+                "Expected field " + EntityStringUtility.fieldString(e, "") + " to exist but it does not",
+                "Expected field " + EntityStringUtility.fieldString(e, null) + " to exist but it does not"
         ).forEach(failure -> {
             try {
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times((e == null) ? 2 : 3))
@@ -951,8 +952,8 @@ public class TestUtilsTest {
             fieldDoesNotExistAsserter.accept(new Object[] {e, "field7"});
         });
         Arrays.stream(classes).forEach(e -> List.of(
-                "Expected field " + StringUtility.fieldString(e, "field2") + " to not exist but it does",
-                "Expected field " + StringUtility.fieldString(e, "field7") + " to not exist but it does"
+                "Expected field " + EntityStringUtility.fieldString(e, "field2") + " to not exist but it does",
+                "Expected field " + EntityStringUtility.fieldString(e, "field7") + " to not exist but it does"
         ).forEach(failure -> {
             try {
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(3))
@@ -1399,11 +1400,11 @@ public class TestUtilsTest {
     @Test
     public void testGetFieldValue() throws Exception {
         final Map<Object, Object[]> values = MapUtility.mapOf(
-                new ImmutablePair<>(StringUtility.classString(classes[0]), new Object[] {18, 6.4488121, "test", true, "tset", (byte) 4, "another test", 874561564112154L, -44, 7.66f, true, "last test"}),
-                new ImmutablePair<>(StringUtility.classString(classes[1]), new Object[] {18, 6.4488121, "test", true, "subclass tset", (byte) 4, "another test", 874561564112154L, -44, 7.66f, true, "last test", -644, -116.103f}));
+                new ImmutablePair<>(EntityStringUtility.classString(classes[0]), new Object[] {18, 6.4488121, "test", true, "tset", (byte) 4, "another test", 874561564112154L, -44, 7.66f, true, "last test"}),
+                new ImmutablePair<>(EntityStringUtility.classString(classes[1]), new Object[] {18, 6.4488121, "test", true, "subclass tset", (byte) 4, "another test", 874561564112154L, -44, 7.66f, true, "last test", -644, -116.103f}));
         final Map<Object, Object[]> mockValues = MapUtility.mapOf(
-                new ImmutablePair<>(StringUtility.classString(classes[0]), new Object[] {18, 6.4488121, "test", true, "tset", (byte) 4, "another test", 874561564112154L, -44, 7.66f, true, "last test"}),
-                new ImmutablePair<>(StringUtility.classString(classes[1]), new Object[] {18, 6.4488121, "test", true, "tset", (byte) 4, "another test", 874561564112154L, -44, 7.66f, true, "last test", -644, -116.103f}));
+                new ImmutablePair<>(EntityStringUtility.classString(classes[0]), new Object[] {18, 6.4488121, "test", true, "tset", (byte) 4, "another test", 874561564112154L, -44, 7.66f, true, "last test"}),
+                new ImmutablePair<>(EntityStringUtility.classString(classes[1]), new Object[] {18, 6.4488121, "test", true, "tset", (byte) 4, "another test", 874561564112154L, -44, 7.66f, true, "last test", -644, -116.103f}));
         
         final Function<Object[], Object> fieldValueGetter = (Object[] params) -> {
             final Object caller = params[0];
@@ -1416,20 +1417,20 @@ public class TestUtilsTest {
             final Object caller = params[0];
             final int index = (int) params[1];
             final String fieldName = "field" + index;
-            final Object expected = (MockUtil.isSpy(caller) ? mockValues : values).get(StringUtility.classString(params[0]))[index];
+            final Object expected = (MockUtil.isSpy(caller) ? mockValues : values).get(EntityStringUtility.classString(params[0]))[index];
             Assert.assertEquals(expected, fieldValueGetter.apply(new Object[] {caller, fieldName}));
         };
         
         //standard
-        IntStream.rangeClosed(0, values.get(StringUtility.classString(classes[1])).length).forEach(i -> {
+        IntStream.rangeClosed(0, values.get(EntityStringUtility.classString(classes[1])).length).forEach(i -> {
             final String fieldName = "field" + i;
-            final boolean isPresent = BoundUtility.inArrayBounds(i, values.get(StringUtility.classString(classes[1])));
+            final boolean isPresent = BoundUtility.inArrayBounds(i, values.get(EntityStringUtility.classString(classes[1])));
             final boolean isStatic = isPresent && Modifier.isStatic(TestUtils.getField(classes[1], fieldName).getModifiers());
             Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e -> {
                 final boolean isClass = (e instanceof Class<?>);
-                final boolean hasField = BoundUtility.inArrayBounds(i, values.get(StringUtility.classString(e)));
+                final boolean hasField = BoundUtility.inArrayBounds(i, values.get(EntityStringUtility.classString(e)));
                 if (!hasField) {
-                    TestUtils.assertException(AssertionError.class, "Attempted to get the value of the field " + StringUtility.fieldString(e, fieldName) + " but an exception occurred: [FieldNotFoundException: " + StringUtility.fieldString(e, fieldName) + ']', () ->
+                    TestUtils.assertException(AssertionError.class, "Attempted to get the value of the field " + EntityStringUtility.fieldString(e, fieldName) + " but an exception occurred: [FieldNotFoundException: " + EntityStringUtility.fieldString(e, fieldName) + ']', () ->
                             fieldValueGetter.apply(new Object[] {e, fieldName}));
                 } else if (isClass && !isStatic) {
                     TestUtils.assertException(AssertionError.class, () ->
@@ -1462,9 +1463,9 @@ public class TestUtilsTest {
         
         //invalid
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e -> {
-            TestUtils.assertException(AssertionError.class, "Attempted to get the value of the field " + StringUtility.fieldString(e, "") + " but an exception occurred: [FieldNotFoundException: " + StringUtility.fieldString(e, "") + ']', () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to get the value of the field " + EntityStringUtility.fieldString(e, "") + " but an exception occurred: [FieldNotFoundException: " + EntityStringUtility.fieldString(e, "") + ']', () ->
                     fieldValueGetter.apply(new Object[] {e, ""}));
-            TestUtils.assertException(AssertionError.class, "Attempted to get the value of the field " + StringUtility.fieldString(e, null) + " but an exception occurred: [FieldNotFoundException: " + StringUtility.fieldString(e, null) + ']', () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to get the value of the field " + EntityStringUtility.fieldString(e, null) + " but an exception occurred: [FieldNotFoundException: " + EntityStringUtility.fieldString(e, null) + ']', () ->
                     fieldValueGetter.apply(new Object[] {e, null}));
         });
         TestUtils.assertException(NullPointerException.class, () ->
@@ -1494,8 +1495,8 @@ public class TestUtilsTest {
                 new ImmutablePair<>(classes[0].getSimpleName(), new Object[] {18, 6.4488121, "test", true, "tset", (byte) 4, "another test", 874561564112154L, -44, 7.66f, true, "last test"}),
                 new ImmutablePair<>(classes[1].getSimpleName(), new Object[] {18, 6.4488121, "test", true, "subclass tset", (byte) 4, "another test", 874561564112154L, -44, 7.66f, true, "last test", -644, -116.103f}));
         final Map<Object, Object[]> mockValues = MapUtility.mapOf(
-                new ImmutablePair<>(StringUtility.classString(classes[0]), new Object[] {18, 6.4488121, "test", true, "tset", (byte) 4, "another test", 874561564112154L, -44, 7.66f, true, "last test"}),
-                new ImmutablePair<>(StringUtility.classString(classes[1]), new Object[] {18, 6.4488121, "test", true, "tset", (byte) 4, "another test", 874561564112154L, -44, 7.66f, true, "last test", -644, -116.103f}));
+                new ImmutablePair<>(EntityStringUtility.classString(classes[0]), new Object[] {18, 6.4488121, "test", true, "tset", (byte) 4, "another test", 874561564112154L, -44, 7.66f, true, "last test"}),
+                new ImmutablePair<>(EntityStringUtility.classString(classes[1]), new Object[] {18, 6.4488121, "test", true, "tset", (byte) 4, "another test", 874561564112154L, -44, 7.66f, true, "last test", -644, -116.103f}));
         final Map<Object, Object[]> setValues = MapUtility.mapOf(
                 new ImmutablePair<>(classes[0].getSimpleName(), new Object[] {7, 0.221548773, "different", false, "tset2", (byte) 3, "an even other test", 156423157842311L, 1568, 3.46f, false, "the last test"}),
                 new ImmutablePair<>(classes[1].getSimpleName(), new Object[] {10, 6.4488121, "another different", true, "subclass tset2", (byte) 5, "an even other test", 156423157842311L, 1568, 3.46f, false, "the last test", 61, 8.9f}));
@@ -1519,8 +1520,8 @@ public class TestUtilsTest {
             final Object caller = params[0];
             final int index = (int) params[1];
             final String fieldName = "field" + index;
-            final Object expected = (MockUtil.isSpy(caller) ? mockValues : values).get(StringUtility.classString(params[0]))[index];
-            final Object set = setValues.get(StringUtility.classString(params[0]))[index];
+            final Object expected = (MockUtil.isSpy(caller) ? mockValues : values).get(EntityStringUtility.classString(params[0]))[index];
+            final Object set = setValues.get(EntityStringUtility.classString(params[0]))[index];
             Assert.assertEquals(expected, fieldValueGetter.apply(new Object[] {caller, fieldName}));
             Assert.assertTrue(fieldValueSetter.apply(new Object[] {caller, fieldName, set}));
             Assert.assertEquals(set, fieldValueGetter.apply(new Object[] {caller, fieldName}));
@@ -1531,13 +1532,13 @@ public class TestUtilsTest {
         //standard
         IntStream.rangeClosed(0, values.get(classes[1].getSimpleName()).length).forEach(i -> {
             final String fieldName = "field" + i;
-            final boolean isPresent = BoundUtility.inArrayBounds(i, values.get(StringUtility.classString(classes[1])));
+            final boolean isPresent = BoundUtility.inArrayBounds(i, values.get(EntityStringUtility.classString(classes[1])));
             final boolean isStatic = isPresent && Modifier.isStatic(TestUtils.getField(classes[1], fieldName).getModifiers());
             Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e -> {
                 final boolean isClass = (e instanceof Class<?>);
-                final boolean hasField = BoundUtility.inArrayBounds(i, values.get(StringUtility.classString(e)));
+                final boolean hasField = BoundUtility.inArrayBounds(i, values.get(EntityStringUtility.classString(e)));
                 if (!hasField) {
-                    TestUtils.assertException(AssertionError.class, "Attempted to set the value of the field " + StringUtility.fieldString(e, fieldName) + " but an exception occurred: [FieldNotFoundException: " + StringUtility.fieldString(e, fieldName) + ']', () ->
+                    TestUtils.assertException(AssertionError.class, "Attempted to set the value of the field " + EntityStringUtility.fieldString(e, fieldName) + " but an exception occurred: [FieldNotFoundException: " + EntityStringUtility.fieldString(e, fieldName) + ']', () ->
                             fieldValueSetter.apply(new Object[] {e, fieldName, null}));
                 } else if (isClass && !isStatic) {
                     TestUtils.assertException(AssertionError.class, () ->
@@ -1551,21 +1552,21 @@ public class TestUtilsTest {
         //invalid
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e -> {
             final boolean isClass = (e instanceof Class<?>);
-            TestUtils.assertException(AssertionError.class, "Attempted to set the value of the field " + StringUtility.fieldString(e, (isClass ? "field0" : "field8")) + " but an exception occurred: [IllegalArgumentException: Can not set " + (isClass ? "static" : "final") + " int field commons.test.TestUtilsTest$" + StringUtility.fieldString(TestClass.class, (isClass ? "field0" : "field8")).replace("::", ".") + " to null value]", () -> {
+            TestUtils.assertException(AssertionError.class, "Attempted to set the value of the field " + EntityStringUtility.fieldString(e, (isClass ? "field0" : "field8")) + " but an exception occurred: [IllegalArgumentException: Can not set " + (isClass ? "static" : "final") + " int field commons.test.TestUtilsTest$" + EntityStringUtility.fieldString(TestClass.class, (isClass ? "field0" : "field8")).replace("::", ".") + " to null value]", () -> {
                 Assert.assertEquals(int.class, TestUtils.getField(e, (isClass ? "field0" : "field8")).getType());
                 fieldValueSetter.apply(new Object[] {e, (isClass ? "field0" : "field8"), null});
             });
-            TestUtils.assertException(AssertionError.class, "Attempted to set the value of the field " + StringUtility.fieldString(e, (isClass ? "field3" : "field10")) + " but an exception occurred: [IllegalArgumentException: Can not set " + (isClass ? "static" : "final") + " boolean field commons.test.TestUtilsTest$" + StringUtility.fieldString(TestClass.class, (isClass ? "field3" : "field10")).replace("::", ".") + " to java.lang.String]", () -> {
+            TestUtils.assertException(AssertionError.class, "Attempted to set the value of the field " + EntityStringUtility.fieldString(e, (isClass ? "field3" : "field10")) + " but an exception occurred: [IllegalArgumentException: Can not set " + (isClass ? "static" : "final") + " boolean field commons.test.TestUtilsTest$" + EntityStringUtility.fieldString(TestClass.class, (isClass ? "field3" : "field10")).replace("::", ".") + " to java.lang.String]", () -> {
                 Assert.assertEquals(boolean.class, TestUtils.getField(e, (isClass ? "field3" : "field10")).getType());
                 fieldValueSetter.apply(new Object[] {e, (isClass ? "field3" : "field10"), "test"});
             });
-            TestUtils.assertException(AssertionError.class, "Attempted to set the value of the field " + StringUtility.fieldString(e, (isClass ? "field4" : "field11")) + " but an exception occurred: [IllegalArgumentException: Can not set " + (isClass ? "static " : "") + "java.lang.String field commons.test.TestUtilsTest$" + StringUtility.fieldString((isClass ? e : TestClass.class), (isClass ? "field4" : "field11")).replace("::", ".") + " to java.lang.Boolean]", () -> {
+            TestUtils.assertException(AssertionError.class, "Attempted to set the value of the field " + EntityStringUtility.fieldString(e, (isClass ? "field4" : "field11")) + " but an exception occurred: [IllegalArgumentException: Can not set " + (isClass ? "static " : "") + "java.lang.String field commons.test.TestUtilsTest$" + EntityStringUtility.fieldString((isClass ? e : TestClass.class), (isClass ? "field4" : "field11")).replace("::", ".") + " to java.lang.Boolean]", () -> {
                 Assert.assertEquals(String.class, TestUtils.getField(e, (isClass ? "field4" : "field11")).getType());
                 fieldValueSetter.apply(new Object[] {e, (isClass ? "field4" : "field11"), false});
             });
-            TestUtils.assertException(AssertionError.class, "Attempted to set the value of the field " + StringUtility.fieldString(e, "") + " but an exception occurred: [FieldNotFoundException: " + StringUtility.fieldString(e, "") + ']', () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to set the value of the field " + EntityStringUtility.fieldString(e, "") + " but an exception occurred: [FieldNotFoundException: " + EntityStringUtility.fieldString(e, "") + ']', () ->
                     TestUtils.setFieldValue(e, "", false));
-            TestUtils.assertException(AssertionError.class, "Attempted to set the value of the field " + StringUtility.fieldString(e, null) + " but an exception occurred: [FieldNotFoundException: " + StringUtility.fieldString(e, null) + ']', () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to set the value of the field " + EntityStringUtility.fieldString(e, null) + " but an exception occurred: [FieldNotFoundException: " + EntityStringUtility.fieldString(e, null) + ']', () ->
                     TestUtils.setFieldValue(e, null, null));
         });
         TestUtils.assertException(NullPointerException.class, () ->
@@ -1608,7 +1609,7 @@ public class TestUtilsTest {
         
         //standard
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e -> {
-            final boolean isSubclass = !StringUtility.classString(e).equals(StringUtility.classString(classes[0]));
+            final boolean isSubclass = !EntityStringUtility.classString(e).equals(EntityStringUtility.classString(classes[0]));
             invokeMethodValidator.accept(new Object[] {e, "staticVoidMethod", new Object[] {isSubclass, 1966L, builder},
                                                        null, ((isSubclass ? "subclass " : "") + "static void method hit: (" + isSubclass + ", 1966)")});
             invokeMethodValidator.accept(new Object[] {e, "staticVoidMethod", new Object[] {false, null, builder},
@@ -1617,9 +1618,9 @@ public class TestUtilsTest {
             invokeMethodValidator.accept(new Object[] {e, "method3", new Object[] {"testing"}, true, ""});
             invokeMethodValidator.accept(new Object[] {e, "method5", new Object[] {false, 54, BigDecimal.ZERO}, (byte) 4, ""});
             if (e instanceof Class<?>) {
-                TestUtils.assertException(AssertionError.class, "Attempted to invoke the method " + StringUtility.methodString(e, "voidMethod", Integer.class, Long.class, StringBuilder.class) + " but an exception occurred: [IllegalArgumentException: object is not an instance of declaring class]", () ->
+                TestUtils.assertException(AssertionError.class, "Attempted to invoke the method " + EntityStringUtility.methodString(e, "voidMethod", Integer.class, Long.class, StringBuilder.class) + " but an exception occurred: [IllegalArgumentException: object is not an instance of declaring class]", () ->
                         methodInvoker.apply(new Object[] {e, "voidMethod", new Object[] {180, 150L, builder}}));
-                TestUtils.assertException(AssertionError.class, "Attempted to invoke the method " + StringUtility.methodString(e, "method7") + " but an exception occurred: [IllegalArgumentException: object is not an instance of declaring class]", () ->
+                TestUtils.assertException(AssertionError.class, "Attempted to invoke the method " + EntityStringUtility.methodString(e, "method7") + " but an exception occurred: [IllegalArgumentException: object is not an instance of declaring class]", () ->
                         methodInvoker.apply(new Object[] {e, "method7", new Object[] {}}));
             } else {
                 invokeMethodValidator.accept(new Object[] {e, "voidMethod", new Object[] {180, (long) 150, builder},
@@ -1658,24 +1659,24 @@ public class TestUtilsTest {
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e -> {
             final boolean isClass = (e instanceof Class<?>);
             TestUtils.assertException(AssertionError.class, (isClass ?
-                                                             "Attempted to invoke the method " + StringUtility.methodString(e, "method1", String.class) + " but an exception occurred: [MethodNotFoundException: " + StringUtility.methodString(e, "method1", String.class) + ']' :
-                                                             "Attempted to invoke the method " + StringUtility.methodString(e, "method7", String.class) + " but an exception occurred: [MethodNotFoundException: " + StringUtility.methodString(e, "method7", String.class) + ']'), () ->
+                                                             "Attempted to invoke the method " + EntityStringUtility.methodString(e, "method1", String.class) + " but an exception occurred: [MethodNotFoundException: " + EntityStringUtility.methodString(e, "method1", String.class) + ']' :
+                                                             "Attempted to invoke the method " + EntityStringUtility.methodString(e, "method7", String.class) + " but an exception occurred: [MethodNotFoundException: " + EntityStringUtility.methodString(e, "method7", String.class) + ']'), () ->
                     TestUtils.invokeMethod(e, (isClass ? "method1" : "method7"), "invalid argument"));
             TestUtils.assertException(AssertionError.class, (isClass ?
-                                                             "Attempted to invoke the method " + StringUtility.methodString(e, "method3", Integer.class) + " but an exception occurred: [MethodNotFoundException: " + StringUtility.methodString(e, "method3", Integer.class) + ']' :
-                                                             "Attempted to invoke the method " + StringUtility.methodString(e, "method8", Integer.class) + " but an exception occurred: [MethodNotFoundException: " + StringUtility.methodString(e, "method8", Integer.class) + ']'), () ->
+                                                             "Attempted to invoke the method " + EntityStringUtility.methodString(e, "method3", Integer.class) + " but an exception occurred: [MethodNotFoundException: " + EntityStringUtility.methodString(e, "method3", Integer.class) + ']' :
+                                                             "Attempted to invoke the method " + EntityStringUtility.methodString(e, "method8", Integer.class) + " but an exception occurred: [MethodNotFoundException: " + EntityStringUtility.methodString(e, "method8", Integer.class) + ']'), () ->
                     TestUtils.invokeMethod(e, (isClass ? "method3" : "method8"), 76));
             TestUtils.assertException(AssertionError.class, (isClass ?
-                                                             "Attempted to invoke the method " + StringUtility.methodString(e, "method3") + " but an exception occurred: [MethodNotFoundException: " + StringUtility.methodString(e, "method3") + ']' :
-                                                             "Attempted to invoke the method " + StringUtility.methodString(e, "method8") + " but an exception occurred: [MethodNotFoundException: " + StringUtility.methodString(e, "method8") + ']'), () ->
+                                                             "Attempted to invoke the method " + EntityStringUtility.methodString(e, "method3") + " but an exception occurred: [MethodNotFoundException: " + EntityStringUtility.methodString(e, "method3") + ']' :
+                                                             "Attempted to invoke the method " + EntityStringUtility.methodString(e, "method8") + " but an exception occurred: [MethodNotFoundException: " + EntityStringUtility.methodString(e, "method8") + ']'), () ->
                     TestUtils.invokeMethod(e, (isClass ? "method3" : "method8")));
             TestUtils.assertException(AssertionError.class, (isClass ?
-                                                             "Attempted to invoke the method " + StringUtility.methodString(e, "staticVoidMethod", null, Long.class, StringBuilder.class) + " but an exception occurred: [MethodNotFoundException: " + StringUtility.methodString(e, "staticVoidMethod", null, Long.class, StringBuilder.class) + ']' :
-                                                             "Attempted to invoke the method " + StringUtility.methodString(e, "voidMethod", null, Long.class, StringBuilder.class) + " but an exception occurred: [MethodNotFoundException: " + StringUtility.methodString(e, "voidMethod", null, Long.class, StringBuilder.class) + ']'), () ->
+                                                             "Attempted to invoke the method " + EntityStringUtility.methodString(e, "staticVoidMethod", null, Long.class, StringBuilder.class) + " but an exception occurred: [MethodNotFoundException: " + EntityStringUtility.methodString(e, "staticVoidMethod", null, Long.class, StringBuilder.class) + ']' :
+                                                             "Attempted to invoke the method " + EntityStringUtility.methodString(e, "voidMethod", null, Long.class, StringBuilder.class) + " but an exception occurred: [MethodNotFoundException: " + EntityStringUtility.methodString(e, "voidMethod", null, Long.class, StringBuilder.class) + ']'), () ->
                     TestUtils.invokeMethod(e, (isClass ? "staticVoidMethod" : "voidMethod"), null, 150L, new StringBuilder()));
-            TestUtils.assertException(AssertionError.class, "Attempted to invoke the method " + StringUtility.methodString(e, "") + " but an exception occurred: [MethodNotFoundException: " + StringUtility.methodString(e, "") + ']', () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to invoke the method " + EntityStringUtility.methodString(e, "") + " but an exception occurred: [MethodNotFoundException: " + EntityStringUtility.methodString(e, "") + ']', () ->
                     TestUtils.invokeMethod(e, ""));
-            TestUtils.assertException(AssertionError.class, "Attempted to invoke the method " + StringUtility.methodString(e, null) + " but an exception occurred: [MethodNotFoundException: " + StringUtility.methodString(e, null) + ']', () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to invoke the method " + EntityStringUtility.methodString(e, null) + " but an exception occurred: [MethodNotFoundException: " + EntityStringUtility.methodString(e, null) + ']', () ->
                     TestUtils.invokeMethod(e, null));
         });
         TestUtils.assertException(NullPointerException.class, () ->
@@ -1734,13 +1735,13 @@ public class TestUtilsTest {
         
         //invalid
         Arrays.stream(classes).forEach(e -> {
-            TestUtils.assertException(AssertionError.class, "Attempted to invoke the constructor " + StringUtility.constructorString(e, Exception.class, null, Long.class, Boolean.class, String.class) + " but an exception occurred: [ConstructorNotFoundException: " + StringUtility.constructorString(e, Exception.class, null, Long.class, Boolean.class, String.class) + ']', () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to invoke the constructor " + EntityStringUtility.constructorString(e, Exception.class, null, Long.class, Boolean.class, String.class) + " but an exception occurred: [ConstructorNotFoundException: " + EntityStringUtility.constructorString(e, Exception.class, null, Long.class, Boolean.class, String.class) + ']', () ->
                     constructorInvoker.apply(new Object[] {e, new Object[] {exceptionArgument, null, longArgument, booleanArgument, stringArgument}}));
-            TestUtils.assertException(AssertionError.class, "Attempted to invoke the constructor " + StringUtility.constructorString(e, String.class, Exception.class, Integer.class, Long.class) + " but an exception occurred: [ConstructorNotFoundException: " + StringUtility.constructorString(e, String.class, Exception.class, Integer.class, Long.class) + ']', () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to invoke the constructor " + EntityStringUtility.constructorString(e, String.class, Exception.class, Integer.class, Long.class) + " but an exception occurred: [ConstructorNotFoundException: " + EntityStringUtility.constructorString(e, String.class, Exception.class, Integer.class, Long.class) + ']', () ->
                     constructorInvoker.apply(new Object[] {e, new Object[] {stringArgument, exceptionArgument, intArgument, longArgument}}));
-            TestUtils.assertException(AssertionError.class, "Attempted to invoke the constructor " + StringUtility.constructorString(e, Integer.class) + " but an exception occurred: [ConstructorNotFoundException: " + StringUtility.constructorString(e, Integer.class) + ']', () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to invoke the constructor " + EntityStringUtility.constructorString(e, Integer.class) + " but an exception occurred: [ConstructorNotFoundException: " + EntityStringUtility.constructorString(e, Integer.class) + ']', () ->
                     constructorInvoker.apply(new Object[] {e, new Object[] {intArgument}}));
-            TestUtils.assertException(AssertionError.class, "Attempted to invoke the constructor " + StringUtility.constructorString(e, (Class<?>) null) + " but an exception occurred: [ConstructorNotFoundException: " + StringUtility.constructorString(e, (Class<?>) null) + ']', () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to invoke the constructor " + EntityStringUtility.constructorString(e, (Class<?>) null) + " but an exception occurred: [ConstructorNotFoundException: " + EntityStringUtility.constructorString(e, (Class<?>) null) + ']', () ->
                     constructorInvoker.apply(new Object[] {e, new Object[] {null}}));
         });
         TestUtils.assertException(NullPointerException.class, () ->
@@ -1775,22 +1776,22 @@ public class TestUtilsTest {
         Stream.of(classes, new Class<?>[] {TestInterface.class}).flatMap(Arrays::stream).forEach(e -> {
             final boolean isInterface = e.isInterface();
             if (!isInterface) {
-                TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + StringUtility.methodString(e, "getName") + " but an exception occurred: [InvalidClassException: " + StringUtility.classString(e) + " is not an interface]", () ->
+                TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + EntityStringUtility.methodString(e, "getName") + " but an exception occurred: [InvalidClassException: " + EntityStringUtility.classString(e) + " is not an interface]", () ->
                         TestUtils.invokeInterfaceDefaultMethod(e, "getName"));
-                TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + StringUtility.methodString(e, "returnLong", Integer.class) + " but an exception occurred: [InvalidClassException: " + StringUtility.classString(e) + " is not an interface]", () ->
+                TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + EntityStringUtility.methodString(e, "returnLong", Integer.class) + " but an exception occurred: [InvalidClassException: " + EntityStringUtility.classString(e) + " is not an interface]", () ->
                         TestUtils.invokeInterfaceDefaultMethod(e, "returnLong", 50));
             }
-            TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + StringUtility.methodString(e, "getName", String.class) + " but an exception occurred: " + (isInterface ? ("[MethodNotFoundException: " + StringUtility.methodString(e, "getName", String.class) + ']') : ("[InvalidClassException: " + StringUtility.classString(e) + " is not an interface]")), () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + EntityStringUtility.methodString(e, "getName", String.class) + " but an exception occurred: " + (isInterface ? ("[MethodNotFoundException: " + EntityStringUtility.methodString(e, "getName", String.class) + ']') : ("[InvalidClassException: " + EntityStringUtility.classString(e) + " is not an interface]")), () ->
                     TestUtils.invokeInterfaceDefaultMethod(e, "getName", "test"));
-            TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + StringUtility.methodString(e, "returnLong") + " but an exception occurred: " + (isInterface ? ("[MethodNotFoundException: " + StringUtility.methodString(e, "returnLong") + ']') : ("[InvalidClassException: " + StringUtility.classString(e) + " is not an interface]")), () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + EntityStringUtility.methodString(e, "returnLong") + " but an exception occurred: " + (isInterface ? ("[MethodNotFoundException: " + EntityStringUtility.methodString(e, "returnLong") + ']') : ("[InvalidClassException: " + EntityStringUtility.classString(e) + " is not an interface]")), () ->
                     TestUtils.invokeInterfaceDefaultMethod(e, "returnLong"));
-            TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + StringUtility.methodString(e, "thisMethod") + " but an exception occurred: " + (isInterface ? ("[MethodNotFoundException: " + StringUtility.methodString(e, "thisMethod") + ']') : ("[InvalidClassException: " + StringUtility.classString(e) + " is not an interface]")), () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + EntityStringUtility.methodString(e, "thisMethod") + " but an exception occurred: " + (isInterface ? ("[MethodNotFoundException: " + EntityStringUtility.methodString(e, "thisMethod") + ']') : ("[InvalidClassException: " + EntityStringUtility.classString(e) + " is not an interface]")), () ->
                     TestUtils.invokeInterfaceDefaultMethod(e, "thisMethod"));
-            TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + StringUtility.methodString(e, "thisMethod", String.class, Integer.class, Integer.class) + " but an exception occurred: " + (isInterface ? ("[MethodNotFoundException: " + StringUtility.methodString(e, "thisMethod", String.class, Integer.class, Integer.class) + ']') : ("[InvalidClassException: " + StringUtility.classString(e) + " is not an interface]")), () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + EntityStringUtility.methodString(e, "thisMethod", String.class, Integer.class, Integer.class) + " but an exception occurred: " + (isInterface ? ("[MethodNotFoundException: " + EntityStringUtility.methodString(e, "thisMethod", String.class, Integer.class, Integer.class) + ']') : ("[InvalidClassException: " + EntityStringUtility.classString(e) + " is not an interface]")), () ->
                     TestUtils.invokeInterfaceDefaultMethod(e, "thisMethod", "test", 5, 9));
-            TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + StringUtility.methodString(e, "") + " but an exception occurred: " + (isInterface ? ("[MethodNotFoundException: " + StringUtility.methodString(e, "") + ']') : ("[InvalidClassException: " + StringUtility.classString(e) + " is not an interface]")), () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + EntityStringUtility.methodString(e, "") + " but an exception occurred: " + (isInterface ? ("[MethodNotFoundException: " + EntityStringUtility.methodString(e, "") + ']') : ("[InvalidClassException: " + EntityStringUtility.classString(e) + " is not an interface]")), () ->
                     TestUtils.invokeInterfaceDefaultMethod(e, ""));
-            TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + StringUtility.methodString(e, null) + " but an exception occurred: " + (isInterface ? ("[MethodNotFoundException: " + StringUtility.methodString(e, null) + ']') : ("[InvalidClassException: " + StringUtility.classString(e) + " is not an interface]")), () ->
+            TestUtils.assertException(AssertionError.class, "Attempted to invoke the interface method " + EntityStringUtility.methodString(e, null) + " but an exception occurred: " + (isInterface ? ("[MethodNotFoundException: " + EntityStringUtility.methodString(e, null) + ']') : ("[InvalidClassException: " + EntityStringUtility.classString(e) + " is not an interface]")), () ->
                     TestUtils.invokeInterfaceDefaultMethod(e, null));
         });
         TestUtils.assertException(NullPointerException.class, () ->
@@ -2157,6 +2158,16 @@ public class TestUtilsTest {
          */
         static byte method5(boolean arg1, int arg2, BigDecimal arg3) {
             return field5;
+        }
+        
+        
+        //Inner Classes
+        
+        /**
+         * An inner class.
+         */
+        protected static class TestInnerClass {
+            
         }
         
     }

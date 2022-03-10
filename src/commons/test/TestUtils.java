@@ -24,6 +24,7 @@ import java.util.stream.IntStream;
 
 import commons.lambda.function.Action;
 import commons.object.CastUtility;
+import commons.object.string.EntityStringUtility;
 import commons.object.string.StringUtility;
 import org.junit.Assert;
 import org.powermock.reflect.Whitebox;
@@ -159,7 +160,7 @@ public final class TestUtils {
      */
     public static void assertClassExists(Class<?> clazz, String className) {
         if (getClass(clazz, className) == null) {
-            AssertWrapper.fail("Expected class " + StringUtility.innerClassString(clazz, className) + " to exist" +
+            AssertWrapper.fail("Expected class " + EntityStringUtility.innerClassString(clazz, className) + " to exist" +
                     " but it does not");
         }
     }
@@ -186,7 +187,7 @@ public final class TestUtils {
      */
     public static void assertClassDoesNotExist(Class<?> clazz, String className) {
         if (getClass(clazz, className) != null) {
-            AssertWrapper.fail("Expected class " + StringUtility.innerClassString(clazz, className) + " to not exist" +
+            AssertWrapper.fail("Expected class " + EntityStringUtility.innerClassString(clazz, className) + " to not exist" +
                     " but it does");
         }
     }
@@ -213,7 +214,7 @@ public final class TestUtils {
      */
     public static void assertInterfaceExists(Class<?> clazz, String interfaceName) {
         if (getInterface(clazz, interfaceName) == null) {
-            AssertWrapper.fail("Expected interface " + StringUtility.innerClassString(clazz, interfaceName) + " to exist" +
+            AssertWrapper.fail("Expected interface " + EntityStringUtility.innerClassString(clazz, interfaceName) + " to exist" +
                     " but it does not");
         }
     }
@@ -240,7 +241,7 @@ public final class TestUtils {
      */
     public static void assertInterfaceDoesNotExist(Class<?> clazz, String interfaceName) {
         if (getInterface(clazz, interfaceName) != null) {
-            AssertWrapper.fail("Expected interface " + StringUtility.innerClassString(clazz, interfaceName) + " to not exist" +
+            AssertWrapper.fail("Expected interface " + EntityStringUtility.innerClassString(clazz, interfaceName) + " to not exist" +
                     " but it does");
         }
     }
@@ -267,7 +268,7 @@ public final class TestUtils {
      */
     public static void assertEnumExists(Class<?> clazz, String enumName) {
         if (getEnum(clazz, enumName) == null) {
-            AssertWrapper.fail("Expected enum " + StringUtility.innerClassString(clazz, enumName) + " to exist" +
+            AssertWrapper.fail("Expected enum " + EntityStringUtility.innerClassString(clazz, enumName) + " to exist" +
                     " but it does not");
         }
     }
@@ -294,7 +295,7 @@ public final class TestUtils {
      */
     public static void assertEnumDoesNotExist(Class<?> clazz, String enumName) {
         if (getEnum(clazz, enumName) != null) {
-            AssertWrapper.fail("Expected enum " + StringUtility.innerClassString(clazz, enumName) + " to not exist" +
+            AssertWrapper.fail("Expected enum " + EntityStringUtility.innerClassString(clazz, enumName) + " to not exist" +
                     " but it does");
         }
     }
@@ -309,7 +310,7 @@ public final class TestUtils {
      */
     public static void assertMethodExists(Class<?> clazz, String methodName, Class<?>... argumentClasses) {
         if (getMethod(clazz, methodName, argumentClasses) == null) {
-            AssertWrapper.fail("Expected method " + StringUtility.methodString(clazz, methodName, argumentClasses) + " to exist" +
+            AssertWrapper.fail("Expected method " + EntityStringUtility.methodString(clazz, methodName, argumentClasses) + " to exist" +
                     " but it does not");
         }
     }
@@ -324,7 +325,7 @@ public final class TestUtils {
      */
     public static void assertMethodExists(Object object, String methodName, Class<?>... argumentClasses) {
         if (getMethod(object, methodName, argumentClasses) == null) {
-            AssertWrapper.fail("Expected method " + StringUtility.methodString(object, methodName, argumentClasses) + " to exist" +
+            AssertWrapper.fail("Expected method " + EntityStringUtility.simpleMethodString(object, methodName, argumentClasses) + " to exist" +
                     " but it does not");
         }
     }
@@ -339,7 +340,7 @@ public final class TestUtils {
      */
     public static void assertMethodDoesNotExist(Class<?> clazz, String methodName, Class<?>... argumentClasses) {
         if (getMethod(clazz, methodName, argumentClasses) != null) {
-            AssertWrapper.fail("Expected method " + StringUtility.methodString(clazz, methodName, argumentClasses) + " to not exist" +
+            AssertWrapper.fail("Expected method " + EntityStringUtility.methodString(clazz, methodName, argumentClasses) + " to not exist" +
                     " but it does");
         }
     }
@@ -354,7 +355,7 @@ public final class TestUtils {
      */
     public static void assertMethodDoesNotExist(Object object, String methodName, Class<?>... argumentClasses) {
         if (getMethod(object, methodName, argumentClasses) != null) {
-            AssertWrapper.fail("Expected method " + StringUtility.methodString(object, methodName, argumentClasses) + " to not exist" +
+            AssertWrapper.fail("Expected method " + EntityStringUtility.simpleMethodString(object, methodName, argumentClasses) + " to not exist" +
                     " but it does");
         }
     }
@@ -368,7 +369,7 @@ public final class TestUtils {
      */
     public static void assertConstructorExists(Class<?> clazz, Class<?>... argumentClasses) {
         if (getConstructor(clazz, argumentClasses) == null) {
-            AssertWrapper.fail("Expected constructor " + StringUtility.constructorString(clazz, argumentClasses) + " to exist" +
+            AssertWrapper.fail("Expected constructor " + EntityStringUtility.constructorString(clazz, argumentClasses) + " to exist" +
                     " but it does not");
         }
     }
@@ -382,7 +383,7 @@ public final class TestUtils {
      */
     public static void assertConstructorExists(Object object, Class<?>... argumentClasses) {
         if (getConstructor(object, argumentClasses) == null) {
-            AssertWrapper.fail("Expected constructor " + StringUtility.constructorString(object, argumentClasses) + " to exist" +
+            AssertWrapper.fail("Expected constructor " + EntityStringUtility.constructorString(object, argumentClasses) + " to exist" +
                     " but it does not");
         }
     }
@@ -396,7 +397,7 @@ public final class TestUtils {
      */
     public static void assertConstructorDoesNotExist(Class<?> clazz, Class<?>... argumentClasses) {
         if (getConstructor(clazz, argumentClasses) != null) {
-            AssertWrapper.fail("Expected constructor " + StringUtility.constructorString(clazz, argumentClasses) + " to not exist" +
+            AssertWrapper.fail("Expected constructor " + EntityStringUtility.constructorString(clazz, argumentClasses) + " to not exist" +
                     " but it does");
         }
     }
@@ -410,7 +411,7 @@ public final class TestUtils {
      */
     public static void assertConstructorDoesNotExist(Object object, Class<?>... argumentClasses) {
         if (getConstructor(object, argumentClasses) != null) {
-            AssertWrapper.fail("Expected constructor " + StringUtility.constructorString(object, argumentClasses) + " to not exist" +
+            AssertWrapper.fail("Expected constructor " + EntityStringUtility.constructorString(object, argumentClasses) + " to not exist" +
                     " but it does");
         }
     }
@@ -424,7 +425,7 @@ public final class TestUtils {
      */
     public static void assertFieldExists(Class<?> clazz, String fieldName) {
         if (getField(clazz, fieldName) == null) {
-            AssertWrapper.fail("Expected field " + StringUtility.fieldString(clazz, fieldName) + " to exist" +
+            AssertWrapper.fail("Expected field " + EntityStringUtility.fieldString(clazz, fieldName) + " to exist" +
                     " but it does not");
         }
     }
@@ -438,7 +439,7 @@ public final class TestUtils {
      */
     public static void assertFieldExists(Object object, String fieldName) {
         if (getField(object, fieldName) == null) {
-            AssertWrapper.fail("Expected field " + StringUtility.fieldString(object, fieldName) + " to exist" +
+            AssertWrapper.fail("Expected field " + EntityStringUtility.fieldString(object, fieldName) + " to exist" +
                     " but it does not");
         }
     }
@@ -452,7 +453,7 @@ public final class TestUtils {
      */
     public static void assertFieldDoesNotExist(Class<?> clazz, String fieldName) {
         if (getField(clazz, fieldName) != null) {
-            AssertWrapper.fail("Expected field " + StringUtility.fieldString(clazz, fieldName) + " to not exist" +
+            AssertWrapper.fail("Expected field " + EntityStringUtility.fieldString(clazz, fieldName) + " to not exist" +
                     " but it does");
         }
     }
@@ -466,7 +467,7 @@ public final class TestUtils {
      */
     public static void assertFieldDoesNotExist(Object object, String fieldName) {
         if (getField(object, fieldName) != null) {
-            AssertWrapper.fail("Expected field " + StringUtility.fieldString(object, fieldName) + " to not exist" +
+            AssertWrapper.fail("Expected field " + EntityStringUtility.fieldString(object, fieldName) + " to not exist" +
                     " but it does");
         }
     }
@@ -633,7 +634,7 @@ public final class TestUtils {
                                 (argumentTypes[i] == null) ? methodArgumentTypes[i].isPrimitive() :
                                 ((methodArgumentTypes[i] != argumentTypes[i]) &&
                                         (CastUtility.toPrimitiveClass(methodArgumentTypes[i]) != CastUtility.toPrimitiveClass(argumentTypes[i])))));
-            }).findFirst().orElseThrow(() -> new MethodNotFoundException(StringUtility.methodString(clazz, methodName, argumentTypes)));
+            }).findFirst().orElseThrow(() -> new MethodNotFoundException(EntityStringUtility.methodString(clazz, methodName, argumentTypes)));
         } catch (Exception ignored) {
             return null;
         }
@@ -712,7 +713,7 @@ public final class TestUtils {
                                 (argumentTypes[i] == null) ? constructorArgumentTypes[i].isPrimitive() :
                                 ((constructorArgumentTypes[i] != argumentTypes[i]) &&
                                         (CastUtility.toPrimitiveClass(constructorArgumentTypes[i]) != CastUtility.toPrimitiveClass(argumentTypes[i])))));
-            }).findFirst().orElseThrow(() -> new MethodNotFoundException(StringUtility.constructorString(clazz, argumentTypes)));
+            }).findFirst().orElseThrow(() -> new MethodNotFoundException(EntityStringUtility.constructorString(clazz, argumentTypes)));
             
         } catch (Exception ignored) {
             return null;
@@ -743,7 +744,7 @@ public final class TestUtils {
             final Map<String, Field> fields = new LinkedHashMap<>();
             for (Class<?> current = clazz; current != null; current = current.getSuperclass()) {
                 Arrays.stream(current.getDeclaredFields()).forEachOrdered(e ->
-                        fields.put(StringUtility.fieldString(clazz, e.getName()), e));
+                        fields.put(EntityStringUtility.fieldString(clazz, e.getName()), e));
             }
             return new ArrayList<>(fields.values());
             
@@ -786,7 +787,7 @@ public final class TestUtils {
             }
             
             return getAllFields(clazz).stream().filter(e -> e.getName().equals(fieldName))
-                    .findFirst().orElseThrow(() -> new FieldNotFoundException(StringUtility.fieldString(clazz, fieldName)));
+                    .findFirst().orElseThrow(() -> new FieldNotFoundException(EntityStringUtility.fieldString(clazz, fieldName)));
             
         } catch (Exception ignored) {
             return null;
@@ -841,7 +842,7 @@ public final class TestUtils {
             } catch (Exception ignored) {
                 final Field field = getField(clazz, fieldName);
                 if (field == null) {
-                    throw new FieldNotFoundException(StringUtility.fieldString(clazz, fieldName));
+                    throw new FieldNotFoundException(EntityStringUtility.fieldString(clazz, fieldName));
                 }
                 
                 final boolean isAccessible = field.isAccessible();
@@ -854,7 +855,7 @@ public final class TestUtils {
             }
             
         } catch (Exception e) {
-            AssertWrapper.fail("Attempted to get the value of the field " + StringUtility.fieldString(clazz, fieldName) +
+            AssertWrapper.fail("Attempted to get the value of the field " + EntityStringUtility.fieldString(clazz, fieldName) +
                     " but an exception occurred", e);
             throw new AssertionError(e);
         }
@@ -911,7 +912,7 @@ public final class TestUtils {
             } catch (Exception ignored) {
                 final Field field = getField(clazz, fieldName);
                 if (field == null) {
-                    throw new FieldNotFoundException(StringUtility.fieldString(clazz, fieldName));
+                    throw new FieldNotFoundException(EntityStringUtility.fieldString(clazz, fieldName));
                 }
                 
                 final boolean isAccessible = field.isAccessible();
@@ -925,7 +926,7 @@ public final class TestUtils {
             }
             
         } catch (Exception e) {
-            AssertWrapper.fail("Attempted to set the value of the field " + StringUtility.fieldString(clazz, fieldName) +
+            AssertWrapper.fail("Attempted to set the value of the field " + EntityStringUtility.fieldString(clazz, fieldName) +
                     " but an exception occurred", e);
             throw new AssertionError(e);
         }
@@ -983,7 +984,7 @@ public final class TestUtils {
             } catch (Exception ignored) {
                 final Method method = getMethod(clazz, methodName, argumentTypes);
                 if (method == null) {
-                    throw new MethodNotFoundException(StringUtility.methodString(clazz, methodName, argumentTypes));
+                    throw new MethodNotFoundException(EntityStringUtility.methodString(clazz, methodName, argumentTypes));
                 }
                 
                 final boolean isAccessible = method.isAccessible();
@@ -996,7 +997,7 @@ public final class TestUtils {
             }
             
         } catch (Throwable e) {
-            AssertWrapper.fail("Attempted to invoke the method " + StringUtility.methodString(object, methodName, argumentTypes) +
+            AssertWrapper.fail("Attempted to invoke the method " + EntityStringUtility.methodString(object, methodName, argumentTypes) +
                     " but an exception occurred", e);
             throw new AssertionError(e);
         }
@@ -1040,7 +1041,7 @@ public final class TestUtils {
             } catch (Exception ignored) {
                 final Constructor<T> constructor = (Constructor<T>) getConstructor(clazz, argumentTypes);
                 if ((constructor == null) || (constructor.getDeclaringClass() != clazz)) {
-                    throw new ConstructorNotFoundException(StringUtility.constructorString(clazz, argumentTypes));
+                    throw new ConstructorNotFoundException(EntityStringUtility.constructorString(clazz, argumentTypes));
                 }
                 
                 final boolean isAccessible = constructor.isAccessible();
@@ -1053,7 +1054,7 @@ public final class TestUtils {
             }
             
         } catch (Throwable e) {
-            AssertWrapper.fail("Attempted to invoke the constructor " + StringUtility.constructorString(clazz, argumentTypes) +
+            AssertWrapper.fail("Attempted to invoke the constructor " + EntityStringUtility.constructorString(clazz, argumentTypes) +
                     " but an exception occurred", e);
             throw new AssertionError(e);
         }
@@ -1080,7 +1081,7 @@ public final class TestUtils {
             
             final Method interfaceMethod = getMethod(clazz, methodName, argumentTypes);
             if (interfaceMethod == null) {
-                throw new MethodNotFoundException(StringUtility.methodString(clazz, methodName, argumentTypes));
+                throw new MethodNotFoundException(EntityStringUtility.methodString(clazz, methodName, argumentTypes));
             }
             
             return (getFieldValue(MethodHandles.Lookup.class, MethodHandles.Lookup.class, "IMPL_LOOKUP"))
@@ -1091,7 +1092,7 @@ public final class TestUtils {
                     .invokeWithArguments(arguments);
             
         } catch (Throwable e) {
-            AssertWrapper.fail("Attempted to invoke the interface method " + StringUtility.methodString(clazz, methodName, argumentTypes) +
+            AssertWrapper.fail("Attempted to invoke the interface method " + EntityStringUtility.methodString(clazz, methodName, argumentTypes) +
                     " but an exception occurred", e);
             throw new AssertionError(e);
         }
@@ -1142,7 +1143,7 @@ public final class TestUtils {
          * @see #fail(String, Throwable)
          */
         private static void fail(String message, Throwable cause) {
-            final String causeMessage = (cause == null) ? "" : (StringUtility.classString(cause.getClass()) + ": " +
+            final String causeMessage = (cause == null) ? "" : (EntityStringUtility.classString(cause.getClass()) + ": " +
                     cause.getMessage().replaceAll("\\$MockitoMock\\$\\d*", ""));
             fail(message + ": [" + causeMessage + ']');
         }
