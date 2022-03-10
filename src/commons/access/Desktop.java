@@ -11,7 +11,7 @@ import java.io.File;
 import java.net.URI;
 import java.util.Objects;
 
-import commons.lambda.function.CheckedSupplier;
+import commons.lambda.function.checked.CheckedSupplier;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

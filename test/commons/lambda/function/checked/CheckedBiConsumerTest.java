@@ -1,11 +1,11 @@
 /*
- * File:    CheckedCallableTest.java
- * Package: commons.lambda.function
+ * File:    CheckedBiConsumerTest.java
+ * Package: commons.lambda.function.checked
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.lambda.function;
+package commons.lambda.function.checked;
 
 import commons.test.TestUtils;
 import org.junit.After;
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of CheckedCallable.
+ * JUnit test of CheckedBiConsumer.
  *
- * @see CheckedCallable
+ * @see CheckedBiConsumer
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CheckedCallable.class})
-public class CheckedCallableTest {
+@PrepareForTest({CheckedBiConsumer.class})
+public class CheckedBiConsumerTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(CheckedCallableTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheckedBiConsumerTest.class);
     
     
     //Initialization
@@ -93,27 +93,27 @@ public class CheckedCallableTest {
     }
     
     /**
-     * JUnit test of tryCall.
+     * JUnit test of tryAccept.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedCallable#tryCall()
+     * @see CheckedBiConsumer#tryAccept(Object, Object)
      */
     @Test
-    public void testTryCall() throws Exception {
+    public void testTryAccept() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedCallable.class, "tryCall");
+        TestUtils.assertMethodExists(CheckedBiConsumer.class, "tryAccept", Object.class, Object.class);
     }
     
     /**
-     * JUnit test of call.
+     * JUnit test of accept.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedCallable#call()
+     * @see CheckedBiConsumer#accept(Object, Object)
      */
     @Test
-    public void testCall() throws Exception {
+    public void testAccept() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedCallable.class, "call");
+        TestUtils.assertMethodExists(CheckedBiConsumer.class, "accept", Object.class, Object.class);
     }
     
 }

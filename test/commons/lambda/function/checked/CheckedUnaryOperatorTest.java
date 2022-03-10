@@ -1,11 +1,11 @@
 /*
- * File:    CheckedBinaryOperatorTest.java
- * Package: commons.lambda.function
+ * File:    CheckedUnaryOperatorTest.java
+ * Package: commons.lambda.function.checked
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.lambda.function;
+package commons.lambda.function.checked;
 
 import commons.test.TestUtils;
 import org.junit.After;
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of CheckedBinaryOperator.
+ * JUnit test of CheckedUnaryOperator.
  *
- * @see CheckedBinaryOperator
+ * @see CheckedUnaryOperator
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CheckedBiFunction.class})
-public class CheckedBinaryOperatorTest {
+@PrepareForTest({CheckedUnaryOperator.class})
+public class CheckedUnaryOperatorTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(CheckedBinaryOperatorTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheckedUnaryOperatorTest.class);
     
     
     //Initialization
@@ -96,24 +96,24 @@ public class CheckedBinaryOperatorTest {
      * JUnit test of tryApply.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedBinaryOperator#tryApply(Object, Object)
+     * @see CheckedUnaryOperator#tryApply(Object)
      */
     @Test
     public void testTryApply() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedBinaryOperator.class, "tryApply", Object.class, Object.class);
+        TestUtils.assertMethodExists(CheckedUnaryOperator.class, "tryApply", Object.class);
     }
     
     /**
      * JUnit test of apply.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedBinaryOperator#apply(Object, Object)
+     * @see CheckedUnaryOperator#apply(Object)
      */
     @Test
     public void testApply() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedBinaryOperator.class, "apply", Object.class, Object.class);
+        TestUtils.assertMethodExists(CheckedUnaryOperator.class, "apply", Object.class);
     }
     
 }

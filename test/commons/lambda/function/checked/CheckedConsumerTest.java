@@ -1,11 +1,11 @@
 /*
- * File:    CheckedBiConsumerTest.java
- * Package: commons.lambda.function
+ * File:    CheckedConsumerTest.java
+ * Package: commons.lambda.function.checked
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.lambda.function;
+package commons.lambda.function.checked;
 
 import commons.test.TestUtils;
 import org.junit.After;
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of CheckedBiConsumer.
+ * JUnit test of CheckedConsumer.
  *
- * @see CheckedBiConsumer
+ * @see CheckedConsumer
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CheckedBiConsumer.class})
-public class CheckedBiConsumerTest {
+@PrepareForTest({CheckedSupplier.class})
+public class CheckedConsumerTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(CheckedBiConsumerTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheckedConsumerTest.class);
     
     
     //Initialization
@@ -96,24 +96,24 @@ public class CheckedBiConsumerTest {
      * JUnit test of tryAccept.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedBiConsumer#tryAccept(Object, Object)
+     * @see CheckedConsumer#tryAccept(Object)
      */
     @Test
     public void testTryAccept() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedBiConsumer.class, "tryAccept", Object.class, Object.class);
+        TestUtils.assertMethodExists(CheckedConsumer.class, "tryAccept", Object.class);
     }
     
     /**
      * JUnit test of accept.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedBiConsumer#accept(Object, Object)
+     * @see CheckedConsumer#accept(Object)
      */
     @Test
     public void testAccept() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedBiConsumer.class, "accept", Object.class, Object.class);
+        TestUtils.assertMethodExists(CheckedConsumer.class, "accept", Object.class);
     }
     
 }

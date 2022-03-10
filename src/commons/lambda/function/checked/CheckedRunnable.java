@@ -1,11 +1,11 @@
 /*
  * File:    CheckedRunnable.java
- * Package: commons.lambda.function
+ * Package: commons.lambda.function.checked
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.lambda.function;
+package commons.lambda.function.checked;
 
 /**
  * A lambda function that tries to run a task and returns no value and ignores errors.

@@ -1,11 +1,11 @@
 /*
- * File:    CheckedUnaryOperatorTest.java
- * Package: commons.lambda.function
+ * File:    CheckedBiFunctionTest.java
+ * Package: commons.lambda.function.checked
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.lambda.function;
+package commons.lambda.function.checked;
 
 import commons.test.TestUtils;
 import org.junit.After;
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of CheckedUnaryOperator.
+ * JUnit test of CheckedBiFunction.
  *
- * @see CheckedUnaryOperator
+ * @see CheckedBiFunction
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CheckedUnaryOperator.class})
-public class CheckedUnaryOperatorTest {
+@PrepareForTest({CheckedBiFunction.class})
+public class CheckedBiFunctionTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(CheckedUnaryOperatorTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheckedBiFunctionTest.class);
     
     
     //Initialization
@@ -96,24 +96,24 @@ public class CheckedUnaryOperatorTest {
      * JUnit test of tryApply.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedUnaryOperator#tryApply(Object)
+     * @see CheckedBiFunction#tryApply(Object, Object)
      */
     @Test
     public void testTryApply() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedUnaryOperator.class, "tryApply", Object.class);
+        TestUtils.assertMethodExists(CheckedBiFunction.class, "tryApply", Object.class, Object.class);
     }
     
     /**
      * JUnit test of apply.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedUnaryOperator#apply(Object)
+     * @see CheckedBiFunction#apply(Object, Object)
      */
     @Test
     public void testApply() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedUnaryOperator.class, "apply", Object.class);
+        TestUtils.assertMethodExists(CheckedBiFunction.class, "apply", Object.class, Object.class);
     }
     
 }

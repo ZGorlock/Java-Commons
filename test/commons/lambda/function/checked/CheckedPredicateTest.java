@@ -1,11 +1,11 @@
 /*
- * File:    CheckedSupplierTest.java
- * Package: commons.lambda.function
+ * File:    CheckedPredicateTest.java
+ * Package: commons.lambda.function.checked
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.lambda.function;
+package commons.lambda.function.checked;
 
 import commons.test.TestUtils;
 import org.junit.After;
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of CheckedSupplier.
+ * JUnit test of CheckedPredicate.
  *
- * @see CheckedSupplier
+ * @see CheckedPredicate
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CheckedSupplier.class})
-public class CheckedSupplierTest {
+@PrepareForTest({CheckedPredicate.class})
+public class CheckedPredicateTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(CheckedSupplierTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheckedPredicateTest.class);
     
     
     //Initialization
@@ -93,27 +93,27 @@ public class CheckedSupplierTest {
     }
     
     /**
-     * JUnit test of tryRun.
+     * JUnit test of tryTest
      *
      * @throws Exception When there is an exception.
-     * @see CheckedSupplier#tryGet()
+     * @see CheckedPredicate#tryTest(Object)
      */
     @Test
-    public void testTryGet() throws Exception {
+    public void testTryApply() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedSupplier.class, "tryGet");
+        TestUtils.assertMethodExists(CheckedPredicate.class, "tryTest", Object.class);
     }
     
     /**
-     * JUnit test of get.
+     * JUnit test of test.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedSupplier#get()
+     * @see CheckedPredicate#test(Object)
      */
     @Test
-    public void testGet() throws Exception {
+    public void testTest() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedSupplier.class, "get");
+        TestUtils.assertMethodExists(CheckedPredicate.class, "test", Object.class);
     }
     
 }

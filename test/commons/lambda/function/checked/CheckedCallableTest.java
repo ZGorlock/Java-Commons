@@ -1,11 +1,11 @@
 /*
- * File:    CheckedRunnableTest.java
- * Package: commons.lambda.function
+ * File:    CheckedCallableTest.java
+ * Package: commons.lambda.function.checked
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.lambda.function;
+package commons.lambda.function.checked;
 
 import commons.test.TestUtils;
 import org.junit.After;
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of CheckedRunnable.
+ * JUnit test of CheckedCallable.
  *
- * @see CheckedRunnable
+ * @see CheckedCallable
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CheckedRunnable.class})
-public class CheckedRunnableTest {
+@PrepareForTest({CheckedCallable.class})
+public class CheckedCallableTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(CheckedRunnableTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheckedCallableTest.class);
     
     
     //Initialization
@@ -93,27 +93,27 @@ public class CheckedRunnableTest {
     }
     
     /**
-     * JUnit test of tryRun.
+     * JUnit test of tryCall.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedRunnable#tryRun()
+     * @see CheckedCallable#tryCall()
      */
     @Test
-    public void testTryRun() throws Exception {
+    public void testTryCall() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedRunnable.class, "tryRun");
+        TestUtils.assertMethodExists(CheckedCallable.class, "tryCall");
     }
     
     /**
-     * JUnit test of run.
+     * JUnit test of call.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedRunnable#run()
+     * @see CheckedCallable#call()
      */
     @Test
-    public void testRun() throws Exception {
+    public void testCall() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedRunnable.class, "run");
+        TestUtils.assertMethodExists(CheckedCallable.class, "call");
     }
     
 }

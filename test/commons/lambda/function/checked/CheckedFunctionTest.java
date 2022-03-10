@@ -1,11 +1,11 @@
 /*
- * File:    CheckedPredicateTest.java
- * Package: commons.lambda.function
+ * File:    CheckedFunctionTest.java
+ * Package: commons.lambda.function.checked
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.lambda.function;
+package commons.lambda.function.checked;
 
 import commons.test.TestUtils;
 import org.junit.After;
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of CheckedPredicate.
+ * JUnit test of CheckedFunction.
  *
- * @see CheckedPredicate
+ * @see CheckedFunction
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CheckedPredicate.class})
-public class CheckedPredicateTest {
+@PrepareForTest({CheckedFunction.class})
+public class CheckedFunctionTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(CheckedPredicateTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheckedFunctionTest.class);
     
     
     //Initialization
@@ -93,27 +93,27 @@ public class CheckedPredicateTest {
     }
     
     /**
-     * JUnit test of tryTest
+     * JUnit test of tryApply.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedPredicate#tryTest(Object)
+     * @see CheckedFunction#tryApply(Object)
      */
     @Test
     public void testTryApply() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedPredicate.class, "tryTest", Object.class);
+        TestUtils.assertMethodExists(CheckedFunction.class, "tryApply", Object.class);
     }
     
     /**
-     * JUnit test of test.
+     * JUnit test of apply.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedPredicate#test(Object)
+     * @see CheckedFunction#apply(Object)
      */
     @Test
-    public void testTest() throws Exception {
+    public void testApply() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedPredicate.class, "test", Object.class);
+        TestUtils.assertMethodExists(CheckedFunction.class, "apply", Object.class);
     }
     
 }

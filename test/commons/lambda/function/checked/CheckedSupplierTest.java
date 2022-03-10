@@ -1,11 +1,11 @@
 /*
- * File:    ActionTest.java
- * Package: commons.lambda.function
+ * File:    CheckedSupplierTest.java
+ * Package: commons.lambda.function.checked
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.lambda.function;
+package commons.lambda.function.checked;
 
 import commons.test.TestUtils;
 import org.junit.After;
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of Action.
+ * JUnit test of CheckedSupplier.
  *
- * @see Action
+ * @see CheckedSupplier
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({Action.class})
-public class ActionTest {
+@PrepareForTest({CheckedSupplier.class})
+public class CheckedSupplierTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(ActionTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheckedSupplierTest.class);
     
     
     //Initialization
@@ -93,15 +93,27 @@ public class ActionTest {
     }
     
     /**
-     * JUnit test of perform.
+     * JUnit test of tryRun.
      *
      * @throws Exception When there is an exception.
-     * @see Action#perform()
+     * @see CheckedSupplier#tryGet()
      */
     @Test
-    public void testPerform() throws Exception {
+    public void testTryGet() throws Exception {
         //standard
-        TestUtils.assertMethodExists(Action.class, "perform");
+        TestUtils.assertMethodExists(CheckedSupplier.class, "tryGet");
+    }
+    
+    /**
+     * JUnit test of get.
+     *
+     * @throws Exception When there is an exception.
+     * @see CheckedSupplier#get()
+     */
+    @Test
+    public void testGet() throws Exception {
+        //standard
+        TestUtils.assertMethodExists(CheckedSupplier.class, "get");
     }
     
 }

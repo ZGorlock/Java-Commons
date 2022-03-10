@@ -1,11 +1,11 @@
 /*
- * File:    CheckedConsumerTest.java
- * Package: commons.lambda.function
+ * File:    CheckedBinaryOperatorTest.java
+ * Package: commons.lambda.function.checked
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.lambda.function;
+package commons.lambda.function.checked;
 
 import commons.test.TestUtils;
 import org.junit.After;
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of CheckedConsumer.
+ * JUnit test of CheckedBinaryOperator.
  *
- * @see CheckedConsumer
+ * @see CheckedBinaryOperator
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CheckedSupplier.class})
-public class CheckedConsumerTest {
+@PrepareForTest({CheckedBiFunction.class})
+public class CheckedBinaryOperatorTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(CheckedConsumerTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(CheckedBinaryOperatorTest.class);
     
     
     //Initialization
@@ -93,27 +93,27 @@ public class CheckedConsumerTest {
     }
     
     /**
-     * JUnit test of tryAccept.
+     * JUnit test of tryApply.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedConsumer#tryAccept(Object)
+     * @see CheckedBinaryOperator#tryApply(Object, Object)
      */
     @Test
-    public void testTryAccept() throws Exception {
+    public void testTryApply() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedConsumer.class, "tryAccept", Object.class);
+        TestUtils.assertMethodExists(CheckedBinaryOperator.class, "tryApply", Object.class, Object.class);
     }
     
     /**
-     * JUnit test of accept.
+     * JUnit test of apply.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedConsumer#accept(Object)
+     * @see CheckedBinaryOperator#apply(Object, Object)
      */
     @Test
-    public void testAccept() throws Exception {
+    public void testApply() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedConsumer.class, "accept", Object.class);
+        TestUtils.assertMethodExists(CheckedBinaryOperator.class, "apply", Object.class, Object.class);
     }
     
 }

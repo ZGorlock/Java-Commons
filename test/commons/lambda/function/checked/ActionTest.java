@@ -1,11 +1,11 @@
 /*
- * File:    CheckedBiFunctionTest.java
- * Package: commons.lambda.function
+ * File:    ActionTest.java
+ * Package: commons.lambda.function.checked
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.lambda.function;
+package commons.lambda.function.checked;
 
 import commons.test.TestUtils;
 import org.junit.After;
@@ -20,21 +20,21 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * JUnit test of CheckedBiFunction.
+ * JUnit test of Action.
  *
- * @see CheckedBiFunction
+ * @see Action
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({CheckedBiFunction.class})
-public class CheckedBiFunctionTest {
+@PrepareForTest({Action.class})
+public class ActionTest {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(CheckedBiFunctionTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(ActionTest.class);
     
     
     //Initialization
@@ -93,27 +93,15 @@ public class CheckedBiFunctionTest {
     }
     
     /**
-     * JUnit test of tryApply.
+     * JUnit test of perform.
      *
      * @throws Exception When there is an exception.
-     * @see CheckedBiFunction#tryApply(Object, Object)
+     * @see Action#perform()
      */
     @Test
-    public void testTryApply() throws Exception {
+    public void testPerform() throws Exception {
         //standard
-        TestUtils.assertMethodExists(CheckedBiFunction.class, "tryApply", Object.class, Object.class);
-    }
-    
-    /**
-     * JUnit test of apply.
-     *
-     * @throws Exception When there is an exception.
-     * @see CheckedBiFunction#apply(Object, Object)
-     */
-    @Test
-    public void testApply() throws Exception {
-        //standard
-        TestUtils.assertMethodExists(CheckedBiFunction.class, "apply", Object.class, Object.class);
+        TestUtils.assertMethodExists(Action.class, "perform");
     }
     
 }

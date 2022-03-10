@@ -1,6 +1,6 @@
 /*
  * File:    package-info.java
- * Package: commons.lambda.function
+ * Package: commons.lambda.function.checked
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  *
