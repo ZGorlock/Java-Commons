@@ -10,10 +10,14 @@ package commons.lambda.function.checked;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -100,8 +104,16 @@ public class CheckedBiFunctionTest {
      */
     @Test
     public void testTryApply() throws Exception {
+        final CheckedBiFunction<Object, Object, Object> sut = (Object arg1, Object arg2) ->
+                arg1.toString() + arg2;
+        
         //standard
-        TestUtils.assertMethodExists(CheckedBiFunction.class, "tryApply", Object.class, Object.class);
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals("tested", sut.tryApply("test", "ed")));
+        
+        //exception
+        TestUtils.assertException(() ->
+                sut.tryApply(null, "ed"));
     }
     
     /**
@@ -112,8 +124,51 @@ public class CheckedBiFunctionTest {
      */
     @Test
     public void testApply() throws Exception {
+        final CheckedBiFunction<Object, Object, Object> sut = (Object arg1, Object arg2) ->
+                arg1.toString() + arg2;
+        
         //standard
-        TestUtils.assertMethodExists(CheckedBiFunction.class, "apply", Object.class, Object.class);
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals("tested", sut.apply("test", "ed")));
+        
+        //exception
+        TestUtils.assertNoException(() ->
+                Assert.assertNull(sut.apply(null, "ed")));
+    }
+    
+    /**
+     * JUnit test of invoke.
+     *
+     * @throws Throwable When there is an error.
+     * @see CheckedBiFunction#invoke(CheckedBiFunction, Object, Object)
+     */
+    @Test
+    public void testInvoke() throws Throwable {
+        final CheckedBiFunction<Object, Object, Object> sut = Mockito.mock(CheckedBiFunction.class, Mockito.CALLS_REAL_METHODS);
+        final Object arg1 = new Object();
+        final Object arg2 = new Object();
+        
+        //standard
+        TestUtils.assertNoException(() ->
+                CheckedBiFunction.invoke(sut, arg1, arg2));
+        Mockito.verify(sut, VerificationModeFactory.times(1))
+                .apply(ArgumentMatchers.eq(arg1), ArgumentMatchers.eq(arg2));
+        
+        //wrapped exception
+        Mockito.doThrow(new RuntimeException()).when(sut).tryApply(ArgumentMatchers.any(), ArgumentMatchers.any());
+        TestUtils.assertNoException(() ->
+                CheckedBiFunction.invoke(sut, arg1, arg2));
+        Mockito.verify(sut, VerificationModeFactory.times(2))
+                .apply(ArgumentMatchers.eq(arg1), ArgumentMatchers.eq(arg2));
+        Mockito.doReturn(null).when(sut).tryApply(ArgumentMatchers.any(), ArgumentMatchers.any());
+        
+        //exception
+        Mockito.doThrow(new RuntimeException()).when(sut).apply(ArgumentMatchers.any(), ArgumentMatchers.any());
+        TestUtils.assertException(() ->
+                CheckedBiFunction.invoke(sut, arg1, arg2));
+        Mockito.verify(sut, VerificationModeFactory.times(3))
+                .apply(ArgumentMatchers.eq(arg1), ArgumentMatchers.eq(arg2));
+        Mockito.doReturn(null).when(sut).apply(ArgumentMatchers.any(), ArgumentMatchers.any());
     }
     
 }

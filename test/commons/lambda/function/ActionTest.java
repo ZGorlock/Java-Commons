@@ -7,13 +7,18 @@
 
 package commons.lambda.function;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -100,8 +105,69 @@ public class ActionTest {
      */
     @Test
     public void testPerform() throws Exception {
+        final AtomicReference<Object> result = new AtomicReference<>(null);
+        final Action sut = () ->
+                result.set(result.get().toString());
+        
         //standard
-        TestUtils.assertMethodExists(Action.class, "perform");
+        result.set(new StringBuilder("tested"));
+        TestUtils.assertNoException(sut);
+        Assert.assertEquals("tested", result.get());
+        
+        //exception
+        result.set(null);
+        TestUtils.assertException(sut);
+        Assert.assertNull(result.get());
+    }
+    
+    /**
+     * JUnit test of invoke.
+     *
+     * @throws Throwable When there is an error.
+     * @see Action#invoke(Action)
+     */
+    @Test
+    public void testInvoke() throws Throwable {
+        final Action sut = Mockito.mock(Action.class, Mockito.CALLS_REAL_METHODS);
+        
+        //standard
+        TestUtils.assertNoException(() ->
+                Action.invoke(sut));
+        Mockito.verify(sut, VerificationModeFactory.times(1))
+                .perform();
+        
+        //exception
+        Mockito.doThrow(new RuntimeException()).when(sut).perform();
+        TestUtils.assertException(() ->
+                Action.invoke(sut));
+        Mockito.verify(sut, VerificationModeFactory.times(2))
+                .perform();
+        Mockito.doNothing().when(sut).perform();
+    }
+    
+    /**
+     * JUnit test of invokeQuietly.
+     *
+     * @throws Throwable When there is an error.
+     * @see Action#invokeQuietly(Action)
+     */
+    @Test
+    public void testInvokeQuietly() throws Throwable {
+        final Action sut = Mockito.mock(Action.class, Mockito.CALLS_REAL_METHODS);
+        
+        //standard
+        TestUtils.assertNoException(() ->
+                Action.invokeQuietly(sut));
+        Mockito.verify(sut, VerificationModeFactory.times(1))
+                .perform();
+        
+        //exception
+        Mockito.doThrow(new RuntimeException()).when(sut).perform();
+        TestUtils.assertNoException(() ->
+                Action.invokeQuietly(sut));
+        Mockito.verify(sut, VerificationModeFactory.times(2))
+                .perform();
+        Mockito.doNothing().when(sut).perform();
     }
     
 }

@@ -10,10 +10,14 @@ package commons.lambda.function.checked;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -99,9 +103,19 @@ public class CheckedPredicateTest {
      * @see CheckedPredicate#tryTest(Object)
      */
     @Test
-    public void testTryApply() throws Exception {
+    public void testTryTest() throws Exception {
+        final CheckedPredicate<Object> sut = (Object arg) ->
+                !arg.toString().isEmpty();
+        
         //standard
-        TestUtils.assertMethodExists(CheckedPredicate.class, "tryTest", Object.class);
+        TestUtils.assertNoException(() ->
+                Assert.assertTrue(sut.tryTest("test")));
+        TestUtils.assertNoException(() ->
+                Assert.assertFalse(sut.tryTest("")));
+        
+        //exception
+        TestUtils.assertException(() ->
+                sut.tryTest(null));
     }
     
     /**
@@ -112,8 +126,52 @@ public class CheckedPredicateTest {
      */
     @Test
     public void testTest() throws Exception {
+        final CheckedPredicate<Object> sut = (Object arg) ->
+                !arg.toString().isEmpty();
+        
         //standard
-        TestUtils.assertMethodExists(CheckedPredicate.class, "test", Object.class);
+        TestUtils.assertNoException(() ->
+                Assert.assertTrue(sut.test("test")));
+        TestUtils.assertNoException(() ->
+                Assert.assertFalse(sut.test("")));
+        
+        //exception
+        TestUtils.assertNoException(() ->
+                Assert.assertFalse(sut.test(null)));
+    }
+    
+    /**
+     * JUnit test of invoke.
+     *
+     * @throws Throwable When there is an error.
+     * @see CheckedPredicate#invoke(CheckedPredicate, Object)
+     */
+    @Test
+    public void testInvoke() throws Throwable {
+        final CheckedPredicate<Object> sut = Mockito.mock(CheckedPredicate.class, Mockito.CALLS_REAL_METHODS);
+        final Object arg = new Object();
+        
+        //standard
+        TestUtils.assertNoException(() ->
+                CheckedPredicate.invoke(sut, arg));
+        Mockito.verify(sut, VerificationModeFactory.times(1))
+                .test(ArgumentMatchers.eq(arg));
+        
+        //wrapped exception
+        Mockito.doThrow(new RuntimeException()).when(sut).tryTest(ArgumentMatchers.any());
+        TestUtils.assertNoException(() ->
+                CheckedPredicate.invoke(sut, arg));
+        Mockito.verify(sut, VerificationModeFactory.times(2))
+                .test(ArgumentMatchers.eq(arg));
+        Mockito.doReturn(false).when(sut).tryTest(ArgumentMatchers.any());
+        
+        //exception
+        Mockito.doThrow(new RuntimeException()).when(sut).test(ArgumentMatchers.any());
+        TestUtils.assertException(() ->
+                CheckedPredicate.invoke(sut, arg));
+        Mockito.verify(sut, VerificationModeFactory.times(3))
+                .test(ArgumentMatchers.eq(arg));
+        Mockito.doReturn(false).when(sut).test(ArgumentMatchers.any());
     }
     
 }

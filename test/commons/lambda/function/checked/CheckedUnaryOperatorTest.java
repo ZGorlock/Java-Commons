@@ -10,10 +10,14 @@ package commons.lambda.function.checked;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -100,8 +104,15 @@ public class CheckedUnaryOperatorTest {
      */
     @Test
     public void testTryApply() throws Exception {
+        final CheckedUnaryOperator<Object> sut = Object::toString;
+        
         //standard
-        TestUtils.assertMethodExists(CheckedUnaryOperator.class, "tryApply", Object.class);
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals("test", sut.tryApply("test")));
+        
+        //exception
+        TestUtils.assertException(() ->
+                sut.tryApply(null));
     }
     
     /**
@@ -112,8 +123,49 @@ public class CheckedUnaryOperatorTest {
      */
     @Test
     public void testApply() throws Exception {
+        final CheckedUnaryOperator<Object> sut = Object::toString;
+        
         //standard
-        TestUtils.assertMethodExists(CheckedUnaryOperator.class, "apply", Object.class);
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals("test", sut.apply("test")));
+        
+        //exception
+        TestUtils.assertNoException(() ->
+                Assert.assertNull(sut.apply(null)));
+    }
+    
+    /**
+     * JUnit test of invoke.
+     *
+     * @throws Throwable When there is an error.
+     * @see CheckedUnaryOperator#invoke(CheckedUnaryOperator, Object)
+     */
+    @Test
+    public void testInvoke() throws Throwable {
+        final CheckedUnaryOperator<Object> sut = Mockito.mock(CheckedUnaryOperator.class, Mockito.CALLS_REAL_METHODS);
+        final Object op = new Object();
+        
+        //standard
+        TestUtils.assertNoException(() ->
+                CheckedUnaryOperator.invoke(sut, op));
+        Mockito.verify(sut, VerificationModeFactory.times(1))
+                .apply(ArgumentMatchers.eq(op));
+        
+        //wrapped exception
+        Mockito.doThrow(new RuntimeException()).when(sut).tryApply(ArgumentMatchers.any());
+        TestUtils.assertNoException(() ->
+                CheckedUnaryOperator.invoke(sut, op));
+        Mockito.verify(sut, VerificationModeFactory.times(2))
+                .apply(ArgumentMatchers.eq(op));
+        Mockito.doReturn(null).when(sut).tryApply(ArgumentMatchers.any());
+        
+        //exception
+        Mockito.doThrow(new RuntimeException()).when(sut).apply(ArgumentMatchers.any());
+        TestUtils.assertException(() ->
+                CheckedUnaryOperator.invoke(sut, op));
+        Mockito.verify(sut, VerificationModeFactory.times(3))
+                .apply(ArgumentMatchers.eq(op));
+        Mockito.doReturn(null).when(sut).apply(ArgumentMatchers.any());
     }
     
 }

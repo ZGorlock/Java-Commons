@@ -10,9 +10,10 @@ package commons.lambda.function.checked;
 import java.util.concurrent.Callable;
 
 /**
- * Represents a lambda function that run a task and returns a result and ignores exceptions.
+ * Represents a lambda function that run a task and returns a result and ignores errors.
  *
  * @param <T> The type of the result.
+ * @see Callable
  */
 @FunctionalInterface
 public interface CheckedCallable<T> extends Callable<T> {
@@ -35,9 +36,26 @@ public interface CheckedCallable<T> extends Callable<T> {
      * @see Callable#call()
      * @see #tryCall()
      */
+    @Override
     default T call() throws Exception {
         try {
             return tryCall();
+        } catch (Throwable ignored) {
+            return null;
+        }
+    }
+    
+    /**
+     * Invokes a CheckedCallable.
+     *
+     * @param checkedCallable The CheckedCallable.
+     * @param <T>             The type of the result.
+     * @return The result, or null if there was an error.
+     * @see #call()
+     */
+    static <T> T invoke(CheckedCallable<T> checkedCallable) {
+        try {
+            return checkedCallable.call();
         } catch (Throwable ignored) {
             return null;
         }

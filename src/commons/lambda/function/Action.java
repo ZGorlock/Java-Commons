@@ -22,4 +22,28 @@ public interface Action {
      */
     void perform() throws Throwable;
     
+    /**
+     * Invokes an Action.
+     *
+     * @param action The Action.
+     * @throws Throwable When there is an error.
+     * @see #perform()
+     */
+    static void invoke(Action action) throws Throwable {
+        action.perform();
+    }
+    
+    /**
+     * Invokes an Action and ignores errors.
+     *
+     * @param action The Action.
+     * @see #perform()
+     */
+    static void invokeQuietly(Action action) {
+        try {
+            action.perform();
+        } catch (Throwable ignored) {
+        }
+    }
+    
 }

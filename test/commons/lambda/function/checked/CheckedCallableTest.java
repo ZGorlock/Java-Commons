@@ -7,13 +7,18 @@
 
 package commons.lambda.function.checked;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -100,8 +105,18 @@ public class CheckedCallableTest {
      */
     @Test
     public void testTryCall() throws Exception {
+        final AtomicReference<Object> result = new AtomicReference<>(null);
+        final CheckedCallable<Object> sut = () ->
+                result.get().toString();
+        
         //standard
-        TestUtils.assertMethodExists(CheckedCallable.class, "tryCall");
+        result.set(new StringBuilder("tested"));
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals("tested", sut.tryCall()));
+        
+        //exception
+        result.set(null);
+        TestUtils.assertException(sut::tryCall);
     }
     
     /**
@@ -112,8 +127,52 @@ public class CheckedCallableTest {
      */
     @Test
     public void testCall() throws Exception {
+        final AtomicReference<Object> result = new AtomicReference<>(null);
+        final CheckedCallable<Object> sut = () ->
+                result.get().toString();
+        
         //standard
-        TestUtils.assertMethodExists(CheckedCallable.class, "call");
+        result.set(new StringBuilder("tested"));
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals("tested", sut.call()));
+        
+        //exception
+        result.set(null);
+        TestUtils.assertNoException(() ->
+                Assert.assertNull(sut.call()));
+    }
+    
+    /**
+     * JUnit test of invoke.
+     *
+     * @throws Throwable When there is an error.
+     * @see CheckedCallable#invoke(CheckedCallable)
+     */
+    @Test
+    public void testInvoke() throws Throwable {
+        final CheckedCallable<Object> sut = Mockito.mock(CheckedCallable.class, Mockito.CALLS_REAL_METHODS);
+        
+        //standard
+        TestUtils.assertNoException(() ->
+                CheckedCallable.invoke(sut));
+        Mockito.verify(sut, VerificationModeFactory.times(1))
+                .call();
+        
+        //wrapped exception
+        Mockito.doThrow(new RuntimeException()).when(sut).tryCall();
+        TestUtils.assertNoException(() ->
+                CheckedCallable.invoke(sut));
+        Mockito.verify(sut, VerificationModeFactory.times(2))
+                .call();
+        Mockito.doReturn(null).when(sut).tryCall();
+        
+        //exception
+        Mockito.doThrow(new RuntimeException()).when(sut).call();
+        TestUtils.assertNoException(() ->
+                CheckedCallable.invoke(sut));
+        Mockito.verify(sut, VerificationModeFactory.times(3))
+                .call();
+        Mockito.doReturn(null).when(sut).call();
     }
     
 }

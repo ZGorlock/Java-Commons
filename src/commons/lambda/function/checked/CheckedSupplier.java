@@ -13,6 +13,7 @@ import java.util.function.Supplier;
  * A lambda function that tries to supply a result and ignores errors.
  *
  * @param <T> The type of the result.
+ * @see Supplier
  */
 @FunctionalInterface
 public interface CheckedSupplier<T> extends Supplier<T> {
@@ -34,12 +35,25 @@ public interface CheckedSupplier<T> extends Supplier<T> {
      * @see Supplier#get()
      * @see #tryGet()
      */
+    @Override
     default T get() {
         try {
             return tryGet();
         } catch (Throwable ignored) {
             return null;
         }
+    }
+    
+    /**
+     * Invokes a CheckedSupplier.
+     *
+     * @param checkedSupplier The CheckedSupplier.
+     * @param <T>             The type of the result.
+     * @return The result, or null if there was an error.
+     * @see #get()
+     */
+    static <T> T invoke(CheckedSupplier<T> checkedSupplier) {
+        return checkedSupplier.get();
     }
     
 }

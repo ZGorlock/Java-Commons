@@ -7,13 +7,18 @@
 
 package commons.lambda.function.checked;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -93,15 +98,25 @@ public class CheckedSupplierTest {
     }
     
     /**
-     * JUnit test of tryRun.
+     * JUnit test of tryGet.
      *
      * @throws Exception When there is an exception.
      * @see CheckedSupplier#tryGet()
      */
     @Test
     public void testTryGet() throws Exception {
+        final AtomicReference<Object> result = new AtomicReference<>(null);
+        final CheckedSupplier<Object> sut = () ->
+                result.get().toString();
+        
         //standard
-        TestUtils.assertMethodExists(CheckedSupplier.class, "tryGet");
+        result.set(new StringBuilder("test"));
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals("test", sut.tryGet()));
+        
+        //exception
+        result.set(null);
+        TestUtils.assertException(sut::tryGet);
     }
     
     /**
@@ -112,8 +127,52 @@ public class CheckedSupplierTest {
      */
     @Test
     public void testGet() throws Exception {
+        final AtomicReference<Object> result = new AtomicReference<>(null);
+        final CheckedSupplier<Object> sut = () ->
+                result.get().toString();
+        
         //standard
-        TestUtils.assertMethodExists(CheckedSupplier.class, "get");
+        result.set(new StringBuilder("test"));
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals("test", sut.get()));
+        
+        //exception
+        result.set(null);
+        TestUtils.assertNoException(() ->
+                Assert.assertNull(sut.get()));
+    }
+    
+    /**
+     * JUnit test of invoke.
+     *
+     * @throws Throwable When there is an error.
+     * @see CheckedSupplier#invoke(CheckedSupplier)
+     */
+    @Test
+    public void testInvoke() throws Throwable {
+        final CheckedSupplier<Object> sut = Mockito.mock(CheckedSupplier.class, Mockito.CALLS_REAL_METHODS);
+        
+        //standard
+        TestUtils.assertNoException(() ->
+                CheckedSupplier.invoke(sut));
+        Mockito.verify(sut, VerificationModeFactory.times(1))
+                .get();
+        
+        //wrapped exception
+        Mockito.doThrow(new RuntimeException()).when(sut).tryGet();
+        TestUtils.assertNoException(() ->
+                CheckedSupplier.invoke(sut));
+        Mockito.verify(sut, VerificationModeFactory.times(2))
+                .get();
+        Mockito.doReturn(null).when(sut).tryGet();
+        
+        //exception
+        Mockito.doThrow(new RuntimeException()).when(sut).get();
+        TestUtils.assertException(() ->
+                CheckedSupplier.invoke(sut));
+        Mockito.verify(sut, VerificationModeFactory.times(3))
+                .get();
+        Mockito.doReturn(null).when(sut).get();
     }
     
 }

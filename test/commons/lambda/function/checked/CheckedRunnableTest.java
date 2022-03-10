@@ -7,13 +7,18 @@
 
 package commons.lambda.function.checked;
 
+import java.util.concurrent.atomic.AtomicReference;
+
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -100,8 +105,17 @@ public class CheckedRunnableTest {
      */
     @Test
     public void testTryRun() throws Exception {
+        final AtomicReference<Object> result = new AtomicReference<>(null);
+        final CheckedRunnable sut = () ->
+                Assert.assertFalse(result.get().toString().isEmpty());
+        
         //standard
-        TestUtils.assertMethodExists(CheckedRunnable.class, "tryRun");
+        result.set(new StringBuilder("tested"));
+        TestUtils.assertNoException(sut::tryRun);
+        
+        //exception
+        result.set(null);
+        TestUtils.assertException(sut::tryRun);
     }
     
     /**
@@ -112,8 +126,50 @@ public class CheckedRunnableTest {
      */
     @Test
     public void testRun() throws Exception {
+        final AtomicReference<Object> result = new AtomicReference<>(null);
+        final CheckedRunnable sut = () ->
+                Assert.assertFalse(result.get().toString().isEmpty());
+        
         //standard
-        TestUtils.assertMethodExists(CheckedRunnable.class, "run");
+        result.set(new StringBuilder("tested"));
+        TestUtils.assertNoException(sut::run);
+        
+        //exception
+        result.set(null);
+        TestUtils.assertNoException(sut::run);
+    }
+    
+    /**
+     * JUnit test of invoke.
+     *
+     * @throws Throwable When there is an error.
+     * @see CheckedRunnable#invoke(CheckedRunnable)
+     */
+    @Test
+    public void testInvoke() throws Throwable {
+        final CheckedRunnable sut = Mockito.mock(CheckedRunnable.class, Mockito.CALLS_REAL_METHODS);
+        
+        //standard
+        TestUtils.assertNoException(() ->
+                CheckedRunnable.invoke(sut));
+        Mockito.verify(sut, VerificationModeFactory.times(1))
+                .run();
+        
+        //wrapped exception
+        Mockito.doThrow(new RuntimeException()).when(sut).tryRun();
+        TestUtils.assertNoException(() ->
+                CheckedRunnable.invoke(sut));
+        Mockito.verify(sut, VerificationModeFactory.times(2))
+                .run();
+        Mockito.doNothing().when(sut).tryRun();
+        
+        //exception
+        Mockito.doThrow(new RuntimeException()).when(sut).run();
+        TestUtils.assertException(() ->
+                CheckedRunnable.invoke(sut));
+        Mockito.verify(sut, VerificationModeFactory.times(3))
+                .run();
+        Mockito.doNothing().when(sut).run();
     }
     
 }

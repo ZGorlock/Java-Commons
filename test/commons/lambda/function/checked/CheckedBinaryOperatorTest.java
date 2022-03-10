@@ -10,10 +10,14 @@ package commons.lambda.function.checked;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -100,8 +104,16 @@ public class CheckedBinaryOperatorTest {
      */
     @Test
     public void testTryApply() throws Exception {
+        final CheckedBinaryOperator<Object> sut = (Object op1, Object op2) ->
+                op1.toString() + op2;
+        
         //standard
-        TestUtils.assertMethodExists(CheckedBinaryOperator.class, "tryApply", Object.class, Object.class);
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals("tested", sut.tryApply("test", "ed")));
+        
+        //exception
+        TestUtils.assertException(() ->
+                sut.tryApply(null, "ed"));
     }
     
     /**
@@ -112,8 +124,51 @@ public class CheckedBinaryOperatorTest {
      */
     @Test
     public void testApply() throws Exception {
+        final CheckedBinaryOperator<Object> sut = (Object op1, Object op2) ->
+                op1.toString() + op2;
+        
         //standard
-        TestUtils.assertMethodExists(CheckedBinaryOperator.class, "apply", Object.class, Object.class);
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals("tested", sut.apply("test", "ed")));
+        
+        //exception
+        TestUtils.assertNoException(() ->
+                Assert.assertNull(sut.apply(null, "ed")));
+    }
+    
+    /**
+     * JUnit test of invoke.
+     *
+     * @throws Throwable When there is an error.
+     * @see CheckedBinaryOperator#invoke(CheckedBinaryOperator, Object, Object)
+     */
+    @Test
+    public void testInvoke() throws Throwable {
+        final CheckedBinaryOperator<Object> sut = Mockito.mock(CheckedBinaryOperator.class, Mockito.CALLS_REAL_METHODS);
+        final Object op1 = new Object();
+        final Object op2 = new Object();
+        
+        //standard
+        TestUtils.assertNoException(() ->
+                CheckedBinaryOperator.invoke(sut, op1, op2));
+        Mockito.verify(sut, VerificationModeFactory.times(1))
+                .apply(ArgumentMatchers.eq(op1), ArgumentMatchers.eq(op2));
+        
+        //wrapped exception
+        Mockito.doThrow(new RuntimeException()).when(sut).tryApply(ArgumentMatchers.any(), ArgumentMatchers.any());
+        TestUtils.assertNoException(() ->
+                CheckedBinaryOperator.invoke(sut, op1, op2));
+        Mockito.verify(sut, VerificationModeFactory.times(2))
+                .apply(ArgumentMatchers.eq(op1), ArgumentMatchers.eq(op2));
+        Mockito.doReturn(false).when(sut).tryApply(ArgumentMatchers.any(), ArgumentMatchers.any());
+        
+        //exception
+        Mockito.doThrow(new RuntimeException()).when(sut).apply(ArgumentMatchers.any(), ArgumentMatchers.any());
+        TestUtils.assertException(() ->
+                CheckedBinaryOperator.invoke(sut, op1, op2));
+        Mockito.verify(sut, VerificationModeFactory.times(3))
+                .apply(ArgumentMatchers.eq(op1), ArgumentMatchers.eq(op2));
+        Mockito.doReturn(false).when(sut).apply(ArgumentMatchers.any(), ArgumentMatchers.any());
     }
     
 }

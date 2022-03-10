@@ -33,7 +33,7 @@ public final class Desktop {
     /**
      * The handle to the desktop.
      */
-    private static java.awt.Desktop desktop = ((CheckedSupplier<java.awt.Desktop>) java.awt.Desktop::getDesktop).get();
+    private static java.awt.Desktop desktop = CheckedSupplier.invoke(java.awt.Desktop::getDesktop);
     
     
     //Static Methods

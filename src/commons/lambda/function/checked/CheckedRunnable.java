@@ -9,6 +9,8 @@ package commons.lambda.function.checked;
 
 /**
  * A lambda function that tries to run a task and returns no value and ignores errors.
+ *
+ * @see Runnable
  */
 @FunctionalInterface
 public interface CheckedRunnable extends Runnable {
@@ -28,11 +30,22 @@ public interface CheckedRunnable extends Runnable {
      * @see Runnable#run()
      * @see #tryRun()
      */
+    @Override
     default void run() {
         try {
             tryRun();
         } catch (Throwable ignored) {
         }
+    }
+    
+    /**
+     * Invokes a CheckedRunnable.
+     *
+     * @param checkedRunnable The CheckedRunnable.
+     * @see #run()
+     */
+    static void invoke(CheckedRunnable checkedRunnable) {
+        checkedRunnable.run();
     }
     
 }

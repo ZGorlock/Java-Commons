@@ -14,6 +14,7 @@ import java.util.function.BiConsumer;
  *
  * @param <T> The type of the first input.
  * @param <U> The type of the second input.
+ * @see BiConsumer
  */
 @FunctionalInterface
 public interface CheckedBiConsumer<T, U> extends BiConsumer<T, U> {
@@ -23,25 +24,40 @@ public interface CheckedBiConsumer<T, U> extends BiConsumer<T, U> {
     /**
      * Tries to consume the inputs.
      *
-     * @param arg1 The first input.
-     * @param arg2 The second input.
+     * @param in1 The first input.
+     * @param in2 The second input.
      * @throws Throwable When there is an error.
      */
-    void tryAccept(T arg1, U arg2) throws Throwable;
+    void tryAccept(T in1, U in2) throws Throwable;
     
     /**
      * Tries to consume the inputs and ignores errors.
      *
-     * @param arg1 The first input.
-     * @param arg2 The second input.
+     * @param in1 The first input.
+     * @param in2 The second input.
      * @see BiConsumer#accept(Object, Object)
      * @see #tryAccept(Object, Object)
      */
-    default void accept(T arg1, U arg2) {
+    @Override
+    default void accept(T in1, U in2) {
         try {
-            tryAccept(arg1, arg2);
+            tryAccept(in1, in2);
         } catch (Throwable ignored) {
         }
+    }
+    
+    /**
+     * Invokes a CheckedBiConsumer.
+     *
+     * @param checkedBiConsumer The CheckedBiConsumer.
+     * @param in1               The first input.
+     * @param in2               The second input.
+     * @param <T>               The type of the first input.
+     * @param <U>               The type of the second input.
+     * @see #accept(Object, Object)
+     */
+    static <T, U> void invoke(CheckedBiConsumer<T, U> checkedBiConsumer, T in1, U in2) {
+        checkedBiConsumer.accept(in1, in2);
     }
     
 }

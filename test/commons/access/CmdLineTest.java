@@ -608,12 +608,12 @@ public class CmdLineTest {
         Assert.assertEquals(
                 "[DESTROY->DESTROY_FORCIBLY | DESTROY_FORCIBLY->CMD_KILL_WINDOWS | CMD_KILL->CMD_KILL_HARD | CMD_KILL_HARD->null | CMD_KILL_WINDOWS->null]",
                 ((Map<?, ?>) TestUtils.getFieldValue(ProcessKiller, LinkedHashMap.class, "KILL_SEQUENCE")).entrySet().stream()
-                        .map(e -> e.getKey() + "->" + ((Supplier<Object>) e.getValue()).get()).collect(Collectors.joining(" | ", "[", "]")));
+                        .map(e -> e.getKey() + "->" + ((Supplier<?>) e.getValue()).get()).collect(Collectors.joining(" | ", "[", "]")));
         operatingSystem.set(OperatingSystem.OS.UNIX);
         Assert.assertEquals(
                 "[DESTROY->DESTROY_FORCIBLY | DESTROY_FORCIBLY->CMD_KILL | CMD_KILL->CMD_KILL_HARD | CMD_KILL_HARD->null | CMD_KILL_WINDOWS->null]",
                 ((Map<?, ?>) TestUtils.getFieldValue(ProcessKiller, LinkedHashMap.class, "KILL_SEQUENCE")).entrySet().stream()
-                        .map(e -> e.getKey() + "->" + ((Supplier<Object>) e.getValue()).get()).collect(Collectors.joining(" | ", "[", "]")));
+                        .map(e -> e.getKey() + "->" + ((Supplier<?>) e.getValue()).get()).collect(Collectors.joining(" | ", "[", "]")));
         operatingSystem.set(null);
         Assert.assertEquals(250L, TestUtils.getFieldValue(ProcessKiller, "DEFAULT_VALIDATION_DELAY"));
         

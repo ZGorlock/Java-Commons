@@ -10,10 +10,14 @@ package commons.lambda.function.checked;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.ArgumentMatchers;
+import org.mockito.Mockito;
+import org.mockito.internal.verification.VerificationModeFactory;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 import org.slf4j.Logger;
@@ -100,8 +104,16 @@ public class CheckedFunctionTest {
      */
     @Test
     public void testTryApply() throws Exception {
+        final CheckedFunction<Object, Object> sut =
+                Object::toString;
+        
         //standard
-        TestUtils.assertMethodExists(CheckedFunction.class, "tryApply", Object.class);
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals("test", sut.tryApply("test")));
+        
+        //exception
+        TestUtils.assertException(() ->
+                sut.tryApply(null));
     }
     
     /**
@@ -112,8 +124,50 @@ public class CheckedFunctionTest {
      */
     @Test
     public void testApply() throws Exception {
+        final CheckedFunction<Object, Object> sut =
+                Object::toString;
+        
         //standard
-        TestUtils.assertMethodExists(CheckedFunction.class, "apply", Object.class);
+        TestUtils.assertNoException(() ->
+                Assert.assertEquals("test", sut.apply("test")));
+        
+        //exception
+        TestUtils.assertNoException(() ->
+                Assert.assertNull(sut.apply(null)));
+    }
+    
+    /**
+     * JUnit test of invoke.
+     *
+     * @throws Throwable When there is an error.
+     * @see CheckedFunction#invoke(CheckedFunction, Object)
+     */
+    @Test
+    public void testInvoke() throws Throwable {
+        final CheckedFunction<Object, Object> sut = Mockito.mock(CheckedFunction.class, Mockito.CALLS_REAL_METHODS);
+        final Object arg = new Object();
+        
+        //standard
+        TestUtils.assertNoException(() ->
+                CheckedFunction.invoke(sut, arg));
+        Mockito.verify(sut, VerificationModeFactory.times(1))
+                .apply(ArgumentMatchers.eq(arg));
+        
+        //wrapped exception
+        Mockito.doThrow(new RuntimeException()).when(sut).tryApply(ArgumentMatchers.any());
+        TestUtils.assertNoException(() ->
+                CheckedFunction.invoke(sut, arg));
+        Mockito.verify(sut, VerificationModeFactory.times(2))
+                .apply(ArgumentMatchers.eq(arg));
+        Mockito.doReturn(null).when(sut).tryApply(ArgumentMatchers.any());
+        
+        //exception
+        Mockito.doThrow(new RuntimeException()).when(sut).apply(ArgumentMatchers.any());
+        TestUtils.assertException(() ->
+                CheckedFunction.invoke(sut, arg));
+        Mockito.verify(sut, VerificationModeFactory.times(3))
+                .apply(ArgumentMatchers.eq(arg));
+        Mockito.doReturn(null).when(sut).apply(ArgumentMatchers.any());
     }
     
 }

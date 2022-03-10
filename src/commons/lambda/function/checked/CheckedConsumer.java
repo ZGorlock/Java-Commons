@@ -13,6 +13,7 @@ import java.util.function.Consumer;
  * A lambda function that tries to consume an input and returns no result and ignores errors.
  *
  * @param <T> The type of the input.
+ * @see Consumer
  */
 @FunctionalInterface
 public interface CheckedConsumer<T> extends Consumer<T> {
@@ -22,23 +23,36 @@ public interface CheckedConsumer<T> extends Consumer<T> {
     /**
      * Tries to consume an input.
      *
-     * @param arg The input.
+     * @param in The input.
      * @throws Throwable When there is an error.
      */
-    void tryAccept(T arg) throws Throwable;
+    void tryAccept(T in) throws Throwable;
     
     /**
      * Tries to consume an input and ignores errors.
      *
-     * @param arg the input.
+     * @param in the input.
      * @see Consumer#accept(Object)
      * @see #tryAccept(Object)
      */
-    default void accept(T arg) {
+    @Override
+    default void accept(T in) {
         try {
-            tryAccept(arg);
+            tryAccept(in);
         } catch (Throwable ignored) {
         }
+    }
+    
+    /**
+     * Invokes a CheckedConsumer.
+     *
+     * @param checkedConsumer The CheckedConsumer.
+     * @param in              the input.
+     * @param <T>             The type of the input.
+     * @see #accept(Object)
+     */
+    static <T> void invoke(CheckedConsumer<T> checkedConsumer, T in) {
+        checkedConsumer.accept(in);
     }
     
 }
