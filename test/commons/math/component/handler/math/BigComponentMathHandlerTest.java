@@ -13,6 +13,7 @@ import java.math.RoundingMode;
 import java.util.function.IntFunction;
 
 import commons.math.BigMathUtility;
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -651,10 +652,10 @@ public class BigComponentMathHandlerTest {
      */
     @Test
     public void testGetMathPrecision() throws Exception {
-        MathContext mathContext = TestUtils.getFieldValue(sut, MathContext.class, "mathContext");
+        MathContext mathContext = TestAccess.getFieldValue(sut, MathContext.class, "mathContext");
         Assert.assertEquals(64, sut.getMathPrecision());
         MathContext newMathContext = new MathContext(0, RoundingMode.HALF_UP);
-        TestUtils.setFieldValue(sut, "mathContext", newMathContext);
+        TestAccess.setFieldValue(sut, "mathContext", newMathContext);
         Assert.assertEquals(0, sut.getMathPrecision());
     }
     
@@ -666,10 +667,10 @@ public class BigComponentMathHandlerTest {
      */
     @Test
     public void testSetMathPrecision() throws Exception {
-        MathContext mathContext = TestUtils.getFieldValue(sut, MathContext.class, "mathContext");
+        MathContext mathContext = TestAccess.getFieldValue(sut, MathContext.class, "mathContext");
         Assert.assertEquals(64, mathContext.getPrecision());
         sut.setMathPrecision(128);
-        mathContext = TestUtils.getFieldValue(sut, MathContext.class, "mathContext");
+        mathContext = TestAccess.getFieldValue(sut, MathContext.class, "mathContext");
         Assert.assertEquals(128, mathContext.getPrecision());
     }
     

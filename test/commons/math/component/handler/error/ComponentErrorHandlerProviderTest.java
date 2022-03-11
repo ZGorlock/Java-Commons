@@ -13,6 +13,7 @@ import commons.math.component.matrix.MatrixInterface;
 import commons.math.component.matrix.RawMatrix;
 import commons.math.component.vector.RawVector;
 import commons.math.component.vector.Vector;
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -99,7 +100,7 @@ public class ComponentErrorHandlerProviderTest {
     @Test
     public void testConstants() throws Exception {
         //static
-        Object errorHandler = TestUtils.getFieldValue(ComponentErrorHandlerProvider.class, "errorHandler");
+        Object errorHandler = TestAccess.getFieldValue(ComponentErrorHandlerProvider.class, "errorHandler");
         Assert.assertNotNull(errorHandler);
         Assert.assertTrue(errorHandler instanceof ComponentErrorHandlerInterface);
     }
@@ -112,10 +113,10 @@ public class ComponentErrorHandlerProviderTest {
      */
     @Test
     public void testGetErrorHandler() throws Exception {
-        ComponentErrorHandlerInterface errorHandler = TestUtils.getFieldValue(ComponentErrorHandlerProvider.class, ComponentErrorHandlerInterface.class, "errorHandler");
+        ComponentErrorHandlerInterface errorHandler = TestAccess.getFieldValue(ComponentErrorHandlerProvider.class, ComponentErrorHandlerInterface.class, "errorHandler");
         Assert.assertEquals(errorHandler, ComponentErrorHandlerProvider.getErrorHandler());
         ComponentErrorHandlerInterface newErrorHandler = new ComponentErrorHandler();
-        TestUtils.setFieldValue(ComponentErrorHandlerProvider.class, "errorHandler", newErrorHandler);
+        TestAccess.setFieldValue(ComponentErrorHandlerProvider.class, "errorHandler", newErrorHandler);
         Assert.assertEquals(newErrorHandler, ComponentErrorHandlerProvider.getErrorHandler());
     }
     
@@ -129,7 +130,7 @@ public class ComponentErrorHandlerProviderTest {
     public void testSetErrorHandler() throws Exception {
         ComponentErrorHandlerInterface newErrorHandler = new ComponentErrorHandler();
         ComponentErrorHandlerProvider.setErrorHandler(newErrorHandler);
-        ComponentErrorHandlerInterface errorHandler = TestUtils.getFieldValue(ComponentErrorHandlerProvider.class, ComponentErrorHandlerInterface.class, "errorHandler");
+        ComponentErrorHandlerInterface errorHandler = TestAccess.getFieldValue(ComponentErrorHandlerProvider.class, ComponentErrorHandlerInterface.class, "errorHandler");
         Assert.assertEquals(newErrorHandler, errorHandler);
     }
     

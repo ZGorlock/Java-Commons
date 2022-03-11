@@ -13,8 +13,8 @@ import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.stream.Stream;
 
-import commons.test.TestUtils;
-import commons.test.TestUtilsTest;
+import commons.test.TestAccess;
+import commons.test.TestAccessTest;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -113,15 +113,15 @@ public class EntityStringUtilityTest {
     public void testGenerateClassString() throws Exception {
         //class
         Assert.assertEquals("commons.object.string.EntityStringUtility",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateClassString", false, EntityStringUtility.class));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateClassString", false, EntityStringUtility.class));
         Assert.assertEquals("EntityStringUtility",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateClassString", true, EntityStringUtility.class));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateClassString", true, EntityStringUtility.class));
         
         //invalid
         Assert.assertEquals("null",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateClassString", false, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateClassString", false, null));
         Assert.assertEquals("null",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateClassString", true, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateClassString", true, null));
     }
     
     /**
@@ -139,10 +139,10 @@ public class EntityStringUtilityTest {
                 EntityStringUtility.classString(EntityStringUtility.class));
         
         //inner class
-        Assert.assertEquals("commons.test.TestUtilsTest$TestClass",
-                EntityStringUtility.classString(TestUtils.getClass(TestUtilsTest.class, "TestClass")));
-        Assert.assertEquals("commons.test.TestUtilsTest$TestClass$TestInnerClass",
-                EntityStringUtility.classString(TestUtils.getClass(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "TestInnerClass")));
+        Assert.assertEquals("commons.test.TestAccessTest$TestClass",
+                EntityStringUtility.classString(TestAccess.getClass(TestAccessTest.class, "TestClass")));
+        Assert.assertEquals("commons.test.TestAccessTest$TestClass$TestInnerClass",
+                EntityStringUtility.classString(TestAccess.getClass(TestAccess.getClass(TestAccessTest.class, "TestClass"), "TestInnerClass")));
         
         //object
         Assert.assertEquals("commons.object.string.EntityStringUtility",
@@ -176,9 +176,9 @@ public class EntityStringUtilityTest {
         
         //inner class
         Assert.assertEquals("TestClass",
-                EntityStringUtility.simpleClassString(TestUtils.getClass(TestUtilsTest.class, "TestClass")));
+                EntityStringUtility.simpleClassString(TestAccess.getClass(TestAccessTest.class, "TestClass")));
         Assert.assertEquals("TestInnerClass",
-                EntityStringUtility.simpleClassString(TestUtils.getClass(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "TestInnerClass")));
+                EntityStringUtility.simpleClassString(TestAccess.getClass(TestAccess.getClass(TestAccessTest.class, "TestClass"), "TestInnerClass")));
         
         //object
         Assert.assertEquals("EntityStringUtility",
@@ -207,23 +207,23 @@ public class EntityStringUtilityTest {
     public void testGenerateInnerClassString() throws Exception {
         //class
         Assert.assertEquals("commons.object.string.EntityStringUtility$InnerClass",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateInnerClassString", false, EntityStringUtility.class, "InnerClass"));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateInnerClassString", false, EntityStringUtility.class, "InnerClass"));
         Assert.assertEquals("EntityStringUtility$InnerClass",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateInnerClassString", true, EntityStringUtility.class, "InnerClass"));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateInnerClassString", true, EntityStringUtility.class, "InnerClass"));
         
         //invalid
         Assert.assertEquals("commons.object.string.EntityStringUtility$null",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateInnerClassString", false, EntityStringUtility.class, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateInnerClassString", false, EntityStringUtility.class, null));
         Assert.assertEquals("EntityStringUtility$null",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateInnerClassString", true, EntityStringUtility.class, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateInnerClassString", true, EntityStringUtility.class, null));
         Assert.assertEquals("null$InnerClass",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateInnerClassString", false, null, "InnerClass"));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateInnerClassString", false, null, "InnerClass"));
         Assert.assertEquals("null$InnerClass",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateInnerClassString", true, null, "InnerClass"));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateInnerClassString", true, null, "InnerClass"));
         Assert.assertEquals("null$null",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateInnerClassString", false, null, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateInnerClassString", false, null, null));
         Assert.assertEquals("null$null",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateInnerClassString", true, null, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateInnerClassString", true, null, null));
     }
     
     /**
@@ -241,10 +241,10 @@ public class EntityStringUtilityTest {
                 EntityStringUtility.innerClassString(EntityStringUtility.class, "InnerClass"));
         
         //inner class
-        Assert.assertEquals("commons.test.TestUtilsTest$TestClass",
-                EntityStringUtility.innerClassString(TestUtilsTest.class, "TestClass"));
-        Assert.assertEquals("commons.test.TestUtilsTest$TestClass$TestInnerClass",
-                EntityStringUtility.innerClassString(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "TestInnerClass"));
+        Assert.assertEquals("commons.test.TestAccessTest$TestClass",
+                EntityStringUtility.innerClassString(TestAccessTest.class, "TestClass"));
+        Assert.assertEquals("commons.test.TestAccessTest$TestClass$TestInnerClass",
+                EntityStringUtility.innerClassString(TestAccess.getClass(TestAccessTest.class, "TestClass"), "TestInnerClass"));
         
         //object
         Assert.assertEquals("commons.object.string.EntityStringUtility$InnerClass",
@@ -285,10 +285,10 @@ public class EntityStringUtilityTest {
                 EntityStringUtility.simpleInnerClassString(EntityStringUtility.class, "InnerClass"));
         
         //inner class
-        Assert.assertEquals("TestUtilsTest$TestClass",
-                EntityStringUtility.simpleInnerClassString(TestUtilsTest.class, "TestClass"));
+        Assert.assertEquals("TestAccessTest$TestClass",
+                EntityStringUtility.simpleInnerClassString(TestAccessTest.class, "TestClass"));
         Assert.assertEquals("TestClass$TestInnerClass",
-                EntityStringUtility.simpleInnerClassString(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "TestInnerClass"));
+                EntityStringUtility.simpleInnerClassString(TestAccess.getClass(TestAccessTest.class, "TestClass"), "TestInnerClass"));
         
         //object
         Assert.assertEquals("EntityStringUtility$InnerClass",
@@ -325,47 +325,47 @@ public class EntityStringUtilityTest {
     public void testGenerateMethodString() throws Exception {
         //class
         Assert.assertEquals("commons.object.string.EntityStringUtility::method(java.lang.Class, java.lang.String, java.lang.Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", false, EntityStringUtility.class, "method", new Class<?>[] {Class.class, String.class, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", false, EntityStringUtility.class, "method", new Class<?>[] {Class.class, String.class, Class[].class}));
         Assert.assertEquals("EntityStringUtility::method(Class, String, Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", true, EntityStringUtility.class, "method", new Class<?>[] {Class.class, String.class, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", true, EntityStringUtility.class, "method", new Class<?>[] {Class.class, String.class, Class[].class}));
         Assert.assertEquals("commons.object.string.EntityStringUtility::method(commons.object.string.EntityStringUtility, java.lang.String, java.lang.Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", false, EntityStringUtility.class, "method", new Class<?>[] {Mockito.mock(EntityStringUtility.class).getClass(), String.class, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", false, EntityStringUtility.class, "method", new Class<?>[] {Mockito.mock(EntityStringUtility.class).getClass(), String.class, Class[].class}));
         Assert.assertEquals("EntityStringUtility::method(EntityStringUtility, String, Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", true, EntityStringUtility.class, "method", new Class<?>[] {Mockito.mock(EntityStringUtility.class).getClass(), String.class, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", true, EntityStringUtility.class, "method", new Class<?>[] {Mockito.mock(EntityStringUtility.class).getClass(), String.class, Class[].class}));
         Assert.assertEquals("java.io.PrintStream::println()",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", false, PrintStream.class, "println", new Class<?>[] {}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", false, PrintStream.class, "println", new Class<?>[] {}));
         Assert.assertEquals("PrintStream::println()",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", true, PrintStream.class, "println", new Class<?>[] {}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", true, PrintStream.class, "println", new Class<?>[] {}));
         
         //invalid
         Assert.assertEquals("commons.object.string.EntityStringUtility::method(java.lang.Class, null, java.lang.Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", false, EntityStringUtility.class, "method", new Class<?>[] {Class.class, null, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", false, EntityStringUtility.class, "method", new Class<?>[] {Class.class, null, Class[].class}));
         Assert.assertEquals("EntityStringUtility::method(Class, null, Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", true, EntityStringUtility.class, "method", new Class<?>[] {Class.class, null, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", true, EntityStringUtility.class, "method", new Class<?>[] {Class.class, null, Class[].class}));
         Assert.assertEquals("commons.object.string.EntityStringUtility::method(null)",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", false, EntityStringUtility.class, "method", null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", false, EntityStringUtility.class, "method", null));
         Assert.assertEquals("EntityStringUtility::method(null)",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", true, EntityStringUtility.class, "method", null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", true, EntityStringUtility.class, "method", null));
         Assert.assertEquals("commons.object.string.EntityStringUtility::(java.lang.Class, java.lang.String, java.lang.Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", false, EntityStringUtility.class, "", new Class<?>[] {Class.class, String.class, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", false, EntityStringUtility.class, "", new Class<?>[] {Class.class, String.class, Class[].class}));
         Assert.assertEquals("EntityStringUtility::(Class, String, Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", true, EntityStringUtility.class, "", new Class<?>[] {Class.class, String.class, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", true, EntityStringUtility.class, "", new Class<?>[] {Class.class, String.class, Class[].class}));
         Assert.assertEquals("commons.object.string.EntityStringUtility::null(java.lang.Class, java.lang.String, java.lang.Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", false, EntityStringUtility.class, null, new Class<?>[] {Class.class, String.class, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", false, EntityStringUtility.class, null, new Class<?>[] {Class.class, String.class, Class[].class}));
         Assert.assertEquals("EntityStringUtility::null(Class, String, Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", true, EntityStringUtility.class, null, new Class<?>[] {Class.class, String.class, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", true, EntityStringUtility.class, null, new Class<?>[] {Class.class, String.class, Class[].class}));
         Assert.assertEquals("null::method(java.lang.Class, null, java.lang.Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", false, null, "method", new Class<?>[] {Class.class, null, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", false, null, "method", new Class<?>[] {Class.class, null, Class[].class}));
         Assert.assertEquals("null::method(Class, null, Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", true, null, "method", new Class<?>[] {Class.class, null, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", true, null, "method", new Class<?>[] {Class.class, null, Class[].class}));
         Assert.assertEquals("null::null(java.lang.Class, null, java.lang.Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", false, null, null, new Class<?>[] {Class.class, null, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", false, null, null, new Class<?>[] {Class.class, null, Class[].class}));
         Assert.assertEquals("null::null(Class, null, Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", true, null, null, new Class<?>[] {Class.class, null, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", true, null, null, new Class<?>[] {Class.class, null, Class[].class}));
         Assert.assertEquals("null::null(null)",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", false, null, null, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", false, null, null, null));
         Assert.assertEquals("null::null(null)",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateMethodString", true, null, null, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateMethodString", true, null, null, null));
     }
     
     /**
@@ -408,16 +408,16 @@ public class EntityStringUtilityTest {
                         EntityStringUtility.methodString(e, "println")));
         
         //inner class
-        Assert.assertEquals("commons.test.TestUtilsTest$TestClass::method(java.lang.String)",
-                EntityStringUtility.methodString(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "method", String.class));
-        Assert.assertEquals("commons.test.TestUtilsTest$TestClass$TestInnerClass::method(java.lang.String)",
-                EntityStringUtility.methodString(TestUtils.getClass(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "TestInnerClass"), "method", String.class));
+        Assert.assertEquals("commons.test.TestAccessTest$TestClass::method(java.lang.String)",
+                EntityStringUtility.methodString(TestAccess.getClass(TestAccessTest.class, "TestClass"), "method", String.class));
+        Assert.assertEquals("commons.test.TestAccessTest$TestClass$TestInnerClass::method(java.lang.String)",
+                EntityStringUtility.methodString(TestAccess.getClass(TestAccess.getClass(TestAccessTest.class, "TestClass"), "TestInnerClass"), "method", String.class));
         
         //method
-        Assert.assertEquals("commons.test.TestUtilsTest$TestClass::voidMethod(int, java.lang.Long, java.lang.StringBuilder)",
-                EntityStringUtility.methodString(TestUtils.getMethod(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "voidMethod", int.class, Long.class, StringBuilder.class)));
+        Assert.assertEquals("commons.test.TestAccessTest$TestClass::voidMethod(int, java.lang.Long, java.lang.StringBuilder)",
+                EntityStringUtility.methodString(TestAccess.getMethod(TestAccess.getClass(TestAccessTest.class, "TestClass"), "voidMethod", int.class, Long.class, StringBuilder.class)));
         Assert.assertEquals("java.io.PrintStream::println()",
-                EntityStringUtility.methodString(TestUtils.getMethod(PrintStream.class, "println")));
+                EntityStringUtility.methodString(TestAccess.getMethod(PrintStream.class, "println")));
         
         //invalid
         Assert.assertEquals("commons.object.string.EntityStringUtility::method(java.lang.Class, null, java.lang.Class[])",
@@ -489,15 +489,15 @@ public class EntityStringUtilityTest {
         
         //inner class
         Assert.assertEquals("TestClass::method(String)",
-                EntityStringUtility.simpleMethodString(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "method", String.class));
+                EntityStringUtility.simpleMethodString(TestAccess.getClass(TestAccessTest.class, "TestClass"), "method", String.class));
         Assert.assertEquals("TestInnerClass::method(String)",
-                EntityStringUtility.simpleMethodString(TestUtils.getClass(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "TestInnerClass"), "method", String.class));
+                EntityStringUtility.simpleMethodString(TestAccess.getClass(TestAccess.getClass(TestAccessTest.class, "TestClass"), "TestInnerClass"), "method", String.class));
         
         //method
         Assert.assertEquals("TestClass::voidMethod(int, Long, StringBuilder)",
-                EntityStringUtility.simpleMethodString(TestUtils.getMethod(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "voidMethod", int.class, Long.class, StringBuilder.class)));
+                EntityStringUtility.simpleMethodString(TestAccess.getMethod(TestAccess.getClass(TestAccessTest.class, "TestClass"), "voidMethod", int.class, Long.class, StringBuilder.class)));
         Assert.assertEquals("PrintStream::println()",
-                EntityStringUtility.simpleMethodString(TestUtils.getMethod(PrintStream.class, "println")));
+                EntityStringUtility.simpleMethodString(TestAccess.getMethod(PrintStream.class, "println")));
         
         //invalid
         Assert.assertEquals("EntityStringUtility::method(Class, null, Class[])",
@@ -541,35 +541,35 @@ public class EntityStringUtilityTest {
     public void testGenerateConstructorString() throws Exception {
         //class
         Assert.assertEquals("commons.object.string.EntityStringUtility::EntityStringUtility(java.lang.Class, java.lang.String, java.lang.Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateConstructorString", false, EntityStringUtility.class, new Class<?>[] {Class.class, String.class, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateConstructorString", false, EntityStringUtility.class, new Class<?>[] {Class.class, String.class, Class[].class}));
         Assert.assertEquals("EntityStringUtility::EntityStringUtility(Class, String, Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateConstructorString", true, EntityStringUtility.class, new Class<?>[] {Class.class, String.class, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateConstructorString", true, EntityStringUtility.class, new Class<?>[] {Class.class, String.class, Class[].class}));
         Assert.assertEquals("commons.object.string.EntityStringUtility::EntityStringUtility(commons.object.string.EntityStringUtility, java.lang.String, java.lang.Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateConstructorString", false, EntityStringUtility.class, new Class<?>[] {Mockito.mock(EntityStringUtility.class).getClass(), String.class, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateConstructorString", false, EntityStringUtility.class, new Class<?>[] {Mockito.mock(EntityStringUtility.class).getClass(), String.class, Class[].class}));
         Assert.assertEquals("EntityStringUtility::EntityStringUtility(EntityStringUtility, String, Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateConstructorString", true, EntityStringUtility.class, new Class<?>[] {Mockito.mock(EntityStringUtility.class).getClass(), String.class, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateConstructorString", true, EntityStringUtility.class, new Class<?>[] {Mockito.mock(EntityStringUtility.class).getClass(), String.class, Class[].class}));
         Assert.assertEquals("java.io.PrintStream::PrintStream()",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateConstructorString", false, PrintStream.class, new Class<?>[] {}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateConstructorString", false, PrintStream.class, new Class<?>[] {}));
         Assert.assertEquals("PrintStream::PrintStream()",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateConstructorString", true, PrintStream.class, new Class<?>[] {}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateConstructorString", true, PrintStream.class, new Class<?>[] {}));
         
         //invalid
         Assert.assertEquals("commons.object.string.EntityStringUtility::EntityStringUtility(java.lang.Class, null, java.lang.Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateConstructorString", false, EntityStringUtility.class, new Class<?>[] {Class.class, null, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateConstructorString", false, EntityStringUtility.class, new Class<?>[] {Class.class, null, Class[].class}));
         Assert.assertEquals("EntityStringUtility::EntityStringUtility(Class, null, Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateConstructorString", true, EntityStringUtility.class, new Class<?>[] {Class.class, null, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateConstructorString", true, EntityStringUtility.class, new Class<?>[] {Class.class, null, Class[].class}));
         Assert.assertEquals("commons.object.string.EntityStringUtility::EntityStringUtility(null)",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateConstructorString", false, EntityStringUtility.class, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateConstructorString", false, EntityStringUtility.class, null));
         Assert.assertEquals("EntityStringUtility::EntityStringUtility(null)",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateConstructorString", true, EntityStringUtility.class, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateConstructorString", true, EntityStringUtility.class, null));
         Assert.assertEquals("null::null(java.lang.Class, null, java.lang.Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateConstructorString", false, null, new Class<?>[] {Class.class, null, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateConstructorString", false, null, new Class<?>[] {Class.class, null, Class[].class}));
         Assert.assertEquals("null::null(Class, null, Class[])",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateConstructorString", true, null, new Class<?>[] {Class.class, null, Class[].class}));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateConstructorString", true, null, new Class<?>[] {Class.class, null, Class[].class}));
         Assert.assertEquals("null::null(null)",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateConstructorString", false, null, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateConstructorString", false, null, null));
         Assert.assertEquals("null::null(null)",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateConstructorString", true, null, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateConstructorString", true, null, null));
     }
     
     /**
@@ -610,16 +610,16 @@ public class EntityStringUtilityTest {
                         EntityStringUtility.constructorString(e)));
         
         //inner class
-        Assert.assertEquals("commons.test.TestUtilsTest$TestClass::TestClass(java.lang.String)",
-                EntityStringUtility.constructorString(TestUtils.getClass(TestUtilsTest.class, "TestClass"), String.class));
-        Assert.assertEquals("commons.test.TestUtilsTest$TestClass$TestInnerClass::TestInnerClass(java.lang.String)",
-                EntityStringUtility.constructorString(TestUtils.getClass(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "TestInnerClass"), String.class));
+        Assert.assertEquals("commons.test.TestAccessTest$TestClass::TestClass(java.lang.String)",
+                EntityStringUtility.constructorString(TestAccess.getClass(TestAccessTest.class, "TestClass"), String.class));
+        Assert.assertEquals("commons.test.TestAccessTest$TestClass$TestInnerClass::TestInnerClass(java.lang.String)",
+                EntityStringUtility.constructorString(TestAccess.getClass(TestAccess.getClass(TestAccessTest.class, "TestClass"), "TestInnerClass"), String.class));
         
         //constructor
-        Assert.assertEquals("commons.test.TestUtilsTest$TestClass::TestClass(java.lang.String, java.lang.Exception, int, java.lang.Long, boolean)",
-                EntityStringUtility.constructorString(TestUtils.getConstructor(TestUtils.getClass(TestUtilsTest.class, "TestClass"), String.class, Exception.class, int.class, Long.class, boolean.class)));
+        Assert.assertEquals("commons.test.TestAccessTest$TestClass::TestClass(java.lang.String, java.lang.Exception, int, java.lang.Long, boolean)",
+                EntityStringUtility.constructorString(TestAccess.getConstructor(TestAccess.getClass(TestAccessTest.class, "TestClass"), String.class, Exception.class, int.class, Long.class, boolean.class)));
         Assert.assertEquals("java.io.PrintStream::PrintStream(java.io.OutputStream)",
-                EntityStringUtility.constructorString(TestUtils.getConstructor(PrintStream.class, OutputStream.class)));
+                EntityStringUtility.constructorString(TestAccess.getConstructor(PrintStream.class, OutputStream.class)));
         
         //invalid
         Assert.assertEquals("commons.object.string.EntityStringUtility::EntityStringUtility(java.lang.Class, null, java.lang.Class[])",
@@ -679,15 +679,15 @@ public class EntityStringUtilityTest {
         
         //inner class
         Assert.assertEquals("TestClass::TestClass(String)",
-                EntityStringUtility.simpleConstructorString(TestUtils.getClass(TestUtilsTest.class, "TestClass"), String.class));
+                EntityStringUtility.simpleConstructorString(TestAccess.getClass(TestAccessTest.class, "TestClass"), String.class));
         Assert.assertEquals("TestInnerClass::TestInnerClass(String)",
-                EntityStringUtility.simpleConstructorString(TestUtils.getClass(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "TestInnerClass"), String.class));
+                EntityStringUtility.simpleConstructorString(TestAccess.getClass(TestAccess.getClass(TestAccessTest.class, "TestClass"), "TestInnerClass"), String.class));
         
         //constructor
         Assert.assertEquals("TestClass::TestClass(String, Exception, int, Long, boolean)",
-                EntityStringUtility.simpleConstructorString(TestUtils.getConstructor(TestUtils.getClass(TestUtilsTest.class, "TestClass"), String.class, Exception.class, int.class, Long.class, boolean.class)));
+                EntityStringUtility.simpleConstructorString(TestAccess.getConstructor(TestAccess.getClass(TestAccessTest.class, "TestClass"), String.class, Exception.class, int.class, Long.class, boolean.class)));
         Assert.assertEquals("PrintStream::PrintStream(OutputStream)",
-                EntityStringUtility.simpleConstructorString(TestUtils.getConstructor(PrintStream.class, OutputStream.class)));
+                EntityStringUtility.simpleConstructorString(TestAccess.getConstructor(PrintStream.class, OutputStream.class)));
         
         //invalid
         Assert.assertEquals("EntityStringUtility::EntityStringUtility(Class, null, Class[])",
@@ -719,31 +719,31 @@ public class EntityStringUtilityTest {
     public void testGenerateFieldString() throws Exception {
         //class
         Assert.assertEquals("commons.object.string.EntityStringUtility::field",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateFieldString", false, EntityStringUtility.class, "field"));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateFieldString", false, EntityStringUtility.class, "field"));
         Assert.assertEquals("EntityStringUtility::field",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateFieldString", true, EntityStringUtility.class, "field"));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateFieldString", true, EntityStringUtility.class, "field"));
         
         //invalid
         Assert.assertEquals("commons.object.string.EntityStringUtility::",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateFieldString", false, EntityStringUtility.class, ""));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateFieldString", false, EntityStringUtility.class, ""));
         Assert.assertEquals("EntityStringUtility::",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateFieldString", true, EntityStringUtility.class, ""));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateFieldString", true, EntityStringUtility.class, ""));
         Assert.assertEquals("commons.object.string.EntityStringUtility::null",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateFieldString", false, EntityStringUtility.class, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateFieldString", false, EntityStringUtility.class, null));
         Assert.assertEquals("EntityStringUtility::null",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateFieldString", true, EntityStringUtility.class, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateFieldString", true, EntityStringUtility.class, null));
         Assert.assertEquals("null::field",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateFieldString", false, null, "field"));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateFieldString", false, null, "field"));
         Assert.assertEquals("null::field",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateFieldString", true, null, "field"));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateFieldString", true, null, "field"));
         Assert.assertEquals("null::",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateFieldString", false, null, ""));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateFieldString", false, null, ""));
         Assert.assertEquals("null::",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateFieldString", true, null, ""));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateFieldString", true, null, ""));
         Assert.assertEquals("null::null",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateFieldString", false, null, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateFieldString", false, null, null));
         Assert.assertEquals("null::null",
-                TestUtils.invokeMethod(EntityStringUtility.class, "generateFieldString", true, null, null));
+                TestAccess.invokeMethod(EntityStringUtility.class, "generateFieldString", true, null, null));
     }
     
     /**
@@ -770,16 +770,16 @@ public class EntityStringUtilityTest {
                         EntityStringUtility.fieldString(e, "field")));
         
         //inner class
-        Assert.assertEquals("commons.test.TestUtilsTest$TestClass::field",
-                EntityStringUtility.fieldString(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "field"));
-        Assert.assertEquals("commons.test.TestUtilsTest$TestClass$TestInnerClass::field",
-                EntityStringUtility.fieldString(TestUtils.getClass(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "TestInnerClass"), "field"));
+        Assert.assertEquals("commons.test.TestAccessTest$TestClass::field",
+                EntityStringUtility.fieldString(TestAccess.getClass(TestAccessTest.class, "TestClass"), "field"));
+        Assert.assertEquals("commons.test.TestAccessTest$TestClass$TestInnerClass::field",
+                EntityStringUtility.fieldString(TestAccess.getClass(TestAccess.getClass(TestAccessTest.class, "TestClass"), "TestInnerClass"), "field"));
         
         //constructor
-        Assert.assertEquals("commons.test.TestUtilsTest$TestClass::field0",
-                EntityStringUtility.fieldString(TestUtils.getField(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "field0")));
+        Assert.assertEquals("commons.test.TestAccessTest$TestClass::field0",
+                EntityStringUtility.fieldString(TestAccess.getField(TestAccess.getClass(TestAccessTest.class, "TestClass"), "field0")));
         Assert.assertEquals("java.io.PrintStream::autoFlush",
-                EntityStringUtility.fieldString(TestUtils.getField(PrintStream.class, "autoFlush")));
+                EntityStringUtility.fieldString(TestAccess.getField(PrintStream.class, "autoFlush")));
         
         //invalid
         Assert.assertEquals("commons.object.string.EntityStringUtility::null",
@@ -823,15 +823,15 @@ public class EntityStringUtilityTest {
         
         //inner class
         Assert.assertEquals("TestClass::field",
-                EntityStringUtility.simpleFieldString(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "field"));
+                EntityStringUtility.simpleFieldString(TestAccess.getClass(TestAccessTest.class, "TestClass"), "field"));
         Assert.assertEquals("TestInnerClass::field",
-                EntityStringUtility.simpleFieldString(TestUtils.getClass(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "TestInnerClass"), "field"));
+                EntityStringUtility.simpleFieldString(TestAccess.getClass(TestAccess.getClass(TestAccessTest.class, "TestClass"), "TestInnerClass"), "field"));
         
         //constructor
         Assert.assertEquals("TestClass::field0",
-                EntityStringUtility.simpleFieldString(TestUtils.getField(TestUtils.getClass(TestUtilsTest.class, "TestClass"), "field0")));
+                EntityStringUtility.simpleFieldString(TestAccess.getField(TestAccess.getClass(TestAccessTest.class, "TestClass"), "field0")));
         Assert.assertEquals("PrintStream::autoFlush",
-                EntityStringUtility.simpleFieldString(TestUtils.getField(PrintStream.class, "autoFlush")));
+                EntityStringUtility.simpleFieldString(TestAccess.getField(PrintStream.class, "autoFlush")));
         
         //invalid
         Assert.assertEquals("EntityStringUtility::null",

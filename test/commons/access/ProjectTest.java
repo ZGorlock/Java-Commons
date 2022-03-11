@@ -13,6 +13,7 @@ import commons.io.speech.SpeechSynthesizer;
 import commons.math.component.handler.math.BigComponentMathHandler;
 import commons.object.string.StringUtility;
 import commons.security.CryptoUtility;
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -416,35 +417,35 @@ public class ProjectTest {
     public void testClassDir() throws Exception {
         //standard
         Assert.assertEquals(String.join(File.separator, "src", "commons", "access", "Project"),
-                TestUtils.invokeMethod(Project.class, "classDir", Project.SOURCE_DIR, "", Project.class, true).toString());
+                TestAccess.invokeMethod(Project.class, "classDir", Project.SOURCE_DIR, "", Project.class, true).toString());
         Assert.assertEquals(String.join(File.separator, "test", "commons", "access"),
-                TestUtils.invokeMethod(Project.class, "classDir", Project.TEST_DIR, "", Project.class, false).toString());
+                TestAccess.invokeMethod(Project.class, "classDir", Project.TEST_DIR, "", Project.class, false).toString());
         Assert.assertEquals(String.join(File.separator, "data", "commons", "security", "CryptoUtility"),
-                TestUtils.invokeMethod(Project.class, "classDir", Project.DATA_DIR, "", CryptoUtility.class, true).toString());
+                TestAccess.invokeMethod(Project.class, "classDir", Project.DATA_DIR, "", CryptoUtility.class, true).toString());
         Assert.assertEquals(String.join(File.separator, "resources", "test", "dir1", "dir2", "commons", "security", "CryptoUtility"),
-                TestUtils.invokeMethod(Project.class, "classDir", Project.RESOURCES_DIR, "test\\dir1/dir2", CryptoUtility.class, true).toString());
+                TestAccess.invokeMethod(Project.class, "classDir", Project.RESOURCES_DIR, "test\\dir1/dir2", CryptoUtility.class, true).toString());
         Assert.assertEquals(String.join(File.separator, "test-resources", "test", "dir1", "dir2", "commons", "security"),
-                TestUtils.invokeMethod(Project.class, "classDir", Project.TEST_RESOURCES_DIR, "test\\dir1/dir2", CryptoUtility.class, false).toString());
+                TestAccess.invokeMethod(Project.class, "classDir", Project.TEST_RESOURCES_DIR, "test\\dir1/dir2", CryptoUtility.class, false).toString());
         Assert.assertEquals(String.join(File.separator, "bin", "commons", "io", "speech"),
-                TestUtils.invokeMethod(Project.class, "classDir", Project.OUTPUT_DIR, "", SpeechSynthesizer.class, false).toString());
+                TestAccess.invokeMethod(Project.class, "classDir", Project.OUTPUT_DIR, "", SpeechSynthesizer.class, false).toString());
         Assert.assertEquals(String.join(File.separator, "bin", "classes", "test", "dir1", "dir2", "commons", "io", "speech", "SpeechSynthesizer"),
-                TestUtils.invokeMethod(Project.class, "classDir", Project.SOURCE_CLASSES_DIR, "test\\dir1/dir2", SpeechSynthesizer.class, true).toString());
+                TestAccess.invokeMethod(Project.class, "classDir", Project.SOURCE_CLASSES_DIR, "test\\dir1/dir2", SpeechSynthesizer.class, true).toString());
         Assert.assertEquals(String.join(File.separator, "bin", "test-classes", "test", "dir1", "dir2", "commons", "io", "speech"),
-                TestUtils.invokeMethod(Project.class, "classDir", Project.TEST_CLASSES_DIR, "test\\dir1/dir2", SpeechSynthesizer.class, false).toString());
+                TestAccess.invokeMethod(Project.class, "classDir", Project.TEST_CLASSES_DIR, "test\\dir1/dir2", SpeechSynthesizer.class, false).toString());
         Assert.assertEquals(String.join(File.separator, "log", "commons", "math", "component", "handler", "math", "BigComponentMathHandler"),
-                TestUtils.invokeMethod(Project.class, "classDir", Project.LOG_DIR, "", BigComponentMathHandler.class, true).toString());
+                TestAccess.invokeMethod(Project.class, "classDir", Project.LOG_DIR, "", BigComponentMathHandler.class, true).toString());
         Assert.assertEquals(String.join(File.separator, "tmp", "commons", "math", "component", "handler", "math"),
-                TestUtils.invokeMethod(Project.class, "classDir", Project.TMP_DIR, "", BigComponentMathHandler.class, false).toString());
+                TestAccess.invokeMethod(Project.class, "classDir", Project.TMP_DIR, "", BigComponentMathHandler.class, false).toString());
         
         //invalid
-        TestUtils.assertException(AssertionError.class, "Attempted to invoke the method Project::classDir(null, String, Project, Boolean) but an exception occurred: [MethodNotFoundException: Project::classDir(null, String, Project, Boolean)]", () ->
-                TestUtils.invokeMethod(Project.class, "classDir", null, "", Project.class, true));
-        TestUtils.assertException(AssertionError.class, "Attempted to invoke the method Project::classDir(File, null, Project, Boolean) but an exception occurred: [MethodNotFoundException: Project::classDir(File, null, Project, Boolean)]", () ->
-                TestUtils.invokeMethod(Project.class, "classDir", Project.SOURCE_DIR, null, Project.class, true));
-        TestUtils.assertException(NullPointerException.class, () ->
-                TestUtils.invokeMethod(Project.class, "classDir", Project.SOURCE_DIR, "", null, true));
-        TestUtils.assertException(NullPointerException.class, () ->
-                TestUtils.invokeMethod(Project.class, "classDir", null, null, null, true));
+        TestUtils.assertException(RuntimeException.class, "org.powermock.reflect.exceptions.MethodNotFoundException: Project::classDir(null, String, Project, Boolean)", () ->
+                TestAccess.invokeMethod(Project.class, "classDir", null, "", Project.class, true));
+        TestUtils.assertException(RuntimeException.class, "org.powermock.reflect.exceptions.MethodNotFoundException: Project::classDir(File, null, Project, Boolean)", () ->
+                TestAccess.invokeMethod(Project.class, "classDir", Project.SOURCE_DIR, null, Project.class, true));
+        TestUtils.assertException(RuntimeException.class, "java.lang.reflect.InvocationTargetException", () ->
+                TestAccess.invokeMethod(Project.class, "classDir", Project.SOURCE_DIR, "", null, true));
+        TestUtils.assertException(RuntimeException.class, "java.lang.reflect.InvocationTargetException", () ->
+                TestAccess.invokeMethod(Project.class, "classDir", null, null, null, true));
     }
     
 }

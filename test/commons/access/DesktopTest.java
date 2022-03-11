@@ -10,6 +10,7 @@ package commons.access;
 import java.io.File;
 import java.net.URI;
 
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -50,7 +51,7 @@ public class DesktopTest {
     /**
      * The DesktopWrapper class.
      */
-    private static Class<?> DesktopWrapper = TestUtils.getClass(Desktop.class, "DesktopWrapper");
+    private static Class<?> DesktopWrapper = TestAccess.getClass(Desktop.class, "DesktopWrapper");
     
     
     //Initialization
@@ -121,11 +122,11 @@ public class DesktopTest {
         final java.awt.Desktop mockDesktop = PowerMockito.mock(java.awt.Desktop.class);
         
         //standard
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
         Assert.assertTrue(Desktop.isDesktopSupported());
         
         //unsupported
-        TestUtils.setFieldValue(Desktop.class, "desktop", null);
+        TestAccess.setFieldValue(Desktop.class, "desktop", null);
         Assert.assertFalse(Desktop.isDesktopSupported());
     }
     
@@ -141,17 +142,17 @@ public class DesktopTest {
         final File mockFile = Mockito.mock(File.class);
         
         //standard
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
         Assert.assertTrue(Desktop.open(mockFile));
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.times(1))
                 .invoke("open", ArgumentMatchers.eq(mockFile));
         
         //unsupported
-        TestUtils.setFieldValue(Desktop.class, "desktop", null);
+        TestAccess.setFieldValue(Desktop.class, "desktop", null);
         Assert.assertFalse(Desktop.open(mockFile));
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.noMoreInteractions())
                 .invoke("open", ArgumentMatchers.any());
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
         
         //invalid
         Assert.assertFalse(Desktop.open(null));
@@ -171,17 +172,17 @@ public class DesktopTest {
         final File mockFile = Mockito.mock(File.class);
         
         //standard
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
         Assert.assertTrue(Desktop.edit(mockFile));
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.times(1))
                 .invoke("edit", ArgumentMatchers.eq(mockFile));
         
         //unsupported
-        TestUtils.setFieldValue(Desktop.class, "desktop", null);
+        TestAccess.setFieldValue(Desktop.class, "desktop", null);
         Assert.assertFalse(Desktop.edit(mockFile));
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.noMoreInteractions())
                 .invoke("edit", ArgumentMatchers.any());
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
         
         //invalid
         Assert.assertFalse(Desktop.edit(null));
@@ -201,17 +202,17 @@ public class DesktopTest {
         final File mockFile = Mockito.mock(File.class);
         
         //standard
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
         Assert.assertTrue(Desktop.print(mockFile));
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.times(1))
                 .invoke("print", ArgumentMatchers.eq(mockFile));
         
         //unsupported
-        TestUtils.setFieldValue(Desktop.class, "desktop", null);
+        TestAccess.setFieldValue(Desktop.class, "desktop", null);
         Assert.assertFalse(Desktop.print(mockFile));
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.noMoreInteractions())
                 .invoke("print", ArgumentMatchers.any());
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
         
         //invalid
         Assert.assertFalse(Desktop.print(null));
@@ -231,17 +232,17 @@ public class DesktopTest {
         final File mockFile = Mockito.mock(File.class);
         
         //standard
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
         Assert.assertTrue(Desktop.browse(mockFile));
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.times(1))
                 .invoke("browse", ArgumentMatchers.eq(mockFile));
         
         //unsupported
-        TestUtils.setFieldValue(Desktop.class, "desktop", null);
+        TestAccess.setFieldValue(Desktop.class, "desktop", null);
         Assert.assertFalse(Desktop.browse(mockFile));
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.noMoreInteractions())
                 .invoke("browse", ArgumentMatchers.any());
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
         
         //invalid
         Assert.assertFalse(Desktop.browse(null));
@@ -261,17 +262,17 @@ public class DesktopTest {
         final File mockFile = Mockito.mock(File.class);
         
         //standard
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
         Assert.assertTrue(Desktop.trash(mockFile));
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.times(1))
                 .invoke("trash", ArgumentMatchers.eq(mockFile));
         
         //unsupported
-        TestUtils.setFieldValue(Desktop.class, "desktop", null);
+        TestAccess.setFieldValue(Desktop.class, "desktop", null);
         Assert.assertFalse(Desktop.trash(mockFile));
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.noMoreInteractions())
                 .invoke("trash", ArgumentMatchers.any());
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
         
         //invalid
         Assert.assertFalse(Desktop.trash(null));
@@ -291,17 +292,17 @@ public class DesktopTest {
         final URI mockUri = PowerMockito.mock(URI.class);
         
         //standard
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
         Assert.assertTrue(Desktop.navigate(mockUri));
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.times(1))
                 .invoke("navigate", ArgumentMatchers.eq(mockUri));
         
         //unsupported
-        TestUtils.setFieldValue(Desktop.class, "desktop", null);
+        TestAccess.setFieldValue(Desktop.class, "desktop", null);
         Assert.assertFalse(Desktop.navigate(mockUri));
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.noMoreInteractions())
                 .invoke("navigate", ArgumentMatchers.any());
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
         
         //invalid
         Assert.assertFalse(Desktop.navigate(null));
@@ -320,17 +321,17 @@ public class DesktopTest {
         final java.awt.Desktop mockDesktop = PowerMockito.mock(java.awt.Desktop.class);
         
         //standard
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
         Assert.assertTrue(Desktop.mail());
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.times(1))
                 .invoke("mail");
         
         //unsupported
-        TestUtils.setFieldValue(Desktop.class, "desktop", null);
+        TestAccess.setFieldValue(Desktop.class, "desktop", null);
         Assert.assertFalse(Desktop.mail());
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.noMoreInteractions())
                 .invoke("mail");
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
     }
     
     /**
@@ -344,17 +345,17 @@ public class DesktopTest {
         final java.awt.Desktop mockDesktop = PowerMockito.mock(java.awt.Desktop.class);
         
         //standard
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
         Assert.assertTrue(Desktop.help());
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.times(1))
                 .invoke("help");
         
         //unsupported
-        TestUtils.setFieldValue(Desktop.class, "desktop", null);
+        TestAccess.setFieldValue(Desktop.class, "desktop", null);
         Assert.assertFalse(Desktop.help());
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.noMoreInteractions())
                 .invoke("help");
-        TestUtils.setFieldValue(Desktop.class, "desktop", mockDesktop);
+        TestAccess.setFieldValue(Desktop.class, "desktop", mockDesktop);
     }
     
     /**

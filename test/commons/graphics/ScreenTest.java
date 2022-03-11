@@ -17,6 +17,7 @@ import java.util.stream.IntStream;
 
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -106,8 +107,8 @@ public class ScreenTest {
      */
     @Test
     public void testConstants() throws Exception {
-        final List<GraphicsDevice> screens = TestUtils.getFieldValue(Screen.class, List.class, "screens");
-        final Map<Screen.Dimension, Map<Integer, Integer>> dimensions = TestUtils.getFieldValue(Screen.class, Map.class, "dimensions");
+        final List<GraphicsDevice> screens = TestAccess.getFieldValue(Screen.class, List.class, "screens");
+        final Map<Screen.Dimension, Map<Integer, Integer>> dimensions = TestAccess.getFieldValue(Screen.class, Map.class, "dimensions");
         
         //static
         Assert.assertNotNull(screens);
@@ -176,8 +177,8 @@ public class ScreenTest {
      */
     @Test
     public void testRecalculate() throws Exception {
-        final List<GraphicsDevice> screens = TestUtils.getFieldValue(Screen.class, List.class, "screens");
-        final Map<Screen.Dimension, Map<Integer, Integer>> dimensions = TestUtils.getFieldValue(Screen.class, Map.class, "dimensions");
+        final List<GraphicsDevice> screens = TestAccess.getFieldValue(Screen.class, List.class, "screens");
+        final Map<Screen.Dimension, Map<Integer, Integer>> dimensions = TestAccess.getFieldValue(Screen.class, Map.class, "dimensions");
         
         //initial
         screens.clear();
@@ -226,7 +227,7 @@ public class ScreenTest {
      */
     @Test
     public void testGetScreenCount() throws Exception {
-        final List<GraphicsDevice> screens = TestUtils.getFieldValue(Screen.class, List.class, "screens");
+        final List<GraphicsDevice> screens = TestAccess.getFieldValue(Screen.class, List.class, "screens");
         
         //standard
         Assert.assertEquals(GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices().length, Screen.getScreenCount());
@@ -248,7 +249,7 @@ public class ScreenTest {
         final List<GraphicsDevice> mockScreens = ListUtility.listOf(Mockito.mock(GraphicsDevice.class), Mockito.mock(GraphicsDevice.class), Mockito.mock(GraphicsDevice.class));
         
         //standard
-        Assert.assertTrue(TestUtils.setFieldValue(Screen.class, "screens", mockScreens));
+        Assert.assertTrue(TestAccess.setFieldValue(Screen.class, "screens", mockScreens));
         IntStream.range(0, mockScreens.size()).forEach(i ->
                 Assert.assertEquals(mockScreens.get(i), Screen.getScreen(i)));
         
@@ -276,7 +277,7 @@ public class ScreenTest {
                 ), HashMap::putAll);
         
         //standard
-        Assert.assertTrue(TestUtils.setFieldValue(Screen.class, "dimensions", mockDimensions));
+        Assert.assertTrue(TestAccess.setFieldValue(Screen.class, "dimensions", mockDimensions));
         Arrays.stream(Screen.Dimension.values()).forEach(e ->
                 IntStream.range(0, 3).forEach(i ->
                         Assert.assertEquals((e.name().hashCode() + i), Screen.getDimension(e, i).intValue())));

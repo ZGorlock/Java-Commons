@@ -7,7 +7,7 @@
 
 package commons.log;
 
-import commons.test.TestUtils;
+import commons.test.TestAccess;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -185,10 +185,10 @@ public class CommonsLoggingTest {
     public void testGetCommonsLogger() throws Exception {
         CommonsLogging.setCommonsLogger(commonsLogger);
         Assert.assertEquals(commonsLogger, CommonsLogging.getCommonsLogger());
-        Assert.assertEquals(commonsLogger, TestUtils.getFieldValue(CommonsLogging.class, "commonsLogger"));
+        Assert.assertEquals(commonsLogger, TestAccess.getFieldValue(CommonsLogging.class, "commonsLogger"));
         CommonsLogging.setCommonsLogger(null);
         Assert.assertNull(CommonsLogging.getCommonsLogger());
-        Assert.assertNull(TestUtils.getFieldValue(CommonsLogging.class, "commonsLogger"));
+        Assert.assertNull(TestAccess.getFieldValue(CommonsLogging.class, "commonsLogger"));
     }
     
     /**
@@ -201,10 +201,10 @@ public class CommonsLoggingTest {
     public void testSetCommonsLogger() throws Exception {
         CommonsLogging.setCommonsLogger(commonsLogger);
         Assert.assertEquals(commonsLogger, CommonsLogging.getCommonsLogger());
-        Assert.assertEquals(commonsLogger, TestUtils.getFieldValue(CommonsLogging.class, "commonsLogger"));
+        Assert.assertEquals(commonsLogger, TestAccess.getFieldValue(CommonsLogging.class, "commonsLogger"));
         CommonsLogging.setCommonsLogger(null);
         Assert.assertNull(CommonsLogging.getCommonsLogger());
-        Assert.assertNull(TestUtils.getFieldValue(CommonsLogging.class, "commonsLogger"));
+        Assert.assertNull(TestAccess.getFieldValue(CommonsLogging.class, "commonsLogger"));
     }
     
 }

@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import commons.log.CommonsLogging;
 import commons.math.BoundUtility;
 import commons.object.string.StringUtility;
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -128,21 +129,21 @@ public class InternetTest {
         long duration;
         
         //connected
-        Assert.assertEquals(Internet.DEFAULT_TEST_HOST, TestUtils.getFieldValue(Internet.class, "testHost"));
+        Assert.assertEquals(Internet.DEFAULT_TEST_HOST, TestAccess.getFieldValue(Internet.class, "testHost"));
         startTime = System.currentTimeMillis();
         Assert.assertTrue(Internet.isOnline());
         duration = System.currentTimeMillis() - startTime;
         Assert.assertTrue(BoundUtility.inBounds(duration, 0, (200 * 1.01)));
         
         //"not connected"
-        TestUtils.setFieldValue(Internet.class, "testHost", "n0t4w3bs1t3.com");
-        Assert.assertEquals("n0t4w3bs1t3.com", TestUtils.getFieldValue(Internet.class, "testHost"));
+        TestAccess.setFieldValue(Internet.class, "testHost", "n0t4w3bs1t3.com");
+        Assert.assertEquals("n0t4w3bs1t3.com", TestAccess.getFieldValue(Internet.class, "testHost"));
         startTime = System.currentTimeMillis();
         Assert.assertFalse(Internet.isOnline());
         duration = System.currentTimeMillis() - startTime;
         Assert.assertTrue(BoundUtility.inBounds(duration, 0, (200 * 1.01)));
-        TestUtils.setFieldValue(Internet.class, "testHost", Internet.DEFAULT_TEST_HOST);
-        Assert.assertEquals(Internet.DEFAULT_TEST_HOST, TestUtils.getFieldValue(Internet.class, "testHost"));
+        TestAccess.setFieldValue(Internet.class, "testHost", Internet.DEFAULT_TEST_HOST);
+        Assert.assertEquals(Internet.DEFAULT_TEST_HOST, TestAccess.getFieldValue(Internet.class, "testHost"));
     }
     
     /**
@@ -247,15 +248,15 @@ public class InternetTest {
         
         //"not connected"
         
-        TestUtils.setFieldValue(Internet.class, "testHost", "n0t4w3bs1t3.com");
-        Assert.assertEquals("n0t4w3bs1t3.com", TestUtils.getFieldValue(Internet.class, "testHost"));
+        TestAccess.setFieldValue(Internet.class, "testHost", "n0t4w3bs1t3.com");
+        Assert.assertEquals("n0t4w3bs1t3.com", TestAccess.getFieldValue(Internet.class, "testHost"));
         startTime = System.currentTimeMillis();
         download = Internet.downloadFile("https://github.com/ytdl-org/youtube-dl/releases/download/2021.05.16/youtube-dl.exe");
         duration = System.currentTimeMillis() - startTime;
         Assert.assertTrue(duration < (200 * 1.01));
         Assert.assertNull(download);
-        TestUtils.setFieldValue(Internet.class, "testHost", Internet.DEFAULT_TEST_HOST);
-        Assert.assertEquals(Internet.DEFAULT_TEST_HOST, TestUtils.getFieldValue(Internet.class, "testHost"));
+        TestAccess.setFieldValue(Internet.class, "testHost", Internet.DEFAULT_TEST_HOST);
+        Assert.assertEquals(Internet.DEFAULT_TEST_HOST, TestAccess.getFieldValue(Internet.class, "testHost"));
         
         //invalid
         
@@ -324,18 +325,18 @@ public class InternetTest {
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testOpenUrl() throws Exception {
-        final Class<?> DesktopWrapper = TestUtils.getClass(Desktop.class, "DesktopWrapper");
+        final Class<?> DesktopWrapper = TestAccess.getClass(Desktop.class, "DesktopWrapper");
         
         PowerMockito.mockStatic(DesktopWrapper);
         
         //standard
-        TestUtils.setFieldValue(Desktop.class, "desktop", PowerMockito.mock(java.awt.Desktop.class));
+        TestAccess.setFieldValue(Desktop.class, "desktop", PowerMockito.mock(java.awt.Desktop.class));
         Assert.assertTrue(Internet.openUrl("https://www.google.com/search?q=cute+cats"));
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.times(1))
                 .invoke("navigate", ArgumentMatchers.eq(URI.create("https://www.google.com/search?q=cute+cats")));
         
         //unsupported
-        TestUtils.setFieldValue(Desktop.class, "desktop", null);
+        TestAccess.setFieldValue(Desktop.class, "desktop", null);
         Assert.assertFalse(Internet.openUrl("https://www.google.com/search?q=cute+cats"));
         PowerMockito.verifyPrivate(DesktopWrapper, VerificationModeFactory.noMoreInteractions())
                 .invoke("navigate", ArgumentMatchers.eq(URI.create("https://www.google.com/search?q=cute+cats")));

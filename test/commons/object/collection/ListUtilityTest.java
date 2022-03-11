@@ -17,6 +17,7 @@ import java.util.Objects;
 import java.util.Stack;
 import java.util.Vector;
 
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.json.simple.JSONObject;
 import org.junit.After;
@@ -102,7 +103,7 @@ public class ListUtilityTest {
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertEquals(ArrayList.class, TestUtils.getFieldValue(ListUtility.class, "DEFAULT_LIST_CLASS"));
+        Assert.assertEquals(ArrayList.class, TestAccess.getFieldValue(ListUtility.class, "DEFAULT_LIST_CLASS"));
     }
     
     /**

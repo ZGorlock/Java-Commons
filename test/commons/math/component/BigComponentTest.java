@@ -16,7 +16,7 @@ import commons.math.MathUtility;
 import commons.math.component.handler.math.BigComponentMathHandler;
 import commons.math.component.matrix.BigMatrix;
 import commons.math.component.vector.BigVector;
-import commons.test.TestUtils;
+import commons.test.TestAccess;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -140,7 +140,7 @@ public class BigComponentTest {
         component1.setMathPrecision(newMathContext.getPrecision());
         Assert.assertEquals(4, component1.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.1018948065165015410948016"), new BigDecimal("6.689907845103061051849840560"), new BigDecimal("7.087487098020624098401951984149"), new BigDecimal("2.670084540981798465797874161453451313")}, component1.getRawComponents());
-        MathContext component1MathContext = TestUtils.getFieldValue(component1.getHandler(), MathContext.class, "mathContext");
+        MathContext component1MathContext = TestAccess.getFieldValue(component1.getHandler(), MathContext.class, "mathContext");
         Assert.assertEquals(newMathContext.getPrecision(), component1MathContext.getPrecision());
         Assert.assertEquals(newMathContext.getRoundingMode(), component1MathContext.getRoundingMode());
         
@@ -148,7 +148,7 @@ public class BigComponentTest {
         component1.copyMeta(component2);
         Assert.assertEquals(3, component2.getDimensionality());
         Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("9.1048948183846435490480"), new BigDecimal("6.38408978971844641532021"), new BigDecimal("1.75449011520601216645401")}, component2.getRawComponents());
-        MathContext component2MathContext = TestUtils.getFieldValue(component2.getHandler(), MathContext.class, "mathContext");
+        MathContext component2MathContext = TestAccess.getFieldValue(component2.getHandler(), MathContext.class, "mathContext");
         Assert.assertEquals(newMathContext.getPrecision(), component2MathContext.getPrecision());
         Assert.assertEquals(newMathContext.getRoundingMode(), component2MathContext.getRoundingMode());
     }
@@ -206,7 +206,7 @@ public class BigComponentTest {
     public void testGetMathPrecision() throws Exception {
         BigVector component = new BigVector(new BigDecimal("8.1018948065165015410948016"), new BigDecimal("6.689907845103061051849840560"), new BigDecimal("7.087487098020624098401951984149"), new BigDecimal("2.670084540981798465797874161453451313"));
         MathContext newMathContext = new MathContext(MathUtility.dice(6, 4), RoundingMode.DOWN);
-        TestUtils.setFieldValue(component.getHandler(), "mathContext", newMathContext);
+        TestAccess.setFieldValue(component.getHandler(), "mathContext", newMathContext);
         Assert.assertEquals(newMathContext.getPrecision(), component.getMathPrecision());
     }
     
@@ -221,7 +221,7 @@ public class BigComponentTest {
         BigVector component = new BigVector(new BigDecimal("8.1018948065165015410948016"), new BigDecimal("6.689907845103061051849840560"), new BigDecimal("7.087487098020624098401951984149"), new BigDecimal("2.670084540981798465797874161453451313"));
         MathContext newMathContext = new MathContext(MathUtility.dice(6, 4), RoundingMode.DOWN);
         component.setMathPrecision(newMathContext.getPrecision());
-        MathContext mathContext = TestUtils.getFieldValue(component.getHandler(), MathContext.class, "mathContext");
+        MathContext mathContext = TestAccess.getFieldValue(component.getHandler(), MathContext.class, "mathContext");
         Assert.assertEquals(newMathContext.getPrecision(), mathContext.getPrecision());
     }
     

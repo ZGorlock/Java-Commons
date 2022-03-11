@@ -21,6 +21,7 @@ import commons.math.component.handler.math.DoubleComponentMathHandler;
 import commons.math.component.matrix.BigMatrix;
 import commons.math.component.matrix.Matrix;
 import commons.math.component.matrix.RawMatrix;
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -1352,7 +1353,7 @@ public class Vector4Test {
         
         //standard
         Assert.assertEquals(4, sut.getDimensionality());
-        TestUtils.setFieldValue(sut, "dimensionality", 5);
+        TestAccess.setFieldValue(sut, "dimensionality", 5);
         Assert.assertEquals(5, sut.getDimensionality());
         sut.calculateDimensionality();
         Assert.assertEquals(4, sut.getDimensionality());

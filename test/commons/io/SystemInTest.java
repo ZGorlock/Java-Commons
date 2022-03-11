@@ -26,6 +26,7 @@ import java.util.function.Consumer;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import commons.io.stream.BufferedLineReader;
 import commons.object.collection.MapUtility;
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import commons.test.TestUtilsTest;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -119,8 +120,8 @@ public class SystemInTest {
         PowerMockito.spy(SystemIn.class);
         
         sut = Mockito.spy(SystemIn.class);
-        TestUtils.setFieldValue(sut, "owner", new AtomicReference<>(getClass()));
-        TestUtils.setFieldValue(sut, "manager", new AtomicReference<>(getClass()));
+        TestAccess.setFieldValue(sut, "owner", new AtomicReference<>(getClass()));
+        TestAccess.setFieldValue(sut, "manager", new AtomicReference<>(getClass()));
         
         writer = Mockito.spy(new PipedOutputStream());
         systemIn = Mockito.spy(new PipedInputStream());
@@ -132,14 +133,14 @@ public class SystemInTest {
         writer.connect(systemIn);
         in = new BufferedLineReader(new InputStreamReader(systemIn));
         
-        TestUtils.setFieldValue(SystemIn.class, "systemIn", systemIn);
-        TestUtils.setFieldValue(SystemIn.class, "in", in);
-        TestUtils.setFieldValue(SystemIn.class, "console", System.console());
-        TestUtils.setFieldValue(SystemIn.class, "buffer", null);
-        TestUtils.setFieldValue(SystemIn.class, "scanner", null);
-        TestUtils.setFieldValue(SystemIn.class, "scannerHandle", null);
-        TestUtils.setFieldValue(SystemIn.class, "instance", sut);
-        TestUtils.setFieldValue(SystemIn.class, "inUse", new AtomicBoolean(false));
+        TestAccess.setFieldValue(SystemIn.class, "systemIn", systemIn);
+        TestAccess.setFieldValue(SystemIn.class, "in", in);
+        TestAccess.setFieldValue(SystemIn.class, "console", System.console());
+        TestAccess.setFieldValue(SystemIn.class, "buffer", null);
+        TestAccess.setFieldValue(SystemIn.class, "scanner", null);
+        TestAccess.setFieldValue(SystemIn.class, "scannerHandle", null);
+        TestAccess.setFieldValue(SystemIn.class, "instance", sut);
+        TestAccess.setFieldValue(SystemIn.class, "inUse", new AtomicBoolean(false));
     }
     
     /**
@@ -149,7 +150,7 @@ public class SystemInTest {
      */
     @After
     public void cleanup() throws Exception {
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
         in.close();
     }
     
@@ -177,10 +178,10 @@ public class SystemInTest {
         SystemIn sut;
         
         //private
-        sut = TestUtils.invokeConstructor(SystemIn.class);
+        sut = TestAccess.invokeConstructor(SystemIn.class);
         Assert.assertNotNull(sut);
         Assert.assertTrue(sut instanceof SystemIn);
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "interrupt"));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "interrupt"));
     }
     
     /**
@@ -196,41 +197,41 @@ public class SystemInTest {
         final Future<?> mockScannerHandle = Mockito.mock(Future.class);
         
         //start
-        Assert.assertNull(TestUtils.getFieldValue(SystemIn.class, "scanner"));
-        Assert.assertNull(TestUtils.getFieldValue(SystemIn.class, "scannerHandle"));
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "startScanner"));
+        Assert.assertNull(TestAccess.getFieldValue(SystemIn.class, "scanner"));
+        Assert.assertNull(TestAccess.getFieldValue(SystemIn.class, "scannerHandle"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "startScanner"));
         PowerMockito.verifyPrivate(SystemIn.class, VerificationModeFactory.times(1))
                 .invoke("interruptScanner");
         for (int i = 0; i < 10; i++) {
             Thread.sleep(5);
-            Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+            Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         }
         
         //scanner
         writer.write("test\n".getBytes(StandardCharsets.UTF_8));
         Thread.sleep(250);
-        Assert.assertNotNull(TestUtils.getFieldValue(SystemIn.class, "buffer"));
-        Assert.assertEquals("test", TestUtils.getFieldValue(SystemIn.class, AtomicReference.class, "buffer").get());
+        Assert.assertNotNull(TestAccess.getFieldValue(SystemIn.class, "buffer"));
+        Assert.assertEquals("test", TestAccess.getFieldValue(SystemIn.class, AtomicReference.class, "buffer").get());
         
         //scanner exception
-        TestUtils.setFieldValue(SystemIn.class, "in", mockIn);
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "startScanner"));
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        TestAccess.setFieldValue(SystemIn.class, "in", mockIn);
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "startScanner"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         Mockito.doThrow(new IOException()).when(mockIn).lineReady();
         Thread.sleep(250);
-        Assert.assertNotNull(TestUtils.getFieldValue(SystemIn.class, "buffer"));
-        Assert.assertNull(TestUtils.getFieldValue(SystemIn.class, AtomicReference.class, "buffer").get());
-        TestUtils.setFieldValue(SystemIn.class, "in", in);
+        Assert.assertNotNull(TestAccess.getFieldValue(SystemIn.class, "buffer"));
+        Assert.assertNull(TestAccess.getFieldValue(SystemIn.class, AtomicReference.class, "buffer").get());
+        TestAccess.setFieldValue(SystemIn.class, "in", in);
         
         //can't stop previous scanner
-        TestUtils.setFieldValue(SystemIn.class, "scanner", mockScanner);
-        TestUtils.setFieldValue(SystemIn.class, "scannerHandle", mockScannerHandle);
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        TestAccess.setFieldValue(SystemIn.class, "scanner", mockScanner);
+        TestAccess.setFieldValue(SystemIn.class, "scannerHandle", mockScannerHandle);
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         Mockito.doReturn(false).when(mockScanner).awaitTermination(ArgumentMatchers.anyLong(), ArgumentMatchers.any());
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "startScanner"));
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "startScanner"));
         Mockito.doReturn(true).when(mockScanner).awaitTermination(ArgumentMatchers.anyLong(), ArgumentMatchers.any());
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
     }
     
     /**
@@ -253,15 +254,15 @@ public class SystemInTest {
                         new ImmutablePair<>("scannerHandle", mockScannerHandle),
                         new ImmutablePair<>("buffer", buffer)
                 ).forEach((String fieldName, Object testValue) ->
-                        TestUtils.setFieldValue(SystemIn.class, fieldName, testValue));
+                        TestAccess.setFieldValue(SystemIn.class, fieldName, testValue));
         
         //standard
         fieldInitializer.run();
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         List.of("scanner", "scannerHandle", "buffer").forEach(e ->
-                Assert.assertNull(TestUtils.getFieldValue(SystemIn.class, e)));
+                Assert.assertNull(TestAccess.getFieldValue(SystemIn.class, e)));
         Mockito.verify(mockScannerHandle, VerificationModeFactory.times(1))
                 .cancel(ArgumentMatchers.eq(true));
         Mockito.verify(mockScanner, VerificationModeFactory.times(1))
@@ -273,20 +274,20 @@ public class SystemInTest {
         
         //scanner not running
         List.of("scanner", "scannerHandle", "buffer").forEach(e ->
-                TestUtils.setFieldValue(SystemIn.class, e, null));
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
+                TestAccess.setFieldValue(SystemIn.class, e, null));
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
         List.of("scanner", "scannerHandle", "buffer").forEach(e ->
-                Assert.assertNull(TestUtils.getFieldValue(SystemIn.class, e)));
+                Assert.assertNull(TestAccess.getFieldValue(SystemIn.class, e)));
         
         //can't stop scanner
         fieldInitializer.run();
         Mockito.doReturn(false).when(mockScanner).awaitTermination(ArgumentMatchers.anyLong(), ArgumentMatchers.any());
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         List.of("scanner", "scannerHandle", "buffer").forEach(e ->
-                TestUtils.setFieldValue(SystemIn.class, e, null));
+                TestAccess.setFieldValue(SystemIn.class, e, null));
         Mockito.verify(mockScannerHandle, VerificationModeFactory.times(2))
                 .cancel(ArgumentMatchers.eq(true));
         Mockito.verify(mockScanner, VerificationModeFactory.times(2))
@@ -309,43 +310,43 @@ public class SystemInTest {
         final Future<?> mockScannerHandle = Mockito.mock(Future.class);
         
         //standard
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "startScanner"));
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "startScanner"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         
         //other
-        TestUtils.setFieldValue(SystemIn.class, "scanner", mockScanner);
-        TestUtils.setFieldValue(SystemIn.class, "scannerHandle", mockScannerHandle);
+        TestAccess.setFieldValue(SystemIn.class, "scanner", mockScanner);
+        TestAccess.setFieldValue(SystemIn.class, "scannerHandle", mockScannerHandle);
         Mockito.doReturn(true).when(mockScanner).awaitTermination(ArgumentMatchers.anyLong(), ArgumentMatchers.any());
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         Mockito.doReturn(true).when(mockScanner).isShutdown();
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         Mockito.doReturn(false).when(mockScanner).isShutdown();
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         Mockito.doReturn(true).when(mockScanner).isTerminated();
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         Mockito.doReturn(false).when(mockScanner).isTerminated();
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         Mockito.doReturn(true).when(mockScannerHandle).isDone();
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         Mockito.doReturn(false).when(mockScannerHandle).isDone();
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         Mockito.doReturn(true).when(mockScannerHandle).isCancelled();
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         Mockito.doReturn(false).when(mockScannerHandle).isCancelled();
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
-        TestUtils.setFieldValue(SystemIn.class, "scanner", null);
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
-        TestUtils.setFieldValue(SystemIn.class, "scanner", mockScanner);
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
-        TestUtils.setFieldValue(SystemIn.class, "scannerHandle", null);
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
-        TestUtils.setFieldValue(SystemIn.class, "scannerHandle", mockScannerHandle);
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        TestAccess.setFieldValue(SystemIn.class, "scanner", null);
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        TestAccess.setFieldValue(SystemIn.class, "scanner", mockScanner);
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        TestAccess.setFieldValue(SystemIn.class, "scannerHandle", null);
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        TestAccess.setFieldValue(SystemIn.class, "scannerHandle", mockScannerHandle);
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
     }
     
     /**
@@ -377,11 +378,11 @@ public class SystemInTest {
         };
         
         //standard
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "startScanner"));
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "startScanner"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         testWriter.accept("test 1\n");
-        Assert.assertEquals("test 1", TestUtils.invokeMethod(SystemIn.class, "nextLine"));
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertEquals("test 1", TestAccess.invokeMethod(SystemIn.class, "nextLine"));
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         Thread.sleep(250);
         PowerMockito.verifyPrivate(SystemIn.class, VerificationModeFactory.times(1))
                 .invoke("startScanner");
@@ -389,13 +390,13 @@ public class SystemInTest {
                 .invoke("interruptScanner");
         
         //wait
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "startScanner"));
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "startScanner"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         testWriter.accept("test 2");
         Thread.sleep(250);
         testWriter.accept("\n");
-        Assert.assertEquals("test 2", TestUtils.invokeMethod(SystemIn.class, "nextLine"));
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertEquals("test 2", TestAccess.invokeMethod(SystemIn.class, "nextLine"));
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         Thread.sleep(250);
         PowerMockito.verifyPrivate(SystemIn.class, VerificationModeFactory.times(2))
                 .invoke("startScanner");
@@ -405,10 +406,10 @@ public class SystemInTest {
         //immediate
         testWriter.accept("test 3\n");
         Thread.sleep(250);
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "startScanner"));
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
-        Assert.assertEquals("test 3", TestUtils.invokeMethod(SystemIn.class, "nextLine"));
-        Assert.assertFalse(TestUtils.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "startScanner"));
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
+        Assert.assertEquals("test 3", TestAccess.invokeMethod(SystemIn.class, "nextLine"));
+        Assert.assertFalse(TestAccess.invokeMethod(SystemIn.class, boolean.class, "isScannerRunning"));
         Thread.sleep(250);
         PowerMockito.verifyPrivate(SystemIn.class, VerificationModeFactory.times(3))
                 .invoke("startScanner");
@@ -418,14 +419,14 @@ public class SystemInTest {
         //in use
         staticNextLine.set("test 4");
         readSleep.set(true);
-        Assert.assertFalse(TestUtils.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
+        Assert.assertFalse(TestAccess.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
         thread.schedule(() -> {
-            Assert.assertTrue(TestUtils.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
+            Assert.assertTrue(TestAccess.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
             Assert.assertNull(SystemIn.nextLine(getClass()));
         }, 250, TimeUnit.MILLISECONDS);
         Assert.assertEquals("test 4", SystemIn.nextLine(getClass()));
-        Assert.assertTrue(TestUtils.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
-        Assert.assertFalse(TestUtils.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
+        Assert.assertTrue(TestAccess.invokeMethod(SystemIn.class, boolean.class, "interruptScanner"));
+        Assert.assertFalse(TestAccess.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
         Thread.sleep(250);
         PowerMockito.verifyStatic(SystemIn.class, VerificationModeFactory.times(2));
         SystemIn.owns(ArgumentMatchers.eq(getClass()));
@@ -478,27 +479,27 @@ public class SystemInTest {
         }).when(SystemIn.class, "nextLine");
         
         //standard
-        TestUtils.setFieldValue(SystemIn.class, "console", mockConsole);
-        Assert.assertEquals("password", TestUtils.invokeMethod(SystemIn.class, "readPassword"));
+        TestAccess.setFieldValue(SystemIn.class, "console", mockConsole);
+        Assert.assertEquals("password", TestAccess.invokeMethod(SystemIn.class, "readPassword"));
         Mockito.verify(mockConsole, VerificationModeFactory.times(1))
                 .readPassword();
         
         //no console
-        TestUtils.setFieldValue(SystemIn.class, "console", null);
-        Assert.assertNull(TestUtils.invokeMethod(SystemIn.class, "readPassword"));
+        TestAccess.setFieldValue(SystemIn.class, "console", null);
+        Assert.assertNull(TestAccess.invokeMethod(SystemIn.class, "readPassword"));
         Mockito.verify(mockConsole, VerificationModeFactory.times(1))
                 .readPassword();
         
         //in use
-        TestUtils.setFieldValue(SystemIn.class, "console", mockConsole);
+        TestAccess.setFieldValue(SystemIn.class, "console", mockConsole);
         readSleep.set(true);
-        Assert.assertFalse(TestUtils.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
+        Assert.assertFalse(TestAccess.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
         thread.schedule(() -> {
-            Assert.assertTrue(TestUtils.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
+            Assert.assertTrue(TestAccess.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
             Assert.assertNull(SystemIn.readPassword(getClass()));
         }, 250, TimeUnit.MILLISECONDS);
         Assert.assertEquals("password", SystemIn.readPassword(getClass()));
-        Assert.assertFalse(TestUtils.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
+        Assert.assertFalse(TestAccess.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
         PowerMockito.verifyStatic(SystemIn.class, VerificationModeFactory.times(2));
         SystemIn.owns(ArgumentMatchers.eq(getClass()));
         PowerMockito.verifyPrivate(SystemIn.class, VerificationModeFactory.times(0))
@@ -508,15 +509,15 @@ public class SystemInTest {
         readSleep.set(false);
         
         //in use, no console
-        TestUtils.setFieldValue(SystemIn.class, "console", null);
+        TestAccess.setFieldValue(SystemIn.class, "console", null);
         readSleep.set(true);
-        Assert.assertFalse(TestUtils.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
+        Assert.assertFalse(TestAccess.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
         thread.schedule(() -> {
-            Assert.assertTrue(TestUtils.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
+            Assert.assertTrue(TestAccess.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
             Assert.assertNull(SystemIn.readPassword(getClass()));
         }, 250, TimeUnit.MILLISECONDS);
         Assert.assertEquals("test", SystemIn.readPassword(getClass()));
-        Assert.assertFalse(TestUtils.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
+        Assert.assertFalse(TestAccess.getFieldValue(SystemIn.class, AtomicBoolean.class, "inUse").get());
         PowerMockito.verifyStatic(SystemIn.class, VerificationModeFactory.times(4));
         SystemIn.owns(ArgumentMatchers.eq(getClass()));
         PowerMockito.verifyPrivate(SystemIn.class, VerificationModeFactory.times(1))

@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 import commons.object.string.StringUtility;
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -89,21 +90,21 @@ public class ProgressBarTest {
     @Before
     public void setup() throws Exception {
         progressBar = Mockito.spy(ProgressBar.class);
-        TestUtils.setFieldValue(progressBar, "title", "Test Bar");
-        TestUtils.setFieldValue(progressBar, "total", 10000L);
-        TestUtils.setFieldValue(progressBar, "width", 20);
-        TestUtils.setFieldValue(progressBar, "units", "B");
-        TestUtils.setFieldValue(progressBar, "autoPrint", false);
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(true));
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(false));
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(false));
-        TestUtils.setFieldValue(progressBar, "rollingProgress", new ArrayList<>());
-        TestUtils.setFieldValue(progressBar, "rollingUpdate", new ArrayList<>());
-        TestUtils.setFieldValue(progressBar, "showPercentage", ProgressBar.DEFAULT_SHOW_PERCENTAGE);
-        TestUtils.setFieldValue(progressBar, "showBar", ProgressBar.DEFAULT_SHOW_BAR);
-        TestUtils.setFieldValue(progressBar, "showRatio", ProgressBar.DEFAULT_SHOW_RATIO);
-        TestUtils.setFieldValue(progressBar, "showSpeed", ProgressBar.DEFAULT_SHOW_SPEED);
-        TestUtils.setFieldValue(progressBar, "showTimeRemaining", ProgressBar.DEFAULT_SHOW_TIME_REMAINING);
+        TestAccess.setFieldValue(progressBar, "title", "Test Bar");
+        TestAccess.setFieldValue(progressBar, "total", 10000L);
+        TestAccess.setFieldValue(progressBar, "width", 20);
+        TestAccess.setFieldValue(progressBar, "units", "B");
+        TestAccess.setFieldValue(progressBar, "autoPrint", false);
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "rollingProgress", new ArrayList<>());
+        TestAccess.setFieldValue(progressBar, "rollingUpdate", new ArrayList<>());
+        TestAccess.setFieldValue(progressBar, "showPercentage", ProgressBar.DEFAULT_SHOW_PERCENTAGE);
+        TestAccess.setFieldValue(progressBar, "showBar", ProgressBar.DEFAULT_SHOW_BAR);
+        TestAccess.setFieldValue(progressBar, "showRatio", ProgressBar.DEFAULT_SHOW_RATIO);
+        TestAccess.setFieldValue(progressBar, "showSpeed", ProgressBar.DEFAULT_SHOW_SPEED);
+        TestAccess.setFieldValue(progressBar, "showTimeRemaining", ProgressBar.DEFAULT_SHOW_TIME_REMAINING);
     }
     
     /**
@@ -217,20 +218,20 @@ public class ProgressBarTest {
         
         //initial
         
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(false));
         expected = "";
         Assert.assertEquals(expected, progressBar.get());
         
         //standard
         
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
         
         //no update
         
         Mockito.when(progressBar.getPercentageString()).thenReturn(" 52%");
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(false));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
         Mockito.when(progressBar.getPercentageString()).thenReturn(" 51%");
@@ -238,42 +239,42 @@ public class ProgressBarTest {
         //partial
         
         progressBar.setShowPercentage(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = "[==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowPercentage(true);
         
         progressBar.setShowBar(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51%  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowBar(true);
         
         progressBar.setShowRatio(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ] at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowRatio(true);
         
         progressBar.setShowSpeed(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowSpeed(true);
         
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowTimeRemaining(true);
         
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
         
         progressBar.setShowSpeed(false);
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowSpeed(true);
@@ -283,7 +284,7 @@ public class ProgressBarTest {
         progressBar.setShowRatio(false);
         progressBar.setShowSpeed(false);
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51%";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowBar(true);
@@ -294,14 +295,14 @@ public class ProgressBarTest {
         progressBar.setShowPercentage(false);
         progressBar.setShowSpeed(false);
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = "[==========>         ]  5100B/10000B";
         Assert.assertEquals(expected, progressBar.get());
         progressBar.setShowPercentage(true);
         progressBar.setShowSpeed(true);
         progressBar.setShowTimeRemaining(true);
         
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
     }
@@ -323,20 +324,20 @@ public class ProgressBarTest {
         
         //initial
         
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(false));
         expected = "";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         
         //standard
         
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         
         //no update
         
         Mockito.when(progressBar.getPercentageString()).thenReturn(" 52%");
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(false));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         Mockito.when(progressBar.getPercentageString()).thenReturn(" 51%");
@@ -344,42 +345,42 @@ public class ProgressBarTest {
         //partial
         
         progressBar.setShowPercentage(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = "[==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(4) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowPercentage(true);
         
         progressBar.setShowBar(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51%  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(17) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowBar(true);
         
         progressBar.setShowRatio(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ] at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowRatio(true);
         
         progressBar.setShowSpeed(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowSpeed(true);
         
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(5) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowTimeRemaining(true);
         
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         
         progressBar.setShowSpeed(false);
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(25) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowSpeed(true);
@@ -389,7 +390,7 @@ public class ProgressBarTest {
         progressBar.setShowRatio(false);
         progressBar.setShowSpeed(false);
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51%";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(36) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowBar(true);
@@ -400,14 +401,14 @@ public class ProgressBarTest {
         progressBar.setShowPercentage(false);
         progressBar.setShowSpeed(false);
         progressBar.setShowTimeRemaining(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = "[==========>         ]  5100B/10000B";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
         progressBar.setShowPercentage(true);
         progressBar.setShowSpeed(true);
         progressBar.setShowTimeRemaining(true);
         
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
     }
@@ -423,12 +424,12 @@ public class ProgressBarTest {
     public void testUpdate() throws Exception {
         PrintStream saveOut;
         ByteArrayOutputStream out;
-        List<Long> rollingProgress = TestUtils.getFieldValue(progressBar, List.class, "rollingProgress");
-        List<Long> rollingUpdate = TestUtils.getFieldValue(progressBar, List.class, "rollingUpdate");
+        List<Long> rollingProgress = TestAccess.getFieldValue(progressBar, List.class, "rollingProgress");
+        List<Long> rollingUpdate = TestAccess.getFieldValue(progressBar, List.class, "rollingUpdate");
         
         //default auto print
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
-        TestUtils.setFieldValue(progressBar, "title", "");
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "title", "");
         progressBar.setAutoPrint(false);
         progressBar.update(1);
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
@@ -436,33 +437,33 @@ public class ProgressBarTest {
         progressBar.update(2);
         Mockito.verify(progressBar, VerificationModeFactory.times(1)).print();
         progressBar.setAutoPrint(false);
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(false));
         
         //first update, no title
-        TestUtils.setFieldValue(progressBar, "progress", 0);
-        TestUtils.setFieldValue(progressBar, "previous", 0);
-        TestUtils.setFieldValue(progressBar, "current", 0);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "progress", 0);
+        TestAccess.setFieldValue(progressBar, "previous", 0);
+        TestAccess.setFieldValue(progressBar, "current", 0);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0);
         rollingProgress.clear();
         rollingUpdate.clear();
-        TestUtils.setFieldValue(progressBar, "title", "");
+        TestAccess.setFieldValue(progressBar, "title", "");
         Assert.assertEquals(0L, progressBar.getFirstUpdate());
         Assert.assertTrue(progressBar.update(1000));
         Assert.assertNotEquals(0L, progressBar.getFirstUpdate());
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).getTitleString();
         
         //first update
-        TestUtils.setFieldValue(progressBar, "progress", 0);
-        TestUtils.setFieldValue(progressBar, "previous", 0);
-        TestUtils.setFieldValue(progressBar, "current", 0);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "progress", 0);
+        TestAccess.setFieldValue(progressBar, "previous", 0);
+        TestAccess.setFieldValue(progressBar, "current", 0);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0);
         rollingProgress.clear();
         rollingUpdate.clear();
-        TestUtils.setFieldValue(progressBar, "title", "Test Bar");
+        TestAccess.setFieldValue(progressBar, "title", "Test Bar");
         Assert.assertEquals(0L, progressBar.getFirstUpdate());
         Assert.assertTrue(progressBar.update(2000));
         Assert.assertNotEquals(0L, progressBar.getFirstUpdate());
@@ -475,12 +476,12 @@ public class ProgressBarTest {
         Assert.assertEquals(1, rollingUpdate.size());
         
         //multiple updates
-        TestUtils.setFieldValue(progressBar, "progress", 0);
-        TestUtils.setFieldValue(progressBar, "previous", 0);
-        TestUtils.setFieldValue(progressBar, "current", 0);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "progress", 0);
+        TestAccess.setFieldValue(progressBar, "previous", 0);
+        TestAccess.setFieldValue(progressBar, "current", 0);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0);
         rollingProgress.clear();
         rollingUpdate.clear();
         Assert.assertTrue(progressBar.update(1000));
@@ -488,56 +489,56 @@ public class ProgressBarTest {
         Assert.assertEquals(1000L, progressBar.getCurrent());
         Assert.assertEquals(1, rollingProgress.size());
         Assert.assertEquals(1, rollingUpdate.size());
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(false));
         Assert.assertFalse(progressBar.update(2000));
         Assert.assertEquals(2000L, progressBar.getProgress());
         Assert.assertEquals(1000L, progressBar.getCurrent());
         Assert.assertEquals(1, rollingProgress.size());
         Assert.assertEquals(1, rollingUpdate.size());
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(false));
         Thread.sleep((long) (ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 1.2));
         Assert.assertTrue(progressBar.update(3000));
         Assert.assertEquals(3000L, progressBar.getProgress());
         Assert.assertEquals(3000L, progressBar.getCurrent());
         Assert.assertEquals(2, rollingProgress.size());
         Assert.assertEquals(2, rollingUpdate.size());
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(false));
         Thread.sleep((long) (ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 0.2));
         Assert.assertFalse(progressBar.update(4000));
         Assert.assertEquals(4000L, progressBar.getProgress());
         Assert.assertEquals(3000L, progressBar.getCurrent());
         Assert.assertEquals(2, rollingProgress.size());
         Assert.assertEquals(2, rollingUpdate.size());
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(false));
         Thread.sleep(ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY);
         Assert.assertTrue(progressBar.update(5000));
         Assert.assertEquals(5000L, progressBar.getProgress());
         Assert.assertEquals(5000L, progressBar.getCurrent());
         Assert.assertEquals(3, rollingProgress.size());
         Assert.assertEquals(3, rollingUpdate.size());
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(false));
         Assert.assertTrue(progressBar.update(20000));
         Assert.assertEquals(10000L, progressBar.getProgress());
         Assert.assertEquals(10000L, progressBar.getCurrent());
         Assert.assertEquals(4, rollingProgress.size());
         Assert.assertEquals(4, rollingUpdate.size());
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(false));
         Assert.assertFalse(progressBar.update(21000));
         Assert.assertEquals(10000L, progressBar.getProgress());
         Assert.assertEquals(10000L, progressBar.getCurrent());
         Assert.assertEquals(4, rollingProgress.size());
         Assert.assertEquals(4, rollingUpdate.size());
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(false));
         
         //autoprint
         progressBar.setAutoPrint(true);
         Mockito.verify(progressBar, VerificationModeFactory.times(1)).print();
-        TestUtils.setFieldValue(progressBar, "progress", 0);
-        TestUtils.setFieldValue(progressBar, "previous", 0);
-        TestUtils.setFieldValue(progressBar, "current", 0);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "progress", 0);
+        TestAccess.setFieldValue(progressBar, "previous", 0);
+        TestAccess.setFieldValue(progressBar, "current", 0);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0);
         rollingProgress.clear();
         rollingUpdate.clear();
         Assert.assertTrue(progressBar.update(1000));
@@ -545,14 +546,14 @@ public class ProgressBarTest {
         Assert.assertEquals(1000L, progressBar.getCurrent());
         Assert.assertEquals(1, rollingProgress.size());
         Assert.assertEquals(1, rollingUpdate.size());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).print();
         Assert.assertFalse(progressBar.update(2000));
         Assert.assertEquals(2000L, progressBar.getProgress());
         Assert.assertEquals(1000L, progressBar.getCurrent());
         Assert.assertEquals(1, rollingProgress.size());
         Assert.assertEquals(1, rollingUpdate.size());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).print();
         Thread.sleep((long) (ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 1.2));
         Assert.assertTrue(progressBar.update(3000));
@@ -560,7 +561,7 @@ public class ProgressBarTest {
         Assert.assertEquals(3000L, progressBar.getCurrent());
         Assert.assertEquals(2, rollingProgress.size());
         Assert.assertEquals(2, rollingUpdate.size());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
         Mockito.verify(progressBar, VerificationModeFactory.times(3)).print();
         Thread.sleep((long) (ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 0.2));
         Assert.assertFalse(progressBar.update(4000));
@@ -568,7 +569,7 @@ public class ProgressBarTest {
         Assert.assertEquals(3000L, progressBar.getCurrent());
         Assert.assertEquals(2, rollingProgress.size());
         Assert.assertEquals(2, rollingUpdate.size());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
         Mockito.verify(progressBar, VerificationModeFactory.times(3)).print();
         Thread.sleep(ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY);
         Assert.assertTrue(progressBar.update(5000));
@@ -576,31 +577,31 @@ public class ProgressBarTest {
         Assert.assertEquals(5000L, progressBar.getCurrent());
         Assert.assertEquals(3, rollingProgress.size());
         Assert.assertEquals(3, rollingUpdate.size());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
         Mockito.verify(progressBar, VerificationModeFactory.times(4)).print();
         Assert.assertTrue(progressBar.update(20000));
         Assert.assertEquals(10000L, progressBar.getProgress());
         Assert.assertEquals(10000L, progressBar.getCurrent());
         Assert.assertEquals(4, rollingProgress.size());
         Assert.assertEquals(4, rollingUpdate.size());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
         Mockito.verify(progressBar, VerificationModeFactory.times(5)).print();
         Assert.assertFalse(progressBar.update(21000));
         Assert.assertEquals(10000L, progressBar.getProgress());
         Assert.assertEquals(10000L, progressBar.getCurrent());
         Assert.assertEquals(4, rollingProgress.size());
         Assert.assertEquals(4, rollingUpdate.size());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
         Mockito.verify(progressBar, VerificationModeFactory.times(5)).print();
         progressBar.setAutoPrint(false);
         
         //complete
-        TestUtils.setFieldValue(progressBar, "progress", 0);
-        TestUtils.setFieldValue(progressBar, "previous", 0);
-        TestUtils.setFieldValue(progressBar, "current", 0);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "progress", 0);
+        TestAccess.setFieldValue(progressBar, "previous", 0);
+        TestAccess.setFieldValue(progressBar, "current", 0);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0);
         rollingProgress.clear();
         rollingUpdate.clear();
         Mockito.when(progressBar.isComplete()).thenReturn(true);
@@ -608,12 +609,12 @@ public class ProgressBarTest {
         Mockito.when(progressBar.isComplete()).thenCallRealMethod();
         
         //failed
-        TestUtils.setFieldValue(progressBar, "progress", 0);
-        TestUtils.setFieldValue(progressBar, "previous", 0);
-        TestUtils.setFieldValue(progressBar, "current", 0);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "progress", 0);
+        TestAccess.setFieldValue(progressBar, "previous", 0);
+        TestAccess.setFieldValue(progressBar, "current", 0);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0);
         rollingProgress.clear();
         rollingUpdate.clear();
         Mockito.when(progressBar.isFailed()).thenReturn(true);
@@ -621,12 +622,12 @@ public class ProgressBarTest {
         Mockito.when(progressBar.isFailed()).thenCallRealMethod();
         
         //no premature complete
-        TestUtils.setFieldValue(progressBar, "progress", 0);
-        TestUtils.setFieldValue(progressBar, "previous", 0);
-        TestUtils.setFieldValue(progressBar, "current", 0);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "progress", 0);
+        TestAccess.setFieldValue(progressBar, "previous", 0);
+        TestAccess.setFieldValue(progressBar, "current", 0);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0);
         rollingProgress.clear();
         rollingUpdate.clear();
         Assert.assertEquals(0L, progressBar.getCurrent());
@@ -643,13 +644,13 @@ public class ProgressBarTest {
         System.setOut(new PrintStream(out));
         progressBar.setAutoPrint(true);
         progressBar.setShowSpeed(false);
-        TestUtils.setFieldValue(progressBar, "progress", 0);
-        TestUtils.setFieldValue(progressBar, "previous", 0);
-        TestUtils.setFieldValue(progressBar, "current", 0);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "progress", 0);
+        TestAccess.setFieldValue(progressBar, "previous", 0);
+        TestAccess.setFieldValue(progressBar, "current", 0);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(true));
         rollingProgress.clear();
         rollingUpdate.clear();
         for (int i = 0; i <= 10000; i += 512) {
@@ -696,13 +697,13 @@ public class ProgressBarTest {
         System.setOut(new PrintStream(out));
         progressBar.setAutoPrint(true);
         progressBar.setShowSpeed(false);
-        TestUtils.setFieldValue(progressBar, "progress", 0);
-        TestUtils.setFieldValue(progressBar, "previous", 0);
-        TestUtils.setFieldValue(progressBar, "current", 0);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0);
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "progress", 0);
+        TestAccess.setFieldValue(progressBar, "previous", 0);
+        TestAccess.setFieldValue(progressBar, "current", 0);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0);
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(true));
         rollingProgress.clear();
         rollingUpdate.clear();
         for (int i = 0; i <= 5000; i += 512) {
@@ -813,40 +814,40 @@ public class ProgressBarTest {
         saveOut = System.out;
         out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
         progressBar.print();
         Assert.assertEquals(progressBar.getPrintable().replace(" ", " "), out.toString());
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).getPrintable();
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         System.setOut(saveOut);
         
         //no update
         saveOut = System.out;
         out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(false));
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
         progressBar.print();
         Assert.assertEquals(progressBar.getPrintable().replace(" ", " "), out.toString());
         Mockito.verify(progressBar, VerificationModeFactory.times(4)).getPrintable();
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         System.setOut(saveOut);
         
         //first print
         saveOut = System.out;
         out = new ByteArrayOutputStream();
         System.setOut(new PrintStream(out));
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(false));
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(true));
         progressBar.print();
         Assert.assertEquals(Console.ConsoleEffect.CYAN.apply("Test Bar: ") + System.lineSeparator() +
                 progressBar.getPrintable().replace(" ", " "), out.toString());
         Mockito.verify(progressBar, VerificationModeFactory.times(6)).getPrintable();
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         System.setOut(saveOut);
     }
     
@@ -858,57 +859,57 @@ public class ProgressBarTest {
      */
     @Test
     public void testGetRatio() throws Exception {
-        TestUtils.setFieldValue(progressBar, "current", 1L);
-        TestUtils.setFieldValue(progressBar, "total", 10L);
+        TestAccess.setFieldValue(progressBar, "current", 1L);
+        TestAccess.setFieldValue(progressBar, "total", 10L);
         Assert.assertEquals(0.1, progressBar.getRatio(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 1000000000L);
-        TestUtils.setFieldValue(progressBar, "total", 10000000000L);
+        TestAccess.setFieldValue(progressBar, "current", 1000000000L);
+        TestAccess.setFieldValue(progressBar, "total", 10000000000L);
         Assert.assertEquals(0.1, progressBar.getRatio(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 8L);
-        TestUtils.setFieldValue(progressBar, "total", 8914156L);
+        TestAccess.setFieldValue(progressBar, "current", 8L);
+        TestAccess.setFieldValue(progressBar, "total", 8914156L);
         Assert.assertEquals(8.974489564687896E-7, progressBar.getRatio(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 17456122L);
-        TestUtils.setFieldValue(progressBar, "total", 28462154L);
+        TestAccess.setFieldValue(progressBar, "current", 17456122L);
+        TestAccess.setFieldValue(progressBar, "total", 28462154L);
         Assert.assertEquals(0.6133099413347283, progressBar.getRatio(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 7499L);
-        TestUtils.setFieldValue(progressBar, "total", 7500L);
+        TestAccess.setFieldValue(progressBar, "current", 7499L);
+        TestAccess.setFieldValue(progressBar, "total", 7500L);
         Assert.assertEquals(0.9998666666666667, progressBar.getRatio(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 7500L);
-        TestUtils.setFieldValue(progressBar, "total", 7500L);
+        TestAccess.setFieldValue(progressBar, "current", 7500L);
+        TestAccess.setFieldValue(progressBar, "total", 7500L);
         Assert.assertEquals(1.0, progressBar.getRatio(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 8000L);
-        TestUtils.setFieldValue(progressBar, "total", 7500L);
+        TestAccess.setFieldValue(progressBar, "current", 8000L);
+        TestAccess.setFieldValue(progressBar, "total", 7500L);
         Assert.assertEquals(1.0, progressBar.getRatio(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 1000L);
-        TestUtils.setFieldValue(progressBar, "total", 1L);
+        TestAccess.setFieldValue(progressBar, "current", 1000L);
+        TestAccess.setFieldValue(progressBar, "total", 1L);
         Assert.assertEquals(1.0, progressBar.getRatio(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", -50L);
-        TestUtils.setFieldValue(progressBar, "total", 100L);
+        TestAccess.setFieldValue(progressBar, "current", -50L);
+        TestAccess.setFieldValue(progressBar, "total", 100L);
         Assert.assertEquals(0.0, progressBar.getRatio(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 50L);
-        TestUtils.setFieldValue(progressBar, "total", -100L);
+        TestAccess.setFieldValue(progressBar, "current", 50L);
+        TestAccess.setFieldValue(progressBar, "total", -100L);
         Assert.assertEquals(1.0, progressBar.getRatio(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", -50L);
-        TestUtils.setFieldValue(progressBar, "total", -100L);
+        TestAccess.setFieldValue(progressBar, "current", -50L);
+        TestAccess.setFieldValue(progressBar, "total", -100L);
         Assert.assertEquals(1.0, progressBar.getRatio(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
-        TestUtils.setFieldValue(progressBar, "total", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "total", 0L);
         TestUtils.assertNoException(() ->
                 Assert.assertEquals(1.0, progressBar.getRatio(), 0.0000001));
         
-        TestUtils.setFieldValue(progressBar, "current", 1L);
-        TestUtils.setFieldValue(progressBar, "total", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 1L);
+        TestAccess.setFieldValue(progressBar, "total", 0L);
         TestUtils.assertNoException(() ->
                 Assert.assertEquals(1.0, progressBar.getRatio(), 0.0000001));
     }
@@ -921,57 +922,57 @@ public class ProgressBarTest {
      */
     @Test
     public void testGetPercentage() throws Exception {
-        TestUtils.setFieldValue(progressBar, "current", 1L);
-        TestUtils.setFieldValue(progressBar, "total", 10L);
+        TestAccess.setFieldValue(progressBar, "current", 1L);
+        TestAccess.setFieldValue(progressBar, "total", 10L);
         Assert.assertEquals(10, progressBar.getPercentage());
         
-        TestUtils.setFieldValue(progressBar, "current", 1000000000L);
-        TestUtils.setFieldValue(progressBar, "total", 10000000000L);
+        TestAccess.setFieldValue(progressBar, "current", 1000000000L);
+        TestAccess.setFieldValue(progressBar, "total", 10000000000L);
         Assert.assertEquals(10, progressBar.getPercentage());
         
-        TestUtils.setFieldValue(progressBar, "current", 8L);
-        TestUtils.setFieldValue(progressBar, "total", 8914156L);
+        TestAccess.setFieldValue(progressBar, "current", 8L);
+        TestAccess.setFieldValue(progressBar, "total", 8914156L);
         Assert.assertEquals(0, progressBar.getPercentage());
         
-        TestUtils.setFieldValue(progressBar, "current", 17456122L);
-        TestUtils.setFieldValue(progressBar, "total", 28462154L);
+        TestAccess.setFieldValue(progressBar, "current", 17456122L);
+        TestAccess.setFieldValue(progressBar, "total", 28462154L);
         Assert.assertEquals(61, progressBar.getPercentage());
         
-        TestUtils.setFieldValue(progressBar, "current", 7499L);
-        TestUtils.setFieldValue(progressBar, "total", 7500L);
+        TestAccess.setFieldValue(progressBar, "current", 7499L);
+        TestAccess.setFieldValue(progressBar, "total", 7500L);
         Assert.assertEquals(99, progressBar.getPercentage());
         
-        TestUtils.setFieldValue(progressBar, "current", 7500L);
-        TestUtils.setFieldValue(progressBar, "total", 7500L);
+        TestAccess.setFieldValue(progressBar, "current", 7500L);
+        TestAccess.setFieldValue(progressBar, "total", 7500L);
         Assert.assertEquals(100, progressBar.getPercentage());
         
-        TestUtils.setFieldValue(progressBar, "current", 8000L);
-        TestUtils.setFieldValue(progressBar, "total", 7500L);
+        TestAccess.setFieldValue(progressBar, "current", 8000L);
+        TestAccess.setFieldValue(progressBar, "total", 7500L);
         Assert.assertEquals(100, progressBar.getPercentage());
         
-        TestUtils.setFieldValue(progressBar, "current", 1000L);
-        TestUtils.setFieldValue(progressBar, "total", 1L);
+        TestAccess.setFieldValue(progressBar, "current", 1000L);
+        TestAccess.setFieldValue(progressBar, "total", 1L);
         Assert.assertEquals(100, progressBar.getPercentage());
         
-        TestUtils.setFieldValue(progressBar, "current", -50L);
-        TestUtils.setFieldValue(progressBar, "total", 100L);
+        TestAccess.setFieldValue(progressBar, "current", -50L);
+        TestAccess.setFieldValue(progressBar, "total", 100L);
         Assert.assertEquals(0, progressBar.getPercentage());
         
-        TestUtils.setFieldValue(progressBar, "current", 50L);
-        TestUtils.setFieldValue(progressBar, "total", -100L);
+        TestAccess.setFieldValue(progressBar, "current", 50L);
+        TestAccess.setFieldValue(progressBar, "total", -100L);
         Assert.assertEquals(100, progressBar.getPercentage());
         
-        TestUtils.setFieldValue(progressBar, "current", -50L);
-        TestUtils.setFieldValue(progressBar, "total", -100L);
+        TestAccess.setFieldValue(progressBar, "current", -50L);
+        TestAccess.setFieldValue(progressBar, "total", -100L);
         Assert.assertEquals(100, progressBar.getPercentage());
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
-        TestUtils.setFieldValue(progressBar, "total", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "total", 0L);
         TestUtils.assertNoException(() ->
                 Assert.assertEquals(100, progressBar.getPercentage()));
         
-        TestUtils.setFieldValue(progressBar, "current", 1L);
-        TestUtils.setFieldValue(progressBar, "total", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 1L);
+        TestAccess.setFieldValue(progressBar, "total", 0L);
         TestUtils.assertNoException(() ->
                 Assert.assertEquals(100, progressBar.getPercentage()));
     }
@@ -984,94 +985,94 @@ public class ProgressBarTest {
      */
     @Test
     public void testGetLastSpeed() throws Exception {
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "previous", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "previous", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
         Assert.assertEquals(10, progressBar.getLastSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 11L);
-        TestUtils.setFieldValue(progressBar, "previous", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 11L);
+        TestAccess.setFieldValue(progressBar, "previous", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
         Assert.assertEquals(1, progressBar.getLastSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 11L);
-        TestUtils.setFieldValue(progressBar, "previous", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 11L);
+        TestAccess.setFieldValue(progressBar, "previous", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
         Assert.assertEquals(0.5, progressBar.getLastSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 21L);
-        TestUtils.setFieldValue(progressBar, "previous", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19650147071900L);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 21L);
+        TestAccess.setFieldValue(progressBar, "previous", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19650147071900L);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
         Assert.assertEquals(0.2619047619047619, progressBar.getLastSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 18500L);
-        TestUtils.setFieldValue(progressBar, "previous", 600L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19650147071900L);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 18500L);
+        TestAccess.setFieldValue(progressBar, "previous", 600L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19650147071900L);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
         Assert.assertEquals(426.1904761904762, progressBar.getLastSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "previous", 20L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "previous", 20L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
         Assert.assertEquals(0, progressBar.getLastSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "previous", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "previous", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 0L);
         Assert.assertEquals(0, progressBar.getLastSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "previous", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0L);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "previous", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
         Assert.assertEquals(0, progressBar.getLastSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "previous", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0L);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "previous", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 0L);
         Assert.assertEquals(0, progressBar.getLastSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", -50L);
-        TestUtils.setFieldValue(progressBar, "previous", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", -50L);
+        TestAccess.setFieldValue(progressBar, "previous", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
         Assert.assertEquals(0, progressBar.getLastSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 50L);
-        TestUtils.setFieldValue(progressBar, "previous", -10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 50L);
+        TestAccess.setFieldValue(progressBar, "previous", -10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
         Assert.assertEquals(0, progressBar.getLastSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", -50L);
-        TestUtils.setFieldValue(progressBar, "previous", -10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", -50L);
+        TestAccess.setFieldValue(progressBar, "previous", -10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
         Assert.assertEquals(0, progressBar.getLastSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 50L);
-        TestUtils.setFieldValue(progressBar, "previous", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", -19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 50L);
+        TestAccess.setFieldValue(progressBar, "previous", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", -19608147071900L);
         Assert.assertEquals(0, progressBar.getLastSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 50L);
-        TestUtils.setFieldValue(progressBar, "previous", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", -19609147071900L);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 50L);
+        TestAccess.setFieldValue(progressBar, "previous", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", -19609147071900L);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", 19608147071900L);
         Assert.assertEquals(0, progressBar.getLastSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 50L);
-        TestUtils.setFieldValue(progressBar, "previous", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", -19609147071900L);
-        TestUtils.setFieldValue(progressBar, "previousUpdate", -19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 50L);
+        TestAccess.setFieldValue(progressBar, "previous", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", -19609147071900L);
+        TestAccess.setFieldValue(progressBar, "previousUpdate", -19608147071900L);
         Assert.assertEquals(0, progressBar.getLastSpeed(), 0.0000001);
     }
     
@@ -1083,74 +1084,74 @@ public class ProgressBarTest {
      */
     @Test
     public void testGetAverageSpeed() throws Exception {
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(20, progressBar.getAverageSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(10, progressBar.getAverageSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 1500L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 1500L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(750, progressBar.getAverageSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19708147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19708147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(0.2, progressBar.getAverageSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 8754L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19990147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 8754L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19990147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(22.916230366492147, progressBar.getAverageSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(10000, progressBar.getAverageSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(0, progressBar.getAverageSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0L);
         Assert.assertEquals(5.099400817003212E-4, progressBar.getAverageSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(0, progressBar.getAverageSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0L);
         Assert.assertEquals(0, progressBar.getAverageSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", -20L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", -20L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(0, progressBar.getAverageSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", -19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", -19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(0, progressBar.getAverageSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
         Assert.assertEquals(0, progressBar.getAverageSpeed(), 0.0000001);
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", -19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", -19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
         Assert.assertEquals(0, progressBar.getAverageSpeed(), 0.0000001);
     }
     
@@ -1162,8 +1163,8 @@ public class ProgressBarTest {
      */
     @Test
     public void testGetRollingAverageSpeed() throws Exception {
-        List<Long> rollingProgress = TestUtils.getFieldValue(progressBar, List.class, "rollingProgress");
-        List<Long> rollingUpdate = TestUtils.getFieldValue(progressBar, List.class, "rollingUpdate");
+        List<Long> rollingProgress = TestAccess.getFieldValue(progressBar, List.class, "rollingProgress");
+        List<Long> rollingUpdate = TestAccess.getFieldValue(progressBar, List.class, "rollingUpdate");
         
         rollingProgress.clear();
         rollingUpdate.clear();
@@ -1252,54 +1253,54 @@ public class ProgressBarTest {
      */
     @Test
     public void testGetTotalDuration() throws Exception {
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
-        TestUtils.setFieldValue(progressBar, "initialDuration", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "initialDuration", 0L);
         Assert.assertEquals(1000000000L, progressBar.getTotalDuration());
         
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19884806395487L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
-        TestUtils.setFieldValue(progressBar, "initialDuration", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19884806395487L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "initialDuration", 0L);
         Assert.assertEquals(276659323587L, progressBar.getTotalDuration());
         
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19884806395487L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
-        TestUtils.setFieldValue(progressBar, "initialDuration", 24L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19884806395487L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "initialDuration", 24L);
         Assert.assertEquals(300659323587L, progressBar.getTotalDuration());
         
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0L);
-        TestUtils.setFieldValue(progressBar, "initialDuration", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "initialDuration", 0L);
         Assert.assertEquals(19609147071900L, progressBar.getTotalDuration());
         
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
-        TestUtils.setFieldValue(progressBar, "initialDuration", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "initialDuration", 0L);
         Assert.assertEquals(0, progressBar.getTotalDuration());
         
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0L);
-        TestUtils.setFieldValue(progressBar, "initialDuration", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "initialDuration", 0L);
         Assert.assertEquals(0, progressBar.getTotalDuration());
         
-        TestUtils.setFieldValue(progressBar, "currentUpdate", -19884806395487L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
-        TestUtils.setFieldValue(progressBar, "initialDuration", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", -19884806395487L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "initialDuration", 0L);
         Assert.assertEquals(0, progressBar.getTotalDuration());
         
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19884806395487L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
-        TestUtils.setFieldValue(progressBar, "initialDuration", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19884806395487L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
+        TestAccess.setFieldValue(progressBar, "initialDuration", 0L);
         Assert.assertEquals(0, progressBar.getTotalDuration());
         
-        TestUtils.setFieldValue(progressBar, "currentUpdate", -19884806395487L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
-        TestUtils.setFieldValue(progressBar, "initialDuration", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", -19884806395487L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
+        TestAccess.setFieldValue(progressBar, "initialDuration", 0L);
         Assert.assertEquals(0, progressBar.getTotalDuration());
         
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19884806395487L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
-        TestUtils.setFieldValue(progressBar, "initialDuration", -456877L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19884806395487L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "initialDuration", -456877L);
         Assert.assertEquals(276659323587L, progressBar.getTotalDuration());
     }
     
@@ -1313,144 +1314,144 @@ public class ProgressBarTest {
     public void testGetTimeRemaining() throws Exception {
         //standard
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(499, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(998, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 1500L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 1500L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(11, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19708147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19708147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(49900, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 8754L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19990147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 8754L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19990147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(54, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(0, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(Long.MAX_VALUE, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 10L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 10L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0L);
         Assert.assertEquals(19590536L, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 10L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 10L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(Long.MAX_VALUE, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0L);
         Assert.assertEquals(Long.MAX_VALUE, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", -20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", -20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(Long.MAX_VALUE, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", -19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", -19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(Long.MAX_VALUE, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
         Assert.assertEquals(Long.MAX_VALUE, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", -19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", -19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
         Assert.assertEquals(Long.MAX_VALUE, progressBar.getTimeRemaining());
         
         //initial progress
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(998, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(1996, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 1500L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 515L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 1500L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 515L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(17, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 8L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19708147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 8L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19708147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(83166, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 8754L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 1000L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19990147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 8754L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 1000L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19990147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(61, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 5000L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 5000L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(0, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 60L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 60L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(Long.MAX_VALUE, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 10L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", -5L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 10L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", -5L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(1998, progressBar.getTimeRemaining());
         
-        TestUtils.setFieldValue(progressBar, "current", 10L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", -50L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 10L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", -50L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(1998, progressBar.getTimeRemaining());
     }
     
@@ -1462,22 +1463,22 @@ public class ProgressBarTest {
      */
     @Test
     public void testIsComplete() throws Exception {
-        TestUtils.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 0L);
         Assert.assertFalse(progressBar.isComplete());
         
-        TestUtils.setFieldValue(progressBar, "current", 10L);
+        TestAccess.setFieldValue(progressBar, "current", 10L);
         Assert.assertFalse(progressBar.isComplete());
         
-        TestUtils.setFieldValue(progressBar, "current", 9999L);
+        TestAccess.setFieldValue(progressBar, "current", 9999L);
         Assert.assertFalse(progressBar.isComplete());
         
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
         Assert.assertTrue(progressBar.isComplete());
         
-        TestUtils.setFieldValue(progressBar, "current", 10001L);
+        TestAccess.setFieldValue(progressBar, "current", 10001L);
         Assert.assertTrue(progressBar.isComplete());
         
-        TestUtils.setFieldValue(progressBar, "current", 20000L);
+        TestAccess.setFieldValue(progressBar, "current", 20000L);
         Assert.assertTrue(progressBar.isComplete());
     }
     
@@ -1494,7 +1495,7 @@ public class ProgressBarTest {
         PrintStream saveOut;
         ByteArrayOutputStream out;
         
-        TestUtils.setFieldValue(progressBar, "title", "");
+        TestAccess.setFieldValue(progressBar, "title", "");
         
         //standard
         saveOut = System.out;
@@ -1502,17 +1503,17 @@ public class ProgressBarTest {
         System.setOut(new PrintStream(out));
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).getPrintable();
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
-        TestUtils.setFieldValue(progressBar, "progress", 5000L);
-        TestUtils.setFieldValue(progressBar, "current", 5000L);
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "progress", 5000L);
+        TestAccess.setFieldValue(progressBar, "current", 5000L);
         progressBar.complete(false, "");
         Assert.assertEquals(progressBar.getTotal(), progressBar.getProgress());
         Assert.assertEquals(progressBar.getTotal(), progressBar.getCurrent());
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(1)).getPrintable();
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete",
                 StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
@@ -1527,20 +1528,20 @@ public class ProgressBarTest {
         Mockito.when(progressBar.getTotalDuration()).thenReturn(TimeUnit.SECONDS.toNanos(57653L));
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(1)).getPrintable();
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
-        TestUtils.setFieldValue(progressBar, "progress", 5000L);
-        TestUtils.setFieldValue(progressBar, "current", 5000L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 50008147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
-        TestUtils.setFieldValue(progressBar, "initialDuration", 120L);
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "progress", 5000L);
+        TestAccess.setFieldValue(progressBar, "current", 5000L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 50008147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "initialDuration", 120L);
         progressBar.complete(true, "");
         Assert.assertEquals(progressBar.getTotal(), progressBar.getProgress());
         Assert.assertEquals(progressBar.getTotal(), progressBar.getCurrent());
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).getPrintable();
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete (16h 0m 53s)",
                 StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
@@ -1555,17 +1556,17 @@ public class ProgressBarTest {
         System.setOut(new PrintStream(out));
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).getPrintable();
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
-        TestUtils.setFieldValue(progressBar, "progress", 5000L);
-        TestUtils.setFieldValue(progressBar, "current", 5000L);
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "progress", 5000L);
+        TestAccess.setFieldValue(progressBar, "current", 5000L);
         progressBar.complete(false, "Press any key to continue...");
         Assert.assertEquals(progressBar.getTotal(), progressBar.getProgress());
         Assert.assertEquals(progressBar.getTotal(), progressBar.getCurrent());
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(3)).getPrintable();
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete - Press any key to continue...",
                 StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
@@ -1580,20 +1581,20 @@ public class ProgressBarTest {
         Mockito.when(progressBar.getTotalDuration()).thenReturn(TimeUnit.SECONDS.toNanos(57653L));
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(3)).getPrintable();
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
-        TestUtils.setFieldValue(progressBar, "progress", 5000L);
-        TestUtils.setFieldValue(progressBar, "current", 5000L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 50008147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
-        TestUtils.setFieldValue(progressBar, "initialDuration", 120L);
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "progress", 5000L);
+        TestAccess.setFieldValue(progressBar, "current", 5000L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 50008147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "initialDuration", 120L);
         progressBar.complete(true, "Press any key to continue...");
         Assert.assertEquals(progressBar.getTotal(), progressBar.getProgress());
         Assert.assertEquals(progressBar.getTotal(), progressBar.getCurrent());
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(4)).getPrintable();
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 "100% [====================] 10000B/10000B - Complete (16h 0m 53s) - Press any key to continue...",
                 StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
@@ -1608,18 +1609,18 @@ public class ProgressBarTest {
         System.setOut(new PrintStream(out));
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(4)).getPrintable();
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(true));
-        TestUtils.setFieldValue(progressBar, "progress", 5000L);
-        TestUtils.setFieldValue(progressBar, "current", 5000L);
-        TestUtils.setFieldValue(progressBar, "title", "Test Bar");
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "progress", 5000L);
+        TestAccess.setFieldValue(progressBar, "current", 5000L);
+        TestAccess.setFieldValue(progressBar, "title", "Test Bar");
         progressBar.complete(false, "");
         Assert.assertEquals(progressBar.getTotal(), progressBar.getProgress());
         Assert.assertEquals(progressBar.getTotal(), progressBar.getCurrent());
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(5)).getPrintable();
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 "Test Bar: " + "100% [====================] 10000B/10000B - Complete",
                 StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
@@ -1663,10 +1664,10 @@ public class ProgressBarTest {
      */
     @Test
     public void testIsFailed() throws Exception {
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(false));
         Assert.assertFalse(progressBar.isFailed());
         
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
         Assert.assertTrue(progressBar.isFailed());
     }
     
@@ -1683,7 +1684,7 @@ public class ProgressBarTest {
         PrintStream saveOut;
         ByteArrayOutputStream out;
         
-        TestUtils.setFieldValue(progressBar, "title", "");
+        TestAccess.setFieldValue(progressBar, "title", "");
         
         //standard
         saveOut = System.out;
@@ -1691,17 +1692,17 @@ public class ProgressBarTest {
         System.setOut(new PrintStream(out));
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).getPrintable();
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
-        TestUtils.setFieldValue(progressBar, "progress", 5000L);
-        TestUtils.setFieldValue(progressBar, "current", 5000L);
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "progress", 5000L);
+        TestAccess.setFieldValue(progressBar, "current", 5000L);
         progressBar.fail(false, "");
         Assert.assertEquals(5000L, progressBar.getProgress());
         Assert.assertEquals(5000L, progressBar.getCurrent());
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(1)).getPrintable();
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 " 50% [==========          ]  5000B/10000B - Failed",
                 StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
@@ -1716,20 +1717,20 @@ public class ProgressBarTest {
         Mockito.when(progressBar.getTotalDuration()).thenReturn(TimeUnit.SECONDS.toNanos(57653L));
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(1)).getPrintable();
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
-        TestUtils.setFieldValue(progressBar, "progress", 5000L);
-        TestUtils.setFieldValue(progressBar, "current", 5000L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 50008147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
-        TestUtils.setFieldValue(progressBar, "initialDuration", 120L);
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "progress", 5000L);
+        TestAccess.setFieldValue(progressBar, "current", 5000L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 50008147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "initialDuration", 120L);
         progressBar.fail(true, "");
         Assert.assertEquals(5000L, progressBar.getProgress());
         Assert.assertEquals(5000L, progressBar.getCurrent());
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).getPrintable();
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 " 50% [==========          ]  5000B/10000B - Failed (16h 0m 53s)",
                 StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
@@ -1744,17 +1745,17 @@ public class ProgressBarTest {
         System.setOut(new PrintStream(out));
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(2)).getPrintable();
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
-        TestUtils.setFieldValue(progressBar, "progress", 5000L);
-        TestUtils.setFieldValue(progressBar, "current", 5000L);
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "progress", 5000L);
+        TestAccess.setFieldValue(progressBar, "current", 5000L);
         progressBar.fail(false, "Press any key to continue...");
         Assert.assertEquals(5000L, progressBar.getProgress());
         Assert.assertEquals(5000L, progressBar.getCurrent());
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(3)).getPrintable();
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 " 50% [==========          ]  5000B/10000B - Failed - Press any key to continue...",
                 StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
@@ -1769,20 +1770,20 @@ public class ProgressBarTest {
         Mockito.when(progressBar.getTotalDuration()).thenReturn(TimeUnit.SECONDS.toNanos(57653L));
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(3)).getPrintable();
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
-        TestUtils.setFieldValue(progressBar, "progress", 5000L);
-        TestUtils.setFieldValue(progressBar, "current", 5000L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 50008147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
-        TestUtils.setFieldValue(progressBar, "initialDuration", 120L);
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "progress", 5000L);
+        TestAccess.setFieldValue(progressBar, "current", 5000L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 50008147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "initialDuration", 120L);
         progressBar.fail(true, "Press any key to continue...");
         Assert.assertEquals(5000L, progressBar.getProgress());
         Assert.assertEquals(5000L, progressBar.getCurrent());
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(4)).getPrintable();
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 " 50% [==========          ]  5000B/10000B - Failed (16h 0m 53s) - Press any key to continue...",
                 StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
@@ -1797,18 +1798,18 @@ public class ProgressBarTest {
         System.setOut(new PrintStream(out));
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(4)).getPrintable();
-        TestUtils.setFieldValue(progressBar, "update", new AtomicBoolean(true));
-        TestUtils.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(true));
-        TestUtils.setFieldValue(progressBar, "progress", 5000L);
-        TestUtils.setFieldValue(progressBar, "current", 5000L);
-        TestUtils.setFieldValue(progressBar, "title", "Test Bar");
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "progress", 5000L);
+        TestAccess.setFieldValue(progressBar, "current", 5000L);
+        TestAccess.setFieldValue(progressBar, "title", "Test Bar");
         progressBar.fail(false, "");
         Assert.assertEquals(5000L, progressBar.getProgress());
         Assert.assertEquals(5000L, progressBar.getCurrent());
         Mockito.verify(progressBar, VerificationModeFactory.times(0)).print();
         Mockito.verify(progressBar, VerificationModeFactory.times(5)).getPrintable();
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
-        Assert.assertFalse(TestUtils.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "update").get());
+        Assert.assertFalse(TestAccess.getFieldValue(progressBar, AtomicBoolean.class, "firstPrint").get());
         Assert.assertEquals(
                 "Test Bar:  50% [==========          ]  5000B/10000B - Failed",
                 StringUtility.rTrim(StringUtility.removeConsoleEscapeCharacters(out.toString()).replaceAll("[\r\n]", "").replace(" ", ""))
@@ -1852,18 +1853,18 @@ public class ProgressBarTest {
      */
     @Test
     public void testGetTitleString() throws Exception {
-        TestUtils.setFieldValue(progressBar, "title", "Test Bar");
+        TestAccess.setFieldValue(progressBar, "title", "Test Bar");
         Assert.assertEquals(
                 Console.ConsoleEffect.CYAN.apply("Test Bar: "),
                 progressBar.getTitleString()
         );
         
-        TestUtils.setFieldValue(progressBar, "title", "");
+        TestAccess.setFieldValue(progressBar, "title", "");
         Assert.assertEquals(
                 Console.ConsoleEffect.CYAN.apply(": "),
                 progressBar.getTitleString()
         );
-        TestUtils.setFieldValue(progressBar, "title", "Test Bar");
+        TestAccess.setFieldValue(progressBar, "title", "Test Bar");
     }
     
     /**
@@ -1874,70 +1875,70 @@ public class ProgressBarTest {
      */
     @Test
     public void testGetPercentageString() throws Exception {
-        TestUtils.setFieldValue(progressBar, "current", 5000L);
+        TestAccess.setFieldValue(progressBar, "current", 5000L);
         Assert.assertEquals(
                 Console.ConsoleEffect.GREEN.apply(" 50") + '%',
                 progressBar.getPercentageString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 7784L);
+        TestAccess.setFieldValue(progressBar, "current", 7784L);
         Assert.assertEquals(
                 Console.ConsoleEffect.GREEN.apply(" 77") + '%',
                 progressBar.getPercentageString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 9999L);
+        TestAccess.setFieldValue(progressBar, "current", 9999L);
         Assert.assertEquals(
                 Console.ConsoleEffect.GREEN.apply(" 99") + '%',
                 progressBar.getPercentageString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
         Assert.assertEquals(
                 Console.ConsoleEffect.CYAN.apply("100") + '%',
                 progressBar.getPercentageString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 20000L);
+        TestAccess.setFieldValue(progressBar, "current", 20000L);
         Assert.assertEquals(
                 Console.ConsoleEffect.CYAN.apply("100") + '%',
                 progressBar.getPercentageString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 1L);
+        TestAccess.setFieldValue(progressBar, "current", 1L);
         Assert.assertEquals(
                 Console.ConsoleEffect.GREEN.apply("  0") + '%',
                 progressBar.getPercentageString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 0L);
         Assert.assertEquals(
                 Console.ConsoleEffect.GREEN.apply("  0") + '%',
                 progressBar.getPercentageString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", -941L);
+        TestAccess.setFieldValue(progressBar, "current", -941L);
         Assert.assertEquals(
                 Console.ConsoleEffect.GREEN.apply("  0") + '%',
                 progressBar.getPercentageString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
         Assert.assertEquals(
                 Console.ConsoleEffect.RED.apply("  0") + '%',
                 progressBar.getPercentageString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 7784L);
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "current", 7784L);
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
         Assert.assertEquals(
                 Console.ConsoleEffect.RED.apply(" 77") + '%',
                 progressBar.getPercentageString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
         Assert.assertEquals(
                 Console.ConsoleEffect.RED.apply("100") + '%',
                 progressBar.getPercentageString()
@@ -1952,70 +1953,70 @@ public class ProgressBarTest {
      */
     @Test
     public void testGetBarString() throws Exception {
-        TestUtils.setFieldValue(progressBar, "current", 5000L);
+        TestAccess.setFieldValue(progressBar, "current", 5000L);
         Assert.assertEquals(
                 '[' + Console.ConsoleEffect.GREEN.apply("==========>         ") + ']',
                 progressBar.getBarString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 7784L);
+        TestAccess.setFieldValue(progressBar, "current", 7784L);
         Assert.assertEquals(
                 '[' + Console.ConsoleEffect.GREEN.apply("===============>    ") + ']',
                 progressBar.getBarString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 9999L);
+        TestAccess.setFieldValue(progressBar, "current", 9999L);
         Assert.assertEquals(
                 '[' + Console.ConsoleEffect.GREEN.apply("===================>") + ']',
                 progressBar.getBarString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
         Assert.assertEquals(
                 '[' + Console.ConsoleEffect.CYAN.apply("====================") + ']',
                 progressBar.getBarString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 20000L);
+        TestAccess.setFieldValue(progressBar, "current", 20000L);
         Assert.assertEquals(
                 '[' + Console.ConsoleEffect.CYAN.apply("====================") + ']',
                 progressBar.getBarString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 1L);
+        TestAccess.setFieldValue(progressBar, "current", 1L);
         Assert.assertEquals(
                 '[' + Console.ConsoleEffect.GREEN.apply(">                   ") + ']',
                 progressBar.getBarString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 0L);
         Assert.assertEquals(
                 '[' + Console.ConsoleEffect.GREEN.apply(">                   ") + ']',
                 progressBar.getBarString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", -941L);
+        TestAccess.setFieldValue(progressBar, "current", -941L);
         Assert.assertEquals(
                 '[' + Console.ConsoleEffect.GREEN.apply(">                   ") + ']',
                 progressBar.getBarString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
         Assert.assertEquals(
                 '[' + Console.ConsoleEffect.RED.apply("                    ") + ']',
                 progressBar.getBarString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 7784L);
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "current", 7784L);
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
         Assert.assertEquals(
                 '[' + Console.ConsoleEffect.RED.apply("===============     ") + ']',
                 progressBar.getBarString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
         Assert.assertEquals(
                 '[' + Console.ConsoleEffect.RED.apply("====================") + ']',
                 progressBar.getBarString()
@@ -2030,70 +2031,70 @@ public class ProgressBarTest {
      */
     @Test
     public void testGetRatioString() throws Exception {
-        TestUtils.setFieldValue(progressBar, "current", 5000L);
+        TestAccess.setFieldValue(progressBar, "current", 5000L);
         Assert.assertEquals(
                 Console.ConsoleEffect.GREEN.apply(" 5000") + "B/" + Console.ConsoleEffect.CYAN.apply("10000") + 'B',
                 progressBar.getRatioString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 7784L);
+        TestAccess.setFieldValue(progressBar, "current", 7784L);
         Assert.assertEquals(
                 Console.ConsoleEffect.GREEN.apply(" 7784") + "B/" + Console.ConsoleEffect.CYAN.apply("10000") + 'B',
                 progressBar.getRatioString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 9999L);
+        TestAccess.setFieldValue(progressBar, "current", 9999L);
         Assert.assertEquals(
                 Console.ConsoleEffect.GREEN.apply(" 9999") + "B/" + Console.ConsoleEffect.CYAN.apply("10000") + 'B',
                 progressBar.getRatioString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
         Assert.assertEquals(
                 Console.ConsoleEffect.CYAN.apply("10000") + "B/" + Console.ConsoleEffect.CYAN.apply("10000") + 'B',
                 progressBar.getRatioString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 20000L);
+        TestAccess.setFieldValue(progressBar, "current", 20000L);
         Assert.assertEquals(
                 Console.ConsoleEffect.CYAN.apply("10000") + "B/" + Console.ConsoleEffect.CYAN.apply("10000") + 'B',
                 progressBar.getRatioString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 1L);
+        TestAccess.setFieldValue(progressBar, "current", 1L);
         Assert.assertEquals(
                 Console.ConsoleEffect.GREEN.apply("    1") + "B/" + Console.ConsoleEffect.CYAN.apply("10000") + 'B',
                 progressBar.getRatioString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 0L);
         Assert.assertEquals(
                 Console.ConsoleEffect.GREEN.apply("    0") + "B/" + Console.ConsoleEffect.CYAN.apply("10000") + 'B',
                 progressBar.getRatioString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", -941L);
+        TestAccess.setFieldValue(progressBar, "current", -941L);
         Assert.assertEquals(
                 Console.ConsoleEffect.GREEN.apply("    0") + "B/" + Console.ConsoleEffect.CYAN.apply("10000") + 'B',
                 progressBar.getRatioString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
         Assert.assertEquals(
                 Console.ConsoleEffect.RED.apply("    0") + "B/" + Console.ConsoleEffect.CYAN.apply("10000") + 'B',
                 progressBar.getRatioString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 7784L);
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "current", 7784L);
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
         Assert.assertEquals(
                 Console.ConsoleEffect.RED.apply(" 7784") + "B/" + Console.ConsoleEffect.CYAN.apply("10000") + 'B',
                 progressBar.getRatioString()
         );
         
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
         Assert.assertEquals(
                 Console.ConsoleEffect.RED.apply("10000") + "B/" + Console.ConsoleEffect.CYAN.apply("10000") + 'B',
                 progressBar.getRatioString()
@@ -2139,24 +2140,24 @@ public class ProgressBarTest {
         );
         
         Mockito.doReturn(503.0).when(progressBar).getRollingAverageSpeed();
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(false));
         Assert.assertEquals(
                 "",
                 progressBar.getSpeedString()
         );
         
         Mockito.doReturn(503.0).when(progressBar).getRollingAverageSpeed();
-        TestUtils.setFieldValue(progressBar, "current", 7784L);
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "current", 7784L);
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
         Assert.assertEquals(
                 "",
                 progressBar.getSpeedString()
         );
         
         Mockito.doReturn(503.0).when(progressBar).getRollingAverageSpeed();
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
         Assert.assertEquals(
                 "",
                 progressBar.getSpeedString()
@@ -2173,167 +2174,167 @@ public class ProgressBarTest {
     public void testGetTimeRemainingString() throws Exception {
         //standard
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: 00:08:19", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: 00:16:38", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 1500L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 1500L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: 00:00:11", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19708147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19708147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: 13:51:40", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 8754L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19990147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 8754L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19990147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: 00:00:54", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(Console.ConsoleEffect.CYAN.apply("Complete"), progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: --:--:--", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 10L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 10L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0L);
         Assert.assertEquals("ETA: 5441:48:56", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 10L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 10L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: --:--:--", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 0L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 0L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 0L);
         Assert.assertEquals("ETA: --:--:--", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", -20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", -20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: --:--:--", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", -19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", -19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: --:--:--", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
         Assert.assertEquals("ETA: --:--:--", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", -19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", -19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", -19608147071900L);
         Assert.assertEquals("ETA: --:--:--", progressBar.getTimeRemainingString());
         
         //initial progress
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: 00:16:38", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 10L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 10L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: 00:33:16", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 1500L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 515L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 1500L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 515L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: 00:00:17", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 20L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 8L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19708147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 20L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 8L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19708147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: 23:06:06", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 8754L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 1000L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19990147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 8754L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 1000L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19990147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: 00:01:01", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 5000L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 5000L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19609147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals(Console.ConsoleEffect.CYAN.apply("Complete"), progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 0L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 60L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 0L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 60L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: --:--:--", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 10L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", -5L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 10L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", -5L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: 00:33:18", progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 10L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", -50L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "current", 10L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", -50L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
         Assert.assertEquals("ETA: 00:33:18", progressBar.getTimeRemainingString());
         
         //done
         
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(false));
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(false));
         Assert.assertEquals(Console.ConsoleEffect.CYAN.apply("Complete"), progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 5000L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "current", 5000L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
         Assert.assertEquals(Console.ConsoleEffect.RED.apply("Failed"), progressBar.getTimeRemainingString());
         
-        TestUtils.setFieldValue(progressBar, "current", 10000L);
-        TestUtils.setFieldValue(progressBar, "initialProgress", 0L);
-        TestUtils.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
-        TestUtils.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
-        TestUtils.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
+        TestAccess.setFieldValue(progressBar, "current", 10000L);
+        TestAccess.setFieldValue(progressBar, "initialProgress", 0L);
+        TestAccess.setFieldValue(progressBar, "currentUpdate", 19610147071900L);
+        TestAccess.setFieldValue(progressBar, "firstUpdate", 19608147071900L);
+        TestAccess.setFieldValue(progressBar, "failed", new AtomicBoolean(true));
         Assert.assertEquals(Console.ConsoleEffect.RED.apply("Failed"), progressBar.getTimeRemainingString());
     }
     
@@ -2346,7 +2347,7 @@ public class ProgressBarTest {
     @Test
     public void testGetTitle() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        TestUtils.setFieldValue(sut, "title", "test title");
+        TestAccess.setFieldValue(sut, "title", "test title");
         Assert.assertEquals("test title", sut.getTitle());
     }
     
@@ -2359,7 +2360,7 @@ public class ProgressBarTest {
     @Test
     public void testGetTotal() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        TestUtils.setFieldValue(sut, "total", 87000L);
+        TestAccess.setFieldValue(sut, "total", 87000L);
         Assert.assertEquals(87000L, sut.getTotal());
     }
     
@@ -2372,7 +2373,7 @@ public class ProgressBarTest {
     @Test
     public void testGetProgress() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        TestUtils.setFieldValue(sut, "progress", 51L);
+        TestAccess.setFieldValue(sut, "progress", 51L);
         Assert.assertEquals(51L, sut.getProgress());
     }
     
@@ -2385,7 +2386,7 @@ public class ProgressBarTest {
     @Test
     public void testGetCurrent() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        TestUtils.setFieldValue(sut, "current", 50400L);
+        TestAccess.setFieldValue(sut, "current", 50400L);
         Assert.assertEquals(50400L, sut.getCurrent());
     }
     
@@ -2398,7 +2399,7 @@ public class ProgressBarTest {
     @Test
     public void testGetPrevious() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        TestUtils.setFieldValue(sut, "previous", 11123L);
+        TestAccess.setFieldValue(sut, "previous", 11123L);
         Assert.assertEquals(11123L, sut.getPrevious());
     }
     
@@ -2411,7 +2412,7 @@ public class ProgressBarTest {
     @Test
     public void testGetInitialProgress() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        TestUtils.setFieldValue(sut, "initialProgress", 75436L);
+        TestAccess.setFieldValue(sut, "initialProgress", 75436L);
         Assert.assertEquals(75436L, sut.getInitialProgress());
     }
     
@@ -2424,7 +2425,7 @@ public class ProgressBarTest {
     @Test
     public void testGetInitialDuration() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        TestUtils.setFieldValue(sut, "initialDuration", 32554778965L);
+        TestAccess.setFieldValue(sut, "initialDuration", 32554778965L);
         Assert.assertEquals(32554778965L, sut.getInitialDuration());
     }
     
@@ -2437,7 +2438,7 @@ public class ProgressBarTest {
     @Test
     public void testGetCurrentUpdate() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        TestUtils.setFieldValue(sut, "currentUpdate", 641L);
+        TestAccess.setFieldValue(sut, "currentUpdate", 641L);
         Assert.assertEquals(641L, sut.getCurrentUpdate());
     }
     
@@ -2450,7 +2451,7 @@ public class ProgressBarTest {
     @Test
     public void testGetPreviousUpdate() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        TestUtils.setFieldValue(sut, "previousUpdate", 15462L);
+        TestAccess.setFieldValue(sut, "previousUpdate", 15462L);
         Assert.assertEquals(15462L, sut.getPreviousUpdate());
     }
     
@@ -2463,7 +2464,7 @@ public class ProgressBarTest {
     @Test
     public void testGetFirstUpdate() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        TestUtils.setFieldValue(sut, "firstUpdate", 8745100L);
+        TestAccess.setFieldValue(sut, "firstUpdate", 8745100L);
         Assert.assertEquals(8745100L, sut.getFirstUpdate());
     }
     
@@ -2476,7 +2477,7 @@ public class ProgressBarTest {
     @Test
     public void testGetWidth() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        TestUtils.setFieldValue(sut, "width", 163);
+        TestAccess.setFieldValue(sut, "width", 163);
         Assert.assertEquals(163, sut.getWidth());
     }
     
@@ -2489,7 +2490,7 @@ public class ProgressBarTest {
     @Test
     public void testGetUnits() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        TestUtils.setFieldValue(sut, "units", "test unit");
+        TestAccess.setFieldValue(sut, "units", "test unit");
         Assert.assertEquals("test unit", sut.getUnits());
     }
     
@@ -2502,9 +2503,9 @@ public class ProgressBarTest {
     @Test
     public void testGetAutoPrint() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        TestUtils.setFieldValue(sut, "autoPrint", false);
+        TestAccess.setFieldValue(sut, "autoPrint", false);
         Assert.assertFalse(sut.getAutoPrint());
-        TestUtils.setFieldValue(sut, "autoPrint", true);
+        TestAccess.setFieldValue(sut, "autoPrint", true);
         Assert.assertTrue(sut.getAutoPrint());
     }
     
@@ -2518,9 +2519,9 @@ public class ProgressBarTest {
     public void testGetShowPercentage() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
         Assert.assertEquals(ProgressBar.DEFAULT_SHOW_PERCENTAGE, sut.getShowPercentage());
-        TestUtils.setFieldValue(sut, "showPercentage", false);
+        TestAccess.setFieldValue(sut, "showPercentage", false);
         Assert.assertFalse(sut.getShowPercentage());
-        TestUtils.setFieldValue(sut, "showPercentage", true);
+        TestAccess.setFieldValue(sut, "showPercentage", true);
         Assert.assertTrue(sut.getShowPercentage());
     }
     
@@ -2534,9 +2535,9 @@ public class ProgressBarTest {
     public void testGetShowBar() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
         Assert.assertEquals(ProgressBar.DEFAULT_SHOW_BAR, sut.getShowBar());
-        TestUtils.setFieldValue(sut, "showBar", false);
+        TestAccess.setFieldValue(sut, "showBar", false);
         Assert.assertFalse(sut.getShowBar());
-        TestUtils.setFieldValue(sut, "showBar", true);
+        TestAccess.setFieldValue(sut, "showBar", true);
         Assert.assertTrue(sut.getShowBar());
     }
     
@@ -2550,9 +2551,9 @@ public class ProgressBarTest {
     public void testGetShowRatio() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
         Assert.assertEquals(ProgressBar.DEFAULT_SHOW_RATIO, sut.getShowRatio());
-        TestUtils.setFieldValue(sut, "showRatio", false);
+        TestAccess.setFieldValue(sut, "showRatio", false);
         Assert.assertFalse(sut.getShowRatio());
-        TestUtils.setFieldValue(sut, "showRatio", true);
+        TestAccess.setFieldValue(sut, "showRatio", true);
         Assert.assertTrue(sut.getShowRatio());
     }
     
@@ -2566,9 +2567,9 @@ public class ProgressBarTest {
     public void testGetShowSpeed() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
         Assert.assertEquals(ProgressBar.DEFAULT_SHOW_SPEED, sut.getShowSpeed());
-        TestUtils.setFieldValue(sut, "showSpeed", false);
+        TestAccess.setFieldValue(sut, "showSpeed", false);
         Assert.assertFalse(sut.getShowSpeed());
-        TestUtils.setFieldValue(sut, "showSpeed", true);
+        TestAccess.setFieldValue(sut, "showSpeed", true);
         Assert.assertTrue(sut.getShowSpeed());
     }
     
@@ -2582,9 +2583,9 @@ public class ProgressBarTest {
     public void testGetShowTimeRemaining() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
         Assert.assertEquals(ProgressBar.DEFAULT_SHOW_TIME_REMAINING, sut.getShowTimeRemaining());
-        TestUtils.setFieldValue(sut, "showTimeRemaining", false);
+        TestAccess.setFieldValue(sut, "showTimeRemaining", false);
         Assert.assertFalse(sut.getShowTimeRemaining());
-        TestUtils.setFieldValue(sut, "showTimeRemaining", true);
+        TestAccess.setFieldValue(sut, "showTimeRemaining", true);
         Assert.assertTrue(sut.getShowTimeRemaining());
     }
     
@@ -2597,19 +2598,19 @@ public class ProgressBarTest {
     @Test
     public void testUpdateTitle() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        Assert.assertEquals("", TestUtils.getFieldValue(sut, "title"));
-        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertEquals("", TestAccess.getFieldValue(sut, "title"));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, AtomicBoolean.class, "firstPrint").get());
         Assert.assertTrue(sut.updateTitle("Test"));
-        Assert.assertEquals("Test", TestUtils.getFieldValue(sut, "title"));
-        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertEquals("Test", TestAccess.getFieldValue(sut, "title"));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, AtomicBoolean.class, "firstPrint").get());
         Assert.assertTrue(sut.updateTitle("Test 2"));
-        Assert.assertEquals("Test 2", TestUtils.getFieldValue(sut, "title"));
-        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "firstPrint").get());
-        TestUtils.setFieldValue(sut, "firstPrint", new AtomicBoolean(false));
-        Assert.assertFalse(TestUtils.getFieldValue(sut, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertEquals("Test 2", TestAccess.getFieldValue(sut, "title"));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, AtomicBoolean.class, "firstPrint").get());
+        TestAccess.setFieldValue(sut, "firstPrint", new AtomicBoolean(false));
+        Assert.assertFalse(TestAccess.getFieldValue(sut, AtomicBoolean.class, "firstPrint").get());
         Assert.assertFalse(sut.updateTitle("Test 3"));
-        Assert.assertEquals("Test 2", TestUtils.getFieldValue(sut, "title"));
-        Assert.assertFalse(TestUtils.getFieldValue(sut, AtomicBoolean.class, "firstPrint").get());
+        Assert.assertEquals("Test 2", TestAccess.getFieldValue(sut, "title"));
+        Assert.assertFalse(TestAccess.getFieldValue(sut, AtomicBoolean.class, "firstPrint").get());
     }
     
     /**
@@ -2621,9 +2622,9 @@ public class ProgressBarTest {
     @Test
     public void testUpdateTotal() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        Assert.assertEquals(0L, TestUtils.getFieldValue(sut, "total"));
+        Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "total"));
         sut.updateTotal(74461210L);
-        Assert.assertEquals(74461210L, TestUtils.getFieldValue(sut, "total"));
+        Assert.assertEquals(74461210L, TestAccess.getFieldValue(sut, "total"));
     }
     
     /**
@@ -2636,37 +2637,37 @@ public class ProgressBarTest {
     @Test
     public void testUpdateUnits() throws Exception {
         ProgressBar sut = new ProgressBar("", 100, "seconds");
-        Assert.assertEquals("seconds", TestUtils.getFieldValue(sut, "units"));
-        Assert.assertEquals(100L, TestUtils.getFieldValue(sut, "total"));
-        Assert.assertEquals(0L, TestUtils.getFieldValue(sut, "progress"));
-        Assert.assertEquals(0L, TestUtils.getFieldValue(sut, "current"));
-        Assert.assertEquals(0L, TestUtils.getFieldValue(sut, "previous"));
-        Assert.assertEquals(0L, TestUtils.getFieldValue(sut, "initialProgress"));
+        Assert.assertEquals("seconds", TestAccess.getFieldValue(sut, "units"));
+        Assert.assertEquals(100L, TestAccess.getFieldValue(sut, "total"));
+        Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "progress"));
+        Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "current"));
+        Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "previous"));
+        Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "initialProgress"));
         Assert.assertArrayEquals(new Long[] {},
-                TestUtils.getFieldValue(sut, List.class, "rollingProgress").toArray());
-        TestUtils.setFieldValue(sut, "progress", 54L);
-        TestUtils.setFieldValue(sut, "current", 54L);
-        TestUtils.setFieldValue(sut, "previous", 51L);
-        TestUtils.setFieldValue(sut, "initialProgress", 10L);
-        TestUtils.setFieldValue(sut, "rollingProgress", Arrays.asList(39L, 43L, 46L, 51L, 54L));
+                TestAccess.getFieldValue(sut, List.class, "rollingProgress").toArray());
+        TestAccess.setFieldValue(sut, "progress", 54L);
+        TestAccess.setFieldValue(sut, "current", 54L);
+        TestAccess.setFieldValue(sut, "previous", 51L);
+        TestAccess.setFieldValue(sut, "initialProgress", 10L);
+        TestAccess.setFieldValue(sut, "rollingProgress", Arrays.asList(39L, 43L, 46L, 51L, 54L));
         sut.updateUnits("s");
-        Assert.assertEquals("s", TestUtils.getFieldValue(sut, "units"));
-        Assert.assertEquals(100L, TestUtils.getFieldValue(sut, "total"));
-        Assert.assertEquals(54L, TestUtils.getFieldValue(sut, "progress"));
-        Assert.assertEquals(54L, TestUtils.getFieldValue(sut, "current"));
-        Assert.assertEquals(51L, TestUtils.getFieldValue(sut, "previous"));
-        Assert.assertEquals(10L, TestUtils.getFieldValue(sut, "initialProgress"));
+        Assert.assertEquals("s", TestAccess.getFieldValue(sut, "units"));
+        Assert.assertEquals(100L, TestAccess.getFieldValue(sut, "total"));
+        Assert.assertEquals(54L, TestAccess.getFieldValue(sut, "progress"));
+        Assert.assertEquals(54L, TestAccess.getFieldValue(sut, "current"));
+        Assert.assertEquals(51L, TestAccess.getFieldValue(sut, "previous"));
+        Assert.assertEquals(10L, TestAccess.getFieldValue(sut, "initialProgress"));
         Assert.assertArrayEquals(new Long[] {39L, 43L, 46L, 51L, 54L},
-                TestUtils.getFieldValue(sut, List.class, "rollingProgress").toArray());
+                TestAccess.getFieldValue(sut, List.class, "rollingProgress").toArray());
         sut.updateUnits("ms", 1000);
-        Assert.assertEquals("ms", TestUtils.getFieldValue(sut, "units"));
-        Assert.assertEquals(100000L, TestUtils.getFieldValue(sut, "total"));
-        Assert.assertEquals(54000L, TestUtils.getFieldValue(sut, "progress"));
-        Assert.assertEquals(54000L, TestUtils.getFieldValue(sut, "current"));
-        Assert.assertEquals(51000L, TestUtils.getFieldValue(sut, "previous"));
-        Assert.assertEquals(10000L, TestUtils.getFieldValue(sut, "initialProgress"));
+        Assert.assertEquals("ms", TestAccess.getFieldValue(sut, "units"));
+        Assert.assertEquals(100000L, TestAccess.getFieldValue(sut, "total"));
+        Assert.assertEquals(54000L, TestAccess.getFieldValue(sut, "progress"));
+        Assert.assertEquals(54000L, TestAccess.getFieldValue(sut, "current"));
+        Assert.assertEquals(51000L, TestAccess.getFieldValue(sut, "previous"));
+        Assert.assertEquals(10000L, TestAccess.getFieldValue(sut, "initialProgress"));
         Assert.assertArrayEquals(new Long[] {39000L, 43000L, 46000L, 51000L, 54000L},
-                TestUtils.getFieldValue(sut, List.class, "rollingProgress").toArray());
+                TestAccess.getFieldValue(sut, List.class, "rollingProgress").toArray());
     }
     
     /**
@@ -2678,15 +2679,15 @@ public class ProgressBarTest {
     @Test
     public void testDefineInitialProgress() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        Assert.assertEquals(0L, TestUtils.getFieldValue(sut, "initialProgress"));
+        Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "initialProgress"));
         Assert.assertTrue(sut.defineInitialProgress(74461210L));
-        Assert.assertEquals(74461210L, TestUtils.getFieldValue(sut, "initialProgress"));
+        Assert.assertEquals(74461210L, TestAccess.getFieldValue(sut, "initialProgress"));
         Assert.assertFalse(sut.defineInitialProgress(191070334L));
-        Assert.assertEquals(74461210L, TestUtils.getFieldValue(sut, "initialProgress"));
-        TestUtils.setFieldValue(sut, "initialProgress", 0L);
-        Assert.assertEquals(0L, TestUtils.getFieldValue(sut, "initialProgress"));
+        Assert.assertEquals(74461210L, TestAccess.getFieldValue(sut, "initialProgress"));
+        TestAccess.setFieldValue(sut, "initialProgress", 0L);
+        Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "initialProgress"));
         Assert.assertTrue(sut.defineInitialProgress(191070334L));
-        Assert.assertEquals(191070334L, TestUtils.getFieldValue(sut, "initialProgress"));
+        Assert.assertEquals(191070334L, TestAccess.getFieldValue(sut, "initialProgress"));
     }
     
     /**
@@ -2698,15 +2699,15 @@ public class ProgressBarTest {
     @Test
     public void testDefineInitialDuration() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        Assert.assertEquals(0L, TestUtils.getFieldValue(sut, "initialDuration"));
+        Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "initialDuration"));
         Assert.assertTrue(sut.defineInitialDuration(158L));
-        Assert.assertEquals(158L, TestUtils.getFieldValue(sut, "initialDuration"));
+        Assert.assertEquals(158L, TestAccess.getFieldValue(sut, "initialDuration"));
         Assert.assertFalse(sut.defineInitialDuration(3877L));
-        Assert.assertEquals(158L, TestUtils.getFieldValue(sut, "initialDuration"));
-        TestUtils.setFieldValue(sut, "initialDuration", 0L);
-        Assert.assertEquals(0L, TestUtils.getFieldValue(sut, "initialDuration"));
+        Assert.assertEquals(158L, TestAccess.getFieldValue(sut, "initialDuration"));
+        TestAccess.setFieldValue(sut, "initialDuration", 0L);
+        Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "initialDuration"));
         Assert.assertTrue(sut.defineInitialDuration(3877L));
-        Assert.assertEquals(3877L, TestUtils.getFieldValue(sut, "initialDuration"));
+        Assert.assertEquals(3877L, TestAccess.getFieldValue(sut, "initialDuration"));
     }
     
     /**
@@ -2719,9 +2720,9 @@ public class ProgressBarTest {
     public void testSetAutoPrint() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
         sut.setAutoPrint(false);
-        Assert.assertFalse(TestUtils.getFieldValue(sut, boolean.class, "autoPrint"));
+        Assert.assertFalse(TestAccess.getFieldValue(sut, boolean.class, "autoPrint"));
         sut.setAutoPrint(true);
-        Assert.assertTrue(TestUtils.getFieldValue(sut, boolean.class, "autoPrint"));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, boolean.class, "autoPrint"));
     }
     
     /**
@@ -2733,11 +2734,11 @@ public class ProgressBarTest {
     @Test
     public void testSetShowPercentage() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_PERCENTAGE, TestUtils.getFieldValue(sut, "showPercentage"));
+        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_PERCENTAGE, TestAccess.getFieldValue(sut, "showPercentage"));
         sut.setShowPercentage(false);
-        Assert.assertFalse(TestUtils.getFieldValue(sut, boolean.class, "showPercentage"));
+        Assert.assertFalse(TestAccess.getFieldValue(sut, boolean.class, "showPercentage"));
         sut.setShowPercentage(true);
-        Assert.assertTrue(TestUtils.getFieldValue(sut, boolean.class, "showPercentage"));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, boolean.class, "showPercentage"));
     }
     
     /**
@@ -2749,11 +2750,11 @@ public class ProgressBarTest {
     @Test
     public void testSetShowBar() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_BAR, TestUtils.getFieldValue(sut, "showBar"));
+        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_BAR, TestAccess.getFieldValue(sut, "showBar"));
         sut.setShowBar(false);
-        Assert.assertFalse(TestUtils.getFieldValue(sut, boolean.class, "showBar"));
+        Assert.assertFalse(TestAccess.getFieldValue(sut, boolean.class, "showBar"));
         sut.setShowBar(true);
-        Assert.assertTrue(TestUtils.getFieldValue(sut, boolean.class, "showBar"));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, boolean.class, "showBar"));
     }
     
     /**
@@ -2765,11 +2766,11 @@ public class ProgressBarTest {
     @Test
     public void testSetShowRatio() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_RATIO, TestUtils.getFieldValue(sut, "showRatio"));
+        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_RATIO, TestAccess.getFieldValue(sut, "showRatio"));
         sut.setShowRatio(false);
-        Assert.assertFalse(TestUtils.getFieldValue(sut, boolean.class, "showRatio"));
+        Assert.assertFalse(TestAccess.getFieldValue(sut, boolean.class, "showRatio"));
         sut.setShowRatio(true);
-        Assert.assertTrue(TestUtils.getFieldValue(sut, boolean.class, "showRatio"));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, boolean.class, "showRatio"));
     }
     
     /**
@@ -2781,11 +2782,11 @@ public class ProgressBarTest {
     @Test
     public void testSetShowSpeed() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_SPEED, TestUtils.getFieldValue(sut, "showSpeed"));
+        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_SPEED, TestAccess.getFieldValue(sut, "showSpeed"));
         sut.setShowSpeed(false);
-        Assert.assertFalse(TestUtils.getFieldValue(sut, boolean.class, "showSpeed"));
+        Assert.assertFalse(TestAccess.getFieldValue(sut, boolean.class, "showSpeed"));
         sut.setShowSpeed(true);
-        Assert.assertTrue(TestUtils.getFieldValue(sut, boolean.class, "showSpeed"));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, boolean.class, "showSpeed"));
     }
     
     /**
@@ -2797,11 +2798,11 @@ public class ProgressBarTest {
     @Test
     public void testSetShowTimeRemaining() throws Exception {
         ProgressBar sut = new ProgressBar("", 0);
-        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_TIME_REMAINING, TestUtils.getFieldValue(sut, "showTimeRemaining"));
+        Assert.assertEquals(ProgressBar.DEFAULT_SHOW_TIME_REMAINING, TestAccess.getFieldValue(sut, "showTimeRemaining"));
         sut.setShowTimeRemaining(false);
-        Assert.assertFalse(TestUtils.getFieldValue(sut, boolean.class, "showTimeRemaining"));
+        Assert.assertFalse(TestAccess.getFieldValue(sut, boolean.class, "showTimeRemaining"));
         sut.setShowTimeRemaining(true);
-        Assert.assertTrue(TestUtils.getFieldValue(sut, boolean.class, "showTimeRemaining"));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, boolean.class, "showTimeRemaining"));
     }
     
 }

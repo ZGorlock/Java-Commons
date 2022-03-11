@@ -34,6 +34,7 @@ import commons.math.component.vector.Vector;
 import commons.math.component.vector.Vector2;
 import commons.math.component.vector.Vector3;
 import commons.math.component.vector.Vector4;
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -128,7 +129,7 @@ public class BaseComponentTest {
     @Test
     public void testConstants() throws Exception {
         //static
-        Object errorHandler = TestUtils.getFieldValue(BaseComponent.class, "errorHandler");
+        Object errorHandler = TestAccess.getFieldValue(BaseComponent.class, "errorHandler");
         Assert.assertNotNull(errorHandler);
         Assert.assertEquals(ComponentErrorHandlerProvider.getErrorHandler(), errorHandler);
     }
@@ -1356,7 +1357,7 @@ public class BaseComponentTest {
         
         //standard
         Assert.assertEquals(3, sut.getDimensionality());
-        TestUtils.setFieldValue(sut, "dimensionality", 5);
+        TestAccess.setFieldValue(sut, "dimensionality", 5);
         Assert.assertEquals(5, sut.getDimensionality());
         sut.calculateDimensionality();
         Assert.assertEquals(3, sut.getDimensionality());

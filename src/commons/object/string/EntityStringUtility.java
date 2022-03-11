@@ -43,7 +43,7 @@ public final class EntityStringUtility {
     private static String generateClassString(boolean simple, Class<?> clazz) {
         return Optional.ofNullable(clazz)
                 .map(e -> (simple ? e.getSimpleName() : e.getTypeName())).map(e -> e
-                        .replaceAll("\\$MockitoMock\\$\\d*", ""))
+                        .replaceAll("\\$MockitoMock\\$\\d*", "").replaceAll((simple ? "(?:.+\\$)+" : ""), ""))
                 .orElse("null");
     }
     

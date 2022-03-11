@@ -14,7 +14,7 @@ import java.io.PipedOutputStream;
 import java.io.Reader;
 import java.nio.charset.StandardCharsets;
 
-import commons.test.TestUtils;
+import commons.test.TestAccess;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -148,8 +148,8 @@ public class BufferedLineReaderTest {
         Assert.assertNotNull(sut);
         Assert.assertTrue(sut instanceof BufferedLineReader);
         Assert.assertTrue(sut instanceof BufferedReader);
-        Assert.assertEquals(mockReader, TestUtils.getFieldValue(sut, "in"));
-        Assert.assertEquals(BufferedLineReader.BUFFER_SIZE, TestUtils.getFieldValue(sut, char[].class, "cb").length);
+        Assert.assertEquals(mockReader, TestAccess.getFieldValue(sut, "in"));
+        Assert.assertEquals(BufferedLineReader.BUFFER_SIZE, TestAccess.getFieldValue(sut, char[].class, "cb").length);
     }
     
     /**

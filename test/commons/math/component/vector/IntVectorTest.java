@@ -22,6 +22,7 @@ import commons.math.component.matrix.BigMatrix;
 import commons.math.component.matrix.IntMatrix;
 import commons.math.component.matrix.Matrix;
 import commons.math.component.matrix.RawMatrix;
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -1627,7 +1628,7 @@ public class IntVectorTest {
         
         //standard
         Assert.assertEquals(3, sut.getDimensionality());
-        TestUtils.setFieldValue(sut, "dimensionality", 5);
+        TestAccess.setFieldValue(sut, "dimensionality", 5);
         Assert.assertEquals(5, sut.getDimensionality());
         sut.calculateDimensionality();
         Assert.assertEquals(3, sut.getDimensionality());

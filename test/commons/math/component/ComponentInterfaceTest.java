@@ -9,6 +9,7 @@ package commons.math.component;
 
 import java.util.List;
 
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -501,7 +502,7 @@ public class ComponentInterfaceTest {
         
         //default
         Assert.assertEquals(ComponentInterface.class,
-                TestUtils.invokeInterfaceDefaultMethod(ComponentInterface.class, "getComponentClass"));
+                TestAccess.invokeInterfaceDefaultMethod(ComponentInterface.class, "getComponentClass"));
     }
     
     /**
@@ -517,7 +518,7 @@ public class ComponentInterfaceTest {
         
         //default
         Assert.assertEquals(Number.class,
-                TestUtils.invokeInterfaceDefaultMethod(ComponentInterface.class, "getType"));
+                TestAccess.invokeInterfaceDefaultMethod(ComponentInterface.class, "getType"));
     }
     
     /**
@@ -557,7 +558,7 @@ public class ComponentInterfaceTest {
         
         //default
         Assert.assertEquals("Component Interface",
-                TestUtils.invokeInterfaceDefaultMethod(ComponentInterface.class, "getName"));
+                TestAccess.invokeInterfaceDefaultMethod(ComponentInterface.class, "getName"));
     }
     
     /**
@@ -574,7 +575,7 @@ public class ComponentInterfaceTest {
         
         //default
         Assert.assertEquals("null" + 's',
-                TestUtils.invokeInterfaceDefaultMethod(ComponentInterface.class, "getNamePlural"));
+                TestAccess.invokeInterfaceDefaultMethod(ComponentInterface.class, "getNamePlural"));
     }
     
     /**

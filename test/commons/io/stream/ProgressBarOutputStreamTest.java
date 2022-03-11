@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 
 import commons.console.ProgressBar;
 import commons.object.string.StringUtility;
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -116,19 +117,19 @@ public class ProgressBarOutputStreamTest {
         
         //standard
         sut = new ProgressBarOutputStream("test", outputStream, 4);
-        progressBar = TestUtils.getFieldValue(sut, ProgressBar.class, "progressBar");
+        progressBar = TestAccess.getFieldValue(sut, ProgressBar.class, "progressBar");
         Assert.assertEquals("test", progressBar.getTitle());
         Assert.assertEquals(4, progressBar.getTotal());
         Assert.assertEquals("B", progressBar.getUnits());
-        Assert.assertEquals(0L, TestUtils.getFieldValue(sut, "progress"));
+        Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "progress"));
         
         //default title
         sut = new ProgressBarOutputStream(outputStream, 100);
-        progressBar = TestUtils.getFieldValue(sut, ProgressBar.class, "progressBar");
+        progressBar = TestAccess.getFieldValue(sut, ProgressBar.class, "progressBar");
         Assert.assertEquals("", progressBar.getTitle());
         Assert.assertEquals(100, progressBar.getTotal());
         Assert.assertEquals("B", progressBar.getUnits());
-        Assert.assertEquals(0L, TestUtils.getFieldValue(sut, "progress"));
+        Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "progress"));
     }
     
     /**
@@ -148,18 +149,18 @@ public class ProgressBarOutputStreamTest {
         outputStream = new ByteArrayOutputStream(200);
         sut = new ProgressBarOutputStream("test", outputStream, 200);
         progressBar = Mockito.mock(ProgressBar.class);
-        TestUtils.setFieldValue(sut, "progressBar", progressBar);
+        TestAccess.setFieldValue(sut, "progressBar", progressBar);
         buffer = "testt".getBytes(StandardCharsets.UTF_8);
         sut.write(buffer, 0, 5);
-        Assert.assertEquals(5L, TestUtils.getFieldValue(sut, "progress"));
+        Assert.assertEquals(5L, TestAccess.getFieldValue(sut, "progress"));
         Mockito.verify(progressBar).update(ArgumentMatchers.eq(5L));
         buffer = "est".getBytes(StandardCharsets.UTF_8);
         sut.write(buffer, 0, 3);
-        Assert.assertEquals(8L, TestUtils.getFieldValue(sut, "progress"));
+        Assert.assertEquals(8L, TestAccess.getFieldValue(sut, "progress"));
         Mockito.verify(progressBar).update(ArgumentMatchers.eq(8L));
         buffer = StringUtility.repeatString("test", 48).getBytes(StandardCharsets.UTF_8);
         sut.write(buffer, 0, 192);
-        Assert.assertEquals(200L, TestUtils.getFieldValue(sut, "progress"));
+        Assert.assertEquals(200L, TestAccess.getFieldValue(sut, "progress"));
         Mockito.verify(progressBar).update(ArgumentMatchers.eq(200L));
         
         //end of stream
@@ -184,9 +185,9 @@ public class ProgressBarOutputStreamTest {
         OutputStream outputStream = new ByteArrayOutputStream(100);
         ProgressBarOutputStream sut = new ProgressBarOutputStream("test", outputStream, 200);
         ProgressBar progressBar = Mockito.mock(ProgressBar.class);
-        TestUtils.setFieldValue(sut, "progressBar", progressBar);
+        TestAccess.setFieldValue(sut, "progressBar", progressBar);
         sut.close();
-        Assert.assertEquals(0L, TestUtils.getFieldValue(sut, "progress"));
+        Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "progress"));
         Mockito.verify(progressBar).complete();
     }
     

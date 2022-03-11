@@ -13,6 +13,7 @@ import java.util.List;
 
 import commons.access.Filesystem;
 import commons.access.Project;
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -119,7 +120,7 @@ public class NumberStringUtilityTest {
     public void testConstants() throws Exception {
         //constants
         
-        String[][] NUMBER_NAMES = TestUtils.getFieldValue(NumberStringUtility.class, String[][].class, "NUMBER_NAMES");
+        String[][] NUMBER_NAMES = TestAccess.getFieldValue(NumberStringUtility.class, String[][].class, "NUMBER_NAMES");
         Assert.assertEquals(13, NUMBER_NAMES.length);
         Assert.assertArrayEquals(
                 new String[] {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"},
@@ -161,7 +162,7 @@ public class NumberStringUtilityTest {
                 new String[] {"negative", "point", "and", "oh", "o", "times X to the", "s"},
                 NUMBER_NAMES[12]);
         
-        List<String> validTokens = TestUtils.getFieldValue(NumberStringUtility.class, List.class, "VALID_TOKENS");
+        List<String> validTokens = TestAccess.getFieldValue(NumberStringUtility.class, List.class, "VALID_TOKENS");
         Assert.assertArrayEquals(
                 new String[] {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
                               "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety",
@@ -178,7 +179,7 @@ public class NumberStringUtilityTest {
                               "negative", "point", "and", "oh", "o", "times ten to the", "s"
                 }, validTokens.toArray());
         
-        List<String> validLatinPowerNameTokens = TestUtils.getFieldValue(NumberStringUtility.class, List.class, "VALID_LATIN_POWER_NAME_TOKENS");
+        List<String> validLatinPowerNameTokens = TestAccess.getFieldValue(NumberStringUtility.class, List.class, "VALID_LATIN_POWER_NAME_TOKENS");
         Assert.assertArrayEquals(
                 new String[] {"quinquagin", "quadringen", "quadragin", "septuagin", "septingen", "thousand", "quattuor", "octingen",
                               "sexagin", "octogin", "nonagin", "quingen", "quadri", "quinti", "septen", "trigin", "duocen", "trecen",
@@ -207,7 +208,7 @@ public class NumberStringUtilityTest {
      */
     @Test
     public void testNumberNameSet() throws Exception {
-        Class<?> numberNameSet = TestUtils.getEnum(NumberStringUtility.class, "NumberNameSet");
+        Class<?> numberNameSet = TestAccess.getEnum(NumberStringUtility.class, "NumberNameSet");
         Object[] enumValues = numberNameSet.getEnumConstants();
         Assert.assertEquals(13, enumValues.length);
         Assert.assertEquals("DIGITS", enumValues[0].toString());
@@ -233,7 +234,7 @@ public class NumberStringUtilityTest {
      */
     @Test
     public void testNumberNameSuffix() throws Exception {
-        Class<?> numberNameSuffix = TestUtils.getEnum(NumberStringUtility.class, "NumberNameSuffix");
+        Class<?> numberNameSuffix = TestAccess.getEnum(NumberStringUtility.class, "NumberNameSuffix");
         Object[] enumValues = numberNameSuffix.getEnumConstants();
         Assert.assertEquals(3, enumValues.length);
         Assert.assertEquals("SPECIAL", enumValues[0].toString());
@@ -249,7 +250,7 @@ public class NumberStringUtilityTest {
      */
     @Test
     public void testNumberNameModifier() throws Exception {
-        Class<?> numberNameModifier = TestUtils.getEnum(NumberStringUtility.class, "NumberNameModifier");
+        Class<?> numberNameModifier = TestAccess.getEnum(NumberStringUtility.class, "NumberNameModifier");
         Object[] enumValues = numberNameModifier.getEnumConstants();
         Assert.assertEquals(7, enumValues.length);
         Assert.assertEquals("NEGATIVE", enumValues[0].toString());

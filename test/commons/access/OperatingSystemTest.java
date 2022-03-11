@@ -10,6 +10,7 @@ package commons.access;
 import java.util.Arrays;
 import java.util.List;
 
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -133,7 +134,7 @@ public class OperatingSystemTest {
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertNotNull(TestUtils.getFieldValue(OperatingSystem.class, "DEBUGGING"));
+        Assert.assertNotNull(TestAccess.getFieldValue(OperatingSystem.class, "DEBUGGING"));
     }
     
     /**
@@ -591,7 +592,7 @@ public class OperatingSystemTest {
      */
     @Test
     public void testIsDebugging() throws Exception {
-        boolean isDebugging = TestUtils.getFieldValue(OperatingSystem.class, boolean.class, "DEBUGGING");
+        boolean isDebugging = TestAccess.getFieldValue(OperatingSystem.class, boolean.class, "DEBUGGING");
         Assert.assertEquals(isDebugging, OperatingSystem.isDebugging());
         Assert.assertEquals(isDebugging, OperatingSystem.isDebugging());
     }

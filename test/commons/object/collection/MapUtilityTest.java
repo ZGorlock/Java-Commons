@@ -18,6 +18,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -104,7 +105,7 @@ public class MapUtilityTest {
      */
     @Test
     public void testConstants() throws Exception {
-        Assert.assertEquals(HashMap.class, TestUtils.getFieldValue(MapUtility.class, "DEFAULT_MAP_CLASS"));
+        Assert.assertEquals(HashMap.class, TestAccess.getFieldValue(MapUtility.class, "DEFAULT_MAP_CLASS"));
     }
     
     /**

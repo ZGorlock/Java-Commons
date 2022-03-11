@@ -22,6 +22,7 @@ import commons.math.component.vector.IntVector;
 import commons.math.component.vector.Vector;
 import commons.math.component.vector.VectorInterface;
 import commons.object.string.StringUtility;
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -2024,7 +2025,7 @@ public class MatrixTest {
         
         //standard
         Assert.assertEquals(3, sut.getDimensionality());
-        TestUtils.setFieldValue(sut, "dimensionality", 5);
+        TestAccess.setFieldValue(sut, "dimensionality", 5);
         Assert.assertEquals(5, sut.getDimensionality());
         sut.calculateDimensionality();
         Assert.assertEquals(3, sut.getDimensionality());

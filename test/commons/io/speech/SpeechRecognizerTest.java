@@ -35,6 +35,7 @@ import commons.io.hotkey.HotKey;
 import commons.io.hotkey.HotKeyManager;
 import commons.math.BoundUtility;
 import commons.object.string.StringUtility;
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -118,26 +119,26 @@ public class SpeechRecognizerTest {
         PowerMockito.spy(SpeechRecognizer.class);
         
         sut = Mockito.spy(SpeechRecognizer.class);
-        TestUtils.setFieldValue(sut, "pocketsphinx", null);
-        TestUtils.setFieldValue(sut, "speechStream", null);
-        TestUtils.setFieldValue(sut, "speechBuffer", null);
-        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(false));
-        TestUtils.setFieldValue(sut, "mode", null);
-        TestUtils.setFieldValue(sut, "adaptionMatrix", null);
-        TestUtils.setFieldValue(sut, "adaptionMatrix", null);
-        TestUtils.setFieldValue(sut, "captureSpeechTrigger", null);
-        TestUtils.setFieldValue(sut, "captureSpeechTriggerCallback", null);
-        TestUtils.setFieldValue(sut, "recording", new AtomicBoolean(false));
-        TestUtils.setFieldValue(sut, "minimumRecordingLength", SpeechRecognizer.DEFAULT_MINIMUM_RECORDING_LENGTH);
-        TestUtils.setFieldValue(sut, "runPocketSphinxCmd", "");
-        TestUtils.setFieldValue(sut, "killPocketSphinxCmd", "");
-        TestUtils.setFieldValue(sut, "decodeRecordingCmd", "");
-        TestUtils.setFieldValue(sut, "setup", new AtomicBoolean(false));
+        TestAccess.setFieldValue(sut, "pocketsphinx", null);
+        TestAccess.setFieldValue(sut, "speechStream", null);
+        TestAccess.setFieldValue(sut, "speechBuffer", null);
+        TestAccess.setFieldValue(sut, "active", new AtomicBoolean(false));
+        TestAccess.setFieldValue(sut, "mode", null);
+        TestAccess.setFieldValue(sut, "adaptionMatrix", null);
+        TestAccess.setFieldValue(sut, "adaptionMatrix", null);
+        TestAccess.setFieldValue(sut, "captureSpeechTrigger", null);
+        TestAccess.setFieldValue(sut, "captureSpeechTriggerCallback", null);
+        TestAccess.setFieldValue(sut, "recording", new AtomicBoolean(false));
+        TestAccess.setFieldValue(sut, "minimumRecordingLength", SpeechRecognizer.DEFAULT_MINIMUM_RECORDING_LENGTH);
+        TestAccess.setFieldValue(sut, "runPocketSphinxCmd", "");
+        TestAccess.setFieldValue(sut, "killPocketSphinxCmd", "");
+        TestAccess.setFieldValue(sut, "decodeRecordingCmd", "");
+        TestAccess.setFieldValue(sut, "setup", new AtomicBoolean(false));
         
-        TestUtils.setFieldValue(SpeechRecognizer.class, "instance", null);
-        TestUtils.setFieldValue(SpeechRecognizer.class, "instanced", new AtomicBoolean(false));
+        TestAccess.setFieldValue(SpeechRecognizer.class, "instance", null);
+        TestAccess.setFieldValue(SpeechRecognizer.class, "instanced", new AtomicBoolean(false));
         
-        TestUtils.setFieldValue(HotKeyManager.getInstance(), "hotKeys", new ArrayList<>());
+        TestAccess.setFieldValue(HotKeyManager.getInstance(), "hotKeys", new ArrayList<>());
     }
     
     /**
@@ -217,39 +218,39 @@ public class SpeechRecognizerTest {
     @Test
     public void testSetup() throws Exception {
         //instantiation
-        TestUtils.setFieldValue(SpeechRecognizer.class, "instanced", new AtomicBoolean(false));
-        Assert.assertFalse(TestUtils.getFieldValue(SpeechRecognizer.class, AtomicBoolean.class, "instanced").get());
+        TestAccess.setFieldValue(SpeechRecognizer.class, "instanced", new AtomicBoolean(false));
+        Assert.assertFalse(TestAccess.getFieldValue(SpeechRecognizer.class, AtomicBoolean.class, "instanced").get());
         sut = Mockito.spy(SpeechRecognizer.getInstance());
-        Assert.assertFalse(TestUtils.getFieldValue(sut, String.class, "runPocketSphinxCmd").isEmpty());
-        Assert.assertFalse(TestUtils.getFieldValue(sut, String.class, "decodeRecordingCmd").isEmpty());
-        Assert.assertFalse(TestUtils.getFieldValue(sut, String.class, "killPocketSphinxCmd").isEmpty());
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "captureSpeechTrigger"));
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "captureSpeechTriggerCallback"));
-        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "setup").get());
-        Assert.assertTrue(TestUtils.getFieldValue(SpeechRecognizer.class, AtomicBoolean.class, "instanced").get());
+        Assert.assertFalse(TestAccess.getFieldValue(sut, String.class, "runPocketSphinxCmd").isEmpty());
+        Assert.assertFalse(TestAccess.getFieldValue(sut, String.class, "decodeRecordingCmd").isEmpty());
+        Assert.assertFalse(TestAccess.getFieldValue(sut, String.class, "killPocketSphinxCmd").isEmpty());
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "captureSpeechTrigger"));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "captureSpeechTriggerCallback"));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, AtomicBoolean.class, "setup").get());
+        Assert.assertTrue(TestAccess.getFieldValue(SpeechRecognizer.class, AtomicBoolean.class, "instanced").get());
         
         //direct call
         sut = Mockito.spy(SpeechRecognizer.class);
-        TestUtils.setFieldValue(sut, "adaptionMatrix", null);
-        TestUtils.setFieldValue(sut, "runPocketSphinxCmd", "");
-        TestUtils.setFieldValue(sut, "decodeRecordingCmd", "");
-        TestUtils.setFieldValue(sut, "killPocketSphinxCmd", "");
-        TestUtils.setFieldValue(sut, "setup", new AtomicBoolean(false));
-        TestUtils.setFieldValue(SpeechRecognizer.class, "instanced", new AtomicBoolean(false));
-        Assert.assertTrue(TestUtils.invokeMethod(sut, boolean.class, "setup"));
-        Assert.assertFalse(TestUtils.getFieldValue(sut, String.class, "runPocketSphinxCmd").isEmpty());
-        Assert.assertFalse(TestUtils.getFieldValue(sut, String.class, "decodeRecordingCmd").isEmpty());
-        Assert.assertFalse(TestUtils.getFieldValue(sut, String.class, "killPocketSphinxCmd").isEmpty());
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "captureSpeechTrigger"));
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "captureSpeechTriggerCallback"));
-        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "setup").get());
-        Assert.assertFalse(TestUtils.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "instanced").get());
+        TestAccess.setFieldValue(sut, "adaptionMatrix", null);
+        TestAccess.setFieldValue(sut, "runPocketSphinxCmd", "");
+        TestAccess.setFieldValue(sut, "decodeRecordingCmd", "");
+        TestAccess.setFieldValue(sut, "killPocketSphinxCmd", "");
+        TestAccess.setFieldValue(sut, "setup", new AtomicBoolean(false));
+        TestAccess.setFieldValue(SpeechRecognizer.class, "instanced", new AtomicBoolean(false));
+        Assert.assertTrue(TestAccess.invokeMethod(sut, boolean.class, "setup"));
+        Assert.assertFalse(TestAccess.getFieldValue(sut, String.class, "runPocketSphinxCmd").isEmpty());
+        Assert.assertFalse(TestAccess.getFieldValue(sut, String.class, "decodeRecordingCmd").isEmpty());
+        Assert.assertFalse(TestAccess.getFieldValue(sut, String.class, "killPocketSphinxCmd").isEmpty());
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "captureSpeechTrigger"));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "captureSpeechTriggerCallback"));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, AtomicBoolean.class, "setup").get());
+        Assert.assertFalse(TestAccess.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "instanced").get());
         
         //already setup
-        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "setup").get());
-        Assert.assertFalse(TestUtils.invokeMethod(sut, boolean.class, "setup"));
-        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "setup").get());
-        Assert.assertFalse(TestUtils.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "instanced").get());
+        Assert.assertTrue(TestAccess.getFieldValue(sut, AtomicBoolean.class, "setup").get());
+        Assert.assertFalse(TestAccess.invokeMethod(sut, boolean.class, "setup"));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, AtomicBoolean.class, "setup").get());
+        Assert.assertFalse(TestAccess.getFieldValue(SpeechSynthesizer.class, AtomicBoolean.class, "instanced").get());
     }
     
     /**
@@ -265,69 +266,69 @@ public class SpeechRecognizerTest {
         
         //standard Windows
         PowerMockito.when(OperatingSystem.class, "isWindows").thenReturn(true);
-        TestUtils.setFieldValue(sut, "adaptionMatrix", null);
-        TestUtils.setFieldValue(sut, "runPocketSphinxCmd", "");
-        TestUtils.setFieldValue(sut, "decodeRecordingCmd", "");
-        TestUtils.setFieldValue(sut, "killPocketSphinxCmd", "");
-        TestUtils.invokeMethod(sut, "initializeCommands");
+        TestAccess.setFieldValue(sut, "adaptionMatrix", null);
+        TestAccess.setFieldValue(sut, "runPocketSphinxCmd", "");
+        TestAccess.setFieldValue(sut, "decodeRecordingCmd", "");
+        TestAccess.setFieldValue(sut, "killPocketSphinxCmd", "");
+        TestAccess.invokeMethod(sut, "initializeCommands");
         Assert.assertEquals(
                 "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && pocketsphinx_continuous.exe -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -logfn nul",
-                TestUtils.getFieldValue(sut, "runPocketSphinxCmd"));
+                TestAccess.getFieldValue(sut, "runPocketSphinxCmd"));
         Assert.assertEquals(
                 "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && pocketsphinx_continuous.exe -infile \"%s\" -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -logfn nul",
-                TestUtils.getFieldValue(sut, "decodeRecordingCmd"));
+                TestAccess.getFieldValue(sut, "decodeRecordingCmd"));
         Assert.assertEquals(
                 "Taskkill /IM pocketsphinx_continuous.exe /F",
-                TestUtils.getFieldValue(sut, "killPocketSphinxCmd"));
+                TestAccess.getFieldValue(sut, "killPocketSphinxCmd"));
         
         //adaption matrix Windows
-        TestUtils.setFieldValue(sut, "adaptionMatrix", adaptionMatrix);
-        TestUtils.setFieldValue(sut, "runPocketSphinxCmd", "");
-        TestUtils.setFieldValue(sut, "decodeRecordingCmd", "");
-        TestUtils.setFieldValue(sut, "killPocketSphinxCmd", "");
-        TestUtils.invokeMethod(sut, "initializeCommands");
+        TestAccess.setFieldValue(sut, "adaptionMatrix", adaptionMatrix);
+        TestAccess.setFieldValue(sut, "runPocketSphinxCmd", "");
+        TestAccess.setFieldValue(sut, "decodeRecordingCmd", "");
+        TestAccess.setFieldValue(sut, "killPocketSphinxCmd", "");
+        TestAccess.invokeMethod(sut, "initializeCommands");
         Assert.assertEquals(
                 "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && pocketsphinx_continuous.exe -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath()) + " -logfn nul",
-                TestUtils.getFieldValue(sut, "runPocketSphinxCmd"));
+                TestAccess.getFieldValue(sut, "runPocketSphinxCmd"));
         Assert.assertEquals(
                 "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && pocketsphinx_continuous.exe -infile \"%s\" -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath()) + " -logfn nul",
-                TestUtils.getFieldValue(sut, "decodeRecordingCmd"));
+                TestAccess.getFieldValue(sut, "decodeRecordingCmd"));
         Assert.assertEquals(
                 "Taskkill /IM pocketsphinx_continuous.exe /F",
-                TestUtils.getFieldValue(sut, "killPocketSphinxCmd"));
+                TestAccess.getFieldValue(sut, "killPocketSphinxCmd"));
         
         //standard Linux
         PowerMockito.when(OperatingSystem.class, "isWindows").thenReturn(false);
-        TestUtils.setFieldValue(sut, "adaptionMatrix", null);
-        TestUtils.setFieldValue(sut, "runPocketSphinxCmd", "");
-        TestUtils.setFieldValue(sut, "decodeRecordingCmd", "");
-        TestUtils.setFieldValue(sut, "killPocketSphinxCmd", "");
-        TestUtils.invokeMethod(sut, "initializeCommands");
+        TestAccess.setFieldValue(sut, "adaptionMatrix", null);
+        TestAccess.setFieldValue(sut, "runPocketSphinxCmd", "");
+        TestAccess.setFieldValue(sut, "decodeRecordingCmd", "");
+        TestAccess.setFieldValue(sut, "killPocketSphinxCmd", "");
+        TestAccess.invokeMethod(sut, "initializeCommands");
         Assert.assertEquals(
                 "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && LD_LIBRARY_PATH=$(pwd) pocketsphinx_continuous -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict &> /dev/null",
-                TestUtils.getFieldValue(sut, "runPocketSphinxCmd"));
+                TestAccess.getFieldValue(sut, "runPocketSphinxCmd"));
         Assert.assertEquals(
                 "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && LD_LIBRARY_PATH=$(pwd) pocketsphinx_continuous -infile \"%s\" -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict &> /dev/null",
-                TestUtils.getFieldValue(sut, "decodeRecordingCmd"));
+                TestAccess.getFieldValue(sut, "decodeRecordingCmd"));
         Assert.assertEquals(
                 "pkill -f pocketsphinx_continuous",
-                TestUtils.getFieldValue(sut, "killPocketSphinxCmd"));
+                TestAccess.getFieldValue(sut, "killPocketSphinxCmd"));
         
         //adaption matrix Linux
-        TestUtils.setFieldValue(sut, "adaptionMatrix", adaptionMatrix);
-        TestUtils.setFieldValue(sut, "runPocketSphinxCmd", "");
-        TestUtils.setFieldValue(sut, "decodeRecordingCmd", "");
-        TestUtils.setFieldValue(sut, "killPocketSphinxCmd", "");
-        TestUtils.invokeMethod(sut, "initializeCommands");
+        TestAccess.setFieldValue(sut, "adaptionMatrix", adaptionMatrix);
+        TestAccess.setFieldValue(sut, "runPocketSphinxCmd", "");
+        TestAccess.setFieldValue(sut, "decodeRecordingCmd", "");
+        TestAccess.setFieldValue(sut, "killPocketSphinxCmd", "");
+        TestAccess.invokeMethod(sut, "initializeCommands");
         Assert.assertEquals(
                 "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && LD_LIBRARY_PATH=$(pwd) pocketsphinx_continuous -inmic yes -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath()) + " &> /dev/null",
-                TestUtils.getFieldValue(sut, "runPocketSphinxCmd"));
+                TestAccess.getFieldValue(sut, "runPocketSphinxCmd"));
         Assert.assertEquals(
                 "cd " + StringUtility.quote(SpeechRecognizer.SPHINX_DIRECTORY.getAbsolutePath()) + " && LD_LIBRARY_PATH=$(pwd) pocketsphinx_continuous -infile \"%s\" -hmm model/en-us/en-us -lm model/en-us/en-us.lm.bin -dict model/en-us/cmudict-en-us.dict -mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath()) + " &> /dev/null",
-                TestUtils.getFieldValue(sut, "decodeRecordingCmd"));
+                TestAccess.getFieldValue(sut, "decodeRecordingCmd"));
         Assert.assertEquals(
                 "pkill -f pocketsphinx_continuous",
-                TestUtils.getFieldValue(sut, "killPocketSphinxCmd"));
+                TestAccess.getFieldValue(sut, "killPocketSphinxCmd"));
     }
     
     /**
@@ -339,124 +340,124 @@ public class SpeechRecognizerTest {
     @SuppressWarnings("ConfusingArgumentToVarargsMethod")
     @Test
     public void testInitialize() throws Exception {
-        TestUtils.invokeMethod(sut, "setup");
-        TestUtils.setFieldValue(sut, "pocketsphinx", null);
-        TestUtils.setFieldValue(sut, "speechStream", null);
-        TestUtils.setFieldValue(sut, "speechBuffer", null);
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        TestAccess.invokeMethod(sut, "setup");
+        TestAccess.setFieldValue(sut, "pocketsphinx", null);
+        TestAccess.setFieldValue(sut, "speechStream", null);
+        TestAccess.setFieldValue(sut, "speechBuffer", null);
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
         HotKey captureSpeechTrigger = Mockito.mock(HotKey.class);
-        TestUtils.setFieldValue(sut, "captureSpeechTrigger", captureSpeechTrigger);
+        TestAccess.setFieldValue(sut, "captureSpeechTrigger", captureSpeechTrigger);
         
         //standard
         
-        Assert.assertTrue(TestUtils.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.CONTINUOUS));
+        Assert.assertTrue(TestAccess.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.CONTINUOUS));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.CONTINUOUS, sut.getMode());
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(1))
                 .clearSpeech();
         
-        Assert.assertTrue(TestUtils.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.TRIGGERED));
+        Assert.assertTrue(TestAccess.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.TRIGGERED));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.TRIGGERED, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertTrue(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertTrue(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(2))
                 .clearSpeech();
         
-        TestUtils.setFieldValue(sut, "recording", new AtomicBoolean(false));
-        TestUtils.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.TRIGGERED);
-        Assert.assertTrue(TestUtils.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.ON_DEMAND));
+        TestAccess.setFieldValue(sut, "recording", new AtomicBoolean(false));
+        TestAccess.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.TRIGGERED);
+        Assert.assertTrue(TestAccess.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.ON_DEMAND));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(3))
                 .clearSpeech();
         Mockito.verify(captureSpeechTrigger, VerificationModeFactory.noMoreInteractions())
                 .release();
         
-        TestUtils.setFieldValue(sut, "recording", new AtomicBoolean(true));
-        TestUtils.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.TRIGGERED);
-        Assert.assertTrue(TestUtils.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.OFF));
+        TestAccess.setFieldValue(sut, "recording", new AtomicBoolean(true));
+        TestAccess.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.TRIGGERED);
+        Assert.assertTrue(TestAccess.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.OFF));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(4))
                 .clearSpeech();
         Mockito.verify(captureSpeechTrigger, VerificationModeFactory.times(1))
                 .release();
         
-        Assert.assertTrue(TestUtils.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.ON_DEMAND));
+        Assert.assertTrue(TestAccess.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.ON_DEMAND));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(5))
                 .clearSpeech();
         
-        TestUtils.setFieldValue(sut, "recording", new AtomicBoolean(false));
-        TestUtils.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.ON_DEMAND);
-        Assert.assertTrue(TestUtils.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.CONTINUOUS));
+        TestAccess.setFieldValue(sut, "recording", new AtomicBoolean(false));
+        TestAccess.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.ON_DEMAND);
+        Assert.assertTrue(TestAccess.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.CONTINUOUS));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.CONTINUOUS, sut.getMode());
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(6))
                 .clearSpeech();
         Mockito.verify(captureSpeechTrigger, VerificationModeFactory.noMoreInteractions())
                 .release();
-        Assert.assertTrue(TestUtils.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.OFF));
+        Assert.assertTrue(TestAccess.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.OFF));
         
-        TestUtils.setFieldValue(sut, "recording", new AtomicBoolean(true));
-        TestUtils.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.ON_DEMAND);
-        Assert.assertTrue(TestUtils.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.TRIGGERED));
+        TestAccess.setFieldValue(sut, "recording", new AtomicBoolean(true));
+        TestAccess.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.ON_DEMAND);
+        Assert.assertTrue(TestAccess.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.TRIGGERED));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.TRIGGERED, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertTrue(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertTrue(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(8))
                 .clearSpeech();
         Mockito.verify(captureSpeechTrigger, VerificationModeFactory.times(2))
                 .release();
-        Assert.assertTrue(TestUtils.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.OFF));
+        Assert.assertTrue(TestAccess.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.OFF));
         
-        Assert.assertTrue(TestUtils.setFieldValue(sut, "mode", null)); //default to OFF
-        TestUtils.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.ON_DEMAND); //same mode
+        Assert.assertTrue(TestAccess.setFieldValue(sut, "mode", null)); //default to OFF
+        TestAccess.invokeMethod(sut, "initialize", SpeechRecognizer.RecognitionMode.ON_DEMAND); //same mode
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(10))
                 .clearSpeech();
         
-        Assert.assertTrue(TestUtils.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.OFF));
+        Assert.assertTrue(TestAccess.invokeMethod(sut, boolean.class, "initialize", SpeechRecognizer.RecognitionMode.OFF));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(11))
                 .clearSpeech();
         
         //invalid
         
-        Assert.assertFalse(TestUtils.invokeMethod(sut, boolean.class, "initialize", (SpeechRecognizer.RecognitionMode) null));
+        Assert.assertFalse(TestAccess.invokeMethod(sut, boolean.class, "initialize", (SpeechRecognizer.RecognitionMode) null));
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         Mockito.verify(sut, VerificationModeFactory.times(11))
                 .clearSpeech();
     }
@@ -471,24 +472,24 @@ public class SpeechRecognizerTest {
     public void testStart() throws Exception {
         //standard
         
-        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(false));
-        TestUtils.setFieldValue(sut, "mode", null);
+        TestAccess.setFieldValue(sut, "active", new AtomicBoolean(false));
+        TestAccess.setFieldValue(sut, "mode", null);
         Assert.assertTrue(sut.start());
-        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "active").get());
+        Assert.assertTrue(TestAccess.getFieldValue(sut, AtomicBoolean.class, "active").get());
         Assert.assertEquals(SpeechRecognizer.DEFAULT_SPHINX_MODE, sut.getMode());
         
-        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(false));
-        TestUtils.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.TRIGGERED);
+        TestAccess.setFieldValue(sut, "active", new AtomicBoolean(false));
+        TestAccess.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.TRIGGERED);
         Assert.assertTrue(sut.start());
-        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "active").get());
+        Assert.assertTrue(TestAccess.getFieldValue(sut, AtomicBoolean.class, "active").get());
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.TRIGGERED, sut.getMode());
         
         //invalid
         
-        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(true));
-        TestUtils.setFieldValue(sut, "mode", null);
+        TestAccess.setFieldValue(sut, "active", new AtomicBoolean(true));
+        TestAccess.setFieldValue(sut, "mode", null);
         Assert.assertFalse(sut.start());
-        Assert.assertTrue(TestUtils.getFieldValue(sut, AtomicBoolean.class, "active").get());
+        Assert.assertTrue(TestAccess.getFieldValue(sut, AtomicBoolean.class, "active").get());
         Assert.assertNull(sut.getMode());
     }
     
@@ -502,24 +503,24 @@ public class SpeechRecognizerTest {
     public void testStop() throws Exception {
         //standard
         
-        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(true));
-        TestUtils.setFieldValue(sut, "mode", null);
+        TestAccess.setFieldValue(sut, "active", new AtomicBoolean(true));
+        TestAccess.setFieldValue(sut, "mode", null);
         Assert.assertTrue(sut.stop());
-        Assert.assertFalse(TestUtils.getFieldValue(sut, AtomicBoolean.class, "active").get());
+        Assert.assertFalse(TestAccess.getFieldValue(sut, AtomicBoolean.class, "active").get());
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
         
-        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(true));
-        TestUtils.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.TRIGGERED);
+        TestAccess.setFieldValue(sut, "active", new AtomicBoolean(true));
+        TestAccess.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.TRIGGERED);
         Assert.assertTrue(sut.stop());
-        Assert.assertFalse(TestUtils.getFieldValue(sut, AtomicBoolean.class, "active").get());
+        Assert.assertFalse(TestAccess.getFieldValue(sut, AtomicBoolean.class, "active").get());
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
         
         //invalid
         
-        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(false));
-        TestUtils.setFieldValue(sut, "mode", null);
+        TestAccess.setFieldValue(sut, "active", new AtomicBoolean(false));
+        TestAccess.setFieldValue(sut, "mode", null);
         Assert.assertFalse(sut.stop());
-        Assert.assertFalse(TestUtils.getFieldValue(sut, AtomicBoolean.class, "active").get());
+        Assert.assertFalse(TestAccess.getFieldValue(sut, AtomicBoolean.class, "active").get());
         Assert.assertNull(sut.getMode());
     }
     
@@ -545,7 +546,7 @@ public class SpeechRecognizerTest {
         
         sut.setMode(SpeechRecognizer.RecognitionMode.CONTINUOUS);
         Assert.assertNull(sut.getSpeech(false));
-        TestUtils.setFieldValue(sut, "speechStream", speechStream);
+        TestAccess.setFieldValue(sut, "speechStream", speechStream);
         writer.write("test\n".getBytes(StandardCharsets.UTF_8));
         Assert.assertEquals("test", sut.getSpeech(false));
         Assert.assertNull(sut.getSpeech(false));
@@ -557,11 +558,11 @@ public class SpeechRecognizerTest {
         writer.write("Allocating 3 buffers of 5012 samples each\ntest\n".getBytes(StandardCharsets.UTF_8));
         Assert.assertEquals("test", sut.getSpeech(false));
         Assert.assertNull(sut.getSpeech(false));
-        TestUtils.setFieldValue(sut, "speechStream", null);
+        TestAccess.setFieldValue(sut, "speechStream", null);
         
         sut.setMode(SpeechRecognizer.RecognitionMode.TRIGGERED);
         Assert.assertNull(sut.getSpeech(false));
-        TestUtils.setFieldValue(sut, "speechBuffer", speechBuffer);
+        TestAccess.setFieldValue(sut, "speechBuffer", speechBuffer);
         speechBuffer.set("test");
         Assert.assertEquals("test", sut.getSpeech(false));
         Assert.assertEquals("", speechBuffer.get());
@@ -570,11 +571,11 @@ public class SpeechRecognizerTest {
         Assert.assertEquals(StringUtility.repeatString("test\n", 5), sut.getSpeech(false));
         Assert.assertEquals("", speechBuffer.get());
         Assert.assertNull(sut.getSpeech(false));
-        TestUtils.setFieldValue(sut, "speechBuffer", null);
+        TestAccess.setFieldValue(sut, "speechBuffer", null);
         
         sut.setMode(SpeechRecognizer.RecognitionMode.ON_DEMAND);
         Assert.assertNull(sut.getSpeech(false));
-        TestUtils.setFieldValue(sut, "speechBuffer", speechBuffer);
+        TestAccess.setFieldValue(sut, "speechBuffer", speechBuffer);
         speechBuffer.set("test");
         Assert.assertEquals("test", sut.getSpeech(false));
         Assert.assertEquals("", speechBuffer.get());
@@ -583,13 +584,13 @@ public class SpeechRecognizerTest {
         Assert.assertEquals(StringUtility.repeatString("test\n", 5), sut.getSpeech(false));
         Assert.assertEquals("", speechBuffer.get());
         Assert.assertNull(sut.getSpeech(false));
-        TestUtils.setFieldValue(sut, "speechBuffer", null);
+        TestAccess.setFieldValue(sut, "speechBuffer", null);
         
         //wait
         
         sut.setMode(SpeechRecognizer.RecognitionMode.CONTINUOUS);
         Assert.assertNull(sut.getSpeech(true));
-        TestUtils.setFieldValue(sut, "speechStream", speechStream);
+        TestAccess.setFieldValue(sut, "speechStream", speechStream);
         thread = Executors.newSingleThreadScheduledExecutor(new ThreadFactoryBuilder().build());
         thread.schedule(() -> {
             try {
@@ -634,11 +635,11 @@ public class SpeechRecognizerTest {
         Assert.assertEquals("test", sut.getSpeech(true));
         duration = System.currentTimeMillis() - startTime;
         Assert.assertTrue(BoundUtility.inBounds(duration, (500 * 0.9), (500 * 1.125)));
-        TestUtils.setFieldValue(sut, "speechStream", null);
+        TestAccess.setFieldValue(sut, "speechStream", null);
         
         sut.setMode(SpeechRecognizer.RecognitionMode.TRIGGERED);
         Assert.assertNull(sut.getSpeech(true));
-        TestUtils.setFieldValue(sut, "speechBuffer", speechBuffer);
+        TestAccess.setFieldValue(sut, "speechBuffer", speechBuffer);
         thread.schedule(() -> {
             try {
                 Thread.sleep(500);
@@ -663,11 +664,11 @@ public class SpeechRecognizerTest {
         duration = System.currentTimeMillis() - startTime;
         Assert.assertTrue(BoundUtility.inBounds(duration, (500 * 0.9), (500 * 1.125)));
         Assert.assertEquals("", speechBuffer.get());
-        TestUtils.setFieldValue(sut, "speechBuffer", null);
+        TestAccess.setFieldValue(sut, "speechBuffer", null);
         
         sut.setMode(SpeechRecognizer.RecognitionMode.ON_DEMAND);
         Assert.assertNull(sut.getSpeech(true));
-        TestUtils.setFieldValue(sut, "speechBuffer", speechBuffer);
+        TestAccess.setFieldValue(sut, "speechBuffer", speechBuffer);
         thread.schedule(() -> {
             try {
                 Thread.sleep(500);
@@ -692,7 +693,7 @@ public class SpeechRecognizerTest {
         duration = System.currentTimeMillis() - startTime;
         Assert.assertTrue(BoundUtility.inBounds(duration, (500 * 0.9), (500 * 1.125)));
         Assert.assertEquals("", speechBuffer.get());
-        TestUtils.setFieldValue(sut, "speechBuffer", null);
+        TestAccess.setFieldValue(sut, "speechBuffer", null);
         
         //default wait
         
@@ -717,17 +718,17 @@ public class SpeechRecognizerTest {
         AtomicReference<String> speechBuffer = new AtomicReference<>(StringUtility.repeatString("test", 50));
         
         //standard
-        TestUtils.setFieldValue(sut, "speechStream", speechStream);
-        TestUtils.setFieldValue(sut, "speechBuffer", speechBuffer);
+        TestAccess.setFieldValue(sut, "speechStream", speechStream);
+        TestAccess.setFieldValue(sut, "speechBuffer", speechBuffer);
         sut.clearSpeech();
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         Assert.assertFalse(speechStream.ready());
         Assert.assertEquals("", speechBuffer.get());
         
         //invalid
-        TestUtils.setFieldValue(sut, "speechStream", null);
-        TestUtils.setFieldValue(sut, "speechBuffer", null);
+        TestAccess.setFieldValue(sut, "speechStream", null);
+        TestAccess.setFieldValue(sut, "speechBuffer", null);
         TestUtils.assertNoException(() ->
                 sut.clearSpeech());
     }
@@ -742,14 +743,14 @@ public class SpeechRecognizerTest {
     public void testStartRecording() throws Exception {
         sut.start();
         HotKey captureSpeechTrigger = Mockito.mock(HotKey.class);
-        TestUtils.setFieldValue(sut, "captureSpeechTrigger", captureSpeechTrigger);
+        TestAccess.setFieldValue(sut, "captureSpeechTrigger", captureSpeechTrigger);
         HotKey.HotKeyCallback captureSpeechTriggerCallback = Mockito.mock(HotKey.HotKeyCallback.class);
-        TestUtils.setFieldValue(sut, "captureSpeechTriggerCallback", captureSpeechTriggerCallback);
+        TestAccess.setFieldValue(sut, "captureSpeechTriggerCallback", captureSpeechTriggerCallback);
         
         //standard
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
         Assert.assertTrue(sut.startRecording());
-        TestUtils.setFieldValue(sut, "recording", new AtomicBoolean(true));
+        TestAccess.setFieldValue(sut, "recording", new AtomicBoolean(true));
         Mockito.verify(captureSpeechTriggerCallback, VerificationModeFactory.times(1))
                 .hit();
         
@@ -779,15 +780,15 @@ public class SpeechRecognizerTest {
     public void testFinalizeRecording() throws Exception {
         sut.start();
         HotKey captureSpeechTrigger = Mockito.mock(HotKey.class);
-        TestUtils.setFieldValue(sut, "captureSpeechTrigger", captureSpeechTrigger);
+        TestAccess.setFieldValue(sut, "captureSpeechTrigger", captureSpeechTrigger);
         HotKey.HotKeyCallback captureSpeechTriggerCallback = Mockito.mock(HotKey.HotKeyCallback.class);
-        TestUtils.setFieldValue(sut, "captureSpeechTriggerCallback", captureSpeechTriggerCallback);
-        TestUtils.setFieldValue(sut, "recording", new AtomicBoolean(true));
+        TestAccess.setFieldValue(sut, "captureSpeechTriggerCallback", captureSpeechTriggerCallback);
+        TestAccess.setFieldValue(sut, "recording", new AtomicBoolean(true));
         
         //standard
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
         Assert.assertTrue(sut.finalizeRecording());
-        TestUtils.setFieldValue(sut, "recording", new AtomicBoolean(false));
+        TestAccess.setFieldValue(sut, "recording", new AtomicBoolean(false));
         Mockito.verify(captureSpeechTriggerCallback, VerificationModeFactory.times(1))
                 .release();
         
@@ -817,15 +818,15 @@ public class SpeechRecognizerTest {
     public void testGetInstance() throws Exception {
         sut = null;
         PowerMockito.spy(SpeechRecognizer.class);
-        Assert.assertNull(TestUtils.getFieldValue(SpeechRecognizer.class, "instance"));
-        Assert.assertFalse(TestUtils.getFieldValue(SpeechRecognizer.class, AtomicBoolean.class, "instanced").get());
+        Assert.assertNull(TestAccess.getFieldValue(SpeechRecognizer.class, "instance"));
+        Assert.assertFalse(TestAccess.getFieldValue(SpeechRecognizer.class, AtomicBoolean.class, "instanced").get());
         
         //standard
         sut = SpeechRecognizer.getInstance();
         Assert.assertNotNull(sut);
-        Assert.assertNotNull(TestUtils.getFieldValue(SpeechRecognizer.class, "instance"));
-        Assert.assertEquals(sut, TestUtils.getFieldValue(SpeechRecognizer.class, "instance"));
-        Assert.assertTrue(TestUtils.getFieldValue(SpeechRecognizer.class, AtomicBoolean.class, "instanced").get());
+        Assert.assertNotNull(TestAccess.getFieldValue(SpeechRecognizer.class, "instance"));
+        Assert.assertEquals(sut, TestAccess.getFieldValue(SpeechRecognizer.class, "instance"));
+        Assert.assertTrue(TestAccess.getFieldValue(SpeechRecognizer.class, AtomicBoolean.class, "instanced").get());
         
         //already instanced
         SpeechRecognizer oldSut = sut;
@@ -833,7 +834,7 @@ public class SpeechRecognizerTest {
         sut = SpeechRecognizer.getInstance();
         Assert.assertNotNull(sut);
         Assert.assertEquals(oldSut, sut);
-        Assert.assertEquals(sut, TestUtils.getFieldValue(SpeechRecognizer.class, "instance"));
+        Assert.assertEquals(sut, TestAccess.getFieldValue(SpeechRecognizer.class, "instance"));
     }
     
     /**
@@ -845,13 +846,13 @@ public class SpeechRecognizerTest {
     @Test
     public void testIsActive() throws Exception {
         //standard
-        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(false));
+        TestAccess.setFieldValue(sut, "active", new AtomicBoolean(false));
         Assert.assertFalse(sut.isActive());
-        TestUtils.setFieldValue(sut, "active", new AtomicBoolean(true));
+        TestAccess.setFieldValue(sut, "active", new AtomicBoolean(true));
         Assert.assertTrue(sut.isActive());
         
         //invalid
-        TestUtils.setFieldValue(sut, "active", null);
+        TestAccess.setFieldValue(sut, "active", null);
         TestUtils.assertException(NullPointerException.class, () ->
                 sut.isActive());
     }
@@ -865,17 +866,17 @@ public class SpeechRecognizerTest {
     @Test
     public void testGetMode() throws Exception {
         //standard
-        TestUtils.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.CONTINUOUS);
+        TestAccess.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.CONTINUOUS);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.CONTINUOUS, sut.getMode());
-        TestUtils.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.TRIGGERED);
+        TestAccess.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.TRIGGERED);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.TRIGGERED, sut.getMode());
-        TestUtils.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.ON_DEMAND);
+        TestAccess.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.ON_DEMAND);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
-        TestUtils.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.OFF);
+        TestAccess.setFieldValue(sut, "mode", SpeechRecognizer.RecognitionMode.OFF);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
         
         //invalid
-        TestUtils.setFieldValue(sut, "mode", null);
+        TestAccess.setFieldValue(sut, "mode", null);
         Assert.assertNull(sut.getMode());
     }
     
@@ -888,13 +889,13 @@ public class SpeechRecognizerTest {
     @Test
     public void testIsRecording() throws Exception {
         //standard
-        TestUtils.setFieldValue(sut, "recording", new AtomicBoolean(false));
+        TestAccess.setFieldValue(sut, "recording", new AtomicBoolean(false));
         Assert.assertFalse(sut.isRecording());
-        TestUtils.setFieldValue(sut, "recording", new AtomicBoolean(true));
+        TestAccess.setFieldValue(sut, "recording", new AtomicBoolean(true));
         Assert.assertTrue(sut.isRecording());
         
         //invalid
-        TestUtils.setFieldValue(sut, "recording", null);
+        TestAccess.setFieldValue(sut, "recording", null);
         TestUtils.assertException(NullPointerException.class, () ->
                 sut.isRecording());
     }
@@ -909,88 +910,88 @@ public class SpeechRecognizerTest {
     public void testSetMode() throws Exception {
         //active
         
-        TestUtils.invokeMethod(sut, "setup");
-        TestUtils.setFieldValue(sut, "pocketsphinx", null);
-        TestUtils.setFieldValue(sut, "speechStream", null);
-        TestUtils.setFieldValue(sut, "speechBuffer", null);
+        TestAccess.invokeMethod(sut, "setup");
+        TestAccess.setFieldValue(sut, "pocketsphinx", null);
+        TestAccess.setFieldValue(sut, "speechStream", null);
+        TestAccess.setFieldValue(sut, "speechBuffer", null);
         sut.start();
         
         sut.setMode(SpeechRecognizer.RecognitionMode.CONTINUOUS);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.CONTINUOUS, sut.getMode());
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         
         sut.setMode(SpeechRecognizer.RecognitionMode.TRIGGERED);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.TRIGGERED, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertTrue(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertTrue(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         
         sut.setMode(SpeechRecognizer.RecognitionMode.ON_DEMAND);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNotNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         
         sut.setMode(SpeechRecognizer.RecognitionMode.OFF);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         
         //inactive
         
         sut.stop();
-        TestUtils.setFieldValue(sut, "pocketsphinx", null);
-        TestUtils.setFieldValue(sut, "speechStream", null);
-        TestUtils.setFieldValue(sut, "speechBuffer", null);
+        TestAccess.setFieldValue(sut, "pocketsphinx", null);
+        TestAccess.setFieldValue(sut, "speechStream", null);
+        TestAccess.setFieldValue(sut, "speechBuffer", null);
         
         sut.setMode(SpeechRecognizer.RecognitionMode.CONTINUOUS);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.CONTINUOUS, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         
         sut.setMode(SpeechRecognizer.RecognitionMode.TRIGGERED);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.TRIGGERED, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         
         sut.setMode(SpeechRecognizer.RecognitionMode.ON_DEMAND);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.ON_DEMAND, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         
         sut.setMode(SpeechRecognizer.RecognitionMode.OFF);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechBuffer"));
         
         //invalid
         
-        TestUtils.setFieldValue(sut, "pocketsphinx", null);
-        TestUtils.setFieldValue(sut, "speechStream", null);
-        TestUtils.setFieldValue(sut, "speechBuffer", null);
+        TestAccess.setFieldValue(sut, "pocketsphinx", null);
+        TestAccess.setFieldValue(sut, "speechStream", null);
+        TestAccess.setFieldValue(sut, "speechBuffer", null);
         sut.start();
         
         sut.setMode(null);
         Assert.assertEquals(SpeechRecognizer.RecognitionMode.OFF, sut.getMode());
-        Assert.assertNull(TestUtils.getFieldValue(sut, "pocketsphinx"));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechStream"));
-        Assert.assertFalse(HotKeyManager.hasHotkey(TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
-        Assert.assertNull(TestUtils.getFieldValue(sut, "speechBuffer"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "pocketsphinx"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechStream"));
+        Assert.assertFalse(HotKeyManager.hasHotkey(TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger")));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "speechBuffer"));
     }
     
     /**
@@ -1001,23 +1002,23 @@ public class SpeechRecognizerTest {
      */
     @Test
     public void testSetMinimumRecordingLength() throws Exception {
-        Assert.assertEquals(SpeechRecognizer.DEFAULT_MINIMUM_RECORDING_LENGTH, TestUtils.getFieldValue(sut, "minimumRecordingLength"));
+        Assert.assertEquals(SpeechRecognizer.DEFAULT_MINIMUM_RECORDING_LENGTH, TestAccess.getFieldValue(sut, "minimumRecordingLength"));
         
         //standard
         sut.setMinimumRecordingLength(100L);
-        Assert.assertEquals(100L, TestUtils.getFieldValue(sut, "minimumRecordingLength"));
+        Assert.assertEquals(100L, TestAccess.getFieldValue(sut, "minimumRecordingLength"));
         sut.setMinimumRecordingLength(5000L);
-        Assert.assertEquals(5000L, TestUtils.getFieldValue(sut, "minimumRecordingLength"));
+        Assert.assertEquals(5000L, TestAccess.getFieldValue(sut, "minimumRecordingLength"));
         sut.setMinimumRecordingLength(0L);
-        Assert.assertEquals(0L, TestUtils.getFieldValue(sut, "minimumRecordingLength"));
+        Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "minimumRecordingLength"));
         sut.setMinimumRecordingLength(987908456051269450L);
-        Assert.assertEquals(987908456051269450L, TestUtils.getFieldValue(sut, "minimumRecordingLength"));
+        Assert.assertEquals(987908456051269450L, TestAccess.getFieldValue(sut, "minimumRecordingLength"));
         
         //invalid
         sut.setMinimumRecordingLength(-1L);
-        Assert.assertEquals(0L, TestUtils.getFieldValue(sut, "minimumRecordingLength"));
+        Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "minimumRecordingLength"));
         sut.setMinimumRecordingLength(-4984046579178104L);
-        Assert.assertEquals(0L, TestUtils.getFieldValue(sut, "minimumRecordingLength"));
+        Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "minimumRecordingLength"));
     }
     
     /**
@@ -1028,32 +1029,32 @@ public class SpeechRecognizerTest {
      */
     @Test
     public void testSetCaptureSpeechTrigger() throws Exception {
-        TestUtils.invokeMethod(sut, "setup");
+        TestAccess.invokeMethod(sut, "setup");
         sut.setMode(SpeechRecognizer.RecognitionMode.OFF);
-        HotKey captureSpeechTrigger = TestUtils.getFieldValue(sut, HotKey.class, "captureSpeechTrigger");
+        HotKey captureSpeechTrigger = TestAccess.getFieldValue(sut, HotKey.class, "captureSpeechTrigger");
         Assert.assertEquals("[Ctrl]", captureSpeechTrigger.toString());
         PowerMockito.mockStatic(HotKeyManager.class);
         
         //standard
         
         PowerMockito.when(HotKeyManager.class, "hasHotkey", ArgumentMatchers.any(HotKey.class)).thenReturn(true);
-        TestUtils.setFieldValue(sut, "captureSpeechTrigger", captureSpeechTrigger);
+        TestAccess.setFieldValue(sut, "captureSpeechTrigger", captureSpeechTrigger);
         sut.setCaptureSpeechTrigger(KeyEvent.VK_R, false, false, false, false);
-        Assert.assertEquals("[R]", TestUtils.getFieldValue(sut, "captureSpeechTrigger").toString());
+        Assert.assertEquals("[R]", TestAccess.getFieldValue(sut, "captureSpeechTrigger").toString());
         PowerMockito.verifyStatic(HotKeyManager.class, VerificationModeFactory.times(1));
         HotKeyManager.unregisterHotkey(ArgumentMatchers.eq(captureSpeechTrigger));
         
-        TestUtils.setFieldValue(sut, "captureSpeechTrigger", captureSpeechTrigger);
+        TestAccess.setFieldValue(sut, "captureSpeechTrigger", captureSpeechTrigger);
         sut.setCaptureSpeechTrigger(KeyEvent.VK_R, true, false, true, true);
-        Assert.assertEquals("[Ctrl-Alt-Meta-R]", TestUtils.getFieldValue(sut, "captureSpeechTrigger").toString());
+        Assert.assertEquals("[Ctrl-Alt-Meta-R]", TestAccess.getFieldValue(sut, "captureSpeechTrigger").toString());
         PowerMockito.verifyStatic(HotKeyManager.class, VerificationModeFactory.times(2));
         HotKeyManager.unregisterHotkey(ArgumentMatchers.eq(captureSpeechTrigger));
         
         //previously null
         
-        TestUtils.setFieldValue(sut, "captureSpeechTrigger", null);
+        TestAccess.setFieldValue(sut, "captureSpeechTrigger", null);
         sut.setCaptureSpeechTrigger(HotKey.NO_KEY, true, true, true, true);
-        Assert.assertEquals("[Ctrl-Shift-Alt-Meta]", TestUtils.getFieldValue(sut, "captureSpeechTrigger").toString());
+        Assert.assertEquals("[Ctrl-Shift-Alt-Meta]", TestAccess.getFieldValue(sut, "captureSpeechTrigger").toString());
         PowerMockito.verifyStatic(HotKeyManager.class, VerificationModeFactory.times(2));
         HotKeyManager.unregisterHotkey(ArgumentMatchers.eq(captureSpeechTrigger));
         
@@ -1061,12 +1062,12 @@ public class SpeechRecognizerTest {
         
         PowerMockito.when(HotKeyManager.class, "hasHotkey", ArgumentMatchers.any(HotKey.class)).thenReturn(false);
         sut.setCaptureSpeechTrigger(KeyEvent.VK_Z, false, true, false, false);
-        Assert.assertEquals("[Shift-Z]", TestUtils.getFieldValue(sut, "captureSpeechTrigger").toString());
+        Assert.assertEquals("[Shift-Z]", TestAccess.getFieldValue(sut, "captureSpeechTrigger").toString());
         PowerMockito.verifyStatic(HotKeyManager.class, VerificationModeFactory.times(2));
         HotKeyManager.unregisterHotkey(ArgumentMatchers.eq(captureSpeechTrigger));
         
         sut.setCaptureSpeechTrigger(-99, false, true, false, false);
-        Assert.assertEquals("[Shift]", TestUtils.getFieldValue(sut, "captureSpeechTrigger").toString());
+        Assert.assertEquals("[Shift]", TestAccess.getFieldValue(sut, "captureSpeechTrigger").toString());
         PowerMockito.verifyStatic(HotKeyManager.class, VerificationModeFactory.times(2));
         HotKeyManager.unregisterHotkey(ArgumentMatchers.eq(captureSpeechTrigger));
         
@@ -1075,7 +1076,7 @@ public class SpeechRecognizerTest {
         sut.setMode(SpeechRecognizer.RecognitionMode.TRIGGERED);
         HotKeyManager.registerHotkey(ArgumentMatchers.any(HotKey.class));
         sut.setCaptureSpeechTrigger(KeyEvent.VK_R, false, false, false, false);
-        Assert.assertEquals("[R]", TestUtils.getFieldValue(sut, "captureSpeechTrigger").toString());
+        Assert.assertEquals("[R]", TestAccess.getFieldValue(sut, "captureSpeechTrigger").toString());
         PowerMockito.verifyStatic(HotKeyManager.class, VerificationModeFactory.times(1));
         HotKeyManager.registerHotkey(ArgumentMatchers.any(HotKey.class));
     }
@@ -1089,49 +1090,49 @@ public class SpeechRecognizerTest {
     @Test
     public void testSetAcousticModelAdaptionMatrix() throws Exception {
         PowerMockito.mockStatic(OperatingSystem.class);
-        Assert.assertNull(TestUtils.getFieldValue(sut, "adaptionMatrix"));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "adaptionMatrix"));
         File adaptionMatrix = Filesystem.createTemporaryFile("", "mllr_matrix");
         Assert.assertTrue(adaptionMatrix.exists());
         
         //standard Windows
         PowerMockito.when(OperatingSystem.class, "isWindows").thenReturn(true);
-        TestUtils.setFieldValue(sut, "adaptionMatrix", null);
-        TestUtils.setFieldValue(sut, "runPocketSphinxCmd", "");
-        TestUtils.setFieldValue(sut, "decodeRecordingCmd", "");
+        TestAccess.setFieldValue(sut, "adaptionMatrix", null);
+        TestAccess.setFieldValue(sut, "runPocketSphinxCmd", "");
+        TestAccess.setFieldValue(sut, "decodeRecordingCmd", "");
         sut.setAcousticModelAdaptionMatrix(adaptionMatrix);
-        Assert.assertEquals(adaptionMatrix, TestUtils.getFieldValue(sut, "adaptionMatrix"));
-        Assert.assertTrue(TestUtils.getFieldValue(sut, String.class, "runPocketSphinxCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
-        Assert.assertTrue(TestUtils.getFieldValue(sut, String.class, "decodeRecordingCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
+        Assert.assertEquals(adaptionMatrix, TestAccess.getFieldValue(sut, "adaptionMatrix"));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, String.class, "runPocketSphinxCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, String.class, "decodeRecordingCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
         
         //standard Linux
         PowerMockito.when(OperatingSystem.class, "isWindows").thenReturn(false);
-        TestUtils.setFieldValue(sut, "adaptionMatrix", null);
-        TestUtils.setFieldValue(sut, "runPocketSphinxCmd", "");
-        TestUtils.setFieldValue(sut, "decodeRecordingCmd", "");
+        TestAccess.setFieldValue(sut, "adaptionMatrix", null);
+        TestAccess.setFieldValue(sut, "runPocketSphinxCmd", "");
+        TestAccess.setFieldValue(sut, "decodeRecordingCmd", "");
         sut.setAcousticModelAdaptionMatrix(adaptionMatrix);
-        Assert.assertEquals(adaptionMatrix, TestUtils.getFieldValue(sut, "adaptionMatrix"));
-        Assert.assertTrue(TestUtils.getFieldValue(sut, String.class, "runPocketSphinxCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
-        Assert.assertTrue(TestUtils.getFieldValue(sut, String.class, "decodeRecordingCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
+        Assert.assertEquals(adaptionMatrix, TestAccess.getFieldValue(sut, "adaptionMatrix"));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, String.class, "runPocketSphinxCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
+        Assert.assertTrue(TestAccess.getFieldValue(sut, String.class, "decodeRecordingCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
         
         //does not exist
         File missingAdaptionMatrix = new File("nonexistant_mllr_matrix");
         Assert.assertFalse(missingAdaptionMatrix.exists());
-        TestUtils.setFieldValue(sut, "adaptionMatrix", null);
-        TestUtils.setFieldValue(sut, "runPocketSphinxCmd", "");
-        TestUtils.setFieldValue(sut, "decodeRecordingCmd", "");
+        TestAccess.setFieldValue(sut, "adaptionMatrix", null);
+        TestAccess.setFieldValue(sut, "runPocketSphinxCmd", "");
+        TestAccess.setFieldValue(sut, "decodeRecordingCmd", "");
         sut.setAcousticModelAdaptionMatrix(missingAdaptionMatrix);
-        Assert.assertEquals(missingAdaptionMatrix, TestUtils.getFieldValue(sut, "adaptionMatrix"));
-        Assert.assertFalse(TestUtils.getFieldValue(sut, String.class, "runPocketSphinxCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
-        Assert.assertFalse(TestUtils.getFieldValue(sut, String.class, "decodeRecordingCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
+        Assert.assertEquals(missingAdaptionMatrix, TestAccess.getFieldValue(sut, "adaptionMatrix"));
+        Assert.assertFalse(TestAccess.getFieldValue(sut, String.class, "runPocketSphinxCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
+        Assert.assertFalse(TestAccess.getFieldValue(sut, String.class, "decodeRecordingCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
         
         //invalid
-        TestUtils.setFieldValue(sut, "adaptionMatrix", null);
-        TestUtils.setFieldValue(sut, "runPocketSphinxCmd", "");
-        TestUtils.setFieldValue(sut, "decodeRecordingCmd", "");
+        TestAccess.setFieldValue(sut, "adaptionMatrix", null);
+        TestAccess.setFieldValue(sut, "runPocketSphinxCmd", "");
+        TestAccess.setFieldValue(sut, "decodeRecordingCmd", "");
         sut.setAcousticModelAdaptionMatrix(null);
-        Assert.assertNull(TestUtils.getFieldValue(sut, "adaptionMatrix"));
-        Assert.assertFalse(TestUtils.getFieldValue(sut, String.class, "runPocketSphinxCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
-        Assert.assertFalse(TestUtils.getFieldValue(sut, String.class, "decodeRecordingCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
+        Assert.assertNull(TestAccess.getFieldValue(sut, "adaptionMatrix"));
+        Assert.assertFalse(TestAccess.getFieldValue(sut, String.class, "runPocketSphinxCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
+        Assert.assertFalse(TestAccess.getFieldValue(sut, String.class, "decodeRecordingCmd").contains("-mllr " + StringUtility.quote(adaptionMatrix.getAbsolutePath())));
     }
     
     /**
@@ -1144,24 +1145,24 @@ public class SpeechRecognizerTest {
      */
     @Test
     public void testSpeechRecorder() throws Exception {
-        TestUtils.invokeMethod(sut, "setup");
+        TestAccess.invokeMethod(sut, "setup");
         sut.setMode(SpeechRecognizer.RecognitionMode.ON_DEMAND);
         sut.start();
         PowerMockito.mockStatic(CmdLine.class);
         PowerMockito.spy(WaveRecorder.class);
         PowerMockito.when(CmdLine.class, "executeCmd", ArgumentMatchers.anyString()).thenReturn("release");
-        TestUtils.setFieldValue(TestUtils.getFieldValue(WaveRecorder.class, "instance"), "owner", new AtomicReference<>(null));
-        TestUtils.setFieldValue(TestUtils.getFieldValue(WaveRecorder.class, "instance"), "manager", new AtomicReference<>(null));
+        TestAccess.setFieldValue(TestAccess.getFieldValue(WaveRecorder.class, "instance"), "owner", new AtomicReference<>(null));
+        TestAccess.setFieldValue(TestAccess.getFieldValue(WaveRecorder.class, "instance"), "manager", new AtomicReference<>(null));
         Assert.assertTrue(WaveRecorder.manage(SpeechRecognizerTest.class));
         
-        Object captureSpeechTriggerCallback = TestUtils.getFieldValue(sut, "captureSpeechTriggerCallback");
+        Object captureSpeechTriggerCallback = TestAccess.getFieldValue(sut, "captureSpeechTriggerCallback");
         Assert.assertTrue(captureSpeechTriggerCallback instanceof HotKey.HotKeyCallback);
         TestUtils.assertMethodExists(captureSpeechTriggerCallback.getClass(),
                 "hit");
         TestUtils.assertMethodExists(captureSpeechTriggerCallback.getClass(),
                 "release");
-        Assert.assertEquals(TestUtils.getFieldValue(sut, "recording"), TestUtils.getFieldValue(captureSpeechTriggerCallback, "recording"));
-        Assert.assertNull(TestUtils.getFieldValue(captureSpeechTriggerCallback, "wavFile"));
+        Assert.assertEquals(TestAccess.getFieldValue(sut, "recording"), TestAccess.getFieldValue(captureSpeechTriggerCallback, "recording"));
+        Assert.assertNull(TestAccess.getFieldValue(captureSpeechTriggerCallback, "wavFile"));
         
         testSpeechRecorderHit();
         testSpeechRecorderRelease();
@@ -1177,59 +1178,59 @@ public class SpeechRecognizerTest {
      * @see SpeechRecognizer.SpeechRecorder#hit()
      */
     private void testSpeechRecorderHit() throws Exception {
-        Class<?> SpeechRecorder = TestUtils.getClass(SpeechRecognizer.class, "SpeechRecorder");
-        Object captureSpeechTriggerCallback = TestUtils.getFieldValue(sut, "captureSpeechTriggerCallback");
+        Class<?> SpeechRecorder = TestAccess.getClass(SpeechRecognizer.class, "SpeechRecorder");
+        Object captureSpeechTriggerCallback = TestAccess.getFieldValue(sut, "captureSpeechTriggerCallback");
         File wavFile = Filesystem.createTemporaryFile(".wav", "speech-recorder-test");
         
         //hit
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "wavFile", null);
-        Assert.assertFalse(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        TestUtils.invokeMethod(captureSpeechTriggerCallback, "hit");
-        Assert.assertTrue(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        Assert.assertTrue(TestUtils.getFieldValue(captureSpeechTriggerCallback, File.class, "wavFile").exists());
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "wavFile", null);
+        Assert.assertFalse(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        TestAccess.invokeMethod(captureSpeechTriggerCallback, "hit");
+        Assert.assertTrue(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        Assert.assertTrue(TestAccess.getFieldValue(captureSpeechTriggerCallback, File.class, "wavFile").exists());
         Assert.assertTrue(WaveRecorder.stop(SpeechRecorder));
         Assert.assertTrue(WaveRecorder.relinquish(SpeechRecorder));
         
         //already hit
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "wavFile", null);
-        Assert.assertTrue(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        TestUtils.invokeMethod(captureSpeechTriggerCallback, "hit");
-        Assert.assertTrue(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        Assert.assertNull(TestUtils.getFieldValue(captureSpeechTriggerCallback, "wavFile"));
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "wavFile", null);
+        Assert.assertTrue(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        TestAccess.invokeMethod(captureSpeechTriggerCallback, "hit");
+        Assert.assertTrue(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        Assert.assertNull(TestAccess.getFieldValue(captureSpeechTriggerCallback, "wavFile"));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
         
         //failure to own wave recorder
         Assert.assertTrue(WaveRecorder.own(WaveRecorder.class)); //someone else owns
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "wavFile", null);
-        Assert.assertFalse(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        TestUtils.invokeMethod(captureSpeechTriggerCallback, "hit");
-        Assert.assertFalse(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        Assert.assertNull(TestUtils.getFieldValue(captureSpeechTriggerCallback, "wavFile"));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "wavFile", null);
+        Assert.assertFalse(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        TestAccess.invokeMethod(captureSpeechTriggerCallback, "hit");
+        Assert.assertFalse(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        Assert.assertNull(TestAccess.getFieldValue(captureSpeechTriggerCallback, "wavFile"));
         Assert.assertTrue(WaveRecorder.relinquish(WaveRecorder.class));
         
         //already owns
         Assert.assertTrue(WaveRecorder.own(SpeechRecorder)); //own
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "wavFile", null);
-        Assert.assertFalse(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        TestUtils.invokeMethod(captureSpeechTriggerCallback, "hit");
-        Assert.assertTrue(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        Assert.assertTrue(TestUtils.getFieldValue(captureSpeechTriggerCallback, File.class, "wavFile").exists());
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "wavFile", null);
+        Assert.assertFalse(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        TestAccess.invokeMethod(captureSpeechTriggerCallback, "hit");
+        Assert.assertTrue(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        Assert.assertTrue(TestAccess.getFieldValue(captureSpeechTriggerCallback, File.class, "wavFile").exists());
         Assert.assertTrue(WaveRecorder.stop(SpeechRecorder));
         Assert.assertTrue(WaveRecorder.relinquish(SpeechRecorder));
         
         //failed to start wave recorder
         PowerMockito.doReturn(false).when(WaveRecorder.class, "owns", ArgumentMatchers.any());
         PowerMockito.doReturn(true).when(WaveRecorder.class, "own", ArgumentMatchers.any());
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "wavFile", null);
-        Assert.assertFalse(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        TestUtils.invokeMethod(captureSpeechTriggerCallback, "hit");
-        Assert.assertFalse(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        Assert.assertNotNull(TestUtils.getFieldValue(captureSpeechTriggerCallback, "wavFile"));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "wavFile", null);
+        Assert.assertFalse(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        TestAccess.invokeMethod(captureSpeechTriggerCallback, "hit");
+        Assert.assertFalse(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        Assert.assertNotNull(TestAccess.getFieldValue(captureSpeechTriggerCallback, "wavFile"));
         PowerMockito.doCallRealMethod().when(WaveRecorder.class, "owns", ArgumentMatchers.any());
         PowerMockito.doCallRealMethod().when(WaveRecorder.class, "own", ArgumentMatchers.any());
     }
@@ -1241,30 +1242,30 @@ public class SpeechRecognizerTest {
      * @see SpeechRecognizer.SpeechRecorder#release()
      */
     private void testSpeechRecorderRelease() throws Exception {
-        Class<?> SpeechRecorder = TestUtils.getClass(SpeechRecognizer.class, "SpeechRecorder");
-        Object captureSpeechTriggerCallback = TestUtils.getFieldValue(sut, "captureSpeechTriggerCallback");
-        AtomicReference<String> speechBuffer = TestUtils.getFieldValue(sut, AtomicReference.class, "speechBuffer");
+        Class<?> SpeechRecorder = TestAccess.getClass(SpeechRecognizer.class, "SpeechRecorder");
+        Object captureSpeechTriggerCallback = TestAccess.getFieldValue(sut, "captureSpeechTriggerCallback");
+        AtomicReference<String> speechBuffer = TestAccess.getFieldValue(sut, AtomicReference.class, "speechBuffer");
         File wavFile = Filesystem.createTemporaryFile(".wav", "speech-recorder-test");
         PowerMockito.doReturn(SpeechRecognizer.DEFAULT_MINIMUM_RECORDING_LENGTH + 1).when(WaveRecorder.class, "getLengthInMilliseconds", ArgumentMatchers.any());
         
         //release
         Assert.assertTrue(WaveRecorder.own(SpeechRecorder)); //own
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "wavFile", wavFile);
-        TestUtils.invokeMethod(captureSpeechTriggerCallback, "release");
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "wavFile", wavFile);
+        TestAccess.invokeMethod(captureSpeechTriggerCallback, "release");
         Assert.assertEquals("release", speechBuffer.getAndSet(""));
-        Assert.assertFalse(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        Assert.assertFalse(TestUtils.getFieldValue(captureSpeechTriggerCallback, File.class, "wavFile").exists());
+        Assert.assertFalse(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        Assert.assertFalse(TestAccess.getFieldValue(captureSpeechTriggerCallback, File.class, "wavFile").exists());
         PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(1));
-        CmdLine.executeCmd(ArgumentMatchers.eq(TestUtils.getFieldValue(sut, String.class, "decodeRecordingCmd")
-                .replace("%s", TestUtils.getFieldValue(captureSpeechTriggerCallback, File.class, "wavFile").getAbsolutePath())));
+        CmdLine.executeCmd(ArgumentMatchers.eq(TestAccess.getFieldValue(sut, String.class, "decodeRecordingCmd")
+                .replace("%s", TestAccess.getFieldValue(captureSpeechTriggerCallback, File.class, "wavFile").getAbsolutePath())));
         
         //already released
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "wavFile", wavFile);
-        TestUtils.invokeMethod(captureSpeechTriggerCallback, "release");
-        Assert.assertFalse(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        Assert.assertNotNull(TestUtils.getFieldValue(captureSpeechTriggerCallback, "wavFile"));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(false));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "wavFile", wavFile);
+        TestAccess.invokeMethod(captureSpeechTriggerCallback, "release");
+        Assert.assertFalse(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        Assert.assertNotNull(TestAccess.getFieldValue(captureSpeechTriggerCallback, "wavFile"));
         PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.noMoreInteractions());
         CmdLine.executeCmd(ArgumentMatchers.anyString());
         
@@ -1272,41 +1273,41 @@ public class SpeechRecognizerTest {
         PowerMockito.doReturn(SpeechRecognizer.DEFAULT_MINIMUM_RECORDING_LENGTH - 1).when(WaveRecorder.class, "getLengthInMilliseconds", ArgumentMatchers.any());
         Assert.assertTrue(WaveRecorder.own(SpeechRecorder)); //own
         sut.setMode(SpeechRecognizer.RecognitionMode.ON_DEMAND);
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "wavFile", wavFile);
-        TestUtils.invokeMethod(captureSpeechTriggerCallback, "release");
-        Assert.assertFalse(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "wavFile", wavFile);
+        TestAccess.invokeMethod(captureSpeechTriggerCallback, "release");
+        Assert.assertFalse(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
         PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.times(2));
-        CmdLine.executeCmd(ArgumentMatchers.eq(TestUtils.getFieldValue(sut, String.class, "decodeRecordingCmd")
-                .replace("%s", TestUtils.getFieldValue(captureSpeechTriggerCallback, File.class, "wavFile").getAbsolutePath())));
+        CmdLine.executeCmd(ArgumentMatchers.eq(TestAccess.getFieldValue(sut, String.class, "decodeRecordingCmd")
+                .replace("%s", TestAccess.getFieldValue(captureSpeechTriggerCallback, File.class, "wavFile").getAbsolutePath())));
         Assert.assertTrue(WaveRecorder.own(SpeechRecorder)); //own
         sut.setMode(SpeechRecognizer.RecognitionMode.TRIGGERED);
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "wavFile", wavFile);
-        TestUtils.invokeMethod(captureSpeechTriggerCallback, "release");
-        Assert.assertFalse(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "wavFile", wavFile);
+        TestAccess.invokeMethod(captureSpeechTriggerCallback, "release");
+        Assert.assertFalse(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
         PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.noMoreInteractions());
         CmdLine.executeCmd(ArgumentMatchers.anyString());
         PowerMockito.doCallRealMethod().when(WaveRecorder.class, "getLengthInMilliseconds", ArgumentMatchers.any());
         
         //doesnt own
         Assert.assertTrue(WaveRecorder.own(WaveRecorder.class)); //someone else owns
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "wavFile", wavFile);
-        Assert.assertTrue(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        TestUtils.invokeMethod(captureSpeechTriggerCallback, "release");
-        Assert.assertFalse(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        Assert.assertFalse(TestUtils.getFieldValue(captureSpeechTriggerCallback, File.class, "wavFile").exists());
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "wavFile", wavFile);
+        Assert.assertTrue(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        TestAccess.invokeMethod(captureSpeechTriggerCallback, "release");
+        Assert.assertFalse(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        Assert.assertFalse(TestAccess.getFieldValue(captureSpeechTriggerCallback, File.class, "wavFile").exists());
         Assert.assertTrue(WaveRecorder.relinquish(WaveRecorder.class));
         
         //failed to stop wave recorder
         PowerMockito.doReturn(true).when(WaveRecorder.class, "owns", ArgumentMatchers.any());
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
-        TestUtils.setFieldValue(captureSpeechTriggerCallback, "wavFile", wavFile);
-        Assert.assertTrue(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        TestUtils.invokeMethod(captureSpeechTriggerCallback, "release");
-        Assert.assertFalse(TestUtils.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
-        Assert.assertNotNull(TestUtils.getFieldValue(captureSpeechTriggerCallback, "wavFile"));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "recording", new AtomicBoolean(true));
+        TestAccess.setFieldValue(captureSpeechTriggerCallback, "wavFile", wavFile);
+        Assert.assertTrue(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        TestAccess.invokeMethod(captureSpeechTriggerCallback, "release");
+        Assert.assertFalse(TestAccess.getFieldValue(captureSpeechTriggerCallback, AtomicBoolean.class, "recording").get());
+        Assert.assertNotNull(TestAccess.getFieldValue(captureSpeechTriggerCallback, "wavFile"));
         PowerMockito.verifyStatic(CmdLine.class, VerificationModeFactory.noMoreInteractions());
         CmdLine.executeCmd(ArgumentMatchers.anyString());
         PowerMockito.doCallRealMethod().when(WaveRecorder.class, "owns", ArgumentMatchers.any());
@@ -1326,18 +1327,18 @@ public class SpeechRecognizerTest {
      */
     @Test
     public void testSpeechTrainer() throws Exception {
-        Class<?> SpeechTrainer = TestUtils.getClass(SpeechRecognizer.class, "SpeechTrainer");
+        Class<?> SpeechTrainer = TestAccess.getClass(SpeechRecognizer.class, "SpeechTrainer");
         SpeechRecognizer.SpeechTrainer trainer = Mockito.mock(SpeechRecognizer.SpeechTrainer.class);
-        TestUtils.setFieldValue(SpeechRecognizer.SpeechTrainer.class, "instance", trainer);
-        TestUtils.setFieldValue(SpeechRecognizer.SpeechTrainer.class, "isWindows", true);
+        TestAccess.setFieldValue(SpeechRecognizer.SpeechTrainer.class, "instance", trainer);
+        TestAccess.setFieldValue(SpeechRecognizer.SpeechTrainer.class, "isWindows", true);
         
         PowerMockito.spy(Filesystem.class);
         PowerMockito.spy(SystemIn.class);
         PowerMockito.spy(WaveRecorder.class);
-        TestUtils.setFieldValue(TestUtils.getFieldValue(SystemIn.class, "instance"), "owner", new AtomicReference<>(null));
-        TestUtils.setFieldValue(TestUtils.getFieldValue(SystemIn.class, "instance"), "manager", new AtomicReference<>(null));
-        TestUtils.setFieldValue(TestUtils.getFieldValue(WaveRecorder.class, "instance"), "owner", new AtomicReference<>(null));
-        TestUtils.setFieldValue(TestUtils.getFieldValue(WaveRecorder.class, "instance"), "manager", new AtomicReference<>(null));
+        TestAccess.setFieldValue(TestAccess.getFieldValue(SystemIn.class, "instance"), "owner", new AtomicReference<>(null));
+        TestAccess.setFieldValue(TestAccess.getFieldValue(SystemIn.class, "instance"), "manager", new AtomicReference<>(null));
+        TestAccess.setFieldValue(TestAccess.getFieldValue(WaveRecorder.class, "instance"), "owner", new AtomicReference<>(null));
+        TestAccess.setFieldValue(TestAccess.getFieldValue(WaveRecorder.class, "instance"), "manager", new AtomicReference<>(null));
         Assert.assertTrue(SystemIn.manage(SpeechRecognizerTest.class));
         Assert.assertTrue(WaveRecorder.manage(SpeechRecognizerTest.class));
         
@@ -1374,7 +1375,7 @@ public class SpeechRecognizerTest {
      * @see SpeechRecognizer.SpeechTrainer#train(File)
      */
     private void testSpeechTrainerTrain(SpeechRecognizer.SpeechTrainer trainer, File trainingDirectory) throws Exception {
-        Class<?> SpeechTrainer = TestUtils.getClass(SpeechRecognizer.class, "SpeechTrainer");
+        Class<?> SpeechTrainer = TestAccess.getClass(SpeechRecognizer.class, "SpeechTrainer");
         File adaptionMatrix = Filesystem.createTemporaryFile();
         
         //performTraining
@@ -1441,7 +1442,7 @@ public class SpeechRecognizerTest {
         Mockito.when(trainer.prepareTrainingDirectory(ArgumentMatchers.any(File.class))).thenCallRealMethod();
         
         //Windows
-        TestUtils.setFieldValue(SpeechRecognizer.SpeechTrainer.class, "isWindows", true);
+        TestAccess.setFieldValue(SpeechRecognizer.SpeechTrainer.class, "isWindows", true);
         Assert.assertTrue(trainer.prepareTrainingDirectory(trainingDirectory));
         Assert.assertEquals(19, Filesystem.getFilesAndDirsRecursively(trainingDirectory).size());
         Assert.assertTrue(new File(trainingDirectory, "en-us").exists());
@@ -1465,7 +1466,7 @@ public class SpeechRecognizerTest {
         Assert.assertTrue(new File(trainingDirectory, "sphinxbase.dll").exists());
         
         //Linux
-        TestUtils.setFieldValue(SpeechRecognizer.SpeechTrainer.class, "isWindows", false);
+        TestAccess.setFieldValue(SpeechRecognizer.SpeechTrainer.class, "isWindows", false);
         Assert.assertTrue(trainer.prepareTrainingDirectory(trainingDirectory));
         Assert.assertEquals(20, Filesystem.getFilesAndDirsRecursively(trainingDirectory).size());
         Assert.assertTrue(new File(trainingDirectory, "en-us").exists());
@@ -1490,7 +1491,7 @@ public class SpeechRecognizerTest {
         Assert.assertTrue(new File(trainingDirectory, "sphinx_fe").exists());
         
         //prepare
-        TestUtils.setFieldValue(SpeechRecognizer.SpeechTrainer.class, "isWindows", OperatingSystem.isWindows());
+        TestAccess.setFieldValue(SpeechRecognizer.SpeechTrainer.class, "isWindows", OperatingSystem.isWindows());
         Assert.assertTrue(trainer.prepareTrainingDirectory(trainingDirectory));
         
         Mockito.when(trainer.prepareTrainingDirectory(ArgumentMatchers.any(File.class))).thenReturn(true);
@@ -1503,7 +1504,7 @@ public class SpeechRecognizerTest {
      * @see SpeechRecognizer.SpeechTrainer#collectRecordings(File)
      */
     private void testSpeechTrainerCollectRecordings(SpeechRecognizer.SpeechTrainer trainer, File trainingDirectory) throws Exception {
-        Class<?> SpeechTrainer = TestUtils.getClass(SpeechRecognizer.class, "SpeechTrainer");
+        Class<?> SpeechTrainer = TestAccess.getClass(SpeechRecognizer.class, "SpeechTrainer");
         PowerMockito.doReturn("").when(SystemIn.class, "nextLine", ArgumentMatchers.eq(SpeechTrainer));
         Mockito.doCallRealMethod().when(trainer).collectRecordings(ArgumentMatchers.any(File.class));
         PowerMockito.doCallRealMethod().when(SystemIn.class, "owns", ArgumentMatchers.eq(SpeechTrainer));
@@ -1512,8 +1513,8 @@ public class SpeechRecognizerTest {
         PowerMockito.doCallRealMethod().when(WaveRecorder.class, "own", ArgumentMatchers.eq(SpeechTrainer));
         
         //standard
-        TestUtils.setFieldValue(TestUtils.getFieldValue(SystemIn.class, "instance"), "owner", new AtomicReference<>(SpeechTrainer));
-        TestUtils.setFieldValue(TestUtils.getFieldValue(WaveRecorder.class, "instance"), "owner", new AtomicReference<>(SpeechTrainer));
+        TestAccess.setFieldValue(TestAccess.getFieldValue(SystemIn.class, "instance"), "owner", new AtomicReference<>(SpeechTrainer));
+        TestAccess.setFieldValue(TestAccess.getFieldValue(WaveRecorder.class, "instance"), "owner", new AtomicReference<>(SpeechTrainer));
         WaveRecorder.stop(SpeechTrainer);
         PowerMockito.doReturn(true).when(SystemIn.class, "own", ArgumentMatchers.eq(SpeechTrainer));
         PowerMockito.doReturn(true).when(WaveRecorder.class, "own", ArgumentMatchers.eq(SpeechTrainer));
@@ -1532,8 +1533,8 @@ public class SpeechRecognizerTest {
         PowerMockito.doCallRealMethod().when(WaveRecorder.class, "own", ArgumentMatchers.eq(SpeechTrainer));
         
         //fail to own system input
-        TestUtils.setFieldValue(TestUtils.getFieldValue(SystemIn.class, "instance"), "owner", new AtomicReference<>(null));
-        TestUtils.setFieldValue(TestUtils.getFieldValue(WaveRecorder.class, "instance"), "owner", new AtomicReference<>(null));
+        TestAccess.setFieldValue(TestAccess.getFieldValue(SystemIn.class, "instance"), "owner", new AtomicReference<>(null));
+        TestAccess.setFieldValue(TestAccess.getFieldValue(WaveRecorder.class, "instance"), "owner", new AtomicReference<>(null));
         PowerMockito.doReturn(false).when(SystemIn.class, "own", ArgumentMatchers.eq(SpeechTrainer));
         PowerMockito.doReturn(false).when(WaveRecorder.class, "own", ArgumentMatchers.eq(SpeechTrainer));
         Assert.assertFalse(trainer.collectRecordings(trainingDirectory));
@@ -1545,8 +1546,8 @@ public class SpeechRecognizerTest {
         PowerMockito.doCallRealMethod().when(WaveRecorder.class, "own", ArgumentMatchers.eq(SpeechTrainer));
         
         //fail to own wave recorder
-        TestUtils.setFieldValue(TestUtils.getFieldValue(SystemIn.class, "instance"), "owner", new AtomicReference<>(SpeechTrainer));
-        TestUtils.setFieldValue(TestUtils.getFieldValue(WaveRecorder.class, "instance"), "owner", new AtomicReference<>(null));
+        TestAccess.setFieldValue(TestAccess.getFieldValue(SystemIn.class, "instance"), "owner", new AtomicReference<>(SpeechTrainer));
+        TestAccess.setFieldValue(TestAccess.getFieldValue(WaveRecorder.class, "instance"), "owner", new AtomicReference<>(null));
         PowerMockito.doReturn(false).when(SystemIn.class, "own", ArgumentMatchers.eq(SpeechTrainer));
         PowerMockito.doReturn(false).when(WaveRecorder.class, "own", ArgumentMatchers.eq(SpeechTrainer));
         Assert.assertFalse(trainer.collectRecordings(trainingDirectory));
@@ -1558,8 +1559,8 @@ public class SpeechRecognizerTest {
         PowerMockito.doCallRealMethod().when(WaveRecorder.class, "own", ArgumentMatchers.eq(SpeechTrainer));
         
         //failed to read transcriptions
-        TestUtils.setFieldValue(TestUtils.getFieldValue(SystemIn.class, "instance"), "owner", new AtomicReference<>(SpeechTrainer));
-        TestUtils.setFieldValue(TestUtils.getFieldValue(WaveRecorder.class, "instance"), "owner", new AtomicReference<>(SpeechTrainer));
+        TestAccess.setFieldValue(TestAccess.getFieldValue(SystemIn.class, "instance"), "owner", new AtomicReference<>(SpeechTrainer));
+        TestAccess.setFieldValue(TestAccess.getFieldValue(WaveRecorder.class, "instance"), "owner", new AtomicReference<>(SpeechTrainer));
         PowerMockito.doReturn(false).when(SystemIn.class, "own", ArgumentMatchers.eq(SpeechTrainer));
         PowerMockito.doReturn(false).when(WaveRecorder.class, "own", ArgumentMatchers.eq(SpeechTrainer));
         PowerMockito.doReturn(new ArrayList<String>()).when(Filesystem.class, "readLines", ArgumentMatchers.any(File.class));
