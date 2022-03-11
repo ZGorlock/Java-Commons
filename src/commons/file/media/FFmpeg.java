@@ -12,7 +12,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +29,7 @@ import commons.access.CmdLine;
 import commons.access.Filesystem;
 import commons.console.Console;
 import commons.console.ProgressBar;
+import commons.lambda.stream.collector.MapCollectors;
 import commons.log.CommonsLogging;
 import commons.math.BoundUtility;
 import commons.math.EquationUtility;
@@ -2046,9 +2046,9 @@ public class FFmpeg {
              */
             @SuppressWarnings({"unchecked"})
             public MetadataTags(JSONObject data) {
-                this((LinkedHashMap<String, String>) ((Set<Map.Entry<String, Object>>)
+                this(((Set<Map.Entry<String, Object>>)
                         ((Optional.ofNullable((JSONObject) data.get("tags")).orElse(new JSONObject())).entrySet())).stream()
-                        .collect(LinkedHashMap<String, String>::new, (m, e) -> m.put(e.getKey(), e.getValue().toString()), LinkedHashMap::putAll));
+                        .collect(MapCollectors.toLinkedHashMap(Map.Entry::getKey, (e -> String.valueOf(e.getValue())))));
             }
             
             
@@ -3814,9 +3814,9 @@ public class FFmpeg {
             
             return IntStream.range(0, identifiers.size()).boxed()
                     .map(i -> decomposer.apply(identifiers.get(i)).stream().filter(Objects::nonNull)
-                            .collect(HashMap<Identifier<Scope.Singular>, T>::new, (m, e) -> m.put(e, ListUtility.getOrNull(mappedValues, i)), HashMap::putAll)
+                            .collect(MapCollectors.toHashMap(Function.identity(), (e -> ListUtility.getOrNull(mappedValues, i))))
                     ).flatMap(e -> e.entrySet().stream()).sorted(Map.Entry.comparingByKey())
-                    .collect(LinkedHashMap::new, (m, e) -> m.put(e.getKey(), e.getValue()), LinkedHashMap::putAll);
+                    .collect(MapCollectors.toLinkedHashMap());
         }
         
         /**

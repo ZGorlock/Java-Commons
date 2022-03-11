@@ -14,11 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import commons.lambda.function.Action;
 import commons.lambda.function.checked.CheckedConsumer;
+import commons.lambda.stream.collector.MapCollectors;
 import commons.object.string.EntityStringUtility;
 import commons.object.string.StringUtility;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -673,7 +673,7 @@ public class TestUtilsTest {
     @Test
     public void testAssertMethodExists() throws Exception {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
-                .collect(Collectors.toMap(EntityStringUtility::simpleClassString, e -> new AtomicInteger(0)));
+                .collect(MapCollectors.toHashMap(EntityStringUtility::simpleClassString, (e -> new AtomicInteger(0))));
         
         PowerMockito.mockStatic(AssertWrapper);
         
@@ -742,7 +742,7 @@ public class TestUtilsTest {
     @Test
     public void testAssertMethodDoesNotExist() throws Exception {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
-                .collect(Collectors.toMap(EntityStringUtility::simpleClassString, e -> new AtomicInteger(0)));
+                .collect(MapCollectors.toHashMap(EntityStringUtility::simpleClassString, (e -> new AtomicInteger(0))));
         
         PowerMockito.mockStatic(AssertWrapper);
         
@@ -811,7 +811,7 @@ public class TestUtilsTest {
     @Test
     public void testAssertConstructorExists() throws Exception {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
-                .collect(Collectors.toMap(EntityStringUtility::simpleClassString, e -> new AtomicInteger(0)));
+                .collect(MapCollectors.toHashMap(EntityStringUtility::simpleClassString, (e -> new AtomicInteger(0))));
         
         PowerMockito.mockStatic(AssertWrapper);
         
@@ -874,7 +874,7 @@ public class TestUtilsTest {
     @Test
     public void testAssertConstructorDoesNotExist() throws Exception {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
-                .collect(Collectors.toMap(EntityStringUtility::simpleClassString, e -> new AtomicInteger(0)));
+                .collect(MapCollectors.toHashMap(EntityStringUtility::simpleClassString, (e -> new AtomicInteger(0))));
         
         PowerMockito.mockStatic(AssertWrapper);
         
@@ -931,7 +931,7 @@ public class TestUtilsTest {
     @Test
     public void testAssertFieldExists() throws Exception {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
-                .collect(Collectors.toMap(EntityStringUtility::simpleClassString, e -> new AtomicInteger(0)));
+                .collect(MapCollectors.toHashMap(EntityStringUtility::simpleClassString, (e -> new AtomicInteger(0))));
         
         PowerMockito.mockStatic(AssertWrapper);
         
@@ -993,7 +993,7 @@ public class TestUtilsTest {
     @Test
     public void testAssertFieldDoesNotExist() throws Exception {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
-                .collect(Collectors.toMap(EntityStringUtility::simpleClassString, e -> new AtomicInteger(0)));
+                .collect(MapCollectors.toHashMap(EntityStringUtility::simpleClassString, (e -> new AtomicInteger(0))));
         
         PowerMockito.mockStatic(AssertWrapper);
         

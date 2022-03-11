@@ -28,6 +28,7 @@ import commons.access.Filesystem;
 import commons.access.Project;
 import commons.console.Console;
 import commons.console.ProgressBar;
+import commons.lambda.stream.collector.MapCollectors;
 import commons.log.CommonsLogging;
 import commons.object.collection.MapUtility;
 import commons.object.string.StringUtility;
@@ -2361,9 +2362,9 @@ public class FFmpegTest {
             Assert.assertNotNull(testModifiers.get());
             final Map<FFmpeg.Identifier<FFmpeg.Identifier.Scope.Singular>, FFmpeg.MediaInfo.MetadataTags> testModifiersMap =
                     FFmpeg.Identifier.decompose(new ArrayList<>(testModifiers.get().keySet()), new ArrayList<>(testModifiers.get().values()), mediaInfo);
-            final Map<String, String> testModifiersStringMap = testModifiersMap.entrySet().stream().collect(Collectors.toMap(Object::toString, Object::toString));
+            final Map<String, String> testModifiersStringMap = testModifiersMap.entrySet().stream().collect(MapCollectors.toStringMap());
             Assert.assertEquals(testModifiersMap.size(), modifiersMap.size());
-            final Map<String, String> modifiersStringMap = modifiersMap.entrySet().stream().collect(Collectors.toMap(Object::toString, Object::toString));
+            final Map<String, String> modifiersStringMap = modifiersMap.entrySet().stream().collect(MapCollectors.toStringMap());
             Assert.assertFalse(testModifiersStringMap.entrySet().stream().anyMatch(e -> (!modifiersStringMap.containsKey(e.getKey()) || !Objects.equals(e.getValue(), modifiersStringMap.get(e.getKey())))));
             return null;
         }).when(FFmpeg.class, "modifyMetadata", ArgumentMatchers.any(File.class), ArgumentMatchers.anyMap(), ArgumentMatchers.any(File.class), ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyBoolean());
@@ -2497,9 +2498,9 @@ public class FFmpegTest {
             Assert.assertNotNull(testModifiers.get());
             final Map<FFmpeg.Identifier<FFmpeg.Identifier.Scope.Singular>, FFmpeg.MediaInfo.MetadataTags> testModifiersMap =
                     FFmpeg.Identifier.decompose(new ArrayList<>(testModifiers.get().keySet()), new ArrayList<>(testModifiers.get().values()), mediaInfo);
-            final Map<String, String> testModifiersStringMap = testModifiersMap.entrySet().stream().collect(Collectors.toMap(Object::toString, Object::toString));
+            final Map<String, String> testModifiersStringMap = testModifiersMap.entrySet().stream().collect(MapCollectors.toStringMap());
             Assert.assertEquals(testModifiersMap.size(), modifiersMap.size());
-            final Map<String, String> modifiersStringMap = modifiersMap.entrySet().stream().collect(Collectors.toMap(Object::toString, Object::toString));
+            final Map<String, String> modifiersStringMap = modifiersMap.entrySet().stream().collect(MapCollectors.toStringMap());
             Assert.assertFalse(testModifiersStringMap.entrySet().stream().anyMatch(e -> (!modifiersStringMap.containsKey(e.getKey()) || !Objects.equals(e.getValue(), modifiersStringMap.get(e.getKey())))));
             return null;
         }).when(FFmpeg.class, "modifyMetadata", ArgumentMatchers.any(File.class), ArgumentMatchers.anyMap(), ArgumentMatchers.any(File.class), ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyBoolean());
@@ -2565,9 +2566,9 @@ public class FFmpegTest {
             Assert.assertNotNull(testModifiers.get());
             final Map<FFmpeg.Identifier<FFmpeg.Identifier.Scope.Singular>, FFmpeg.MediaInfo.MetadataTags> testModifiersMap =
                     FFmpeg.Identifier.decompose(new ArrayList<>(testModifiers.get().keySet()), new ArrayList<>(testModifiers.get().values()), mediaInfo);
-            final Map<String, String> testModifiersStringMap = testModifiersMap.entrySet().stream().collect(Collectors.toMap(Object::toString, Object::toString));
+            final Map<String, String> testModifiersStringMap = testModifiersMap.entrySet().stream().collect(MapCollectors.toStringMap());
             Assert.assertEquals(testModifiersMap.size(), modifiersMap.size());
-            final Map<String, String> modifiersStringMap = modifiersMap.entrySet().stream().collect(Collectors.toMap(Object::toString, Object::toString));
+            final Map<String, String> modifiersStringMap = modifiersMap.entrySet().stream().collect(MapCollectors.toStringMap());
             Assert.assertFalse(testModifiersStringMap.entrySet().stream().anyMatch(e -> (!modifiersStringMap.containsKey(e.getKey()) || !Objects.equals(e.getValue(), modifiersStringMap.get(e.getKey())))));
             return null;
         }).when(FFmpeg.class, "modifyMetadata", ArgumentMatchers.any(File.class), ArgumentMatchers.anyMap(), ArgumentMatchers.any(File.class), ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyBoolean());
@@ -2653,9 +2654,9 @@ public class FFmpegTest {
             Assert.assertNotNull(testModifiers.get());
             final Map<FFmpeg.Identifier<FFmpeg.Identifier.Scope.Singular>, FFmpeg.MediaInfo.MetadataTags> testModifiersMap =
                     FFmpeg.Identifier.decompose(new ArrayList<>(testModifiers.get().keySet()), new ArrayList<>(testModifiers.get().values()), mediaInfo);
-            final Map<String, String> testModifiersStringMap = testModifiersMap.entrySet().stream().collect(Collectors.toMap(Object::toString, Object::toString));
+            final Map<String, String> testModifiersStringMap = testModifiersMap.entrySet().stream().collect(MapCollectors.toStringMap());
             Assert.assertEquals(testModifiersMap.size(), modifiersMap.size());
-            final Map<String, String> modifiersStringMap = modifiersMap.entrySet().stream().collect(Collectors.toMap(Object::toString, Object::toString));
+            final Map<String, String> modifiersStringMap = modifiersMap.entrySet().stream().collect(MapCollectors.toStringMap());
             Assert.assertFalse(testModifiersStringMap.entrySet().stream().anyMatch(e -> (!modifiersStringMap.containsKey(e.getKey()) || !Objects.equals(e.getValue(), modifiersStringMap.get(e.getKey())))));
             return null;
         }).when(FFmpeg.class, "modifyMetadata", ArgumentMatchers.any(File.class), ArgumentMatchers.anyMap(), ArgumentMatchers.any(File.class), ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyBoolean());
@@ -2742,9 +2743,9 @@ public class FFmpegTest {
             Assert.assertNotNull(testModifiers.get());
             final Map<FFmpeg.Identifier<FFmpeg.Identifier.Scope.Singular>, FFmpeg.MediaInfo.MetadataTags> testModifiersMap =
                     FFmpeg.Identifier.decompose(new ArrayList<>(testModifiers.get().keySet()), new ArrayList<>(testModifiers.get().values()), mediaInfo);
-            final Map<String, String> testModifiersStringMap = testModifiersMap.entrySet().stream().collect(Collectors.toMap(Object::toString, Object::toString));
+            final Map<String, String> testModifiersStringMap = testModifiersMap.entrySet().stream().collect(MapCollectors.toStringMap());
             Assert.assertEquals(testModifiersMap.size(), modifiersMap.size());
-            final Map<String, String> modifiersStringMap = modifiersMap.entrySet().stream().collect(Collectors.toMap(Object::toString, Object::toString));
+            final Map<String, String> modifiersStringMap = modifiersMap.entrySet().stream().collect(MapCollectors.toStringMap());
             Assert.assertFalse(testModifiersStringMap.entrySet().stream().anyMatch(e -> (!modifiersStringMap.containsKey(e.getKey()) || !Objects.equals(e.getValue(), modifiersStringMap.get(e.getKey())))));
             return null;
         }).when(FFmpeg.class, "modifyMetadata", ArgumentMatchers.any(File.class), ArgumentMatchers.anyMap(), ArgumentMatchers.any(File.class), ArgumentMatchers.anyBoolean(), ArgumentMatchers.anyBoolean());
