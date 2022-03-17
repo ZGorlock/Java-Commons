@@ -8,7 +8,6 @@
 package commons.io.hotkey;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,6 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.logging.Level;
 
 import commons.access.OperatingSystem;
+import commons.object.collection.MapUtility;
 import org.jnativehook.GlobalScreen;
 import org.jnativehook.NativeHookException;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -50,7 +50,7 @@ public class HotKeyManager {
         modifierDownTmp.put(HotKey.ModifierKey.SHIFT, new AtomicBoolean(false));
         modifierDownTmp.put(HotKey.ModifierKey.ALT, new AtomicBoolean(false));
         modifierDownTmp.put(HotKey.ModifierKey.META, new AtomicBoolean(false));
-        modifierDown = Collections.unmodifiableMap(modifierDownTmp);
+        modifierDown = MapUtility.unmodifiableMap(modifierDownTmp);
     }
     
     /**

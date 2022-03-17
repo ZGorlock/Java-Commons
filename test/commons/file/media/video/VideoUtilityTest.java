@@ -29,6 +29,7 @@ import commons.graphics.DrawUtility;
 import commons.log.CommonsLogging;
 import commons.math.MathUtility;
 import commons.math.component.vector.IntVector;
+import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
 import commons.object.string.StringUtility;
 import commons.test.TestUtils;
@@ -579,7 +580,7 @@ public class VideoUtilityTest {
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput3));
         Assert.assertEquals("h264|hevc|mpeg4|mp3|aac|flac|aac|opus|vorbis|subrip|subrip|subrip|subrip|subrip|subrip|mpeg4|flac|subrip|subrip|subrip|subrip|subrip|subrip",
                 FFmpeg.getStreams(testOutput3).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.addStreams(testStreamSource, testStreamSource, Collections.emptyList(), testOutput4);
+        VideoUtility.addStreams(testStreamSource, testStreamSource, ListUtility.emptyList(), testOutput4);
         Assert.assertTrue(testOutput4.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput4));
         Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput4));
@@ -618,7 +619,7 @@ public class VideoUtilityTest {
         Assert.assertEquals(0, FFmpeg.getChapterCount(testOutput7));
         Assert.assertEquals("h264|mpeg4|flac|subrip|subrip|subrip|subrip|subrip|subrip",
                 FFmpeg.getStreams(testOutput7).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.addStreams(testSource, testStreamSource, Collections.emptyList(), testOutput8);
+        VideoUtility.addStreams(testSource, testStreamSource, ListUtility.emptyList(), testOutput8);
         Assert.assertTrue(testOutput8.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput8));
         Assert.assertEquals(1, FFmpeg.getStreamCount(testOutput8));
@@ -912,7 +913,7 @@ public class VideoUtilityTest {
         Assert.assertEquals(3, FFmpeg.getChapterCount(testOutput3));
         Assert.assertEquals("h264|hevc|mp3|aac|aac|opus|vorbis",
                 FFmpeg.getStreams(testOutput3).stream().map(FFmpeg.MediaInfo.Stream::getCodecName).collect(Collectors.joining("|")));
-        VideoUtility.removeStreams(testSource, Collections.emptyList(), testOutput4);
+        VideoUtility.removeStreams(testSource, ListUtility.emptyList(), testOutput4);
         Assert.assertTrue(testOutput4.exists());
         Assert.assertFalse(Filesystem.isEmpty(testOutput4));
         Assert.assertEquals(15, FFmpeg.getStreamCount(testOutput4));
@@ -1771,8 +1772,8 @@ public class VideoUtilityTest {
                 "fake_%03d.png: No such file or directory"));
         TestUtils.assertException(NullPointerException.class, () ->
                 VideoUtility.encodeFramesToVideo(frameDir, null, 10, fakeOutput));
-        TestUtils.assertException(IndexOutOfBoundsException.class, "Index: 0", () ->
-                VideoUtility.encodeFramesToVideo(Collections.emptyList(), 10, fakeOutput));
+        TestUtils.assertException(IndexOutOfBoundsException.class, "Index 0 out of bounds for length 0", () ->
+                VideoUtility.encodeFramesToVideo(ListUtility.emptyList(), 10, fakeOutput));
         TestUtils.assertException(NullPointerException.class, () ->
                 VideoUtility.encodeFramesToVideo(null, 10, fakeOutput));
         TestUtils.assertException(NullPointerException.class, () ->

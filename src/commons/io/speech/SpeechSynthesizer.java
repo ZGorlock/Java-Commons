@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -23,6 +22,7 @@ import javax.sound.sampled.LineEvent;
 
 import commons.math.BoundUtility;
 import commons.math.MathUtility;
+import commons.object.collection.MapUtility;
 import commons.object.string.StringUtility;
 import marytts.LocalMaryInterface;
 import marytts.MaryInterface;
@@ -68,7 +68,7 @@ public class SpeechSynthesizer {
      *
      * @see #getLetterPronunciations()
      */
-    public static final Map<String, String> LETTER_PRONUNCIATIONS = Collections.unmodifiableMap(getLetterPronunciations());
+    public static final Map<String, String> LETTER_PRONUNCIATIONS = MapUtility.unmodifiableMap(getLetterPronunciations());
     
     
     //Enums

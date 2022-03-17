@@ -30,6 +30,7 @@ import commons.console.Console;
 import commons.console.ProgressBar;
 import commons.lambda.stream.collector.MapCollectors;
 import commons.log.CommonsLogging;
+import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
 import commons.object.string.StringUtility;
 import commons.test.TestAccess;
@@ -5485,7 +5486,7 @@ public class FFmpegTest {
         
         //toString
         disposition = Mockito.mock(FFmpeg.MediaInfo.Stream.Disposition.class, Mockito.CALLS_REAL_METHODS);
-        TestAccess.setFieldValue(disposition, "dispositions", Collections.emptyList());
+        TestAccess.setFieldValue(disposition, "dispositions", ListUtility.emptyList());
         Assert.assertNotNull(disposition);
         Assert.assertEquals(0, disposition.getAll().size());
         Assert.assertEquals("", disposition.toString());

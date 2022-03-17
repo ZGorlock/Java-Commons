@@ -16,6 +16,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
+import commons.object.collection.MapUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -51,10 +52,7 @@ public final class MapCollectors {
         return CustomCollectors.collect(
                 mapSupplier,
                 (m, e) -> m.put(keyMapper.apply(e), valueMapper.apply(e)),
-                (m1, m2) -> {
-                    m1.putAll(m2);
-                    return m1;
-                }
+                MapUtility::putAllAndGet
         );
     }
     

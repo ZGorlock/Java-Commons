@@ -9,6 +9,7 @@ package commons.object.collection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
@@ -51,6 +52,117 @@ public final class ListUtility {
     //Static Methods
     
     /**
+     * Creates a new list instance of a certain class.
+     *
+     * @param clazz The class of the list.
+     * @param <T>   The type of the list.
+     * @param <L>   The class of the list.
+     * @return The list instance.
+     */
+    public static <T, L extends List<T>> List<T> emptyList(Class<L> clazz) {
+        switch (clazz.getSimpleName()) {
+            case "ArrayList":
+                return new ArrayList<>();
+            case "LinkedList":
+                return new LinkedList<>();
+            case "Stack":
+                return new Stack<>();
+            case "Vector":
+                return new Vector<>();
+            default:
+                return emptyList();
+        }
+    }
+    
+    /**
+     * Creates a new list instance.
+     *
+     * @param <T> The type of the list.
+     * @return The list instance.
+     * @see #emptyList(Class)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> emptyList() {
+        return emptyList((Class<List<T>>) DEFAULT_LIST_CLASS);
+    }
+    
+    /**
+     * Creates a new unmodifiable list from an existing list.
+     *
+     * @param list The list.
+     * @param <T>  The type of the list.
+     * @return The unmodifiable list.
+     * @see Collections#unmodifiableList(List)
+     */
+    public static <T> List<T> unmodifiableList(List<T> list) {
+        return Collections.unmodifiableList(list);
+    }
+    
+    /**
+     * Creates a new unmodifiable list instance of a certain class.
+     *
+     * @param clazz The class of the list.
+     * @param <T>   The type of the list.
+     * @param <L>   The class of the list.
+     * @return The unmodifiable list instance.
+     * @see #emptyList(Class)
+     * @see #unmodifiableList(List)
+     */
+    public static <T, L extends List<T>> List<T> unmodifiableList(Class<L> clazz) {
+        return unmodifiableList(emptyList(clazz));
+    }
+    
+    /**
+     * Creates a new unmodifiable list instance.
+     *
+     * @param <T> The type of the list.
+     * @return The unmodifiable list instance.
+     * @see #unmodifiableList(Class)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> unmodifiableList() {
+        return unmodifiableList((Class<List<T>>) DEFAULT_LIST_CLASS);
+    }
+    
+    /**
+     * Creates a new synchronized list from an existing list.
+     *
+     * @param list The list.
+     * @param <T>  The type of the list.
+     * @return The synchronized list.
+     * @see Collections#synchronizedList(List)
+     */
+    public static <T> List<T> synchronizedList(List<T> list) {
+        return Collections.synchronizedList(list);
+    }
+    
+    /**
+     * Creates a new synchronized list instance of a certain class.
+     *
+     * @param clazz The class of the list.
+     * @param <T>   The type of the list.
+     * @param <L>   The class of the list.
+     * @return The synchronized list instance.
+     * @see #emptyList(Class)
+     * @see #synchronizedList(List)
+     */
+    public static <T, L extends List<T>> List<T> synchronizedList(Class<L> clazz) {
+        return synchronizedList(emptyList(clazz));
+    }
+    
+    /**
+     * Creates a new synchronized list instance.
+     *
+     * @param <T> The type of the list.
+     * @return The synchronized list instance.
+     * @see #synchronizedList(Class)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> List<T> synchronizedList() {
+        return synchronizedList((Class<List<T>>) DEFAULT_LIST_CLASS);
+    }
+    
+    /**
      * Creates a new list of a certain class, type, and length, filled with a default value or null.
      *
      * @param clazz  The class of the list.
@@ -60,26 +172,12 @@ public final class ListUtility {
      * @param <T>    The type of the list.
      * @param <L>    The class of the list.
      * @return The created list.
+     * @see #emptyList(Class)
      */
+    @SuppressWarnings("unchecked")
     private static <T, L extends List<?>> List<T> create(Class<L> clazz, Class<T> type, T fill, int length) {
-        List<T> list;
-        switch (clazz.getSimpleName()) {
-            case "ArrayList":
-            default:
-                list = new ArrayList<>(length);
-                break;
-            case "LinkedList":
-                list = new LinkedList<>();
-                break;
-            case "Stack":
-                list = new Stack<>();
-                break;
-            case "Vector":
-                list = new Vector<>(length);
-                break;
-        }
-        IntStream.range(0, length).boxed().forEach(i -> list.add(fill));
-        return list;
+        return addAllAndGet(emptyList((Class<List<T>>) clazz),
+                IntStream.range(0, length).mapToObj(i -> fill).collect(Collectors.toList()));
     }
     
     /**
@@ -179,9 +277,8 @@ public final class ListUtility {
      */
     @SuppressWarnings("unchecked")
     private static <T, L extends List<?>> List<List<T>> create2D(Class<L> clazz, Class<T> type, T fill, int width, int height) {
-        List<List<T>> list = (List<List<T>>) create(clazz, clazz, width);
-        IntStream.range(0, width).boxed().forEach(i -> list.set(i, create(clazz, type, fill, height)));
-        return list;
+        return addAllAndGet(emptyList((Class<List<List<T>>>) clazz),
+                IntStream.range(0, width).mapToObj(i -> create(clazz, type, fill, height)).collect(Collectors.toList()));
     }
     
     /**
@@ -284,11 +381,10 @@ public final class ListUtility {
      * @param <L>    The class of the list.
      * @return The created list.
      */
-    @SuppressWarnings({"SuspiciousNameCombination", "unchecked"})
+    @SuppressWarnings({"unchecked", "SuspiciousNameCombination"})
     private static <T, L extends List<?>> List<List<List<T>>> create3D(Class<L> clazz, Class<T> type, T fill, int width, int height, int depth) {
-        List<List<List<T>>> list = (List<List<List<T>>>) create(clazz, clazz, width);
-        IntStream.range(0, width).boxed().forEach(i -> list.set(i, create2D(clazz, type, fill, height, depth)));
-        return list;
+        return addAllAndGet(emptyList((Class<List<List<List<T>>>>) clazz),
+                IntStream.range(0, width).mapToObj(i -> create2D(clazz, type, fill, height, depth)).collect(Collectors.toList()));
     }
     
     /**
@@ -417,9 +513,10 @@ public final class ListUtility {
      * @param <T>   The type of the array.
      * @param <L>   The class of the list.
      * @return The list built from the array.
+     * @see #listOf(Class, Object[])
      */
     public static <T, L extends List<?>> List<T> toList(T[] array, Class<L> clazz) {
-        return cast(Arrays.asList(array), clazz);
+        return listOf(clazz, array);
     }
     
     /**
@@ -435,26 +532,43 @@ public final class ListUtility {
     }
     
     /**
+     * Converts a collection to a list of a certain class.
+     *
+     * @param collection The collection.
+     * @param clazz      The class of the list.
+     * @param <T>        The type of the collection.
+     * @param <L>        The class of the list.
+     * @return The list built from the collection.
+     * @see #toList(Object[], Class)
+     */
+    @SuppressWarnings("unchecked")
+    public static <T, L extends List<?>> List<T> toList(Collection<T> collection, Class<L> clazz) {
+        return toList((T[]) collection.toArray(), clazz);
+    }
+    
+    /**
+     * Converts a collection to a list of a certain class.
+     *
+     * @param collection The collection.
+     * @param <T>        The type of the collection.
+     * @return The list built from the collection.
+     * @see #toList(Collection, Class)
+     */
+    public static <T> List<T> toList(Collection<T> collection) {
+        return toList(collection, DEFAULT_LIST_CLASS);
+    }
+    
+    /**
      * Clones a list.
      *
      * @param list The list.
      * @param <T>  The type of the list.
+     * @param <L>  The class of the list.
      * @return The clone of the list.
      */
-    public static <T> List<T> clone(List<T> list) {
-        switch (list.getClass().getSimpleName()) {
-            case "ArrayList":
-            default:
-                return new ArrayList<>(list);
-            case "LinkedList":
-                return new LinkedList<>(list);
-            case "Stack":
-                final Stack<T> stack = new Stack<>();
-                list.forEach(stack::push);
-                return stack;
-            case "Vector":
-                return new Vector<>(list);
-        }
+    @SuppressWarnings("unchecked")
+    public static <T, L extends List<T>> L clone(L list) {
+        return (L) addAllAndGet(emptyList((Class<L>) list.getClass()), list);
     }
     
     /**
@@ -466,24 +580,10 @@ public final class ListUtility {
      * @param <L>   The list class to cast to.
      * @return The casted list, or the same list if the class is the same as specified.
      */
+    @SuppressWarnings("unchecked")
     public static <T, L extends List<?>> List<T> cast(List<T> list, Class<L> clazz) {
-        if (list.getClass().equals(clazz)) {
-            return list;
-        }
-        
-        switch (clazz.getSimpleName()) {
-            case "ArrayList":
-            default:
-                return new ArrayList<>(list);
-            case "LinkedList":
-                return new LinkedList<>(list);
-            case "Stack":
-                final Stack<T> stack = new Stack<>();
-                list.forEach(stack::push);
-                return stack;
-            case "Vector":
-                return new Vector<>(list);
-        }
+        return list.getClass().equals(clazz) ? list :
+               addAllAndGet(emptyList((Class<List<T>>) clazz), list);
     }
     
     /**
@@ -493,15 +593,17 @@ public final class ListUtility {
      * @param from The index to start the sub list at.
      * @param to   The index to end the sub list at.
      * @param <T>  The type of the list.
+     * @param <L>  The class of the list.
      * @return The sub list.
      * @throws IndexOutOfBoundsException When the from or to indices are out of bounds of the list.
      */
-    public static <T> List<T> subList(List<T> list, int from, int to) throws IndexOutOfBoundsException {
+    @SuppressWarnings("unchecked")
+    public static <T, L extends List<T>> L subList(L list, int from, int to) throws IndexOutOfBoundsException {
         if ((from > to) || (from < 0) || (to > list.size())) {
             throw new IndexOutOfBoundsException("The range [" + from + "," + to + ") is out of bounds of the list");
         }
         
-        return cast(clone(list.subList(from, to)), list.getClass());
+        return (L) addAllAndGet(emptyList((Class<L>) list.getClass()), list.subList(from, to));
     }
     
     /**
@@ -510,11 +612,12 @@ public final class ListUtility {
      * @param list The list.
      * @param from The index to start the sub list at.
      * @param <T>  The type of the list.
+     * @param <L>  The class of the list.
      * @return The sub list.
      * @throws IndexOutOfBoundsException When the from or to indices are out of bounds of the list.
      * @see #subList(List, int, int)
      */
-    public static <T> List<T> subList(List<T> list, int from) throws IndexOutOfBoundsException {
+    public static <T, L extends List<T>> L subList(L list, int from) throws IndexOutOfBoundsException {
         return subList(list, from, list.size());
     }
     
@@ -524,12 +627,11 @@ public final class ListUtility {
      * @param list1 The first list.
      * @param list2 The second list.
      * @param <T>   The type of the lists.
+     * @param <L>   The class of the list.
      * @return The merged list.
      */
-    public static <T> List<T> merge(List<T> list1, List<T> list2) {
-        List<T> result = clone(list1);
-        result.addAll(list2);
-        return result;
+    public static <T, L extends List<T>> L merge(L list1, List<? extends T> list2) {
+        return addAllAndGet(clone(list1), list2);
     }
     
     /**
@@ -540,22 +642,13 @@ public final class ListUtility {
      * @param <T>    The type of the list.
      * @return The list of lists of the specified length.
      */
+    @SuppressWarnings("unchecked")
     public static <T> List<List<T>> split(List<T> list, int length) {
-        length = BoundUtility.truncateNum(length, 1, list.size()).intValue();
-        
-        List<List<T>> result = new ArrayList<>();
-        for (int i = 0; i < (int) Math.ceil(list.size() / (double) length); i++) {
-            result.add(new ArrayList<>(Collections.nCopies(length, null)));
-        }
-        
-        for (int i = 0; i < list.size(); i++) {
-            result.get(i / length).set((i % length), list.get(i));
-        }
-        
-        for (int i = 0; i < result.size(); i++) {
-            result.set(i, cast(result.get(i), list.getClass()));
-        }
-        return cast(result, list.getClass());
+        final int split = BoundUtility.truncateNum(length, 1, list.size()).intValue();
+        final List<List<T>> result = create2D(list.getClass(), (Class<T>) list.getClass(), (int) Math.ceil(list.size() / (double) split), split);
+        IntStream.range(0, list.size()).forEach(i ->
+                result.get(i / split).set((i % split), list.get(i)));
+        return result;
     }
     
     /**
@@ -563,12 +656,27 @@ public final class ListUtility {
      *
      * @param list The list.
      * @param <T>  The type of the list.
+     * @param <L>  The class of the list.
      * @return The reversed list.
      */
-    public static <T> List<T> reverse(List<T> list) {
-        List<T> reversed = clone(list);
+    public static <T, L extends List<T>> L reverse(L list) {
+        final L reversed = clone(list);
         Collections.reverse(reversed);
         return reversed;
+    }
+    
+    /**
+     * Shuffles a list.
+     *
+     * @param list The list.
+     * @param <T>  The type of the list.
+     * @param <L>  The class of the list.
+     * @return The shuffled list.
+     */
+    public static <T, L extends List<T>> L shuffle(L list) {
+        final L shuffled = clone(list);
+        Collections.shuffle(shuffled);
+        return shuffled;
     }
     
     /**
@@ -588,12 +696,11 @@ public final class ListUtility {
      * @param list1      The first list.
      * @param list2      The second list.
      * @param checkOrder Whether to check the order of the lists or not.
-     * @param <T>        The type of the lists.
      * @return Whether the lists are equal or not.
      */
-    public static <T> boolean equals(List<T> list1, List<T> list2, boolean checkOrder) {
+    public static boolean equals(List<?> list1, List<?> list2, boolean checkOrder) {
         return ((list1 == null) || (list2 == null)) ? ((list1 == null) && (list2 == null)) : ((list1.size() == list2.size()) &&
-                (checkOrder ? IntStream.range(0, list1.size()).boxed().allMatch(i -> Objects.equals(list1.get(i), list2.get(i))) :
+                (checkOrder ? IntStream.range(0, list1.size()).allMatch(i -> Objects.equals(list1.get(i), list2.get(i))) :
                  list1.stream().allMatch(e -> list2.contains(e) && (numberOfOccurrences(list1, e) == numberOfOccurrences(list2, e)))));
     }
     
@@ -602,11 +709,10 @@ public final class ListUtility {
      *
      * @param list1 The first list.
      * @param list2 The second list.
-     * @param <T>   The type of the lists.
      * @return Whether the lists are equal or not.
      * @see #equals(List, List, boolean)
      */
-    public static <T> boolean equals(List<T> list1, List<T> list2) {
+    public static boolean equals(List<?> list1, List<?> list2) {
         return equals(list1, list2, true);
     }
     
@@ -620,7 +726,7 @@ public final class ListUtility {
      */
     public static boolean equalsIgnoreCase(List<String> list1, List<String> list2, boolean checkOrder) {
         return ((list1 == null) || (list2 == null)) ? ((list1 == null) && (list2 == null)) : ((list1.size() == list2.size()) &&
-                (checkOrder ? IntStream.range(0, list1.size()).boxed().allMatch(i -> StringUtility.equalsIgnoreCase(list1.get(i), list2.get(i))) :
+                (checkOrder ? IntStream.range(0, list1.size()).allMatch(i -> StringUtility.equalsIgnoreCase(list1.get(i), list2.get(i))) :
                  list1.stream().allMatch(e -> containsIgnoreCase(list2, e) && (numberOfOccurrencesIgnoreCase(list1, e) == numberOfOccurrencesIgnoreCase(list2, e)))));
     }
     
@@ -637,6 +743,121 @@ public final class ListUtility {
     }
     
     /**
+     * Adds an element to a list and returns the list.
+     *
+     * @param list    The list.
+     * @param element The element.
+     * @param <T>     The type of the list.
+     * @param <L>     The class of the list.
+     * @return The list.
+     */
+    public static <T, L extends List<T>> L addAndGet(L list, T element) {
+        list.add(element);
+        return list;
+    }
+    
+    /**
+     * Adds an element to a list and returns the list.
+     *
+     * @param list    The list.
+     * @param index   The index to add the element at.
+     * @param element The element.
+     * @param <T>     The type of the list.
+     * @param <L>     The class of the list.
+     * @return The list.
+     */
+    public static <T, L extends List<T>> L addAndGet(L list, int index, T element) {
+        list.add(index, element);
+        return list;
+    }
+    
+    /**
+     * Adds a collection of elements to a list and returns the list.
+     *
+     * @param list     The list.
+     * @param elements The collection of elements.
+     * @param <T>      The type of the list.
+     * @param <L>      The class of the list.
+     * @return The list.
+     */
+    public static <T, L extends List<T>> L addAllAndGet(L list, Collection<? extends T> elements) {
+        list.addAll(elements);
+        return list;
+    }
+    
+    /**
+     * Adds a collection of elements to a list and returns the list.
+     *
+     * @param list     The list.
+     * @param index    The index to add the elements at.
+     * @param elements The collection of elements.
+     * @param <T>      The type of the list.
+     * @param <L>      The class of the list.
+     * @return The list.
+     */
+    public static <T, L extends List<T>> L addAllAndGet(L list, int index, Collection<? extends T> elements) {
+        list.addAll(index, elements);
+        return list;
+    }
+    
+    /**
+     * Sets an element in a list and returns the list.
+     *
+     * @param list    The list.
+     * @param index   The index in the list.
+     * @param element The element.
+     * @param <T>     The type of the list.
+     * @param <L>     The class of the list.
+     * @return The list.
+     */
+    public static <T, L extends List<T>> L setAndGet(L list, int index, T element) {
+        list.set(index, element);
+        return list;
+    }
+    
+    /**
+     * Removes an element from a list and returns the list.
+     *
+     * @param list    The list.
+     * @param element The element.
+     * @param <T>     The type of the list.
+     * @param <L>     The class of the list.
+     * @return The list.
+     */
+    public static <T, L extends List<T>> L removeAndGet(L list, T element) {
+        list.remove(element);
+        return list;
+    }
+    
+    /**
+     * Removes an element from a list and returns the list.
+     *
+     * @param list  The list.
+     * @param index The index of the element.
+     * @param <T>   The type of the list.
+     * @param <L>   The class of the list.
+     * @return The list.
+     */
+    public static <T, L extends List<T>> L removeAndGet(L list, int index) {
+        list.remove(index);
+        return list;
+    }
+    
+    /**
+     * Removes a collection of elements from a list and returns the list.
+     *
+     * @param list     The list.
+     * @param elements The collection of elements.
+     * @param <T>      The type of the list.
+     * @param <L>      The class of the list.
+     * @return The list.
+     */
+    public static <T, L extends List<T>> L removeAllAndGet(L list, Collection<? extends T> elements) {
+        list.removeAll(elements);
+        return list;
+    }
+    
+    /**
      * Determines if an element exists in a list.
      *
      * @param list    The list.
@@ -644,8 +865,8 @@ public final class ListUtility {
      * @param <T>     The type of the list.
      * @return Whether the list contains the specified element or not.
      */
-    public static <T> boolean contains(List<T> list, T element) {
-        return (list != null) && list.contains(element);
+    public static <T> boolean contains(List<? extends T> list, T element) {
+        return !isNullOrEmpty(list) && list.contains(element);
     }
     
     /**
@@ -656,7 +877,7 @@ public final class ListUtility {
      * @return Whether the list contains the specified string or not, regardless of case.
      */
     public static boolean containsIgnoreCase(List<String> list, String element) {
-        return (list != null) && list.stream().anyMatch(e -> StringUtility.equalsIgnoreCase(e, element));
+        return !isNullOrEmpty(list) && list.stream().anyMatch(e -> StringUtility.equalsIgnoreCase(e, element));
     }
     
     /**
@@ -667,8 +888,8 @@ public final class ListUtility {
      * @param <T>     The type of the list.
      * @return The number of occurrences of the specified element in the list.
      */
-    public static <T> int numberOfOccurrences(List<T> list, T element) {
-        return (list == null) ? 0 :
+    public static <T> int numberOfOccurrences(List<? extends T> list, T element) {
+        return isNullOrEmpty(list) ? 0 :
                (int) list.stream().filter(e -> Objects.equals(e, element)).count();
     }
     
@@ -680,7 +901,7 @@ public final class ListUtility {
      * @return The number of occurrences of the specified string element in the list, regardless of case.
      */
     public static int numberOfOccurrencesIgnoreCase(List<String> list, String element) {
-        return (list == null) ? 0 :
+        return isNullOrEmpty(list) ? 0 :
                (int) list.stream().filter(e -> StringUtility.equalsIgnoreCase(e, element)).count();
     }
     
@@ -692,8 +913,8 @@ public final class ListUtility {
      * @param <T>     The type of the list.
      * @return The index of the element in the list, or -1 if it does not exist.
      */
-    public static <T> int indexOf(List<T> list, T element) {
-        return (list == null) ? -1 :
+    public static <T> int indexOf(List<? extends T> list, T element) {
+        return isNullOrEmpty(list) ? -1 :
                list.indexOf(element);
     }
     
@@ -705,8 +926,8 @@ public final class ListUtility {
      * @return The index of the string in the list, regardless of case, or -1 if it does not exist.
      */
     public static int indexOfIgnoreCase(List<String> list, String element) {
-        return (list == null) ? -1 :
-               IntStream.range(0, list.size()).boxed()
+        return isNullOrEmpty(list) ? -1 :
+               IntStream.range(0, list.size())
                        .filter(i -> StringUtility.equalsIgnoreCase(list.get(i), element))
                        .findFirst().orElse(-1);
     }
@@ -721,7 +942,7 @@ public final class ListUtility {
      * @return The element in the list at the specified index, or the default value if the index is invalid.
      */
     public static <T> T getOrDefault(List<T> list, int index, T defaultValue) {
-        return ((list != null) && BoundUtility.inListBounds(index, list)) ?
+        return (!isNullOrEmpty(list) && BoundUtility.inListBounds(index, list)) ?
                list.get(index) : defaultValue;
     }
     
@@ -742,10 +963,9 @@ public final class ListUtility {
      * Determines if any element in a list is null.
      *
      * @param list The list.
-     * @param <T>  The type of the list.
      * @return Whether or not any element in the list is null.
      */
-    public static <T> boolean anyNull(List<T> list) {
+    public static boolean anyNull(List<?> list) {
         return list.stream().anyMatch(Objects::isNull);
     }
     
@@ -753,12 +973,10 @@ public final class ListUtility {
      * Determines if any element in a list is null.
      *
      * @param list The list.
-     * @param <T>  The type of the list.
      * @return Whether or not any element in the list is null.
      * @see #anyNull(List)
      */
-    @SuppressWarnings("unchecked")
-    public static <T> boolean anyNull(T... list) {
+    public static boolean anyNull(Object... list) {
         return anyNull(Arrays.asList(list));
     }
     
@@ -767,10 +985,12 @@ public final class ListUtility {
      *
      * @param list The list.
      * @param <T>  The type of the list.
+     * @param <L>  The class of the list.
      * @return The list with null elements removed.
      */
-    public static <T> List<T> removeNull(List<T> list) {
-        return cast(list.stream().filter(Objects::nonNull).collect(Collectors.toList()), list.getClass());
+    @SuppressWarnings("unchecked")
+    public static <T, L extends List<T>> L removeNull(L list) {
+        return (L) cast(list.stream().filter(Objects::nonNull).collect(Collectors.toList()), list.getClass());
     }
     
     /**
@@ -778,10 +998,12 @@ public final class ListUtility {
      *
      * @param list The list to operate on.
      * @param <T>  The type of the list.
+     * @param <L>  The class of the list.
      * @return The list with duplicate elements removed.
      */
-    public static <T> List<T> removeDuplicates(List<T> list) {
-        return cast(list.stream().distinct().collect(Collectors.toList()), list.getClass());
+    @SuppressWarnings("unchecked")
+    public static <T, L extends List<T>> L removeDuplicates(L list) {
+        return (L) cast(list.stream().distinct().collect(Collectors.toList()), list.getClass());
     }
     
     /**
@@ -792,11 +1014,8 @@ public final class ListUtility {
      * @return A random element from the list.
      */
     public static <T> T selectRandom(List<T> list) {
-        if (list.isEmpty()) {
-            return null;
-        }
-        
-        return list.get(MathUtility.random(list.size() - 1));
+        return isNullOrEmpty(list) ? null :
+               list.get(MathUtility.random(list.size() - 1));
     }
     
     /**
@@ -805,26 +1024,25 @@ public final class ListUtility {
      * @param list The list to select from.
      * @param n    The number of elements to select.
      * @param <T>  The type of the list.
+     * @param <L>  The class of the list.
      * @return A random subset of the list.
      */
-    @SuppressWarnings("StatementWithEmptyBody")
-    public static <T> List<T> selectN(List<T> list, int n) {
+    @SuppressWarnings({"StatementWithEmptyBody", "unchecked"})
+    public static <T, L extends List<T>> L selectN(L list, int n) {
         if (n >= list.size()) {
-            List<T> shuffle = clone(list);
-            Collections.shuffle(shuffle);
-            return shuffle;
+            return shuffle(list);
         }
         
-        List<Integer> previousChoices = new ArrayList<>();
-        List<T> choices = new ArrayList<>();
-        for (int i = 0; i < n; i++) {
+        final List<Integer> previousChoices = emptyList();
+        final L choices = (L) emptyList(list.getClass());
+        IntStream.range(0, n).forEach(i -> {
             int index;
             while (previousChoices.contains(index = MathUtility.random(list.size() - 1))) {
             }
             choices.add(list.get(index));
             previousChoices.add(index);
-        }
-        return cast(choices, list.getClass());
+        });
+        return choices;
     }
     
     /**
@@ -833,21 +1051,15 @@ public final class ListUtility {
      * @param list  The list to duplicate.
      * @param times The number of copies of the list to add.
      * @param <T>   The type of the list.
+     * @param <L>   The class of the list.
      * @return A list of double size with duplicated elements.
      */
-    public static <T> List<T> duplicateInOrder(List<T> list, int times) {
-        if (times <= 0) {
-            return cast(new ArrayList<>(), list.getClass());
-        }
-        if (times == 1) {
-            return clone(list);
-        }
-        
-        List<T> finalList = new ArrayList<>(list.size() * times);
-        for (int time = 0; time < times; time++) {
-            finalList.addAll(list);
-        }
-        return cast(finalList, list.getClass());
+    @SuppressWarnings("unchecked")
+    public static <T, L extends List<T>> L duplicateInOrder(L list, int times) {
+        return (times <= 0) ? (L) emptyList(list.getClass()) :
+               (times == 1) ? clone(list) :
+               (L) addAllAndGet(emptyList(list.getClass()),
+                       IntStream.range(0, times).mapToObj(i -> list).flatMap(Collection::stream).collect(Collectors.toList()));
     }
     
     /**
@@ -855,10 +1067,11 @@ public final class ListUtility {
      *
      * @param list The list to duplicate.
      * @param <T>  The type of the list.
+     * @param <L>  The class of the list.
      * @return A list of double size with duplicated elements.
      * @see #duplicateInOrder(List, int)
      */
-    public static <T> List<T> duplicateInOrder(List<T> list) {
+    public static <T, L extends List<T>> L duplicateInOrder(L list) {
         return duplicateInOrder(list, 2);
     }
     
@@ -868,33 +1081,21 @@ public final class ListUtility {
      * @param list    The list to sort.
      * @param reverse Whether to sort in reverse or not.
      * @param <T>     The type of the list.
+     * @param <L>     The class of the list.
      * @return The list sorted by the number of occurrences of each entry in the list.
      */
-    public static <T> List<T> sortByNumberOfOccurrences(List<T> list, boolean reverse) {
-        Map<T, Integer> store = new LinkedHashMap<>();
-        for (T entry : list) {
-            if (store.containsKey(entry)) {
-                store.replace(entry, store.get(entry) + 1);
-            } else {
-                store.put(entry, 1);
-            }
-        }
+    @SuppressWarnings("unchecked")
+    public static <T, L extends List<T>> L sortByNumberOfOccurrences(L list, boolean reverse) {
+        final Map<T, Integer> store = new LinkedHashMap<>();
+        list.forEach(entry -> {
+            store.putIfAbsent(entry, 0);
+            store.replace(entry, store.get(entry) + 1);
+        });
         
-        List<T> sorted = new ArrayList<>();
-        if (reverse) {
-            store.entrySet().stream().sorted(Map.Entry.comparingByValue()).forEach(e -> {
-                for (int i = 0; i < e.getValue(); i++) {
-                    sorted.add(e.getKey());
-                }
-            });
-        } else {
-            store.entrySet().stream().sorted(Collections.reverseOrder(Map.Entry.comparingByValue())).forEach(e -> {
-                for (int i = 0; i < e.getValue(); i++) {
-                    sorted.add(e.getKey());
-                }
-            });
-        }
-        return cast(sorted, list.getClass());
+        return (L) cast(store.entrySet().stream()
+                .sorted(reverse ? Map.Entry.comparingByValue() : Collections.reverseOrder(Map.Entry.comparingByValue()))
+                .map(e -> create(e.getKey(), e.getValue()))
+                .flatMap(Collection::stream).collect(Collectors.toList()), list.getClass());
     }
     
     /**
@@ -902,10 +1103,11 @@ public final class ListUtility {
      *
      * @param list The list to sort.
      * @param <T>  The type of the list.
+     * @param <L>  The class of the list.
      * @return The list sorted by the number of occurrences of each entry in the list.
      * @see #sortByNumberOfOccurrences(List, boolean)
      */
-    public static <T> List<T> sortByNumberOfOccurrences(List<T> list) {
+    public static <T, L extends List<T>> L sortByNumberOfOccurrences(L list) {
         return sortByNumberOfOccurrences(list, false);
     }
     

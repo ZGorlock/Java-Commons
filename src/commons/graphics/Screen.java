@@ -14,7 +14,6 @@ import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.IntStream;
@@ -71,7 +70,7 @@ public final class Screen {
     /**
      * The dimensions of the screens.
      */
-    private static final Map<Dimension, Map<Integer, Integer>> dimensions = new LinkedHashMap<>(); //TODO
+    private static final Map<Dimension, Map<Integer, Integer>> dimensions = new HashMap<>();
     
     //Calculate the dimensions of the screens
     static {

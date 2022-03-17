@@ -14,7 +14,6 @@ import java.lang.reflect.Modifier;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -340,7 +339,7 @@ public class TestAccessTest {
             final List<Method> methods = (entity instanceof Class<?>) ? TestAccess.getAllMethods((Class<?>) entity) : TestAccess.getAllMethods(entity);
             final List<String> methodStrings = methods.stream().map(methodNameGetter).filter(Objects::nonNull).distinct().collect(Collectors.toList());
             final List<String> expectedMethods = Stream.of(testClassMethods, objectMethods,
-                            (((entity instanceof TestSubClass) || (entity == TestSubClass.class)) ? testSubClassMethods : Collections.emptyList()))
+                            (((entity instanceof TestSubClass) || (entity == TestSubClass.class)) ? testSubClassMethods : ListUtility.emptyList()))
                     .flatMap(Collection::stream).map(Object::toString).collect(Collectors.toList());
             Assert.assertEquals(expectedMethods.size(), methodStrings.size());
             Assert.assertTrue(ListUtility.equals(expectedMethods, methodStrings, false));
@@ -439,7 +438,7 @@ public class TestAccessTest {
             final List<Constructor<?>> constructors = (entity instanceof Class<?>) ? TestAccess.getAllConstructors((Class<?>) entity) : TestAccess.getAllConstructors(entity);
             final List<String> constructorStrings = constructors.stream().map(constructorNameGetter).filter(Objects::nonNull).distinct().collect(Collectors.toList());
             final List<String> expectedConstructors = Stream.of(testClassConstructors, objectConstructors,
-                            (((entity instanceof TestSubClass) || (entity == TestSubClass.class)) ? testSubClassConstructors : Collections.emptyList()))
+                            (((entity instanceof TestSubClass) || (entity == TestSubClass.class)) ? testSubClassConstructors : ListUtility.emptyList()))
                     .flatMap(Collection::stream).map(Object::toString).collect(Collectors.toList());
             Assert.assertEquals(expectedConstructors.size(), constructorStrings.size());
             Assert.assertTrue(ListUtility.equals(expectedConstructors, constructorStrings, false));
@@ -537,7 +536,7 @@ public class TestAccessTest {
             final List<Field> fields = (entity instanceof Class<?>) ? TestAccess.getAllFields((Class<?>) entity) : TestAccess.getAllFields(entity);
             final List<String> fieldStrings = fields.stream().map(fieldNameGetter).filter(Objects::nonNull).distinct().collect(Collectors.toList());
             final List<String> expectedFields = Stream.of(testClassFields,
-                            (((entity instanceof TestSubClass) || (entity == TestSubClass.class)) ? testSubClassFields : Collections.emptyList()))
+                            (((entity instanceof TestSubClass) || (entity == TestSubClass.class)) ? testSubClassFields : ListUtility.emptyList()))
                     .flatMap(Collection::stream).map(Object::toString).collect(Collectors.toList());
             Assert.assertEquals(expectedFields.size(), fieldStrings.size());
             Assert.assertTrue(ListUtility.equals(expectedFields, fieldStrings, false));

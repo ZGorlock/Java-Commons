@@ -15,7 +15,6 @@ import java.io.PipedOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +32,7 @@ import java.util.stream.Stream;
 
 import commons.console.ProgressBar;
 import commons.math.MathUtility;
+import commons.object.collection.ListUtility;
 import commons.object.string.StringUtility;
 import commons.test.TestAccess;
 import commons.test.TestUtils;
@@ -155,7 +155,7 @@ public class CmdLineTest {
         ProcessBuilder invalidProcessBuilder;
         ProgressBar invalidProgressBar;
         final AtomicBoolean processAlive = new AtomicBoolean(false);
-        final List<String> testResponseLines = Collections.synchronizedList(new ArrayList<>());
+        final List<String> testResponseLines = ListUtility.synchronizedList();
         
         //standard
         

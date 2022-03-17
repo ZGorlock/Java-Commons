@@ -9,9 +9,7 @@ package commons.access;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +23,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import commons.console.ProgressBar;
+import commons.object.collection.ListUtility;
+import commons.object.collection.MapUtility;
 import commons.object.string.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,7 +47,7 @@ public final class CmdLine {
     /**
      * A list of running processes that were started during this session.
      */
-    private static final Map<Process, String> runningProcesses = Collections.synchronizedMap(new HashMap<>());
+    private static final Map<Process, String> runningProcesses = MapUtility.synchronizedMap();
     
     //Attempts to terminate synchronous cmd processes that were started during this session and are still running
     static {
@@ -82,7 +82,7 @@ public final class CmdLine {
             }
             
             final AtomicReference<Process> process = new AtomicReference<>(null);
-            final List<String> response = Collections.synchronizedList(new ArrayList<>());
+            final List<String> response = ListUtility.synchronizedList();
             
             final ExecutorService logReaders = Executors.newFixedThreadPool(2);
             final CountDownLatch logReadersLatch = new CountDownLatch(2);

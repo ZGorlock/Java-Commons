@@ -11,11 +11,11 @@ import java.io.File;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 import commons.access.Project;
 import commons.console.Console;
+import commons.object.collection.ListUtility;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -2232,7 +2232,7 @@ public class StringUtilityTest {
         tokens = StringUtility.tokenize("", Arrays.asList("ant", "bat", "cat", "dog"));
         Assert.assertNull(tokens);
         
-        tokens = StringUtility.tokenize("catdogdogbatantdog", Collections.emptyList());
+        tokens = StringUtility.tokenize("catdogdogbatantdog", ListUtility.emptyList());
         Assert.assertNull(tokens);
         
         tokens = StringUtility.tokenize("cat￨dog�dog�bat￦ant￣dog�", Arrays.asList("ant￣", "bat￦", "cat￨", "dog�"));

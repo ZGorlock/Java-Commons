@@ -1677,7 +1677,7 @@ public class FFmpeg {
          */
         public FFmpegProgressBar(String title, List<File> sourceFiles, File outputFile, long outputDuration) {
             super(title, Math.max(outputDuration, 0), "s");
-            this.sourceFiles = Collections.unmodifiableList(sourceFiles);
+            this.sourceFiles = ListUtility.unmodifiableList(sourceFiles);
             this.outputFile = outputFile;
         }
         
@@ -3846,7 +3846,8 @@ public class FFmpeg {
          * @see #decompose(List, List, MediaInfo)
          */
         public static List<Identifier<Scope.Singular>> decompose(List<Identifier<?>> identifiers, MediaInfo mediaInfo) {
-            return new ArrayList<>(Optional.ofNullable(decompose(identifiers, null, mediaInfo)).map(Map::keySet).orElse(Collections.emptySet()));
+            return Optional.ofNullable(decompose(identifiers, null, mediaInfo)).map(Map::keySet)
+                    .map(ListUtility::toList).orElse(ListUtility.emptyList());
         }
         
         /**
@@ -3858,7 +3859,8 @@ public class FFmpeg {
          * @see #decompose(List, List, File)
          */
         public static List<Identifier<Scope.Singular>> decompose(List<Identifier<?>> identifiers, File mediaFile) {
-            return new ArrayList<>(Optional.ofNullable(decompose(identifiers, null, mediaFile)).map(Map::keySet).orElse(Collections.emptySet()));
+            return Optional.ofNullable(decompose(identifiers, null, mediaFile)).map(Map::keySet)
+                    .map(ListUtility::toList).orElse(ListUtility.emptyList());
         }
         
         /**
@@ -4535,7 +4537,7 @@ public class FFmpeg {
                     tmpImplements.add(implement);
                 }
             }
-            return Collections.unmodifiableList(tmpImplements);
+            return ListUtility.unmodifiableList(tmpImplements);
         }
         
         /**

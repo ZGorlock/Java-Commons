@@ -8,6 +8,8 @@
 package commons.object.collection;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -17,6 +19,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import commons.lambda.stream.collector.MapCollectors;
 import commons.object.string.StringUtility;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -48,22 +51,123 @@ public final class MapUtility {
     //Static Methods
     
     /**
-     * Creates a new map of a certain class.
+     * Creates a new map instance of a certain class.
      *
      * @param clazz The class of the map.
+     * @param <K>   The type of the keys of the map.
+     * @param <V>   The type of the values of the map.
      * @param <M>   The class of the map.
-     * @return The created map.
+     * @return The map instance.
      */
-    private static <M extends Map<?, ?>> Map<?, ?> create(Class<M> clazz) {
+    @SuppressWarnings("SortedCollectionWithNonComparableKeys")
+    public static <K, V, M extends Map<K, V>> Map<K, V> emptyMap(Class<M> clazz) {
         switch (clazz.getSimpleName()) {
             case "HashMap":
-            default:
                 return new HashMap<>();
             case "LinkedHashMap":
                 return new LinkedHashMap<>();
             case "TreeMap":
                 return new TreeMap<>();
+            default:
+                return emptyMap();
         }
+    }
+    
+    /**
+     * Creates a new map instance.
+     *
+     * @param <K> The type of the keys of the map.
+     * @param <V> The type of the values of the map.
+     * @return The map instance.
+     * @see #emptyMap(Class)
+     */
+    @SuppressWarnings("unchecked")
+    public static <K, V> Map<K, V> emptyMap() {
+        return emptyMap((Class<Map<K, V>>) DEFAULT_MAP_CLASS);
+    }
+    
+    /**
+     * Creates a new unmodifiable map from an existing map.
+     *
+     * @param map The map.
+     * @param <K> The type of the keys of the map.
+     * @param <V> The type of the values of the map.
+     * @param <M> The class of the map.
+     * @return The unmodifiable map.
+     * @see Collections#unmodifiableMap(Map)
+     */
+    public static <K, V, M extends Map<K, V>> Map<K, V> unmodifiableMap(Map<K, V> map) {
+        return Collections.unmodifiableMap(map);
+    }
+    
+    /**
+     * Creates a new unmodifiable map instance of a certain class.
+     *
+     * @param clazz The class of the map.
+     * @param <K>   The type of the keys of the map.
+     * @param <V>   The type of the values of the map.
+     * @param <M>   The class of the map.
+     * @return The unmodifiable map instance.
+     * @see #emptyMap(Class)
+     * @see #unmodifiableMap(Map)
+     */
+    public static <K, V, M extends Map<K, V>> Map<K, V> unmodifiableMap(Class<M> clazz) {
+        return unmodifiableMap(emptyMap(clazz));
+    }
+    
+    /**
+     * Creates a new unmodifiable map instance.
+     *
+     * @param <K> The type of the keys of the map.
+     * @param <V> The type of the values of the map.
+     * @return The unmodifiable map instance.
+     * @see #unmodifiableMap(Class)
+     */
+    @SuppressWarnings("unchecked")
+    public static <K, V> Map<K, V> unmodifiableMap() {
+        return unmodifiableMap((Class<Map<K, V>>) DEFAULT_MAP_CLASS);
+    }
+    
+    /**
+     * Creates a new synchronized map from an existing map.
+     *
+     * @param map The map.
+     * @param <K> The type of the keys of the map.
+     * @param <V> The type of the values of the map.
+     * @param <M> The class of the map.
+     * @return The synchronized map.
+     * @see Collections#unmodifiableMap(Map)
+     */
+    public static <K, V, M extends Map<K, V>> Map<K, V> synchronizedMap(Map<K, V> map) {
+        return Collections.synchronizedMap(map);
+    }
+    
+    /**
+     * Creates a new synchronized map instance of a certain class.
+     *
+     * @param clazz The class of the map.
+     * @param <K>   The type of the keys of the map.
+     * @param <V>   The type of the values of the map.
+     * @param <M>   The class of the map.
+     * @return The synchronized map instance.
+     * @see #emptyMap(Class)
+     * @see #synchronizedMap(Map)
+     */
+    public static <K, V, M extends Map<K, V>> Map<K, V> synchronizedMap(Class<M> clazz) {
+        return synchronizedMap(emptyMap(clazz));
+    }
+    
+    /**
+     * Creates a new synchronized map instance.
+     *
+     * @param <K> The type of the keys of the map.
+     * @param <V> The type of the values of the map.
+     * @return The synchronized map instance.
+     * @see #synchronizedMap(Class)
+     */
+    @SuppressWarnings("unchecked")
+    public static <K, V> Map<K, V> synchronizedMap() {
+        return synchronizedMap((Class<Map<K, V>>) DEFAULT_MAP_CLASS);
     }
     
     /**
@@ -77,7 +181,7 @@ public final class MapUtility {
      * @param <M>       The class of the map.
      * @return The created map.
      * @throws ClassCastException When attempting to create a TreeMap with a key type that is not Comparable.
-     * @see #create(Class)
+     * @see #emptyMap(Class)
      */
     @SuppressWarnings("unchecked")
     public static <K, V, M extends Map<?, ?>> Map<K, V> create(Class<M> clazz, Class<K> keyType, Class<V> valueType) throws ClassCastException {
@@ -85,7 +189,7 @@ public final class MapUtility {
             throw new ClassCastException("class " + keyType.getCanonicalName() + " cannot be cast to class " + Comparable.class.getCanonicalName());
         }
         
-        return (Map<K, V>) create(clazz);
+        return emptyMap((Class<Map<K, V>>) clazz);
     }
     
     /**
@@ -97,6 +201,7 @@ public final class MapUtility {
      * @param <V>       The type of the values of the map.
      * @return The created map.
      * @throws ClassCastException When attempting to create a TreeMap with a key type that is not Comparable.
+     * @see #create(Class, Class, Class)
      */
     public static <K, V> Map<K, V> create(Class<K> keyType, Class<V> valueType) throws ClassCastException {
         return create(DEFAULT_MAP_CLASS, keyType, valueType);
@@ -115,9 +220,7 @@ public final class MapUtility {
      */
     @SuppressWarnings("unchecked")
     public static <K, V, M extends Map<?, ?>> Map<K, V> mapOf(Class<M> clazz, Pair<K, V>... entries) throws ClassCastException {
-        Map<K, V> map = (Map<K, V>) create(clazz);
-        Arrays.stream(entries).forEachOrdered(e -> map.put(e.getKey(), e.getValue()));
-        return map;
+        return Arrays.stream(entries).collect(MapCollectors.toMap(() -> emptyMap((Class<Map<K, V>>) clazz)));
     }
     
     /**
@@ -133,7 +236,7 @@ public final class MapUtility {
      * @see #mapOf(Class, Pair[])
      */
     @SuppressWarnings("unchecked")
-    public static <K, V, M extends Map<?, ?>> Map<K, V> mapOf(Class<M> clazz, List<Pair<K, V>> entries) throws ClassCastException {
+    public static <K, V, M extends Map<?, ?>> Map<K, V> mapOf(Class<M> clazz, Collection<Pair<K, V>> entries) throws ClassCastException {
         return mapOf(clazz, entries.toArray(Pair[]::new));
     }
     
@@ -170,9 +273,9 @@ public final class MapUtility {
      * @param <V>    The type of the values of the map.
      * @param <M>    The class of the map.
      * @return The created and populated map.
-     * @throws IndexOutOfBoundsException When the list of keys and the list values are not the same size.
+     * @throws IndexOutOfBoundsException When the list of keys and the list of values are not the same size.
      * @throws ClassCastException        When attempting to create a TreeMap with a key type that is not Comparable.
-     * @see #mapOf(Class, List)
+     * @see #mapOf(Class, Collection)
      */
     public static <K, V, M extends Map<?, ?>> Map<K, V> mapOf(Class<M> clazz, List<K> keys, List<V> values) throws IndexOutOfBoundsException, ClassCastException {
         if (keys.size() != values.size()) {
@@ -203,9 +306,9 @@ public final class MapUtility {
      * @param <K>     The type of the keys of the map.
      * @param <V>     The type of the values of the map.
      * @return The created and populated map.
-     * @see #mapOf(Class, List)
+     * @see #mapOf(Class, Collection)
      */
-    public static <K, V> Map<K, V> mapOf(List<Pair<K, V>> entries) {
+    public static <K, V> Map<K, V> mapOf(Collection<Pair<K, V>> entries) {
         return mapOf(DEFAULT_MAP_CLASS, entries);
     }
     
@@ -245,18 +348,12 @@ public final class MapUtility {
      * @param map The map.
      * @param <K> The type of the keys of the map.
      * @param <V> The type of the values of the map.
+     * @param <M> The class of the map.
      * @return The clone of the map.
      */
-    public static <K, V> Map<K, V> clone(Map<K, V> map) {
-        switch (map.getClass().getSimpleName()) {
-            case "HashMap":
-            default:
-                return new HashMap<>(map);
-            case "LinkedHashMap":
-                return new LinkedHashMap<>(map);
-            case "TreeMap":
-                return new TreeMap<>(map);
-        }
+    @SuppressWarnings("unchecked")
+    public static <K, V, M extends Map<K, V>> M clone(M map) {
+        return (M) putAllAndGet(emptyMap((Class<M>) map.getClass()), map);
     }
     
     /**
@@ -270,20 +367,10 @@ public final class MapUtility {
      * @return The casted map, or the same map if the class is the same as specified.
      * @throws ClassCastException When attempting to cast to a TreeMap with a key type that is not Comparable.
      */
+    @SuppressWarnings("unchecked")
     public static <K, V, M extends Map<?, ?>> Map<K, V> cast(Map<K, V> map, Class<M> clazz) throws ClassCastException {
-        if (map.getClass().equals(clazz)) {
-            return map;
-        }
-        
-        switch (clazz.getSimpleName()) {
-            case "HashMap":
-            default:
-                return new HashMap<>(map);
-            case "LinkedHashMap":
-                return new LinkedHashMap<>(map);
-            case "TreeMap":
-                return new TreeMap<>(map);
-        }
+        return map.getClass().equals(clazz) ? map :
+               putAllAndGet(emptyMap((Class<Map<K, V>>) clazz), map);
     }
     
     /**
@@ -293,12 +380,11 @@ public final class MapUtility {
      * @param map2 The second map.
      * @param <K>  The type of the keys of the maps.
      * @param <V>  The type of the values of the maps.
+     * @param <M>  The class of the map.
      * @return The merged map.
      */
-    public static <K, V> Map<K, V> merge(Map<K, V> map1, Map<K, V> map2) {
-        Map<K, V> result = clone(map1);
-        result.putAll(map2);
-        return result;
+    public static <K, V, M extends Map<K, V>> M merge(M map1, Map<? extends K, ? extends V> map2) {
+        return putAllAndGet(clone(map1), map2);
     }
     
     /**
@@ -318,13 +404,89 @@ public final class MapUtility {
      *
      * @param map1 The first map.
      * @param map2 The second map.
-     * @param <K>  The type of the keys of the maps.
-     * @param <V>  The type of the values of the maps.
      * @return Whether the maps are equal or not.
      */
-    public static <K, V> boolean equals(Map<K, V> map1, Map<K, V> map2) {
+    public static boolean equals(Map<?, ?> map1, Map<?, ?> map2) {
         return ((map1 == null) || (map2 == null)) ? ((map1 == null) && (map2 == null)) : ((map1.size() == map2.size()) &&
                 map1.keySet().stream().allMatch(e -> map2.containsKey(e) && Objects.equals(map1.get(e), map2.get(e))));
+    }
+    
+    /**
+     * Puts an entry in a map and returns the map.
+     *
+     * @param map   The map.
+     * @param key   The key.
+     * @param value The value.
+     * @param <K>   The type of the keys of the map.
+     * @param <V>   The type of the values of the map.
+     * @param <M>   The class of the map.
+     * @return The map.
+     */
+    public static <K, V, M extends Map<K, V>> M putAndGet(M map, K key, V value) {
+        map.put(key, value);
+        return map;
+    }
+    
+    /**
+     * Puts a map of entries in a map and returns the map.
+     *
+     * @param map     The map.
+     * @param entries The map of entries.
+     * @param <K>     The type of the keys of the map.
+     * @param <V>     The type of the values of the map.
+     * @param <M>     The class of the map.
+     * @return The map.
+     */
+    public static <K, V, M extends Map<K, V>> M putAllAndGet(M map, Map<? extends K, ? extends V> entries) {
+        map.putAll(entries);
+        return map;
+    }
+    
+    /**
+     * Puts an entry in a map if it is absent and returns the map.
+     *
+     * @param map   The map.
+     * @param key   The key.
+     * @param value The value.
+     * @param <K>   The type of the keys of the map.
+     * @param <V>   The type of the values of the map.
+     * @param <M>   The class of the map.
+     * @return The map.
+     */
+    public static <K, V, M extends Map<K, V>> M putIfAbsentAndGet(M map, K key, V value) {
+        map.putIfAbsent(key, value);
+        return map;
+    }
+    
+    /**
+     * Replaces the value of an entry in a map and returns the map.
+     *
+     * @param map   The map.
+     * @param key   The key.
+     * @param value The value.
+     * @param <K>   The type of the keys of the map.
+     * @param <V>   The type of the values of the map.
+     * @param <M>   The class of the map.
+     * @return The map.
+     */
+    public static <K, V, M extends Map<K, V>> M replaceAndGet(M map, K key, V value) {
+        map.replace(key, value);
+        return map;
+    }
+    
+    /**
+     * Removes a key from a map and returns the map.
+     *
+     * @param map The map.
+     * @param key The key.
+     * @param <K> The type of the keys of the map.
+     * @param <V> The type of the values of the map.
+     * @param <M> The class of the map.
+     * @return The map.
+     */
+    public static <K, V, M extends Map<K, V>> M removeAndGet(M map, K key) {
+        map.remove(key);
+        return map;
     }
     
     /**
@@ -333,11 +495,10 @@ public final class MapUtility {
      * @param map The map.
      * @param key The key.
      * @param <K> The type of the keys of the map.
-     * @param <V> The type of the values of the map.
      * @return Whether the map contains the specified key or not.
      */
-    public static <K, V> boolean contains(Map<K, V> map, K key) {
-        return (map != null) && map.containsKey(key);
+    public static <K> boolean contains(Map<? extends K, ?> map, K key) {
+        return !isNullOrEmpty(map) && map.containsKey(key);
     }
     
     /**
@@ -345,11 +506,10 @@ public final class MapUtility {
      *
      * @param map The map.
      * @param key The key.
-     * @param <V> The type of the values of the map.
      * @return Whether the map contains the specified string key or not, regardless of case.
      */
-    public static <V> boolean containsIgnoreCase(Map<String, V> map, String key) {
-        return (map != null) && map.keySet().stream().anyMatch(e -> StringUtility.equalsIgnoreCase(e, key));
+    public static boolean containsIgnoreCase(Map<String, ?> map, String key) {
+        return !isNullOrEmpty(map) && map.keySet().stream().anyMatch(e -> StringUtility.equalsIgnoreCase(e, key));
     }
     
     /**
@@ -360,10 +520,10 @@ public final class MapUtility {
      * @param defaultValue The default value.
      * @param <K>          The type of the keys of the map.
      * @param <V>          The type of the values of the map.
-     * @return The value in the map with the specified key, or a default value if the key is not present.
+     * @return The value in the map with the specified key, or the default value if the key is not present.
      */
     public static <K, V> V getOrDefault(Map<K, V> map, K key, V defaultValue) {
-        return (map == null) ? defaultValue :
+        return isNullOrEmpty(map) ? defaultValue :
                map.getOrDefault(key, defaultValue);
     }
     
@@ -374,10 +534,10 @@ public final class MapUtility {
      * @param key          The key.
      * @param defaultValue The default value.
      * @param <V>          The type of the values of the map.
-     * @return The value in the map with the specified string key, regardless of case, or a default value if the key is not present.
+     * @return The value in the map with the specified string key, regardless of case, or the default value if the key is not present.
      */
     public static <V> V getOrDefaultIgnoreCase(Map<String, V> map, String key, V defaultValue) {
-        return (map == null) ? defaultValue :
+        return isNullOrEmpty(map) ? defaultValue :
                map.keySet().stream().filter(e -> StringUtility.equalsIgnoreCase(e, key)).findFirst().map(map::get).orElse(defaultValue);
     }
     

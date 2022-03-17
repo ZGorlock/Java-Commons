@@ -8,7 +8,9 @@
 package commons.object.collection;
 
 import java.awt.Color;
+import java.util.AbstractMap;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -109,10 +111,152 @@ public class MapUtilityTest {
     }
     
     /**
+     * JUnit test of emptyMap.
+     *
+     * @throws Exception When there is an exception.
+     * @see MapUtility#emptyMap(Class)
+     * @see MapUtility#emptyMap()
+     */
+    @Test
+    public void testEmptyMap() throws Exception {
+        Map<?, ?> map;
+        
+        //standard
+        map = MapUtility.emptyMap(HashMap.class);
+        Assert.assertNotNull(map);
+        Assert.assertTrue(map instanceof HashMap);
+        Assert.assertTrue(map.isEmpty());
+        map = MapUtility.emptyMap(LinkedHashMap.class);
+        Assert.assertNotNull(map);
+        Assert.assertTrue(map instanceof LinkedHashMap);
+        Assert.assertTrue(map.isEmpty());
+        map = MapUtility.emptyMap(TreeMap.class);
+        Assert.assertNotNull(map);
+        Assert.assertTrue(map instanceof TreeMap);
+        Assert.assertTrue(map.isEmpty());
+        map = MapUtility.emptyMap(AbstractMap.class);
+        Assert.assertNotNull(map);
+        Assert.assertTrue(map instanceof HashMap);
+        Assert.assertTrue(map.isEmpty());
+        map = MapUtility.emptyMap();
+        Assert.assertNotNull(map);
+        Assert.assertTrue(map instanceof HashMap);
+        Assert.assertTrue(map.isEmpty());
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapUtility.emptyMap(null));
+    }
+    
+    /**
+     * JUnit test of unmodifiableMap.
+     *
+     * @throws Exception When there is an exception.
+     * @see MapUtility#unmodifiableMap(Map)
+     * @see MapUtility#unmodifiableMap(Class)
+     * @see MapUtility#unmodifiableMap()
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Test
+    public void testUnmodifiableMap() throws Exception {
+        final Class<?> UnmodifiableMap = TestAccess.getClass(Collections.class, "UnmodifiableMap");
+        Map<?, ?> map;
+        
+        //standard
+        Map<Object, Object> testMap = MapUtility.mapOf(
+                new Object[] {"", new ArithmeticException(), new Object()},
+                new Object[] {54, new HashMap<>(), null});
+        Map<Object, Object> unmodifiableMap = MapUtility.unmodifiableMap(testMap);
+        Assert.assertNotNull(unmodifiableMap);
+        Assert.assertEquals(UnmodifiableMap, unmodifiableMap.getClass());
+        Assert.assertTrue(MapUtility.equals(testMap, unmodifiableMap));
+        TestUtils.assertException(UnsupportedOperationException.class, () ->
+                unmodifiableMap.put("test", "test"));
+        
+        //new
+        map = MapUtility.unmodifiableMap(HashMap.class);
+        Assert.assertNotNull(map);
+        Assert.assertEquals(UnmodifiableMap, map.getClass());
+        Assert.assertTrue(map.isEmpty());
+        map = MapUtility.unmodifiableMap(LinkedHashMap.class);
+        Assert.assertNotNull(map);
+        Assert.assertEquals(UnmodifiableMap, map.getClass());
+        Assert.assertTrue(map.isEmpty());
+        map = MapUtility.unmodifiableMap(TreeMap.class);
+        Assert.assertNotNull(map);
+        Assert.assertEquals(UnmodifiableMap, map.getClass());
+        Assert.assertTrue(map.isEmpty());
+        map = MapUtility.unmodifiableMap(AbstractMap.class);
+        Assert.assertNotNull(map);
+        Assert.assertEquals(UnmodifiableMap, map.getClass());
+        Assert.assertTrue(map.isEmpty());
+        map = MapUtility.unmodifiableMap();
+        Assert.assertNotNull(map);
+        Assert.assertEquals(UnmodifiableMap, map.getClass());
+        Assert.assertTrue(map.isEmpty());
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapUtility.unmodifiableMap((Map<?, ?>) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapUtility.unmodifiableMap((Class<? extends Map<Object, Object>>) null));
+    }
+    
+    /**
+     * JUnit test of synchronizedMap.
+     *
+     * @throws Exception When there is an exception.
+     * @see MapUtility#synchronizedMap(Class)
+     * @see MapUtility#synchronizedMap()
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Test
+    public void testSynchronizedMap() throws Exception {
+        final Class<?> SynchronizedMap = TestAccess.getClass(Collections.class, "SynchronizedMap");
+        Map<?, ?> map;
+        
+        //standard
+        Map<Object, Object> testMap = MapUtility.mapOf(
+                new Object[] {"", new ArithmeticException(), new Object()},
+                new Object[] {54, new HashMap<>(), null});
+        Map<Object, Object> synchronizedMap = MapUtility.synchronizedMap(testMap);
+        Assert.assertNotNull(synchronizedMap);
+        Assert.assertEquals(SynchronizedMap, synchronizedMap.getClass());
+        Assert.assertTrue(MapUtility.equals(testMap, synchronizedMap));
+        
+        //new
+        map = MapUtility.synchronizedMap(HashMap.class);
+        Assert.assertNotNull(map);
+        Assert.assertEquals(SynchronizedMap, map.getClass());
+        Assert.assertTrue(map.isEmpty());
+        map = MapUtility.synchronizedMap(LinkedHashMap.class);
+        Assert.assertNotNull(map);
+        Assert.assertEquals(SynchronizedMap, map.getClass());
+        Assert.assertTrue(map.isEmpty());
+        map = MapUtility.synchronizedMap(TreeMap.class);
+        Assert.assertNotNull(map);
+        Assert.assertEquals(SynchronizedMap, map.getClass());
+        Assert.assertTrue(map.isEmpty());
+        map = MapUtility.synchronizedMap(AbstractMap.class);
+        Assert.assertNotNull(map);
+        Assert.assertEquals(SynchronizedMap, map.getClass());
+        Assert.assertTrue(map.isEmpty());
+        map = MapUtility.synchronizedMap();
+        Assert.assertNotNull(map);
+        Assert.assertEquals(SynchronizedMap, map.getClass());
+        Assert.assertTrue(map.isEmpty());
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapUtility.synchronizedMap((Map<?, ?>) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapUtility.synchronizedMap((Class<? extends Map<Object, Object>>) null));
+    }
+    
+    /**
      * JUnit test of create.
      *
      * @throws Exception When there is an exception.
-     * @see MapUtility#create(Class)
      * @see MapUtility#create(Class, Class, Class)
      * @see MapUtility#create(Class, Class)
      */
@@ -161,11 +305,11 @@ public class MapUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see MapUtility#mapOf(Class, Pair[])
-     * @see MapUtility#mapOf(Class, List)
+     * @see MapUtility#mapOf(Class, Collection)
      * @see MapUtility#mapOf(Class, Object[], Object[])
      * @see MapUtility#mapOf(Class, List, List)
      * @see MapUtility#mapOf(Pair[])
-     * @see MapUtility#mapOf(List)
+     * @see MapUtility#mapOf(Collection)
      * @see MapUtility#mapOf(Object[], Object[])
      * @see MapUtility#mapOf(List, List)
      */
@@ -441,7 +585,7 @@ public class MapUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 MapUtility.mapOf(LinkedHashMap.class, (Pair[]) null));
         TestUtils.assertException(NullPointerException.class, () ->
-                MapUtility.mapOf((Class<Map>) null, Collections.emptyList()));
+                MapUtility.mapOf((Class<Map>) null, ListUtility.emptyList()));
         TestUtils.assertException(NullPointerException.class, () ->
                 MapUtility.mapOf((Class) null, (Pair[]) null));
         TestUtils.assertException(NullPointerException.class, () ->
@@ -451,7 +595,7 @@ public class MapUtilityTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 MapUtility.mapOf(LinkedHashMap.class, (List) null));
         TestUtils.assertException(NullPointerException.class, () ->
-                MapUtility.mapOf((Class<Map>) null, Collections.emptyList()));
+                MapUtility.mapOf((Class<Map>) null, ListUtility.emptyList()));
         TestUtils.assertException(NullPointerException.class, () ->
                 MapUtility.mapOf((Class) null, (List) null));
         TestUtils.assertException(NullPointerException.class, () ->
@@ -487,13 +631,13 @@ public class MapUtilityTest {
         TestUtils.assertException(IndexOutOfBoundsException.class, () ->
                 MapUtility.mapOf(Arrays.asList(1, 2, 3), Arrays.asList(1, 2, 3, 4)));
         TestUtils.assertException(IndexOutOfBoundsException.class, () ->
-                MapUtility.mapOf(Arrays.asList(1, 2, 3), Collections.emptyList()));
+                MapUtility.mapOf(Arrays.asList(1, 2, 3), ListUtility.emptyList()));
         TestUtils.assertException(IndexOutOfBoundsException.class, () ->
-                MapUtility.mapOf(Collections.emptyList(), Arrays.asList(1, 2, 3, 4)));
+                MapUtility.mapOf(ListUtility.emptyList(), Arrays.asList(1, 2, 3, 4)));
         TestUtils.assertException(NullPointerException.class, () ->
-                MapUtility.mapOf(Collections.emptyList(), null));
+                MapUtility.mapOf(ListUtility.emptyList(), null));
         TestUtils.assertException(NullPointerException.class, () ->
-                MapUtility.mapOf((List) null, Collections.emptyList()));
+                MapUtility.mapOf((List) null, ListUtility.emptyList()));
         TestUtils.assertException(NullPointerException.class, () ->
                 MapUtility.mapOf((List) null, null));
     }
@@ -785,6 +929,271 @@ public class MapUtilityTest {
     }
     
     /**
+     * JUnit test of putAndGet.
+     *
+     * @throws Exception When there is an exception.
+     * @see MapUtility#putAndGet(Map, Object, Object)
+     */
+    @Test
+    public void testPutAndGet() throws Exception {
+        //int, string
+        Map<Integer, String> integerStringMap = MapUtility.mapOf(
+                Arrays.asList(1, 3, 9),
+                Arrays.asList("t1", "t2", "t3"));
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                Arrays.asList(1, 3, 9, 12),
+                Arrays.asList("t1", "t2", "t3", "t4")
+        ), MapUtility.putAndGet(integerStringMap, 12, "t4")));
+        
+        //string, boolean
+        Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
+                new String[] {"a", "b"},
+                new Boolean[] {true, false});
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                new String[] {"a", "b", "c"},
+                new Boolean[] {true, false, false}
+        ), MapUtility.putAndGet(stringBooleanMap, "c", false)));
+        
+        //string, string
+        Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
+                Arrays.asList("A", "B", "C"),
+                Arrays.asList("I", "J", "K"));
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                Arrays.asList("A", "B", "C", "D"),
+                Arrays.asList("I", "J", "K", "L")
+        ), MapUtility.putAndGet(stringStringMap, "D", "L")));
+        
+        //long, object
+        Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
+                new Long[] {189456L, 8756156033L},
+                new Object[] {34, ""});
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                new Long[] {189456L, 8756156033L},
+                new Object[] {34, 8946L}
+        ), MapUtility.putAndGet(longObjectMap, 8756156033L, 8946L)));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapUtility.putAndGet(null, 0, 0));
+        TestUtils.assertException(UnsupportedOperationException.class, () ->
+                MapUtility.putAndGet(MapUtility.unmodifiableMap(), 0, 0));
+    }
+    
+    /**
+     * JUnit test of putAllAndGet.
+     *
+     * @throws Exception When there is an exception.
+     * @see MapUtility#putAllAndGet(Map, Map)
+     */
+    @Test
+    public void testPutAllAndGet() throws Exception {
+        //int, string
+        Map<Integer, String> integerStringMap = MapUtility.mapOf(
+                Arrays.asList(1, 3, 9),
+                Arrays.asList("t1", "t2", "t3"));
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                Arrays.asList(1, 3, 9, 12, 15, 18),
+                Arrays.asList("t1", "t2", "t3", "t4", "t5", "t6")
+        ), MapUtility.putAllAndGet(integerStringMap, MapUtility.mapOf(
+                Arrays.asList(12, 15, 18),
+                Arrays.asList("t4", "t5", "t6")))));
+        
+        //string, boolean
+        Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
+                new String[] {"a", "b"},
+                new Boolean[] {true, false});
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                new String[] {"a", "b", "c"},
+                new Boolean[] {true, false, false}
+        ), MapUtility.putAllAndGet(stringBooleanMap, MapUtility.mapOf(
+                new String[] {"c"},
+                new Boolean[] {false}))));
+        
+        //string, string
+        Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
+                Arrays.asList("A", "B", "C"),
+                Arrays.asList("I", "J", "K"));
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                Arrays.asList("A", "B", "C"),
+                Arrays.asList("I", "J", "K")
+        ), MapUtility.putAllAndGet(stringStringMap, MapUtility.mapOf(
+                ListUtility.emptyList(),
+                ListUtility.emptyList()))));
+        
+        //long, object
+        Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
+                new Long[] {189456L, 8756156033L},
+                new Object[] {34, ""});
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                new Long[] {189456L, 8756156033L, 98070654L},
+                new Object[] {34, 8946L, ""}
+        ), MapUtility.putAllAndGet(longObjectMap, MapUtility.mapOf(
+                new Long[] {8756156033L, 98070654L},
+                new Object[] {8946L, ""}))));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapUtility.putAllAndGet(null, MapUtility.emptyMap()));
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapUtility.putAllAndGet(MapUtility.emptyMap(), null));
+        TestUtils.assertException(UnsupportedOperationException.class, () ->
+                MapUtility.putAllAndGet(MapUtility.unmodifiableMap(), MapUtility.emptyMap()));
+    }
+    
+    /**
+     * JUnit test of putIfAbsentAndGet.
+     *
+     * @throws Exception When there is an exception.
+     * @see MapUtility#putIfAbsentAndGet(Map, Object, Object)
+     */
+    @Test
+    public void testPutIfAbsentAndGet() throws Exception {
+        //int, string
+        Map<Integer, String> integerStringMap = MapUtility.mapOf(
+                Arrays.asList(1, 3, 9),
+                Arrays.asList("t1", "t2", "t3"));
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                Arrays.asList(1, 3, 9),
+                Arrays.asList("t1", "t2", "t3")
+        ), MapUtility.putIfAbsentAndGet(integerStringMap, 9, "t4")));
+        
+        //string, boolean
+        Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
+                new String[] {"a", "b"},
+                new Boolean[] {true, false});
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                new String[] {"a", "b", "c"},
+                new Boolean[] {true, false, false}
+        ), MapUtility.putIfAbsentAndGet(stringBooleanMap, "c", false)));
+        
+        //string, string
+        Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
+                Arrays.asList("A", "B", "C"),
+                Arrays.asList("I", "J", "K"));
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                Arrays.asList("A", "B", "C", "D"),
+                Arrays.asList("I", "J", "K", "L")
+        ), MapUtility.putIfAbsentAndGet(stringStringMap, "D", "L")));
+        
+        //long, object
+        Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
+                new Long[] {189456L, 8756156033L},
+                new Object[] {34, ""});
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                new Long[] {189456L, 8756156033L},
+                new Object[] {34, ""}
+        ), MapUtility.putIfAbsentAndGet(longObjectMap, 8756156033L, 8946L)));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapUtility.putIfAbsentAndGet(null, 0, 0));
+        TestUtils.assertException(UnsupportedOperationException.class, () ->
+                MapUtility.putIfAbsentAndGet(MapUtility.unmodifiableMap(), 0, 0));
+    }
+    
+    /**
+     * JUnit test of replaceAndGet.
+     *
+     * @throws Exception When there is an exception.
+     * @see MapUtility#replaceAndGet(Map, Object, Object)
+     */
+    @Test
+    public void testReplaceAndGet() throws Exception {
+        //int, string
+        Map<Integer, String> integerStringMap = MapUtility.mapOf(
+                Arrays.asList(1, 3, 9),
+                Arrays.asList("t1", "t2", "t3"));
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                Arrays.asList(1, 3, 9),
+                Arrays.asList("t1", "t2", "t4")
+        ), MapUtility.replaceAndGet(integerStringMap, 9, "t4")));
+        
+        //string, boolean
+        Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
+                new String[] {"a", "b"},
+                new Boolean[] {true, false});
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                new String[] {"a", "b"},
+                new Boolean[] {true, false}
+        ), MapUtility.replaceAndGet(stringBooleanMap, "c", false)));
+        
+        //string, string
+        Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
+                Arrays.asList("A", "B", "C"),
+                Arrays.asList("I", "J", "K"));
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                Arrays.asList("A", "B", "C"),
+                Arrays.asList("I", "J", "K")
+        ), MapUtility.replaceAndGet(stringStringMap, "D", "L")));
+        
+        //long, object
+        Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
+                new Long[] {189456L, 8756156033L},
+                new Object[] {34, ""});
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                new Long[] {189456L, 8756156033L},
+                new Object[] {34, 8946L}
+        ), MapUtility.replaceAndGet(longObjectMap, 8756156033L, 8946L)));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapUtility.replaceAndGet(null, 0, 0));
+        TestUtils.assertException(UnsupportedOperationException.class, () ->
+                MapUtility.replaceAndGet(MapUtility.unmodifiableMap(), 0, 0));
+    }
+    
+    /**
+     * JUnit test of removeAndGet.
+     *
+     * @throws Exception When there is an exception.
+     * @see MapUtility#removeAndGet(Map, Object)
+     */
+    @Test
+    public void testRemoveAndGet() throws Exception {
+        //int, string
+        Map<Integer, String> integerStringMap = MapUtility.mapOf(
+                Arrays.asList(1, 3, 9),
+                Arrays.asList("t1", "t2", "t3"));
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                Arrays.asList(1, 3),
+                Arrays.asList("t1", "t2")
+        ), MapUtility.removeAndGet(integerStringMap, 9)));
+        
+        //string, boolean
+        Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
+                new String[] {"a", "b"},
+                new Boolean[] {true, false});
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                new String[] {"a", "b"},
+                new Boolean[] {true, false}
+        ), MapUtility.removeAndGet(stringBooleanMap, "c")));
+        
+        //string, string
+        Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
+                Arrays.asList("A", "B", "C"),
+                Arrays.asList("I", "J", "K"));
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                Arrays.asList("A", "B", "C"),
+                Arrays.asList("I", "J", "K")
+        ), MapUtility.removeAndGet(stringStringMap, "D")));
+        
+        //long, object
+        Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
+                new Long[] {189456L, 8756156033L},
+                new Object[] {34, ""});
+        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
+                new Long[] {189456L},
+                new Object[] {34}
+        ), MapUtility.removeAndGet(longObjectMap, 8756156033L)));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapUtility.removeAndGet(null, 0));
+        TestUtils.assertException(UnsupportedOperationException.class, () ->
+                MapUtility.removeAndGet(MapUtility.unmodifiableMap(), 0));
+    }
+    
+    /**
      * JUnit test of contains.
      *
      * @throws Exception When there is an exception.
@@ -830,8 +1239,7 @@ public class MapUtilityTest {
         //invalid
         Assert.assertFalse(MapUtility.contains(stringStringMap, null));
         Assert.assertFalse(MapUtility.contains(new HashMap<>(), null));
-        TestUtils.assertException(NullPointerException.class, () ->
-                MapUtility.contains(new TreeMap<>(), null));
+        Assert.assertFalse(MapUtility.contains(new TreeMap<>(), null));
         Assert.assertFalse(MapUtility.contains(null, "test"));
         Assert.assertFalse(MapUtility.contains(null, null));
     }
@@ -913,8 +1321,7 @@ public class MapUtilityTest {
         //invalid
         Assert.assertEquals("null", MapUtility.getOrDefault(stringStringMap, null, "null"));
         Assert.assertEquals("null", MapUtility.getOrDefault(new HashMap<>(), null, "null"));
-        TestUtils.assertException(NullPointerException.class, () ->
-                MapUtility.getOrDefault(new TreeMap<>(), null, "null"));
+        Assert.assertEquals("null", MapUtility.getOrDefault(new TreeMap<>(), null, "null"));
         Assert.assertEquals("null", MapUtility.getOrDefault(null, "test", "null"));
         Assert.assertEquals("null", MapUtility.getOrDefault(null, null, "null"));
     }
@@ -996,8 +1403,7 @@ public class MapUtilityTest {
         //invalid
         Assert.assertNull(MapUtility.getOrNull(stringStringMap, null));
         Assert.assertNull(MapUtility.getOrNull(new HashMap<>(), null));
-        TestUtils.assertException(NullPointerException.class, () ->
-                MapUtility.getOrNull(new TreeMap<>(), null));
+        Assert.assertNull(MapUtility.getOrNull(new TreeMap<>(), null));
         Assert.assertNull(MapUtility.getOrNull(null, "test"));
         Assert.assertNull(MapUtility.getOrNull(null, null));
     }

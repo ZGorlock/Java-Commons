@@ -9,10 +9,12 @@ package commons.object.collection;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
+import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.json.simple.JSONObject;
 import org.junit.After;
@@ -101,6 +103,34 @@ public class ArrayUtilityTest {
     }
     
     /**
+     * JUnit test of emptyArray.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#emptyArray(Class)
+     * @see ArrayUtility#emptyArray()
+     */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
+    @Test
+    public void testEmptyArray() throws Exception {
+        Object[] array;
+        
+        //standard
+        array = ArrayUtility.emptyArray(String.class);
+        Assert.assertNotNull(array);
+        Assert.assertEquals(0, array.length);
+        array = ArrayUtility.emptyArray(Integer.class);
+        Assert.assertNotNull(array);
+        Assert.assertEquals(0, array.length);
+        array = ArrayUtility.emptyArray();
+        Assert.assertNotNull(array);
+        Assert.assertEquals(0, array.length);
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.emptyArray(null));
+    }
+    
+    /**
      * JUnit test of create.
      *
      * @throws Exception When there is an exception.
@@ -108,12 +138,17 @@ public class ArrayUtilityTest {
      * @see ArrayUtility#create(Class, int)
      * @see ArrayUtility#create(Object, int)
      * @see ArrayUtility#create(Class)
+     * @see ArrayUtility#create(int)
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testCreate() throws Exception {
         //boolean
-        Boolean[] booleanArray = ArrayUtility.create(Boolean.class, 5);
+        Boolean[] booleanArray = TestAccess.invokeMethod(ArrayUtility.class, Boolean[].class, "create", Boolean.class, true, 5);
+        Assert.assertNotNull(booleanArray);
+        Assert.assertEquals(5, booleanArray.length);
+        Assert.assertTrue(Arrays.stream(booleanArray).allMatch(e -> (Objects.equals(e, true))));
+        booleanArray = ArrayUtility.create(Boolean.class, 5);
         Assert.assertNotNull(booleanArray);
         Assert.assertEquals(5, booleanArray.length);
         Assert.assertTrue(Arrays.stream(booleanArray).allMatch(Objects::isNull));
@@ -126,7 +161,11 @@ public class ArrayUtilityTest {
         Assert.assertEquals(0, booleanArray.length);
         
         //int
-        Integer[] integerArray = ArrayUtility.create(Integer.class, 7);
+        Integer[] integerArray = TestAccess.invokeMethod(ArrayUtility.class, Integer[].class, "create", Integer.class, 18, 7);
+        Assert.assertNotNull(integerArray);
+        Assert.assertEquals(7, integerArray.length);
+        Assert.assertTrue(Arrays.stream(integerArray).allMatch(e -> (Objects.equals(e, 18))));
+        integerArray = ArrayUtility.create(Integer.class, 7);
         Assert.assertNotNull(integerArray);
         Assert.assertEquals(7, integerArray.length);
         Assert.assertTrue(Arrays.stream(integerArray).allMatch(Objects::isNull));
@@ -139,7 +178,11 @@ public class ArrayUtilityTest {
         Assert.assertEquals(0, integerArray.length);
         
         //float
-        Float[] floatArray = ArrayUtility.create(Float.class, 8);
+        Float[] floatArray = TestAccess.invokeMethod(ArrayUtility.class, Float[].class, "create", Float.class, 6.847f, 8);
+        Assert.assertNotNull(floatArray);
+        Assert.assertEquals(8, floatArray.length);
+        Assert.assertTrue(Arrays.stream(floatArray).allMatch(e -> (Objects.equals(e, 6.847f))));
+        floatArray = ArrayUtility.create(Float.class, 8);
         Assert.assertNotNull(floatArray);
         Assert.assertEquals(8, floatArray.length);
         Assert.assertTrue(Arrays.stream(floatArray).allMatch(Objects::isNull));
@@ -152,7 +195,11 @@ public class ArrayUtilityTest {
         Assert.assertEquals(0, floatArray.length);
         
         //double
-        Double[] doubleArray = ArrayUtility.create(Double.class, 8);
+        Double[] doubleArray = TestAccess.invokeMethod(ArrayUtility.class, Double[].class, "create", Double.class, 117.4984560456d, 8);
+        Assert.assertNotNull(doubleArray);
+        Assert.assertEquals(8, doubleArray.length);
+        Assert.assertTrue(Arrays.stream(doubleArray).allMatch(e -> (Objects.equals(e, 117.4984560456d))));
+        doubleArray = ArrayUtility.create(Double.class, 8);
         Assert.assertNotNull(doubleArray);
         Assert.assertEquals(8, doubleArray.length);
         Assert.assertTrue(Arrays.stream(doubleArray).allMatch(Objects::isNull));
@@ -165,7 +212,11 @@ public class ArrayUtilityTest {
         Assert.assertEquals(0, doubleArray.length);
         
         //long
-        Long[] longArray = ArrayUtility.create(Long.class, 7);
+        Long[] longArray = TestAccess.invokeMethod(ArrayUtility.class, Long[].class, "create", Long.class, 178984654231545L, 7);
+        Assert.assertNotNull(longArray);
+        Assert.assertEquals(7, longArray.length);
+        Assert.assertTrue(Arrays.stream(longArray).allMatch(e -> (Objects.equals(e, 178984654231545L))));
+        longArray = ArrayUtility.create(Long.class, 7);
         Assert.assertNotNull(longArray);
         Assert.assertEquals(7, longArray.length);
         Assert.assertTrue(Arrays.stream(longArray).allMatch(Objects::isNull));
@@ -179,7 +230,11 @@ public class ArrayUtilityTest {
         
         //object
         final Object testObject = new StringBuilder();
-        Object[] objectArray = ArrayUtility.create(Object.class, 5);
+        Object[] objectArray = TestAccess.invokeMethod(ArrayUtility.class, Object[].class, "create", Object.class, testObject, 5);
+        Assert.assertNotNull(objectArray);
+        Assert.assertEquals(5, objectArray.length);
+        Assert.assertTrue(Arrays.stream(objectArray).allMatch(e -> (Objects.equals(e, testObject))));
+        objectArray = ArrayUtility.create(Object.class, 5);
         Assert.assertNotNull(objectArray);
         Assert.assertEquals(5, objectArray.length);
         Assert.assertTrue(Arrays.stream(objectArray).allMatch(Objects::isNull));
@@ -190,6 +245,10 @@ public class ArrayUtilityTest {
         objectArray = ArrayUtility.create(Object.class);
         Assert.assertNotNull(objectArray);
         Assert.assertEquals(0, objectArray.length);
+        objectArray = ArrayUtility.create(5);
+        Assert.assertNotNull(objectArray);
+        Assert.assertEquals(5, objectArray.length);
+        Assert.assertTrue(Arrays.stream(objectArray).allMatch(Objects::isNull));
         
         //invalid
         TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
@@ -202,6 +261,8 @@ public class ArrayUtilityTest {
                 ArrayUtility.create((Object) null, 6));
         TestUtils.assertException(NullPointerException.class, () ->
                 ArrayUtility.create(null));
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create(-1));
     }
     
     /**
@@ -212,12 +273,18 @@ public class ArrayUtilityTest {
      * @see ArrayUtility#create2D(Class, int, int)
      * @see ArrayUtility#create2D(Object, int, int)
      * @see ArrayUtility#create2D(Class)
+     * @see ArrayUtility#create2D(int, int)
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testCreate2D() throws Exception {
         //boolean
-        Boolean[][] booleanArray = ArrayUtility.create2D(Boolean.class, 5, 4);
+        Boolean[][] booleanArray = TestAccess.invokeMethod(ArrayUtility.class, Boolean[][].class, "create2D", Boolean.class, true, 5, 4);
+        Assert.assertNotNull(booleanArray);
+        Assert.assertEquals(5, booleanArray.length);
+        Assert.assertTrue(Arrays.stream(booleanArray).allMatch(e -> (e.length == 4)));
+        Assert.assertTrue(Arrays.stream(booleanArray).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, true))));
+        booleanArray = ArrayUtility.create2D(Boolean.class, 5, 4);
         Assert.assertNotNull(booleanArray);
         Assert.assertEquals(5, booleanArray.length);
         Assert.assertTrue(Arrays.stream(booleanArray).allMatch(e -> (e.length == 4)));
@@ -232,7 +299,12 @@ public class ArrayUtilityTest {
         Assert.assertEquals(0, booleanArray.length);
         
         //int
-        Integer[][] integerArray = ArrayUtility.create2D(Integer.class, 7, 6);
+        Integer[][] integerArray = TestAccess.invokeMethod(ArrayUtility.class, Integer[][].class, "create2D", Integer.class, 18, 7, 6);
+        Assert.assertNotNull(integerArray);
+        Assert.assertEquals(7, integerArray.length);
+        Assert.assertTrue(Arrays.stream(integerArray).allMatch(e -> (e.length == 6)));
+        Assert.assertTrue(Arrays.stream(integerArray).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 18))));
+        integerArray = ArrayUtility.create2D(Integer.class, 7, 6);
         Assert.assertNotNull(integerArray);
         Assert.assertEquals(7, integerArray.length);
         Assert.assertTrue(Arrays.stream(integerArray).allMatch(e -> (e.length == 6)));
@@ -247,7 +319,12 @@ public class ArrayUtilityTest {
         Assert.assertEquals(0, integerArray.length);
         
         //float
-        Float[][] floatArray = ArrayUtility.create2D(Float.class, 8, 7);
+        Float[][] floatArray = TestAccess.invokeMethod(ArrayUtility.class, Float[][].class, "create2D", Float.class, 6.847f, 8, 7);
+        Assert.assertNotNull(floatArray);
+        Assert.assertEquals(8, floatArray.length);
+        Assert.assertTrue(Arrays.stream(floatArray).allMatch(e -> (e.length == 7)));
+        Assert.assertTrue(Arrays.stream(floatArray).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 6.847f))));
+        floatArray = ArrayUtility.create2D(Float.class, 8, 7);
         Assert.assertNotNull(floatArray);
         Assert.assertEquals(8, floatArray.length);
         Assert.assertTrue(Arrays.stream(floatArray).allMatch(e -> (e.length == 7)));
@@ -262,7 +339,12 @@ public class ArrayUtilityTest {
         Assert.assertEquals(0, floatArray.length);
         
         //double
-        Double[][] doubleArray = ArrayUtility.create2D(Double.class, 8, 7);
+        Double[][] doubleArray = TestAccess.invokeMethod(ArrayUtility.class, Double[][].class, "create2D", Double.class, 117.4984560456d, 8, 7);
+        Assert.assertNotNull(doubleArray);
+        Assert.assertEquals(8, doubleArray.length);
+        Assert.assertTrue(Arrays.stream(doubleArray).allMatch(e -> (e.length == 7)));
+        Assert.assertTrue(Arrays.stream(doubleArray).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 117.4984560456d))));
+        doubleArray = ArrayUtility.create2D(Double.class, 8, 7);
         Assert.assertNotNull(doubleArray);
         Assert.assertEquals(8, doubleArray.length);
         Assert.assertTrue(Arrays.stream(doubleArray).allMatch(e -> (e.length == 7)));
@@ -277,7 +359,12 @@ public class ArrayUtilityTest {
         Assert.assertEquals(0, doubleArray.length);
         
         //long
-        Long[][] longArray = ArrayUtility.create2D(Long.class, 7, 6);
+        Long[][] longArray = TestAccess.invokeMethod(ArrayUtility.class, Long[][].class, "create2D", Long.class, 178984654231545L, 7, 6);
+        Assert.assertNotNull(longArray);
+        Assert.assertEquals(7, longArray.length);
+        Assert.assertTrue(Arrays.stream(longArray).allMatch(e -> (e.length == 6)));
+        Assert.assertTrue(Arrays.stream(longArray).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 178984654231545L))));
+        longArray = ArrayUtility.create2D(Long.class, 7, 6);
         Assert.assertNotNull(longArray);
         Assert.assertEquals(7, longArray.length);
         Assert.assertTrue(Arrays.stream(longArray).allMatch(e -> (e.length == 6)));
@@ -293,7 +380,12 @@ public class ArrayUtilityTest {
         
         //object
         final Object testObject = new StringBuilder();
-        Object[][] objectArray = ArrayUtility.create2D(Object.class, 5, 4);
+        Object[][] objectArray = TestAccess.invokeMethod(ArrayUtility.class, Object[][].class, "create2D", Object.class, testObject, 5, 4);
+        Assert.assertNotNull(objectArray);
+        Assert.assertEquals(5, objectArray.length);
+        Assert.assertTrue(Arrays.stream(objectArray).allMatch(e -> (e.length == 4)));
+        Assert.assertTrue(Arrays.stream(objectArray).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, testObject))));
+        objectArray = ArrayUtility.create2D(Object.class, 5, 4);
         Assert.assertNotNull(objectArray);
         Assert.assertEquals(5, objectArray.length);
         Assert.assertTrue(Arrays.stream(objectArray).allMatch(e -> (e.length == 4)));
@@ -306,6 +398,11 @@ public class ArrayUtilityTest {
         objectArray = ArrayUtility.create2D(Object.class);
         Assert.assertNotNull(objectArray);
         Assert.assertEquals(0, objectArray.length);
+        objectArray = ArrayUtility.create2D(5, 4);
+        Assert.assertNotNull(objectArray);
+        Assert.assertEquals(5, objectArray.length);
+        Assert.assertTrue(Arrays.stream(objectArray).allMatch(e -> (e.length == 4)));
+        Assert.assertTrue(Arrays.stream(objectArray).flatMap(Arrays::stream).allMatch(Objects::isNull));
         
         //invalid
         TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
@@ -322,6 +419,10 @@ public class ArrayUtilityTest {
                 ArrayUtility.create2D((Object) null, 6, 6));
         TestUtils.assertException(NullPointerException.class, () ->
                 ArrayUtility.create2D(null));
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create2D(-1, 5));
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create2D(5, -1));
     }
     
     /**
@@ -332,12 +433,19 @@ public class ArrayUtilityTest {
      * @see ArrayUtility#create3D(Class, int, int, int)
      * @see ArrayUtility#create3D(Object, int, int, int)
      * @see ArrayUtility#create3D(Class)
+     * @see ArrayUtility#create3D(int, int, int)
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testCreate3D() throws Exception {
         //boolean
-        Boolean[][][] booleanArray = ArrayUtility.create3D(Boolean.class, 5, 4, 3);
+        Boolean[][][] booleanArray = TestAccess.invokeMethod(ArrayUtility.class, Boolean[][][].class, "create3D", Boolean.class, true, 5, 4, 3);
+        Assert.assertNotNull(booleanArray);
+        Assert.assertEquals(5, booleanArray.length);
+        Assert.assertTrue(Arrays.stream(booleanArray).allMatch(e -> (e.length == 4)));
+        Arrays.stream(booleanArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 3));
+        Assert.assertTrue(Arrays.stream(booleanArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, true))));
+        booleanArray = ArrayUtility.create3D(Boolean.class, 5, 4, 3);
         Assert.assertNotNull(booleanArray);
         Assert.assertEquals(5, booleanArray.length);
         Assert.assertTrue(Arrays.stream(booleanArray).allMatch(e -> (e.length == 4)));
@@ -354,7 +462,13 @@ public class ArrayUtilityTest {
         Assert.assertEquals(0, booleanArray.length);
         
         //int
-        Integer[][][] integerArray = ArrayUtility.create3D(Integer.class, 7, 6, 5);
+        Integer[][][] integerArray = TestAccess.invokeMethod(ArrayUtility.class, Integer[][][].class, "create3D", Integer.class, 18, 7, 6, 5);
+        Assert.assertNotNull(integerArray);
+        Assert.assertEquals(7, integerArray.length);
+        Assert.assertTrue(Arrays.stream(integerArray).allMatch(e -> (e.length == 6)));
+        Arrays.stream(integerArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 5));
+        Assert.assertTrue(Arrays.stream(integerArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 18))));
+        integerArray = ArrayUtility.create3D(Integer.class, 7, 6, 5);
         Assert.assertNotNull(integerArray);
         Assert.assertEquals(7, integerArray.length);
         Assert.assertTrue(Arrays.stream(integerArray).allMatch(e -> (e.length == 6)));
@@ -371,7 +485,13 @@ public class ArrayUtilityTest {
         Assert.assertEquals(0, integerArray.length);
         
         //float
-        Float[][][] floatArray = ArrayUtility.create3D(Float.class, 8, 7, 6);
+        Float[][][] floatArray = TestAccess.invokeMethod(ArrayUtility.class, Float[][][].class, "create3D", Float.class, 6.847f, 8, 7, 6);
+        Assert.assertNotNull(floatArray);
+        Assert.assertEquals(8, floatArray.length);
+        Assert.assertTrue(Arrays.stream(floatArray).allMatch(e -> (e.length == 7)));
+        Arrays.stream(floatArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 6));
+        Assert.assertTrue(Arrays.stream(floatArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 6.847f))));
+        floatArray = ArrayUtility.create3D(Float.class, 8, 7, 6);
         Assert.assertNotNull(floatArray);
         Assert.assertEquals(8, floatArray.length);
         Assert.assertTrue(Arrays.stream(floatArray).allMatch(e -> (e.length == 7)));
@@ -388,7 +508,13 @@ public class ArrayUtilityTest {
         Assert.assertEquals(0, floatArray.length);
         
         //double
-        Double[][][] doubleArray = ArrayUtility.create3D(Double.class, 8, 7, 6);
+        Double[][][] doubleArray = TestAccess.invokeMethod(ArrayUtility.class, Double[][][].class, "create3D", Double.class, 117.4984560456d, 8, 7, 6);
+        Assert.assertNotNull(doubleArray);
+        Assert.assertEquals(8, doubleArray.length);
+        Assert.assertTrue(Arrays.stream(doubleArray).allMatch(e -> (e.length == 7)));
+        Arrays.stream(doubleArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 6));
+        Assert.assertTrue(Arrays.stream(doubleArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 117.4984560456d))));
+        doubleArray = ArrayUtility.create3D(Double.class, 8, 7, 6);
         Assert.assertNotNull(doubleArray);
         Assert.assertEquals(8, doubleArray.length);
         Assert.assertTrue(Arrays.stream(doubleArray).allMatch(e -> (e.length == 7)));
@@ -405,7 +531,13 @@ public class ArrayUtilityTest {
         Assert.assertEquals(0, doubleArray.length);
         
         //long
-        Long[][][] longArray = ArrayUtility.create3D(Long.class, 7, 6, 5);
+        Long[][][] longArray = TestAccess.invokeMethod(ArrayUtility.class, Long[][][].class, "create3D", Long.class, 178984654231545L, 7, 6, 5);
+        Assert.assertNotNull(longArray);
+        Assert.assertEquals(7, longArray.length);
+        Assert.assertTrue(Arrays.stream(longArray).allMatch(e -> (e.length == 6)));
+        Arrays.stream(longArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 5));
+        Assert.assertTrue(Arrays.stream(longArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, 178984654231545L))));
+        longArray = ArrayUtility.create3D(Long.class, 7, 6, 5);
         Assert.assertNotNull(longArray);
         Assert.assertEquals(7, longArray.length);
         Assert.assertTrue(Arrays.stream(longArray).allMatch(e -> (e.length == 6)));
@@ -423,7 +555,13 @@ public class ArrayUtilityTest {
         
         //object
         final Object testObject = new StringBuilder();
-        Object[][][] objectArray = ArrayUtility.create3D(Object.class, 5, 4, 3);
+        Object[][][] objectArray = TestAccess.invokeMethod(ArrayUtility.class, Object[][][].class, "create3D", Object.class, testObject, 5, 4, 3);
+        Assert.assertNotNull(objectArray);
+        Assert.assertEquals(5, objectArray.length);
+        Assert.assertTrue(Arrays.stream(objectArray).allMatch(e -> (e.length == 4)));
+        Arrays.stream(objectArray).flatMap(Arrays::stream).allMatch(e -> (e.length == 3));
+        Assert.assertTrue(Arrays.stream(objectArray).flatMap(Arrays::stream).flatMap(Arrays::stream).allMatch(e -> (Objects.equals(e, testObject))));
+        objectArray = ArrayUtility.create3D(Object.class, 5, 4, 3);
         Assert.assertNotNull(objectArray);
         Assert.assertEquals(5, objectArray.length);
         Assert.assertTrue(Arrays.stream(objectArray).allMatch(e -> (e.length == 4)));
@@ -458,6 +596,12 @@ public class ArrayUtilityTest {
                 ArrayUtility.create3D((Object) null, 6, 6, 6));
         TestUtils.assertException(NullPointerException.class, () ->
                 ArrayUtility.create3D(null));
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create3D(-1, 5, 5));
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create3D(5, -1, 5));
+        TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
+                ArrayUtility.create3D(5, 5, -1));
     }
     
     /**
@@ -465,6 +609,7 @@ public class ArrayUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see ArrayUtility#arrayOf(Class, Object[])
+     * @see ArrayUtility#arrayOf(Object[])
      */
     @Test
     public void testArrayOf() throws Exception {
@@ -503,19 +648,25 @@ public class ArrayUtilityTest {
         Object[] objectArray = ArrayUtility.arrayOf(Object.class, objectArrayTest[0], objectArrayTest[1], objectArrayTest[2], objectArrayTest[3], objectArrayTest[4]);
         Assert.assertEquals(objectArrayTest.length, objectArray.length);
         Assert.assertArrayEquals(objectArrayTest, objectArray);
+        objectArray = ArrayUtility.arrayOf(objectArrayTest[0], objectArrayTest[1], objectArrayTest[2], objectArrayTest[3], objectArrayTest[4]);
+        Assert.assertEquals(objectArrayTest.length, objectArray.length);
+        Assert.assertArrayEquals(objectArrayTest, objectArray);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 ArrayUtility.arrayOf(Object.class, (Object[]) null));
         TestUtils.assertException(NullPointerException.class, () ->
                 ArrayUtility.arrayOf(null, (Object[]) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.arrayOf((Object[]) null));
     }
     
     /**
      * JUnit test of toArray.
      *
      * @throws Exception When there is an exception.
-     * @see ArrayUtility#toArray(List, Class)
+     * @see ArrayUtility#toArray(Collection, Class)
+     * @see ArrayUtility#toArray(Collection)
      */
     @Test
     public void testToArray() throws Exception {
@@ -566,12 +717,18 @@ public class ArrayUtilityTest {
         Assert.assertNotNull(objectListArray);
         Assert.assertEquals(objectList.size(), objectListArray.length);
         Assert.assertArrayEquals(objectList.toArray(), objectListArray);
+        objectListArray = ArrayUtility.toArray(objectList);
+        Assert.assertNotNull(objectListArray);
+        Assert.assertEquals(objectList.size(), objectListArray.length);
+        Assert.assertArrayEquals(objectList.toArray(), objectListArray);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 ArrayUtility.toArray(null, Object.class));
         TestUtils.assertException(NullPointerException.class, () ->
                 ArrayUtility.toArray(objectList, null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.toArray(null));
     }
     
     /**
@@ -882,6 +1039,59 @@ public class ArrayUtilityTest {
         
         TestUtils.assertException(NullPointerException.class, () ->
                 ArrayUtility.reverse(null));
+    }
+    
+    /**
+     * JUnit test of shuffle.
+     *
+     * @throws Exception When there is an exception.
+     * @see ArrayUtility#shuffle(Object[])
+     */
+    @Test
+    public void testShuffle() throws Exception {
+        //boolean
+        Boolean[] booleanArray = ArrayUtility.duplicateInOrder(new Boolean[] {true, false, false, true, false}, 10, Boolean.class);
+        Boolean[] booleanShuffledArray = ArrayUtility.shuffle(booleanArray);
+        Assert.assertTrue(ArrayUtility.equals(booleanArray, booleanShuffledArray, false));
+        Assert.assertFalse(ArrayUtility.equals(booleanArray, booleanShuffledArray, true));
+        
+        //int
+        Integer[] integerArray = ArrayUtility.duplicateInOrder(new Integer[] {15, 312, 48, 5, -4, -9, 6}, 10, Integer.class);
+        Integer[] integerShuffledArray = ArrayUtility.shuffle(integerArray);
+        Assert.assertTrue(ArrayUtility.equals(integerArray, integerShuffledArray, false));
+        Assert.assertFalse(ArrayUtility.equals(integerArray, integerShuffledArray, true));
+        
+        //float
+        Float[] floatArray = ArrayUtility.duplicateInOrder(new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f}, 10, Float.class);
+        Float[] floatShuffledArray = ArrayUtility.shuffle(floatArray);
+        Assert.assertTrue(ArrayUtility.equals(floatArray, floatShuffledArray, false));
+        Assert.assertFalse(ArrayUtility.equals(floatArray, floatShuffledArray, true));
+        
+        //double
+        Double[] doubleArray = ArrayUtility.duplicateInOrder(new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d}, 10, Double.class);
+        Double[] doubleShuffledArray = ArrayUtility.shuffle(doubleArray);
+        Assert.assertTrue(ArrayUtility.equals(doubleArray, doubleShuffledArray, false));
+        Assert.assertFalse(ArrayUtility.equals(doubleArray, doubleShuffledArray, true));
+        
+        //long
+        Long[] longArray = ArrayUtility.duplicateInOrder(new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L}, 10, Long.class);
+        Long[] longShuffledArray = ArrayUtility.shuffle(longArray);
+        Assert.assertTrue(ArrayUtility.equals(longArray, longShuffledArray, false));
+        Assert.assertFalse(ArrayUtility.equals(longArray, longShuffledArray, true));
+        
+        //object
+        Object[] objectArray = ArrayUtility.duplicateInOrder(new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()}, 10, Object.class);
+        Object[] objectShuffledArray = ArrayUtility.shuffle(objectArray);
+        Assert.assertTrue(ArrayUtility.equals(objectArray, objectShuffledArray, false));
+        Assert.assertFalse(ArrayUtility.equals(objectArray, objectShuffledArray, true));
+        
+        //invalid
+        
+        Object[] emptyShuffledArray = ArrayUtility.shuffle(new Object[] {});
+        Assert.assertArrayEquals(new Object[] {}, emptyShuffledArray);
+        
+        TestUtils.assertException(NullPointerException.class, () ->
+                ArrayUtility.shuffle(null));
     }
     
     /**
@@ -1706,8 +1916,7 @@ public class ArrayUtilityTest {
         Assert.assertNull(ArrayUtility.selectRandom(new Object[] {}));
         
         //invalid
-        TestUtils.assertException(NullPointerException.class, () ->
-                ArrayUtility.selectRandom(null));
+        Assert.assertNull(ArrayUtility.selectRandom(null));
     }
     
     /**
