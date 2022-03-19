@@ -39,8 +39,8 @@ public final class MapCollectors {
      * Creates a new custom collector that collects a stream to a map.
      *
      * @param mapSupplier The supplier that provides a map of a certain type.
-     * @param keyMapper   The function for produces the keys of the collected map.
-     * @param valueMapper The function for produces the values of the collected map.
+     * @param keyMapper   The function that produces the keys of the collected map.
+     * @param valueMapper The function that produces the values of the collected map.
      * @param <T>         The type of the elements of the stream to collect.
      * @param <K>         The type of the keys of the collected map.
      * @param <V>         The type of the values of the collected map.
@@ -73,8 +73,8 @@ public final class MapCollectors {
     /**
      * Creates a new custom collector that collects a stream to a hash map.
      *
-     * @param keyMapper   The function for produces the keys of the collected map.
-     * @param valueMapper The function for produces the values of the collected map.
+     * @param keyMapper   The function that produces the keys of the collected map.
+     * @param valueMapper The function that produces the values of the collected map.
      * @param <T>         The type of the elements of the stream to collect.
      * @param <K>         The type of the keys of the collected map.
      * @param <V>         The type of the values of the collected map.
@@ -100,8 +100,8 @@ public final class MapCollectors {
     /**
      * Creates a new custom collector that collects a stream to a linked hash map.
      *
-     * @param keyMapper   The function for produces the keys of the collected map.
-     * @param valueMapper The function for produces the values of the collected map.
+     * @param keyMapper   The function that produces the keys of the collected map.
+     * @param valueMapper The function that produces the values of the collected map.
      * @param <T>         The type of the elements of the stream to collect.
      * @param <K>         The type of the keys of the collected map.
      * @param <V>         The type of the values of the collected map.
@@ -128,10 +128,36 @@ public final class MapCollectors {
      * Creates a new custom collector that collects a stream of map entries to a hash map of strings.
      *
      * @return The custom collector.
-     * @see #toMap(Supplier, Function, Function)
+     * @see #toHashMap(Function, Function)
      */
     public static Collector<Map.Entry<?, ?>, ?, HashMap<String, String>> toStringMap() {
-        return toMap(HashMap::new, (e -> String.valueOf(e.getKey())), (e -> String.valueOf(e.getValue())));
+        return toHashMap((e -> String.valueOf(e.getKey())), (e -> String.valueOf(e.getValue())));
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream to a hash map between the stream elements and a produced value.
+     *
+     * @param valueMapper The function that produces the values of the collected map.
+     * @param <T>         The type of the elements of the stream to collect.
+     * @param <V>         The type of the values of the collected map.
+     * @return The custom collector.
+     * @see #toHashMap(Function, Function)
+     */
+    public static <T, V> Collector<T, ?, HashMap<T, V>> mapEachTo(Function<? super T, ? extends V> valueMapper) {
+        return toHashMap(Function.identity(), valueMapper);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream to a hash map between the stream elements and a supplied value.
+     *
+     * @param valueSupplier The supplier that supplies the values of the collected map.
+     * @param <T>           The type of the elements of the stream to collect.
+     * @param <V>           The type of the values of the collected map.
+     * @return The custom collector.
+     * @see #mapEachTo(Function)
+     */
+    public static <T, V> Collector<T, ?, HashMap<T, V>> mapEachTo(Supplier<? extends V> valueSupplier) {
+        return mapEachTo(e -> valueSupplier.get());
     }
     
 }
