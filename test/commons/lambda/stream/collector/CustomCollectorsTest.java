@@ -21,6 +21,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collector;
 
 import commons.object.collection.ArrayUtility;
+import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
 import commons.test.TestAccess;
 import commons.test.TestUtils;
@@ -146,7 +147,9 @@ public class CustomCollectorsTest {
                 final Object fieldValue = TestAccess.getFieldValue(collector, fieldName);
                 if (testFieldValue != null) {
                     if (fieldValue instanceof Collection) {
-                        Assert.assertArrayEquals(((Collection<?>) testFieldValue).toArray(), ((Collection<?>) fieldValue).toArray());
+                        TestUtils.assertListEquals(
+                                ListUtility.toList((Collection<Object>) fieldValue),
+                                (Collection<Object>) testFieldValue);
                     } else {
                         Assert.assertEquals(testFieldValue, fieldValue);
                     }

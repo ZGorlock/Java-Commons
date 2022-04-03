@@ -14,7 +14,6 @@ import commons.math.component.vector.BigVector;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -120,17 +119,17 @@ public class BigComponentInterfaceTest {
         
         sut = new BigVector("8.16545460549178401501230541064000", "0.4541984048301290878421201", "2.48908405461649302010508710120000000000");
         
-        Assert.assertArrayEquals(
-                new String[] {"8.16545460549178401501230541064000", "0.4541984048301290878421201", "2.48908405461649302010508710120000000000"},
-                Arrays.stream(sut.movePointLeft(0).getRawComponents()).map(BigDecimal::toPlainString).toArray());
+        TestUtils.assertArrayEquals(
+                Arrays.stream(sut.movePointLeft(0).getRawComponents()).map(BigDecimal::toPlainString).toArray(),
+                new String[] {"8.16545460549178401501230541064000", "0.4541984048301290878421201", "2.48908405461649302010508710120000000000"});
         
-        Assert.assertArrayEquals(
-                new String[] {"0.0000816545460549178401501230541064000", "0.000004541984048301290878421201", "0.0000248908405461649302010508710120000000000"},
-                Arrays.stream(sut.movePointLeft(5).getRawComponents()).map(BigDecimal::toPlainString).toArray());
+        TestUtils.assertArrayEquals(
+                Arrays.stream(sut.movePointLeft(5).getRawComponents()).map(BigDecimal::toPlainString).toArray(),
+                new String[] {"0.0000816545460549178401501230541064000", "0.000004541984048301290878421201", "0.0000248908405461649302010508710120000000000"});
         
-        Assert.assertArrayEquals(
-                new String[] {"816545460.549178401501230541064000", "45419840.48301290878421201", "248908405.461649302010508710120000000000"},
-                Arrays.stream(sut.movePointLeft(-8).getRawComponents()).map(BigDecimal::toPlainString).toArray());
+        TestUtils.assertArrayEquals(
+                Arrays.stream(sut.movePointLeft(-8).getRawComponents()).map(BigDecimal::toPlainString).toArray(),
+                new String[] {"816545460.549178401501230541064000", "45419840.48301290878421201", "248908405.461649302010508710120000000000"});
     }
     
     /**
@@ -148,17 +147,17 @@ public class BigComponentInterfaceTest {
         
         sut = new BigVector("8.16545460549178401501230541064000", "0.4541984048301290878421201", "2.48908405461649302010508710120000000000");
         
-        Assert.assertArrayEquals(
-                new String[] {"8.16545460549178401501230541064000", "0.4541984048301290878421201", "2.48908405461649302010508710120000000000"},
-                Arrays.stream(sut.movePointRight(0).getRawComponents()).map(BigDecimal::toPlainString).toArray());
+        TestUtils.assertArrayEquals(
+                Arrays.stream(sut.movePointRight(0).getRawComponents()).map(BigDecimal::toPlainString).toArray(),
+                new String[] {"8.16545460549178401501230541064000", "0.4541984048301290878421201", "2.48908405461649302010508710120000000000"});
         
-        Assert.assertArrayEquals(
-                new String[] {"816545.460549178401501230541064000", "45419.84048301290878421201", "248908.405461649302010508710120000000000"},
-                Arrays.stream(sut.movePointRight(5).getRawComponents()).map(BigDecimal::toPlainString).toArray());
+        TestUtils.assertArrayEquals(
+                Arrays.stream(sut.movePointRight(5).getRawComponents()).map(BigDecimal::toPlainString).toArray(),
+                new String[] {"816545.460549178401501230541064000", "45419.84048301290878421201", "248908.405461649302010508710120000000000"});
         
-        Assert.assertArrayEquals(
-                new String[] {"0.0000000816545460549178401501230541064000", "0.000000004541984048301290878421201", "0.0000000248908405461649302010508710120000000000"},
-                Arrays.stream(sut.movePointRight(-8).getRawComponents()).map(BigDecimal::toPlainString).toArray());
+        TestUtils.assertArrayEquals(
+                Arrays.stream(sut.movePointRight(-8).getRawComponents()).map(BigDecimal::toPlainString).toArray(),
+                new String[] {"0.0000000816545460549178401501230541064000", "0.000000004541984048301290878421201", "0.0000000248908405461649302010508710120000000000"});
     }
     
     /**
@@ -176,9 +175,9 @@ public class BigComponentInterfaceTest {
         
         sut = new BigVector("8.16545460549178401501230541064000", "0.4541984048301290878421201", "2.48908405461649302010508710120000000000");
         
-        Assert.assertArrayEquals(
-                new String[] {"8.16545460549178401501230541064", "0.4541984048301290878421201", "2.4890840546164930201050871012"},
-                Arrays.stream(sut.stripTrailingZeros().getRawComponents()).map(BigDecimal::toPlainString).toArray());
+        TestUtils.assertArrayEquals(
+                Arrays.stream(sut.stripTrailingZeros().getRawComponents()).map(BigDecimal::toPlainString).toArray(),
+                new String[] {"8.16545460549178401501230541064", "0.4541984048301290878421201", "2.4890840546164930201050871012"});
     }
     
     /**

@@ -164,40 +164,40 @@ public class MapCollectorsTest {
                 Function.identity(), Function.identity()));
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap1, map1));
+        TestUtils.assertMapEquals(map1, testMap1);
         map2 = testStream2.collect(MapCollectors.toMap(HashMap::new,
                 (e -> StringUtility.lSnip(e, e.indexOf(':'))), (e -> StringUtility.rSnip(e, (e.length() - e.indexOf(':') - 1)))));
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap2, map2));
+        TestUtils.assertMapEquals(map2, testMap2);
         map3 = testStream3.collect(MapCollectors.toMap(LinkedHashMap::new,
                 Function.identity(), (e -> (e > 3))));
         Assert.assertNotNull(map3);
         Assert.assertTrue(map3 instanceof LinkedHashMap);
-        Assert.assertTrue(MapUtility.equals(testMap3, map3));
+        TestUtils.assertMapEquals(map3, testMap3);
         map4 = testStream4.collect(MapCollectors.toMap(TreeMap::new,
                 (e -> (int) e.get(0)), (e -> (String) e.get(1))));
         Assert.assertNotNull(map4);
         Assert.assertTrue(map4 instanceof TreeMap);
-        Assert.assertTrue(MapUtility.equals(testMap4, map4));
+        TestUtils.assertMapEquals(map4, testMap4);
         
         //map enties
         map1 = testMap1.entrySet().stream().collect(MapCollectors.toMap(HashMap::new));
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap1, map1));
+        TestUtils.assertMapEquals(map1, testMap1);
         map2 = testMap2.entrySet().stream().collect(MapCollectors.toMap(HashMap::new));
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap2, map2));
+        TestUtils.assertMapEquals(map2, testMap2);
         map3 = testMap3.entrySet().stream().collect(MapCollectors.toMap(LinkedHashMap::new));
         Assert.assertNotNull(map3);
         Assert.assertTrue(map3 instanceof LinkedHashMap);
-        Assert.assertTrue(MapUtility.equals(testMap3, map3));
+        TestUtils.assertMapEquals(map3, testMap3);
         map4 = testMap4.entrySet().stream().collect(MapCollectors.toMap(TreeMap::new));
         Assert.assertNotNull(map4);
         Assert.assertTrue(map4 instanceof TreeMap);
-        Assert.assertTrue(MapUtility.equals(testMap4, map4));
+        TestUtils.assertMapEquals(map4, testMap4);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -238,40 +238,40 @@ public class MapCollectorsTest {
                 Function.identity(), Function.identity()));
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap1, map1));
+        TestUtils.assertMapEquals(map1, testMap1);
         map2 = testStream2.collect(MapCollectors.toHashMap(
                 (e -> StringUtility.lSnip(e, e.indexOf(':'))), (e -> StringUtility.rSnip(e, (e.length() - e.indexOf(':') - 1)))));
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap2, map2));
+        TestUtils.assertMapEquals(map2, testMap2);
         map3 = testStream3.collect(MapCollectors.toHashMap(
                 Function.identity(), (e -> (e > 3))));
         Assert.assertNotNull(map3);
         Assert.assertTrue(map3 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap3, map3));
+        TestUtils.assertMapEquals(map3, testMap3);
         map4 = testStream4.collect(MapCollectors.toHashMap(
                 (e -> (int) e.get(0)), (e -> (String) e.get(1))));
         Assert.assertNotNull(map4);
         Assert.assertTrue(map4 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap4, map4));
+        TestUtils.assertMapEquals(map4, testMap4);
         
         //map enties
         map1 = testMap1.entrySet().stream().collect(MapCollectors.toHashMap());
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap1, map1));
+        TestUtils.assertMapEquals(map1, testMap1);
         map2 = testMap2.entrySet().stream().collect(MapCollectors.toHashMap());
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap2, map2));
+        TestUtils.assertMapEquals(map2, testMap2);
         map3 = testMap3.entrySet().stream().collect(MapCollectors.toHashMap());
         Assert.assertNotNull(map3);
         Assert.assertTrue(map3 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap3, map3));
+        TestUtils.assertMapEquals(map3, testMap3);
         map4 = testMap4.entrySet().stream().collect(MapCollectors.toHashMap());
         Assert.assertNotNull(map4);
         Assert.assertTrue(map4 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap4, map4));
+        TestUtils.assertMapEquals(map4, testMap4);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -310,40 +310,40 @@ public class MapCollectorsTest {
                 Function.identity(), Function.identity()));
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof LinkedHashMap);
-        Assert.assertTrue(MapUtility.equals(testMap1, map1));
+        TestUtils.assertMapEquals(map1, testMap1);
         map2 = testStream2.collect(MapCollectors.toLinkedHashMap(
                 (e -> StringUtility.lSnip(e, e.indexOf(':'))), (e -> StringUtility.rSnip(e, (e.length() - e.indexOf(':') - 1)))));
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof LinkedHashMap);
-        Assert.assertTrue(MapUtility.equals(testMap2, map2));
+        TestUtils.assertMapEquals(map2, testMap2);
         map3 = testStream3.collect(MapCollectors.toLinkedHashMap(
                 Function.identity(), (e -> (e > 3))));
         Assert.assertNotNull(map3);
         Assert.assertTrue(map3 instanceof LinkedHashMap);
-        Assert.assertTrue(MapUtility.equals(testMap3, map3));
+        TestUtils.assertMapEquals(map3, testMap3);
         map4 = testStream4.collect(MapCollectors.toLinkedHashMap(
                 (e -> (int) e.get(0)), (e -> (String) e.get(1))));
         Assert.assertNotNull(map4);
         Assert.assertTrue(map4 instanceof LinkedHashMap);
-        Assert.assertTrue(MapUtility.equals(testMap4, map4));
+        TestUtils.assertMapEquals(map4, testMap4);
         
         //map enties
         map1 = testMap1.entrySet().stream().collect(MapCollectors.toLinkedHashMap());
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof LinkedHashMap);
-        Assert.assertTrue(MapUtility.equals(testMap1, map1));
+        TestUtils.assertMapEquals(map1, testMap1);
         map2 = testMap2.entrySet().stream().collect(MapCollectors.toLinkedHashMap());
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof LinkedHashMap);
-        Assert.assertTrue(MapUtility.equals(testMap2, map2));
+        TestUtils.assertMapEquals(map2, testMap2);
         map3 = testMap3.entrySet().stream().collect(MapCollectors.toLinkedHashMap());
         Assert.assertNotNull(map3);
         Assert.assertTrue(map3 instanceof LinkedHashMap);
-        Assert.assertTrue(MapUtility.equals(testMap3, map3));
+        TestUtils.assertMapEquals(map3, testMap3);
         map4 = testMap4.entrySet().stream().collect(MapCollectors.toLinkedHashMap());
         Assert.assertNotNull(map4);
         Assert.assertTrue(map4 instanceof LinkedHashMap);
-        Assert.assertTrue(MapUtility.equals(testMap4, map4));
+        TestUtils.assertMapEquals(map4, testMap4);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -380,19 +380,19 @@ public class MapCollectorsTest {
         map1 = testMap1.entrySet().stream().collect(MapCollectors.toStringMap());
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap1, map1));
+        TestUtils.assertMapEquals(map1, testMap1);
         map2 = testMap2.entrySet().stream().collect(MapCollectors.toStringMap());
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap2, map2));
+        TestUtils.assertMapEquals(map2, testMap2);
         map3 = testMap3.entrySet().stream().collect(MapCollectors.toStringMap());
         Assert.assertNotNull(map3);
         Assert.assertTrue(map3 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap3, map3));
+        TestUtils.assertMapEquals(map3, testMap3);
         map4 = testMap4.entrySet().stream().collect(MapCollectors.toStringMap());
         Assert.assertNotNull(map4);
         Assert.assertTrue(map4 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap4, map4));
+        TestUtils.assertMapEquals(map4, testMap4);
     }
     
     /**
@@ -423,23 +423,27 @@ public class MapCollectorsTest {
                 () -> 0));
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap1, map1));
+        TestUtils.assertMapEquals(map1, testMap1);
         map2 = testStream2.collect(MapCollectors.mapEachTo(
                 String::length));
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap2, map2));
+        TestUtils.assertMapEquals(map2, testMap2);
         map3 = testStream3.collect(MapCollectors.mapEachTo(
                 Long::valueOf));
         Assert.assertNotNull(map3);
         Assert.assertTrue(map3 instanceof HashMap);
-        Assert.assertTrue(MapUtility.equals(testMap3, map3));
+        TestUtils.assertMapEquals(map3, testMap3);
         map4 = testStream4.collect(MapCollectors.mapEachTo(
                 () -> new AtomicInteger(0)));
         Assert.assertNotNull(map4);
         Assert.assertTrue(map4 instanceof HashMap);
-        Assert.assertArrayEquals(testMap4.keySet().toArray(), map4.keySet().toArray());
-        Assert.assertArrayEquals(testMap4.values().stream().map(AtomicInteger::get).toArray(), map4.values().stream().map(AtomicInteger::get).toArray());
+        TestUtils.assertArrayEquals(
+                map4.keySet().toArray(),
+                testMap4.keySet().toArray());
+        TestUtils.assertArrayEquals(
+                map4.values().stream().map(AtomicInteger::get).toArray(),
+                testMap4.values().stream().map(AtomicInteger::get).toArray());
         Assert.assertEquals(map4.size(), map4.values().stream().distinct().count());
         
         //invalid

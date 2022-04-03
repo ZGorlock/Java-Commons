@@ -10,15 +10,22 @@ package commons.test;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 import commons.lambda.function.Action;
-import commons.lambda.function.checked.CheckedConsumer;
+import commons.lambda.function.unchecked.UncheckedBiConsumer;
+import commons.lambda.function.unchecked.UncheckedConsumer;
 import commons.lambda.stream.collector.MapCollectors;
+import commons.object.collection.ArrayUtility;
+import commons.object.collection.ListUtility;
+import commons.object.collection.MapUtility;
 import commons.object.string.EntityStringUtility;
 import commons.object.string.StringUtility;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -32,6 +39,7 @@ import org.junit.runner.RunWith;
 import org.mockito.ArgumentMatchers;
 import org.mockito.Mockito;
 import org.mockito.internal.verification.VerificationModeFactory;
+import org.mockito.stubbing.Answer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
@@ -45,7 +53,7 @@ import org.slf4j.LoggerFactory;
  */
 @SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
-@PrepareForTest({TestUtils.class})
+@PrepareForTest({TestUtils.class, ListUtility.class, ArrayUtility.class, MapUtility.class})
 public class TestUtilsTest {
     
     //Logger
@@ -328,6 +336,724 @@ public class TestUtilsTest {
     }
     
     /**
+     * JUnit test of compareLists.
+     *
+     * @throws Exception When there is an exception.
+     * @see TestUtils#compareLists(List, List, boolean, boolean)
+     */
+    @Test
+    public void testCompareLists() throws Exception {
+        final List<Object> mockList = Mockito.mock(List.class);
+        final List<Object> mockList2 = Mockito.mock(List.class);
+        final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockList, null).flatMap(list ->
+                        Stream.of(mockList2, null).flatMap(comparisonList ->
+                                Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
+                                        (1 + System.identityHashCode(list) + System.identityHashCode(comparisonList)) * (checkOrder ? 1 : -1))))
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Boolean, AtomicInteger> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Boolean, AtomicInteger> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final AtomicBoolean equals = new AtomicBoolean(false);
+        
+        final UncheckedConsumer<Object[]> compareListsAsserter = (Object[] params) -> {
+            final List<Object> list = (List<Object>) params[0];
+            final List<Object> comparisonList = (List<Object>) params[1];
+            final boolean checkOrder = (boolean) params[2];
+            final boolean expectedToEqual = (boolean) params[3];
+            final int key = (1 + System.identityHashCode(list) + System.identityHashCode(comparisonList)) * (checkOrder ? 1 : -1);
+            TestAccess.invokeMethod(TestUtils.class, "compareLists", list, comparisonList, checkOrder, expectedToEqual);
+            PowerMockito.verifyStatic(ListUtility.class, VerificationModeFactory.times(0));
+            ListUtility.toList(ArgumentMatchers.anyCollection());
+            PowerMockito.verifyStatic(ListUtility.class, VerificationModeFactory.times(equalsCalls.get(key).incrementAndGet()));
+            ListUtility.equals(ArgumentMatchers.eq(list), ArgumentMatchers.eq(comparisonList), ArgumentMatchers.eq(checkOrder));
+            if (expectedToEqual) {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(assertTrueCalls.get(equals.get()).incrementAndGet()))
+                        .invoke("assertTrue", ArgumentMatchers.eq(equals.get()));
+            } else {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(assertFalseCalls.get(equals.get()).incrementAndGet()))
+                        .invoke("assertFalse", ArgumentMatchers.eq(equals.get()));
+            }
+            PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        };
+        
+        PowerMockito.mockStatic(AssertWrapper);
+        PowerMockito.mockStatic(ListUtility.class);
+        PowerMockito.doAnswer((Answer<Boolean>) invocation ->
+                equals.get()
+        ).when(ListUtility.class, "equals", ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.anyBoolean());
+        
+        //standard
+        List.of(true, false).forEach(isEqual -> {
+            equals.set(isEqual);
+            List.of(true, false).forEach(expectedToEqual ->
+                    List.of(true, false).forEach(checkOrder ->
+                            compareListsAsserter.accept(new Object[] {mockList, mockList2, checkOrder, expectedToEqual})));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        
+        //invalid
+        Stream.of(mockList, null).forEach(list -> {
+            equals.set(list == null);
+            List.of(true, false).forEach(expectedToEqual ->
+                    Stream.of(mockList2, null).forEach(comparisonList ->
+                            List.of(true, false).forEach(checkOrder ->
+                                    TestUtils.assertNoException(() ->
+                                            compareListsAsserter.accept(new Object[] {mockList, mockList2, checkOrder, expectedToEqual})))));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+    }
+    
+    /**
+     * JUnit test of assertListEquals.
+     *
+     * @throws Exception When there is an exception.
+     * @see TestUtils#assertListEquals(List, Collection, boolean)
+     * @see TestUtils#assertListEquals(List, Collection)
+     * @see TestUtils#assertListEquals(List, Object[], boolean)
+     * @see TestUtils#assertListEquals(List, Object[])
+     */
+    @Test
+    public void testAssertListEquals() throws Exception {
+        final List<Object> mockList = Mockito.mock(List.class);
+        final List<Object> mockList2 = Mockito.mock(List.class);
+        final Collection<Object> mockCollection = Mockito.mock(Collection.class);
+        final Object[] mockArray = ArrayUtility.emptyArray();
+        final Map<Class<?>, Object> mocks = MapUtility.mapOf(
+                new ImmutablePair<>(List.class, mockList2),
+                new ImmutablePair<>(Object[].class, mockArray),
+                new ImmutablePair<>(Collection.class, mockCollection));
+        final Map<Object, AtomicInteger> toListCalls = Stream.of(mockList2, mockArray, mockCollection, Collection.class, Object[].class)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockList, null).flatMap(list ->
+                        Stream.of(mockList2, null).flatMap(comparisonList ->
+                                Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
+                                        (1 + System.identityHashCode(list) + System.identityHashCode(comparisonList)) * (checkOrder ? 1 : -1))))
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Boolean, AtomicInteger> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final AtomicBoolean equals = new AtomicBoolean(false);
+        
+        final Consumer<Object[]> listEqualsCollectionInvoker = (Object[] params) -> {
+            final List<Object> list = (List<Object>) params[0];
+            final Collection<?> comparison = (Collection<?>) params[1];
+            final Boolean checkOrder = (Boolean) params[2];
+            if (checkOrder != null) {
+                TestUtils.assertListEquals(list, comparison, checkOrder);
+            } else {
+                TestUtils.assertListEquals(list, comparison);
+            }
+            PowerMockito.verifyStatic(ListUtility.class, VerificationModeFactory.times(toListCalls.get((comparison != null) ? comparison : Collection.class).incrementAndGet()));
+            ListUtility.toList(ArgumentMatchers.eq(comparison));
+        };
+        final Consumer<Object[]> listEqualsArrayInvoker = (Object[] params) -> {
+            final List<Object> list = (List<Object>) params[0];
+            final Object[] comparison = (Object[]) params[1];
+            final Boolean checkOrder = (Boolean) params[2];
+            if (checkOrder != null) {
+                TestUtils.assertListEquals(list, comparison, checkOrder);
+            } else {
+                TestUtils.assertListEquals(list, comparison);
+            }
+            PowerMockito.verifyStatic(ListUtility.class, VerificationModeFactory.times(toListCalls.get((comparison != null) ? comparison : Object[].class).incrementAndGet()));
+            ListUtility.toList(ArgumentMatchers.eq(comparison));
+        };
+        final UncheckedConsumer<Object[]> listEqualsAsserter = (Object[] params) -> {
+            final List<Object> list = (List<Object>) params[0];
+            final Class<?> comparisonType = (Class<?>) params[1];
+            final Boolean checkOrderType = (Boolean) params[2];
+            final Object comparison = mocks.get(comparisonType);
+            final List<Object> comparisonList = Optional.ofNullable(comparison).map(e -> mockList2).orElse(null);
+            final boolean checkOrder = Optional.ofNullable(checkOrderType).orElse(true);
+            final int key = (1 + System.identityHashCode(list) + System.identityHashCode(comparisonList)) * (checkOrder ? 1 : -1);
+            if (comparisonType.isArray()) {
+                listEqualsArrayInvoker.accept(new Object[] {list, comparison, checkOrderType});
+            } else {
+                listEqualsCollectionInvoker.accept(new Object[] {list, comparison, checkOrderType});
+            }
+            PowerMockito.verifyStatic(ListUtility.class, VerificationModeFactory.times(equalsCalls.get(key).incrementAndGet()));
+            ListUtility.equals(ArgumentMatchers.eq(list), ArgumentMatchers.eq(comparisonList), ArgumentMatchers.eq(checkOrder));
+            PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(assertTrueCalls.get(equals.get()).incrementAndGet()))
+                    .invoke("assertTrue", ArgumentMatchers.eq(equals.get()));
+            PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        };
+        
+        PowerMockito.mockStatic(AssertWrapper);
+        PowerMockito.mockStatic(ListUtility.class);
+        PowerMockito.doAnswer((Answer<Boolean>) invocation ->
+                equals.get()
+        ).when(ListUtility.class, "equals", ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.anyBoolean());
+        List.of(Object[].class, Collection.class).forEach((UncheckedConsumer<Class<?>>) comparisonType ->
+                PowerMockito.doAnswer((Answer<List<?>>) invocation ->
+                        Optional.ofNullable(invocation.getArgument(0)).map(e -> mockList2).orElse(null)
+                ).when(ListUtility.class, TestAccess.getMethod(ListUtility.class, "toList", comparisonType)).withArguments(ArgumentMatchers.any()));
+        
+        //standard
+        List.of(true, false).forEach(isEqual -> {
+            equals.set(isEqual);
+            List.of(List.class, Object[].class, Collection.class).forEach(comparisonType ->
+                    Stream.of(null, true, false).forEach(checkOrder ->
+                            listEqualsAsserter.accept(new Object[] {mockList, comparisonType, checkOrder})));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        
+        //invalid
+        mocks.keySet().forEach(comparisonType -> mocks.replace(comparisonType, null));
+        Stream.of(mockList, null).forEach(list -> {
+            equals.set(list == null);
+            List.of(List.class, Object[].class, Collection.class).forEach(comparisonType ->
+                    Stream.of(null, true, false).forEach(checkOrder ->
+                            TestUtils.assertNoException(() ->
+                                    listEqualsAsserter.accept(new Object[] {list, comparisonType, checkOrder}))));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+    }
+    
+    /**
+     * JUnit test of assertListNotEquals.
+     *
+     * @throws Exception When there is an exception.
+     * @see TestUtils#assertListNotEquals(List, Collection, boolean)
+     * @see TestUtils#assertListNotEquals(List, Collection)
+     * @see TestUtils#assertListNotEquals(List, Object[], boolean)
+     * @see TestUtils#assertListNotEquals(List, Object[])
+     */
+    @Test
+    public void testAssertListNotEquals() throws Exception {
+        final List<Object> mockList = Mockito.mock(List.class);
+        final List<Object> mockList2 = Mockito.mock(List.class);
+        final Collection<Object> mockCollection = Mockito.mock(Collection.class);
+        final Object[] mockArray = ArrayUtility.emptyArray();
+        final Map<Class<?>, Object> mocks = MapUtility.mapOf(
+                new ImmutablePair<>(List.class, mockList2),
+                new ImmutablePair<>(Object[].class, mockArray),
+                new ImmutablePair<>(Collection.class, mockCollection));
+        final Map<Object, AtomicInteger> toListCalls = Stream.of(mockList2, mockArray, mockCollection, Collection.class, Object[].class)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockList, null).flatMap(list ->
+                        Stream.of(mockList2, null).flatMap(comparisonList ->
+                                Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
+                                        (1 + System.identityHashCode(list) + System.identityHashCode(comparisonList)) * (checkOrder ? 1 : -1))))
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Boolean, AtomicInteger> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final AtomicBoolean equals = new AtomicBoolean(false);
+        
+        final Consumer<Object[]> listNotEqualsCollectionInvoker = (Object[] params) -> {
+            final List<Object> list = (List<Object>) params[0];
+            final Collection<?> comparison = (Collection<?>) params[1];
+            final Boolean checkOrder = (Boolean) params[2];
+            if (checkOrder != null) {
+                TestUtils.assertListNotEquals(list, comparison, checkOrder);
+            } else {
+                TestUtils.assertListNotEquals(list, comparison);
+            }
+            PowerMockito.verifyStatic(ListUtility.class, VerificationModeFactory.times(toListCalls.get((comparison != null) ? comparison : Collection.class).incrementAndGet()));
+            ListUtility.toList(ArgumentMatchers.eq(comparison));
+        };
+        final Consumer<Object[]> listNotEqualsArrayInvoker = (Object[] params) -> {
+            final List<Object> list = (List<Object>) params[0];
+            final Object[] comparison = (Object[]) params[1];
+            final Boolean checkOrder = (Boolean) params[2];
+            if (checkOrder != null) {
+                TestUtils.assertListNotEquals(list, comparison, checkOrder);
+            } else {
+                TestUtils.assertListNotEquals(list, comparison);
+            }
+            PowerMockito.verifyStatic(ListUtility.class, VerificationModeFactory.times(toListCalls.get((comparison != null) ? comparison : Object[].class).incrementAndGet()));
+            ListUtility.toList(ArgumentMatchers.eq(comparison));
+        };
+        final UncheckedConsumer<Object[]> listNotEqualsAsserter = (Object[] params) -> {
+            final List<Object> list = (List<Object>) params[0];
+            final Class<?> comparisonType = (Class<?>) params[1];
+            final Boolean checkOrderType = (Boolean) params[2];
+            final Object comparison = mocks.get(comparisonType);
+            final List<Object> comparisonList = Optional.ofNullable(comparison).map(e -> mockList2).orElse(null);
+            final boolean checkOrder = Optional.ofNullable(checkOrderType).orElse(true);
+            final int key = (1 + System.identityHashCode(list) + System.identityHashCode(comparisonList)) * (checkOrder ? 1 : -1);
+            if (comparisonType.isArray()) {
+                listNotEqualsArrayInvoker.accept(new Object[] {list, comparison, checkOrderType});
+            } else {
+                listNotEqualsCollectionInvoker.accept(new Object[] {list, comparison, checkOrderType});
+            }
+            PowerMockito.verifyStatic(ListUtility.class, VerificationModeFactory.times(equalsCalls.get(key).incrementAndGet()));
+            ListUtility.equals(ArgumentMatchers.eq(list), ArgumentMatchers.eq(comparisonList), ArgumentMatchers.eq(checkOrder));
+            PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(assertFalseCalls.get(equals.get()).incrementAndGet()))
+                    .invoke("assertFalse", ArgumentMatchers.eq(equals.get()));
+            PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        };
+        
+        PowerMockito.mockStatic(AssertWrapper);
+        PowerMockito.mockStatic(ListUtility.class);
+        PowerMockito.doAnswer((Answer<Boolean>) invocation ->
+                equals.get()
+        ).when(ListUtility.class, "equals", ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.anyBoolean());
+        List.of(Object[].class, Collection.class).forEach((UncheckedConsumer<Class<?>>) comparisonType ->
+                PowerMockito.doAnswer((Answer<List<?>>) invocation ->
+                        Optional.ofNullable(invocation.getArgument(0)).map(e -> mockList2).orElse(null)
+                ).when(ListUtility.class, TestAccess.getMethod(ListUtility.class, "toList", comparisonType)).withArguments(ArgumentMatchers.any()));
+        
+        //standard
+        List.of(true, false).forEach(isEqual -> {
+            equals.set(isEqual);
+            List.of(List.class, Object[].class, Collection.class).forEach(comparisonType ->
+                    Stream.of(null, true, false).forEach(checkOrder ->
+                            listNotEqualsAsserter.accept(new Object[] {mockList, comparisonType, checkOrder})));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        
+        //invalid
+        mocks.keySet().forEach(comparisonType -> mocks.replace(comparisonType, null));
+        Stream.of(mockList, null).forEach(list -> {
+            equals.set(list == null);
+            List.of(List.class, Object[].class, Collection.class).forEach(comparisonType ->
+                    Stream.of(null, true, false).forEach(checkOrder ->
+                            TestUtils.assertNoException(() ->
+                                    listNotEqualsAsserter.accept(new Object[] {list, comparisonType, checkOrder}))));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+    }
+    
+    /**
+     * JUnit test of compareArrays.
+     *
+     * @throws Exception When there is an exception.
+     * @see TestUtils#compareArrays(Object[], Object[], boolean, boolean)
+     */
+    @Test
+    public void testCompareArrays() throws Exception {
+        final Object[] mockArray = ArrayUtility.emptyArray();
+        final Object[] mockArray2 = ArrayUtility.emptyArray();
+        final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockArray, null).flatMap(array ->
+                        Stream.of(mockArray2, null).flatMap(comparisonArray ->
+                                Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
+                                        (1 + System.identityHashCode(array) + System.identityHashCode(comparisonArray)) * (checkOrder ? 1 : -1))))
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Boolean, AtomicInteger> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Boolean, AtomicInteger> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final AtomicBoolean equals = new AtomicBoolean(false);
+        
+        final UncheckedConsumer<Object[]> compareArraysAsserter = (Object[] params) -> {
+            final Object[] array = (Object[]) params[0];
+            final Object[] comparisonArray = (Object[]) params[1];
+            final boolean checkOrder = (boolean) params[2];
+            final boolean expectedToEqual = (boolean) params[3];
+            final int key = (1 + System.identityHashCode(array) + System.identityHashCode(comparisonArray)) * (checkOrder ? 1 : -1);
+            TestAccess.invokeMethod(TestUtils.class, "compareArrays", array, comparisonArray, checkOrder, expectedToEqual);
+            PowerMockito.verifyStatic(ArrayUtility.class, VerificationModeFactory.times(0));
+            ArrayUtility.toArray(ArgumentMatchers.anyCollection());
+            PowerMockito.verifyStatic(ArrayUtility.class, VerificationModeFactory.times(equalsCalls.get(key).incrementAndGet()));
+            ArrayUtility.equals(ArgumentMatchers.eq(array), ArgumentMatchers.eq(comparisonArray), ArgumentMatchers.eq(checkOrder));
+            if (expectedToEqual) {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(assertTrueCalls.get(equals.get()).incrementAndGet()))
+                        .invoke("assertTrue", ArgumentMatchers.eq(equals.get()));
+            } else {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(assertFalseCalls.get(equals.get()).incrementAndGet()))
+                        .invoke("assertFalse", ArgumentMatchers.eq(equals.get()));
+            }
+            PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        };
+        
+        PowerMockito.mockStatic(AssertWrapper);
+        PowerMockito.mockStatic(ArrayUtility.class);
+        PowerMockito.doAnswer((Answer<Boolean>) invocation ->
+                equals.get()
+        ).when(ArrayUtility.class, "equals", ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.anyBoolean());
+        
+        //standard
+        List.of(true, false).forEach(isEqual -> {
+            equals.set(isEqual);
+            List.of(true, false).forEach(expectedToEqual ->
+                    List.of(true, false).forEach(checkOrder ->
+                            compareArraysAsserter.accept(new Object[] {mockArray, mockArray2, checkOrder, expectedToEqual})));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        
+        //invalid
+        Stream.of(mockArray, null).forEach(array -> {
+            equals.set(array == null);
+            List.of(true, false).forEach(expectedToEqual ->
+                    Stream.of(mockArray2, null).forEach(comparisonArray ->
+                            List.of(true, false).forEach(checkOrder ->
+                                    TestUtils.assertNoException(() ->
+                                            compareArraysAsserter.accept(new Object[] {mockArray, mockArray2, checkOrder, expectedToEqual})))));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+    }
+    
+    /**
+     * JUnit test of assertArrayEquals.
+     *
+     * @throws Exception When there is an exception.
+     * @see TestUtils#assertArrayEquals(Object[], Collection, boolean)
+     * @see TestUtils#assertArrayEquals(Object[], Collection)
+     * @see TestUtils#assertArrayEquals(Object[], Object[], boolean)
+     * @see TestUtils#assertArrayEquals(Object[], Object[])
+     */
+    @Test
+    public void testAssertArrayEquals() throws Exception {
+        final Object[] mockArray = ArrayUtility.emptyArray();
+        final Object[] mockArray2 = ArrayUtility.emptyArray();
+        final List<Object> mockList = Mockito.mock(List.class);
+        final Collection<Object> mockCollection = Mockito.mock(Collection.class);
+        final Map<Class<?>, Object> mocks = MapUtility.mapOf(
+                new ImmutablePair<>(Object[].class, mockArray2),
+                new ImmutablePair<>(List.class, mockList),
+                new ImmutablePair<>(Collection.class, mockCollection));
+        final Map<Object, AtomicInteger> toArrayCalls = Stream.of(mockList, mockCollection, Collection.class)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockArray, null).flatMap(array ->
+                        Stream.of(mockArray2, null).flatMap(comparisonArray ->
+                                Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
+                                        (1 + System.identityHashCode(array) + System.identityHashCode(comparisonArray)) * (checkOrder ? 1 : -1))))
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Boolean, AtomicInteger> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final AtomicBoolean equals = new AtomicBoolean(false);
+        
+        final Consumer<Object[]> arrayEqualsCollectionInvoker = (Object[] params) -> {
+            final Object[] array = (Object[]) params[0];
+            final Collection<?> comparison = (Collection<?>) params[1];
+            final Boolean checkOrder = (Boolean) params[2];
+            if (checkOrder != null) {
+                TestUtils.assertArrayEquals(array, comparison, checkOrder);
+            } else {
+                TestUtils.assertArrayEquals(array, comparison);
+            }
+            PowerMockito.verifyStatic(ArrayUtility.class, VerificationModeFactory.times(toArrayCalls.get((comparison != null) ? comparison : Collection.class).incrementAndGet()));
+            ArrayUtility.toArray(ArgumentMatchers.eq(comparison));
+        };
+        final Consumer<Object[]> arrayEqualsArrayInvoker = (Object[] params) -> {
+            final Object[] array = (Object[]) params[0];
+            final Object[] comparison = (Object[]) params[1];
+            final Boolean checkOrder = (Boolean) params[2];
+            if (checkOrder != null) {
+                TestUtils.assertArrayEquals(array, comparison, checkOrder);
+            } else {
+                TestUtils.assertArrayEquals(array, comparison);
+            }
+        };
+        final UncheckedConsumer<Object[]> arrayEqualsAsserter = (Object[] params) -> {
+            final Object[] array = (Object[]) params[0];
+            final Class<?> comparisonType = (Class<?>) params[1];
+            final Boolean checkOrderType = (Boolean) params[2];
+            final Object comparison = mocks.get(comparisonType);
+            final Object[] comparisonArray = Optional.ofNullable(comparison).map(e -> mockArray2).orElse(null);
+            final boolean checkOrder = Optional.ofNullable(checkOrderType).orElse(true);
+            final int key = (1 + System.identityHashCode(array) + System.identityHashCode(comparisonArray)) * (checkOrder ? 1 : -1);
+            if (comparisonType.isArray()) {
+                arrayEqualsArrayInvoker.accept(new Object[] {array, comparison, checkOrderType});
+            } else {
+                arrayEqualsCollectionInvoker.accept(new Object[] {array, comparison, checkOrderType});
+            }
+            PowerMockito.verifyStatic(ArrayUtility.class, VerificationModeFactory.times(equalsCalls.get(key).incrementAndGet()));
+            ArrayUtility.equals(ArgumentMatchers.eq(array), ArgumentMatchers.eq(comparisonArray), ArgumentMatchers.eq(checkOrder));
+            PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(assertTrueCalls.get(equals.get()).incrementAndGet()))
+                    .invoke("assertTrue", ArgumentMatchers.eq(equals.get()));
+            PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        };
+        
+        PowerMockito.mockStatic(AssertWrapper);
+        PowerMockito.mockStatic(ArrayUtility.class);
+        PowerMockito.doAnswer((Answer<Boolean>) invocation ->
+                equals.get()
+        ).when(ArrayUtility.class, "equals", ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.anyBoolean());
+        PowerMockito.doAnswer((Answer<Object[]>) invocation ->
+                Optional.ofNullable(invocation.getArgument(0)).map(e -> mockArray2).orElse(null)
+        ).when(ArrayUtility.class, "toArray", ArgumentMatchers.any());
+        
+        //standard
+        List.of(true, false).forEach(isEqual -> {
+            equals.set(isEqual);
+            List.of(List.class, Object[].class, Collection.class).forEach(comparisonType ->
+                    Stream.of(null, true, false).forEach(checkOrder ->
+                            arrayEqualsAsserter.accept(new Object[] {mockArray, comparisonType, checkOrder})));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        
+        //invalid
+        mocks.keySet().forEach(comparisonType -> mocks.replace(comparisonType, null));
+        Stream.of(mockArray, null).forEach(array -> {
+            equals.set(array == null);
+            List.of(List.class, Object[].class, Collection.class).forEach(comparisonType ->
+                    Stream.of(null, true, false).forEach(checkOrder ->
+                            TestUtils.assertNoException(() ->
+                                    arrayEqualsAsserter.accept(new Object[] {array, comparisonType, checkOrder}))));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+    }
+    
+    /**
+     * JUnit test of assertArrayNotEquals.
+     *
+     * @throws Exception When there is an exception.
+     * @see TestUtils#assertArrayNotEquals(Object[], Collection, boolean)
+     * @see TestUtils#assertArrayNotEquals(Object[], Collection)
+     * @see TestUtils#assertArrayNotEquals(Object[], Object[], boolean)
+     * @see TestUtils#assertArrayNotEquals(Object[], Object[])
+     */
+    @Test
+    public void testAssertArrayNotEquals() throws Exception {
+        final Object[] mockArray = ArrayUtility.emptyArray();
+        final Object[] mockArray2 = ArrayUtility.emptyArray();
+        final List<Object> mockList = Mockito.mock(List.class);
+        final Collection<Object> mockCollection = Mockito.mock(Collection.class);
+        final Map<Class<?>, Object> mocks = MapUtility.mapOf(
+                new ImmutablePair<>(Object[].class, mockArray2),
+                new ImmutablePair<>(List.class, mockList),
+                new ImmutablePair<>(Collection.class, mockCollection));
+        final Map<Object, AtomicInteger> toArrayCalls = Stream.of(mockList, mockCollection, Collection.class)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockArray, null).flatMap(array ->
+                        Stream.of(mockArray2, null).flatMap(comparisonArray ->
+                                Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
+                                        (1 + System.identityHashCode(array) + System.identityHashCode(comparisonArray)) * (checkOrder ? 1 : -1))))
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Boolean, AtomicInteger> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final AtomicBoolean equals = new AtomicBoolean(false);
+        
+        final Consumer<Object[]> arrayNotEqualsCollectionInvoker = (Object[] params) -> {
+            final Object[] array = (Object[]) params[0];
+            final Collection<?> comparison = (Collection<?>) params[1];
+            final Boolean checkOrder = (Boolean) params[2];
+            if (checkOrder != null) {
+                TestUtils.assertArrayNotEquals(array, comparison, checkOrder);
+            } else {
+                TestUtils.assertArrayNotEquals(array, comparison);
+            }
+            PowerMockito.verifyStatic(ArrayUtility.class, VerificationModeFactory.times(toArrayCalls.get((comparison != null) ? comparison : Collection.class).incrementAndGet()));
+            ArrayUtility.toArray(ArgumentMatchers.eq(comparison));
+        };
+        final Consumer<Object[]> arrayNotEqualsArrayInvoker = (Object[] params) -> {
+            final Object[] array = (Object[]) params[0];
+            final Object[] comparison = (Object[]) params[1];
+            final Boolean checkOrder = (Boolean) params[2];
+            if (checkOrder != null) {
+                TestUtils.assertArrayNotEquals(array, comparison, checkOrder);
+            } else {
+                TestUtils.assertArrayNotEquals(array, comparison);
+            }
+        };
+        final UncheckedConsumer<Object[]> arrayNotEqualsAsserter = (Object[] params) -> {
+            final Object[] array = (Object[]) params[0];
+            final Class<?> comparisonType = (Class<?>) params[1];
+            final Boolean checkOrderType = (Boolean) params[2];
+            final Object comparison = mocks.get(comparisonType);
+            final Object[] comparisonArray = Optional.ofNullable(comparison).map(e -> mockArray2).orElse(null);
+            final boolean checkOrder = Optional.ofNullable(checkOrderType).orElse(true);
+            final int key = (1 + System.identityHashCode(array) + System.identityHashCode(comparisonArray)) * (checkOrder ? 1 : -1);
+            if (comparisonType.isArray()) {
+                arrayNotEqualsArrayInvoker.accept(new Object[] {array, comparison, checkOrderType});
+            } else {
+                arrayNotEqualsCollectionInvoker.accept(new Object[] {array, comparison, checkOrderType});
+            }
+            PowerMockito.verifyStatic(ArrayUtility.class, VerificationModeFactory.times(equalsCalls.get(key).incrementAndGet()));
+            ArrayUtility.equals(ArgumentMatchers.eq(array), ArgumentMatchers.eq(comparisonArray), ArgumentMatchers.eq(checkOrder));
+            PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(assertFalseCalls.get(equals.get()).incrementAndGet()))
+                    .invoke("assertFalse", ArgumentMatchers.eq(equals.get()));
+            PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        };
+        
+        PowerMockito.mockStatic(AssertWrapper);
+        PowerMockito.mockStatic(ArrayUtility.class);
+        PowerMockito.doAnswer((Answer<Boolean>) invocation ->
+                equals.get()
+        ).when(ArrayUtility.class, "equals", ArgumentMatchers.any(), ArgumentMatchers.any(), ArgumentMatchers.anyBoolean());
+        PowerMockito.doAnswer((Answer<Object[]>) invocation ->
+                Optional.ofNullable(invocation.getArgument(0)).map(e -> mockArray2).orElse(null)
+        ).when(ArrayUtility.class, "toArray", ArgumentMatchers.any());
+        
+        //standard
+        List.of(true, false).forEach(isEqual -> {
+            equals.set(isEqual);
+            List.of(List.class, Object[].class, Collection.class).forEach(comparisonType ->
+                    Stream.of(null, true, false).forEach(checkOrder ->
+                            arrayNotEqualsAsserter.accept(new Object[] {mockArray, comparisonType, checkOrder})));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        
+        //invalid
+        mocks.keySet().forEach(comparisonType -> mocks.replace(comparisonType, null));
+        Stream.of(mockArray, null).forEach(array -> {
+            equals.set(array == null);
+            List.of(List.class, Object[].class, Collection.class).forEach(comparisonType ->
+                    Stream.of(null, true, false).forEach(checkOrder ->
+                            TestUtils.assertNoException(() ->
+                                    arrayNotEqualsAsserter.accept(new Object[] {array, comparisonType, checkOrder}))));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+    }
+    
+    /**
+     * JUnit test of compareMaps.
+     *
+     * @throws Exception When there is an exception.
+     * @see TestUtils#compareMaps(Map, Map, boolean)
+     */
+    @Test
+    public void testCompareMaps() throws Exception {
+        final Map<Object, Object> mockMap = Mockito.mock(Map.class);
+        final Map<Object, Object> mockMap2 = Mockito.mock(Map.class);
+        final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockMap, null).flatMap(map ->
+                        Stream.of(mockMap2, null).map(comparisonMap ->
+                                (1 + System.identityHashCode(map) + System.identityHashCode(comparisonMap))))
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Boolean, AtomicInteger> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Boolean, AtomicInteger> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final AtomicBoolean equals = new AtomicBoolean(false);
+        
+        final UncheckedConsumer<Object[]> compareMapsAsserter = (Object[] params) -> {
+            final Map<Object, Object> map = (Map<Object, Object>) params[0];
+            final Map<Object, Object> comparisonMap = (Map<Object, Object>) params[1];
+            final boolean expectedToEqual = (boolean) params[2];
+            final int key = (1 + System.identityHashCode(map) + System.identityHashCode(comparisonMap));
+            
+            TestAccess.invokeMethod(TestUtils.class, "compareMaps", map, comparisonMap, expectedToEqual);
+            PowerMockito.verifyStatic(MapUtility.class, VerificationModeFactory.times(equalsCalls.get(key).incrementAndGet()));
+            MapUtility.equals(ArgumentMatchers.eq(map), ArgumentMatchers.eq(comparisonMap));
+            if (expectedToEqual) {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(assertTrueCalls.get(equals.get()).incrementAndGet()))
+                        .invoke("assertTrue", ArgumentMatchers.eq(equals.get()));
+            } else {
+                PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(assertFalseCalls.get(equals.get()).incrementAndGet()))
+                        .invoke("assertFalse", ArgumentMatchers.eq(equals.get()));
+            }
+            PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        };
+        
+        PowerMockito.mockStatic(AssertWrapper);
+        PowerMockito.mockStatic(MapUtility.class);
+        PowerMockito.doAnswer((Answer<Boolean>) invocation ->
+                equals.get()
+        ).when(MapUtility.class, "equals", ArgumentMatchers.any(), ArgumentMatchers.any());
+        
+        //standard
+        List.of(true, false).forEach(isEqual -> {
+            equals.set(isEqual);
+            List.of(true, false).forEach(expectedToEqual ->
+                    compareMapsAsserter.accept(new Object[] {mockMap, mockMap2, expectedToEqual}));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        
+        //invalid
+        Stream.of(mockMap, null).forEach(array -> {
+            equals.set(array == null);
+            List.of(true, false).forEach(expectedToEqual ->
+                    Stream.of(mockMap2, null).forEach(comparisonArray ->
+                            TestUtils.assertNoException(() ->
+                                    compareMapsAsserter.accept(new Object[] {mockMap, mockMap2, expectedToEqual}))));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+    }
+    
+    /**
+     * JUnit test of assertMapEquals.
+     *
+     * @throws Exception When there is an exception.
+     * @see TestUtils#assertMapEquals(Map, Map)
+     */
+    @Test
+    public void testAssertMapEquals() throws Exception {
+        final Map<Object, Object> mockMap = Mockito.mock(Map.class);
+        final Map<Object, Object> mockMap2 = Mockito.mock(Map.class);
+        final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockMap, null).flatMap(map ->
+                        Stream.of(mockMap2, null).map(comparisonMap ->
+                                (1 + System.identityHashCode(map) + System.identityHashCode(comparisonMap))))
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Boolean, AtomicInteger> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final AtomicBoolean equals = new AtomicBoolean(false);
+        
+        final UncheckedBiConsumer<Map<Object, Object>, Map<Object, Object>> mapEqualsAsserter = (Map<Object, Object> map, Map<Object, Object> comparisonMap) -> {
+            final int key = (1 + System.identityHashCode(map) + System.identityHashCode(comparisonMap));
+            TestUtils.assertMapEquals(map, comparisonMap);
+            PowerMockito.verifyStatic(MapUtility.class, VerificationModeFactory.times(equalsCalls.get(key).incrementAndGet()));
+            MapUtility.equals(ArgumentMatchers.eq(map), ArgumentMatchers.eq(comparisonMap));
+            PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(assertTrueCalls.get(equals.get()).incrementAndGet()))
+                    .invoke("assertTrue", ArgumentMatchers.eq(equals.get()));
+            PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        };
+        
+        PowerMockito.mockStatic(AssertWrapper);
+        PowerMockito.mockStatic(MapUtility.class);
+        PowerMockito.doAnswer((Answer<Boolean>) invocation ->
+                equals.get()
+        ).when(MapUtility.class, "equals", ArgumentMatchers.any(), ArgumentMatchers.any());
+        
+        //standard
+        List.of(true, false).forEach(isEqual -> {
+            equals.set(isEqual);
+            mapEqualsAsserter.accept(mockMap, mockMap2);
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        
+        //invalid
+        Stream.of(mockMap, null).forEach(map -> {
+            equals.set(map == null);
+            Stream.of(mockMap2, null).forEach(comparisonMap ->
+                    TestUtils.assertNoException(() ->
+                            mapEqualsAsserter.accept(map, comparisonMap)));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+    }
+    
+    /**
+     * JUnit test of assertMapNotEquals.
+     *
+     * @throws Exception When there is an exception.
+     * @see TestUtils#assertMapNotEquals(Map, Map)
+     */
+    @Test
+    public void testAssertMapNotEquals() throws Exception {
+        final Map<Object, Object> mockMap = Mockito.mock(Map.class);
+        final Map<Object, Object> mockMap2 = Mockito.mock(Map.class);
+        final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockMap, null).flatMap(map ->
+                        Stream.of(mockMap2, null).map(comparisonMap ->
+                                (1 + System.identityHashCode(map) + System.identityHashCode(comparisonMap))))
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final Map<Boolean, AtomicInteger> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
+                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+        final AtomicBoolean equals = new AtomicBoolean(false);
+        
+        final UncheckedBiConsumer<Map<Object, Object>, Map<Object, Object>> mapNotEqualsAsserter = (Map<Object, Object> map, Map<Object, Object> comparisonMap) -> {
+            final int key = (1 + System.identityHashCode(map) + System.identityHashCode(comparisonMap));
+            TestUtils.assertMapNotEquals(map, comparisonMap);
+            PowerMockito.verifyStatic(MapUtility.class, VerificationModeFactory.times(equalsCalls.get(key).incrementAndGet()));
+            MapUtility.equals(ArgumentMatchers.eq(map), ArgumentMatchers.eq(comparisonMap));
+            PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(assertFalseCalls.get(equals.get()).incrementAndGet()))
+                    .invoke("assertFalse", ArgumentMatchers.eq(equals.get()));
+            PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        };
+        
+        PowerMockito.mockStatic(AssertWrapper);
+        PowerMockito.mockStatic(MapUtility.class);
+        PowerMockito.doAnswer((Answer<Boolean>) invocation ->
+                equals.get()
+        ).when(MapUtility.class, "equals", ArgumentMatchers.any(), ArgumentMatchers.any());
+        
+        //standard
+        List.of(true, false).forEach(isEqual -> {
+            equals.set(isEqual);
+            mapNotEqualsAsserter.accept(mockMap, mockMap2);
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        
+        //invalid
+        Stream.of(mockMap, null).forEach(map -> {
+            equals.set(map == null);
+            Stream.of(mockMap2, null).forEach(comparisonMap ->
+                    TestUtils.assertNoException(() ->
+                            mapNotEqualsAsserter.accept(map, comparisonMap)));
+        });
+        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+    }
+    
+    /**
      * JUnit test of checkExists.
      *
      * @throws Exception When there is an exception.
@@ -414,7 +1140,7 @@ public class TestUtilsTest {
         TestUtils.assertClassExists("commons.test.TestAccessTest$TestClass$MissingClass");
         List.of(EntityStringUtility.simpleInnerClassString(TestAccessTest.class, "MissingClass"),
                 EntityStringUtility.innerClassString(TestAccessTest.TestClass.class, "MissingClass")
-        ).forEach((CheckedConsumer<String>) classString ->
+        ).forEach((UncheckedConsumer<String>) classString ->
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected class {} to exist but it does not", classString))));
         PowerMockito.verifyNoMoreInteractions(AssertWrapper);
@@ -424,14 +1150,14 @@ public class TestUtilsTest {
         TestUtils.assertClassExists("commons.test.TestAccessTest$TestClass$Enum0");
         List.of(EntityStringUtility.simpleInnerClassString(TestAccessTest.class, "TestInterface"),
                 EntityStringUtility.innerClassString(TestAccessTest.TestClass.class, "Enum0")
-        ).forEach((CheckedConsumer<String>) classString ->
+        ).forEach((UncheckedConsumer<String>) classString ->
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected class {} to exist but it does not", classString))));
         PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //invalid
-        Stream.of("", null).forEach((CheckedConsumer<String>) className -> {
-            Stream.of(TestAccessTest.class, null).forEach((CheckedConsumer<Class<?>>) parentClass -> {
+        Stream.of("", null).forEach((UncheckedConsumer<String>) className -> {
+            Stream.of(TestAccessTest.class, null).forEach((UncheckedConsumer<Class<?>>) parentClass -> {
                 TestUtils.assertClassExists(parentClass, className);
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected class {} to exist but it does not", EntityStringUtility.simpleInnerClassString(parentClass, className))));
@@ -459,7 +1185,7 @@ public class TestUtilsTest {
         TestUtils.assertClassDoesNotExist("commons.test.TestAccessTest$TestSubClass");
         List.of(EntityStringUtility.simpleInnerClassString(TestAccessTest.class, "TestClass"),
                 EntityStringUtility.innerClassString(TestAccessTest.class, "TestSubClass")
-        ).forEach((CheckedConsumer<String>) classString ->
+        ).forEach((UncheckedConsumer<String>) classString ->
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected class {} to not exist but it does", classString))));
         PowerMockito.verifyNoMoreInteractions(AssertWrapper);
@@ -504,7 +1230,7 @@ public class TestUtilsTest {
         TestUtils.assertInterfaceExists("commons.test.TestAccessTest$TestClass$MissingInterface");
         List.of(EntityStringUtility.simpleInnerClassString(TestAccessTest.class, "MissingInterface"),
                 EntityStringUtility.innerClassString(TestAccessTest.TestClass.class, "MissingInterface")
-        ).forEach((CheckedConsumer<String>) interfaceString ->
+        ).forEach((UncheckedConsumer<String>) interfaceString ->
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected interface {} to exist but it does not", interfaceString))));
         PowerMockito.verifyNoMoreInteractions(AssertWrapper);
@@ -514,14 +1240,14 @@ public class TestUtilsTest {
         TestUtils.assertInterfaceExists("commons.test.TestAccessTest$TestClass$Enum0");
         List.of(EntityStringUtility.simpleInnerClassString(TestAccessTest.class, "TestClass"),
                 EntityStringUtility.innerClassString(TestAccessTest.TestClass.class, "Enum0")
-        ).forEach((CheckedConsumer<String>) interfaceString ->
+        ).forEach((UncheckedConsumer<String>) interfaceString ->
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected interface {} to exist but it does not", interfaceString))));
         PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //invalid
-        Stream.of("", null).forEach((CheckedConsumer<String>) interfaceName -> {
-            Stream.of(TestAccessTest.class, null).forEach((CheckedConsumer<Class<?>>) parentClass -> {
+        Stream.of("", null).forEach((UncheckedConsumer<String>) interfaceName -> {
+            Stream.of(TestAccessTest.class, null).forEach((UncheckedConsumer<Class<?>>) parentClass -> {
                 TestUtils.assertInterfaceExists(parentClass, interfaceName);
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected interface {} to exist but it does not", EntityStringUtility.simpleInnerClassString(parentClass, interfaceName))));
@@ -549,7 +1275,7 @@ public class TestUtilsTest {
         TestUtils.assertInterfaceDoesNotExist("commons.test.TestAccessTest$TestInterface");
         List.of(EntityStringUtility.simpleInnerClassString(TestAccessTest.class, "TestInterface"),
                 EntityStringUtility.innerClassString(TestAccessTest.class, "TestInterface")
-        ).forEach((CheckedConsumer<String>) interfaceString ->
+        ).forEach((UncheckedConsumer<String>) interfaceString ->
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected interface {} to not exist but it does", interfaceString))));
         PowerMockito.verifyNoMoreInteractions(AssertWrapper);
@@ -594,7 +1320,7 @@ public class TestUtilsTest {
         TestUtils.assertEnumExists("commons.test.TestAccessTest$TestClass$MissingEnum");
         List.of(EntityStringUtility.simpleInnerClassString(TestAccessTest.class, "MissingEnum"),
                 EntityStringUtility.innerClassString(TestAccessTest.TestClass.class, "MissingEnum")
-        ).forEach((CheckedConsumer<String>) enumString ->
+        ).forEach((UncheckedConsumer<String>) enumString ->
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected enum {} to exist but it does not", enumString))));
         PowerMockito.verifyNoMoreInteractions(AssertWrapper);
@@ -604,14 +1330,14 @@ public class TestUtilsTest {
         TestUtils.assertEnumExists("commons.test.TestAccessTest$TestInterface");
         List.of(EntityStringUtility.simpleInnerClassString(TestAccessTest.class, "TestClass"),
                 EntityStringUtility.innerClassString(TestAccessTest.class, "TestInterface")
-        ).forEach((CheckedConsumer<String>) enumString ->
+        ).forEach((UncheckedConsumer<String>) enumString ->
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected enum {} to exist but it does not", enumString))));
         PowerMockito.verifyNoMoreInteractions(AssertWrapper);
         
         //invalid
-        Stream.of("", null).forEach((CheckedConsumer<String>) enumName -> {
-            Stream.of(TestAccessTest.class, null).forEach((CheckedConsumer<Class<?>>) parentClass -> {
+        Stream.of("", null).forEach((UncheckedConsumer<String>) enumName -> {
+            Stream.of(TestAccessTest.class, null).forEach((UncheckedConsumer<Class<?>>) parentClass -> {
                 TestUtils.assertEnumExists(parentClass, enumName);
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected enum {} to exist but it does not", EntityStringUtility.simpleInnerClassString(parentClass, enumName))));
@@ -639,7 +1365,7 @@ public class TestUtilsTest {
         TestUtils.assertEnumDoesNotExist("commons.test.TestAccessTest$TestClass$Enum1");
         List.of(EntityStringUtility.simpleInnerClassString(TestAccessTest.TestClass.class, "Enum0"),
                 EntityStringUtility.innerClassString(TestAccessTest.TestClass.class, "Enum1")
-        ).forEach((CheckedConsumer<String>) enumString ->
+        ).forEach((UncheckedConsumer<String>) enumString ->
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected enum {} to not exist but it does", enumString))));
         PowerMockito.verifyNoMoreInteractions(AssertWrapper);
@@ -675,8 +1401,6 @@ public class TestUtilsTest {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
                 .map(EntityStringUtility::simpleClassString).collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
         
-        PowerMockito.mockStatic(AssertWrapper);
-        
         final Consumer<Object[]> methodExistsAsserter = (Object[] params) -> {
             final Object caller = params[0];
             final String methodName = (String) params[1];
@@ -687,6 +1411,8 @@ public class TestUtilsTest {
                 TestUtils.assertMethodExists(caller, methodName, arguments);
             }
         };
+        
+        PowerMockito.mockStatic(AssertWrapper);
         
         //exists
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e ->
@@ -709,7 +1435,7 @@ public class TestUtilsTest {
                     new ImmutablePair<>("method7", new Class<?>[] {int.class}),
                     new ImmutablePair<>("method8", new Class<?>[] {int.class}),
                     new ImmutablePair<>("missingMethod", new Class<?>[] {})
-            ).forEach((CheckedConsumer<ImmutablePair<String, Class<?>[]>>) methodNameArgumentTypesPair -> {
+            ).forEach((UncheckedConsumer<ImmutablePair<String, Class<?>[]>>) methodNameArgumentTypesPair -> {
                 methodExistsAsserter.accept(new Object[] {e, methodNameArgumentTypesPair.getLeft(), methodNameArgumentTypesPair.getRight()});
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(calls.get(EntityStringUtility.simpleClassString(e)).get()))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected method {} to exist but it does not", EntityStringUtility.simpleMethodString(e, methodNameArgumentTypesPair.getLeft(), methodNameArgumentTypesPair.getRight()))));
@@ -722,7 +1448,7 @@ public class TestUtilsTest {
         Stream.of(classes, instances, new Class<?>[] {null}, new Object[] {null}).flatMap(Arrays::stream).forEach(entity -> {
             calls.get(EntityStringUtility.simpleClassString(entity)).incrementAndGet();
             Stream.of("", null).forEach(methodName ->
-                    Stream.of(String.class, null).map(argumentType -> new Class<?>[] {argumentType}).forEach((CheckedConsumer<Class<?>[]>) argumentTypes -> {
+                    Stream.of(String.class, null).map(argumentType -> new Class<?>[] {argumentType}).forEach((UncheckedConsumer<Class<?>[]>) argumentTypes -> {
                         methodExistsAsserter.accept(new Object[] {entity, methodName, argumentTypes});
                         PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(calls.get(EntityStringUtility.simpleClassString(entity)).get()))
                                 .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected method {} to exist but it does not", EntityStringUtility.simpleMethodString(entity, methodName, argumentTypes))));
@@ -744,8 +1470,6 @@ public class TestUtilsTest {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
                 .map(EntityStringUtility::simpleClassString).collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
         
-        PowerMockito.mockStatic(AssertWrapper);
-        
         final Consumer<Object[]> methodDoesNotExistAsserter = (Object[] params) -> {
             final Object caller = params[0];
             final String methodName = (String) params[1];
@@ -757,6 +1481,8 @@ public class TestUtilsTest {
             }
         };
         
+        PowerMockito.mockStatic(AssertWrapper);
+        
         //exists
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e -> {
             calls.get(EntityStringUtility.simpleClassString(e)).incrementAndGet();
@@ -767,7 +1493,7 @@ public class TestUtilsTest {
                     new ImmutablePair<>("method9", new Class<?>[] {int.class}),
                     new ImmutablePair<>("method10", new Class<?>[] {}),
                     new ImmutablePair<>("method11", new Class<?>[] {boolean.class, String.class, float.class, char[].class})
-            ).forEach((CheckedConsumer<ImmutablePair<String, Class<?>[]>>) methodNameArgumentTypesPair -> {
+            ).forEach((UncheckedConsumer<ImmutablePair<String, Class<?>[]>>) methodNameArgumentTypesPair -> {
                 methodDoesNotExistAsserter.accept(new Object[] {e, methodNameArgumentTypesPair.getLeft(), methodNameArgumentTypesPair.getRight()});
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(calls.get(EntityStringUtility.simpleClassString(e)).get()))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected method {} to not exist but it does", EntityStringUtility.simpleMethodString(e, methodNameArgumentTypesPair.getLeft(), methodNameArgumentTypesPair.getRight()))));
@@ -791,13 +1517,9 @@ public class TestUtilsTest {
         Stream.of(classes, instances, new Class<?>[] {null}, new Object[] {null}).flatMap(Arrays::stream).forEach(entity -> {
             calls.get(EntityStringUtility.simpleClassString(entity)).incrementAndGet();
             Stream.of("", null).forEach(methodName ->
-                    Stream.of(String.class, null).map(argumentType -> new Class<?>[] {argumentType}).forEach((CheckedConsumer<Class<?>[]>) argumentTypes -> {
-                        methodDoesNotExistAsserter.accept(new Object[] {entity, methodName, argumentTypes});
-                        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(calls.get(EntityStringUtility.simpleClassString(entity)).get()))
-                                .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected method {} to not exist but it does", EntityStringUtility.simpleMethodString(entity, methodName, argumentTypes))));
-                    }));
+                    Stream.of(String.class, null).map(argumentType -> new Class<?>[] {argumentType}).forEach((UncheckedConsumer<Class<?>[]>) argumentTypes ->
+                            methodDoesNotExistAsserter.accept(new Object[] {entity, methodName, argumentTypes})));
         });
-        calls.values().forEach(e -> e.set(0));
         PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
     
@@ -813,8 +1535,6 @@ public class TestUtilsTest {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
                 .map(EntityStringUtility::simpleClassString).collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
         
-        PowerMockito.mockStatic(AssertWrapper);
-        
         final Consumer<Object[]> constructorExistsAsserter = (Object[] params) -> {
             final Object caller = params[0];
             final Class<?>[] arguments = (Class<?>[]) params[1];
@@ -824,6 +1544,8 @@ public class TestUtilsTest {
                 TestUtils.assertConstructorExists(caller, arguments);
             }
         };
+        
+        PowerMockito.mockStatic(AssertWrapper);
         
         //exists
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e ->
@@ -842,7 +1564,7 @@ public class TestUtilsTest {
             List.of(new Class<?>[] {StringBuilder.class},
                     new Class<?>[] {StringBuilder.class, Exception.class, int.class, Long.class, boolean.class},
                     new Class<?>[] {StringBuilder.class, Exception.class, Integer.class, Long.class, Boolean.class}
-            ).forEach((CheckedConsumer<Class<?>[]>) argumentTypes -> {
+            ).forEach((UncheckedConsumer<Class<?>[]>) argumentTypes -> {
                 constructorExistsAsserter.accept(new Object[] {e, argumentTypes});
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(calls.get(EntityStringUtility.simpleClassString(e)).get()))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected constructor {} to exist but it does not", EntityStringUtility.simpleConstructorString(e, argumentTypes))));
@@ -854,7 +1576,7 @@ public class TestUtilsTest {
         //invalid
         Stream.of(classes, instances, new Class<?>[] {null}, new Object[] {null}).flatMap(Arrays::stream).forEach(entity -> {
             calls.get(EntityStringUtility.simpleClassString(entity)).incrementAndGet();
-            Stream.of(String.class, null).map(argumentType -> new Class<?>[] {argumentType}).forEach((CheckedConsumer<Class<?>[]>) argumentTypes -> {
+            Stream.of(String.class, null).map(argumentType -> new Class<?>[] {argumentType}).forEach((UncheckedConsumer<Class<?>[]>) argumentTypes -> {
                 constructorExistsAsserter.accept(new Object[] {entity, argumentTypes});
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(calls.get(EntityStringUtility.simpleClassString(entity)).get()))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected constructor {} to exist but it does not", EntityStringUtility.simpleConstructorString(entity, argumentTypes))));
@@ -876,8 +1598,6 @@ public class TestUtilsTest {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
                 .map(EntityStringUtility::simpleClassString).collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
         
-        PowerMockito.mockStatic(AssertWrapper);
-        
         final Consumer<Object[]> constructorDoesNotExistAsserter = (Object[] params) -> {
             final Object caller = params[0];
             final Class<?>[] arguments = (Class<?>[]) params[1];
@@ -888,6 +1608,8 @@ public class TestUtilsTest {
             }
         };
         
+        PowerMockito.mockStatic(AssertWrapper);
+        
         //exists
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(e -> {
             calls.get(EntityStringUtility.simpleClassString(e)).incrementAndGet();
@@ -896,7 +1618,7 @@ public class TestUtilsTest {
                     new Class<?>[] {String.class, Exception.class, Integer.class, Long.class, Boolean.class},
                     new Class<?>[] {String.class, int.class, Long.class, boolean.class, Exception.class},
                     new Class<?>[] {Exception.class, int.class, Long.class, boolean.class, String.class}
-            ).forEach((CheckedConsumer<Class<?>[]>) argumentTypes -> {
+            ).forEach((UncheckedConsumer<Class<?>[]>) argumentTypes -> {
                 constructorDoesNotExistAsserter.accept(new Object[] {e, argumentTypes});
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(calls.get(EntityStringUtility.simpleClassString(e)).get()))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected constructor {} to not exist but it does", EntityStringUtility.simpleConstructorString(e, argumentTypes))));
@@ -933,8 +1655,6 @@ public class TestUtilsTest {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
                 .map(EntityStringUtility::simpleClassString).collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
         
-        PowerMockito.mockStatic(AssertWrapper);
-        
         final Consumer<Object[]> fieldExistsAsserter = (Object[] params) -> {
             final Object caller = params[0];
             final String fieldName = (String) params[1];
@@ -944,6 +1664,8 @@ public class TestUtilsTest {
                 TestUtils.assertFieldExists(caller, fieldName);
             }
         };
+        
+        PowerMockito.mockStatic(AssertWrapper);
         
         //exists
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(entity ->
@@ -961,7 +1683,7 @@ public class TestUtilsTest {
             List.of("Field7",
                     "field15",
                     "missingField"
-            ).forEach((CheckedConsumer<String>) fieldName -> {
+            ).forEach((UncheckedConsumer<String>) fieldName -> {
                 fieldExistsAsserter.accept(new Object[] {entity, fieldName});
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(calls.get(EntityStringUtility.simpleClassString(entity)).get()))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected field {} to exist but it does not", EntityStringUtility.simpleFieldString(entity, fieldName))));
@@ -973,7 +1695,7 @@ public class TestUtilsTest {
         //invalid
         Stream.of(classes, instances, new Class<?>[] {null}, new Object[] {null}).flatMap(Arrays::stream).forEach(entity -> {
             calls.get(EntityStringUtility.simpleClassString(entity)).incrementAndGet();
-            Stream.of("", null).forEach((CheckedConsumer<String>) fieldName -> {
+            Stream.of("", null).forEach((UncheckedConsumer<String>) fieldName -> {
                 fieldExistsAsserter.accept(new Object[] {entity, fieldName});
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(calls.get(EntityStringUtility.simpleClassString(entity)).get()))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected field {} to exist but it does not", EntityStringUtility.simpleFieldString(entity, fieldName))));
@@ -995,8 +1717,6 @@ public class TestUtilsTest {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
                 .map(EntityStringUtility::simpleClassString).collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
         
-        PowerMockito.mockStatic(AssertWrapper);
-        
         final Consumer<Object[]> fieldDoesNotExistAsserter = (Object[] params) -> {
             final Object caller = params[0];
             final String fieldName = (String) params[1];
@@ -1007,6 +1727,8 @@ public class TestUtilsTest {
             }
         };
         
+        PowerMockito.mockStatic(AssertWrapper);
+        
         //exists
         Stream.of(classes, instances).flatMap(Arrays::stream).forEach(entity -> {
             calls.get(EntityStringUtility.simpleClassString(entity)).incrementAndGet();
@@ -1014,7 +1736,7 @@ public class TestUtilsTest {
                     "field5",
                     "field7",
                     "field10"
-            ).forEach((CheckedConsumer<String>) fieldName -> {
+            ).forEach((UncheckedConsumer<String>) fieldName -> {
                 fieldDoesNotExistAsserter.accept(new Object[] {entity, fieldName});
                 PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(calls.get(EntityStringUtility.simpleClassString(entity)).get()))
                         .invoke("fail", ArgumentMatchers.eq(StringUtility.format("Expected field {} to not exist but it does", EntityStringUtility.simpleFieldString(entity, fieldName))));
@@ -1034,7 +1756,7 @@ public class TestUtilsTest {
         
         //invalid
         Stream.of(classes, instances, new Class<?>[] {null}, new Object[] {null}).flatMap(Arrays::stream).forEach(entity ->
-                Stream.of("", null).forEach((CheckedConsumer<String>) fieldName ->
+                Stream.of("", null).forEach((UncheckedConsumer<String>) fieldName ->
                         fieldDoesNotExistAsserter.accept(new Object[] {entity, fieldName})));
         PowerMockito.verifyNoMoreInteractions(AssertWrapper);
     }
@@ -1048,11 +1770,33 @@ public class TestUtilsTest {
     @Test
     public void testAssertWrapper() throws Exception {
         //fail
+        TestUtils.assertMethodExists(AssertWrapper, "fail");
         TestUtils.assertMethodExists(AssertWrapper, "fail", String.class);
         TestUtils.assertMethodExists(AssertWrapper, "fail", String.class, Throwable.class);
         
+        //assertTrue
+        TestUtils.assertMethodExists(AssertWrapper, "assertTrue", boolean.class);
+        TestUtils.assertMethodExists(AssertWrapper, "assertTrue", String.class, boolean.class);
+        
+        //assertFalse
+        TestUtils.assertMethodExists(AssertWrapper, "assertFalse", boolean.class);
+        TestUtils.assertMethodExists(AssertWrapper, "assertFalse", String.class, boolean.class);
+        
+        //assertNull
+        TestUtils.assertMethodExists(AssertWrapper, "assertNull", Object.class);
+        TestUtils.assertMethodExists(AssertWrapper, "assertNull", String.class, Object.class);
+        
+        //assertNotNull
+        TestUtils.assertMethodExists(AssertWrapper, "assertNotNull", Object.class);
+        TestUtils.assertMethodExists(AssertWrapper, "assertNotNull", String.class, Object.class);
+        
         //assertEquals
+        TestUtils.assertMethodExists(AssertWrapper, "assertEquals", Object.class, Object.class);
         TestUtils.assertMethodExists(AssertWrapper, "assertEquals", String.class, Object.class, Object.class);
+        
+        //assertNotEquals
+        TestUtils.assertMethodExists(AssertWrapper, "assertNotEquals", Object.class, Object.class);
+        TestUtils.assertMethodExists(AssertWrapper, "assertNotEquals", String.class, Object.class, Object.class);
     }
     
 }

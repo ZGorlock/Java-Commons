@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import commons.file.ArchiveUtility;
 import commons.object.string.StringUtility;
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -289,15 +290,15 @@ public class FilesystemMacroTest {
         Filesystem.deleteDirectory(testDir);
         ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(1, Filesystem.getFilesAndDirsRecursively(testDir).size());
-        Assert.assertArrayEquals(new String[] {
-                        "test1", "test2", "test3", "tester", "another test",
-                        "test file", "file test", "", "test4", "last test"},
-                Filesystem.readLines(file).toArray());
+        TestUtils.assertListEquals(
+                Filesystem.readLines(file),
+                new String[] {"test1", "test2", "test3", "tester", "another test",
+                              "test file", "file test", "", "test4", "last test"});
         Assert.assertTrue(FilesystemMacro.prependLinesInFile(file, "test", true));
-        Assert.assertArrayEquals(new String[] {
-                        "test1", "test2", "test3", "tester", "testanother test",
-                        "test file", "testfile test", "test", "test4", "testlast test"},
-                Filesystem.readLines(file).toArray());
+        TestUtils.assertListEquals(
+                Filesystem.readLines(file),
+                new String[] {"test1", "test2", "test3", "tester", "testanother test",
+                              "test file", "testfile test", "test", "test4", "testlast test"});
         Filesystem.deleteDirectory(testDir);
         
         //no check
@@ -305,15 +306,15 @@ public class FilesystemMacroTest {
         Filesystem.deleteDirectory(testDir);
         ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(1, Filesystem.getFilesAndDirsRecursively(testDir).size());
-        Assert.assertArrayEquals(new String[] {
-                        "test1", "test2", "test3", "tester", "another test",
-                        "test file", "file test", "", "test4", "last test"},
-                Filesystem.readLines(file).toArray());
+        TestUtils.assertListEquals(
+                Filesystem.readLines(file),
+                new String[] {"test1", "test2", "test3", "tester", "another test",
+                              "test file", "file test", "", "test4", "last test"});
         Assert.assertTrue(FilesystemMacro.prependLinesInFile(file, "test", false));
-        Assert.assertArrayEquals(new String[] {
-                        "testtest1", "testtest2", "testtest3", "testtester", "testanother test",
-                        "testtest file", "testfile test", "test", "testtest4", "testlast test"},
-                Filesystem.readLines(file).toArray());
+        TestUtils.assertListEquals(
+                Filesystem.readLines(file),
+                new String[] {"testtest1", "testtest2", "testtest3", "testtester", "testanother test",
+                              "testtest file", "testfile test", "test", "testtest4", "testlast test"});
         Filesystem.deleteDirectory(testDir);
         
         //default check
@@ -342,15 +343,15 @@ public class FilesystemMacroTest {
         Filesystem.deleteDirectory(testDir);
         ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(1, Filesystem.getFilesAndDirsRecursively(testDir).size());
-        Assert.assertArrayEquals(new String[] {
-                        "test1", "test2", "test3", "tester", "another test",
-                        "test file", "file test", "", "test4", "last test"},
-                Filesystem.readLines(file).toArray());
+        TestUtils.assertListEquals(
+                Filesystem.readLines(file),
+                new String[] {"test1", "test2", "test3", "tester", "another test",
+                              "test file", "file test", "", "test4", "last test"});
         Assert.assertTrue(FilesystemMacro.unprependLinesInFile(file, "test"));
-        Assert.assertArrayEquals(new String[] {
-                        "1", "2", "3", "er", "another test",
-                        " file", "file test", "", "4", "last test"},
-                Filesystem.readLines(file).toArray());
+        TestUtils.assertListEquals(
+                Filesystem.readLines(file),
+                new String[] {"1", "2", "3", "er", "another test",
+                              " file", "file test", "", "4", "last test"});
         Filesystem.deleteDirectory(testDir);
     }
     
@@ -371,17 +372,17 @@ public class FilesystemMacroTest {
         Filesystem.deleteDirectory(testDir);
         ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(1, Filesystem.getFilesAndDirsRecursively(testDir).size());
-        Assert.assertArrayEquals(new String[] {
-                        "test1", "test2", "test3", "tester", "another test",
-                        "test file", "file test", "", "test4", "last test", "",
-                        "test3 another testing test3 for the tester"},
-                Filesystem.readLines(file).toArray());
+        TestUtils.assertListEquals(
+                Filesystem.readLines(file),
+                new String[] {"test1", "test2", "test3", "tester", "another test",
+                              "test file", "file test", "", "test4", "last test", "",
+                              "test3 another testing test3 for the tester"});
         Assert.assertTrue(FilesystemMacro.replaceInFile(file, "test", "string"));
-        Assert.assertArrayEquals(new String[] {
-                        "string1", "string2", "string3", "stringer", "another string",
-                        "string file", "file string", "", "string4", "last string", "",
-                        "string3 another stringing string3 for the stringer"},
-                Filesystem.readLines(file).toArray());
+        TestUtils.assertListEquals(
+                Filesystem.readLines(file),
+                new String[] {"string1", "string2", "string3", "stringer", "another string",
+                              "string file", "file string", "", "string4", "last string", "",
+                              "string3 another stringing string3 for the stringer"});
         Filesystem.deleteDirectory(testDir);
     }
     
@@ -402,17 +403,17 @@ public class FilesystemMacroTest {
         Filesystem.deleteDirectory(testDir);
         ArchiveUtility.extract(testResource, testDir);
         Assert.assertEquals(1, Filesystem.getFilesAndDirsRecursively(testDir).size());
-        Assert.assertArrayEquals(new String[] {
-                        "test1", "test2", "test3", "tester", "another test",
-                        "test file", "file test", "", "test4", "last test", "",
-                        "test3 another testing test3 for the tester"},
-                Filesystem.readLines(file).toArray());
+        TestUtils.assertListEquals(
+                Filesystem.readLines(file),
+                new String[] {"test1", "test2", "test3", "tester", "another test",
+                              "test file", "file test", "", "test4", "last test", "",
+                              "test3 another testing test3 for the tester"});
         Assert.assertTrue(FilesystemMacro.regexReplaceInFile(file, "test\\d+", "string"));
-        Assert.assertArrayEquals(new String[] {
-                        "string", "string", "string", "tester", "another test",
-                        "test file", "file test", "", "string", "last test", "",
-                        "string another testing string for the tester"},
-                Filesystem.readLines(file).toArray());
+        TestUtils.assertListEquals(
+                Filesystem.readLines(file),
+                new String[] {"string", "string", "string", "tester", "another test",
+                              "test file", "file test", "", "string", "last test", "",
+                              "string another testing string for the tester"});
         Filesystem.deleteDirectory(testDir);
     }
     

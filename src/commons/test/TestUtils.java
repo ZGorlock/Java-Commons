@@ -8,10 +8,16 @@
 package commons.test;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Consumer;
 
 import commons.lambda.function.Action;
+import commons.object.collection.ArrayUtility;
+import commons.object.collection.ListUtility;
+import commons.object.collection.MapUtility;
 import commons.object.string.EntityStringUtility;
 import commons.object.string.StringUtility;
 import org.junit.Assert;
@@ -132,6 +138,304 @@ public final class TestUtils {
                 AssertWrapper.fail(StringUtility.format("Expected code to produce no Exception but instead it produced {}", StringUtility.justifyAOrAn(EntityStringUtility.simpleClassString(e))));
         
         checkException(action, onException, null);
+    }
+    
+    /**
+     * Compares two lists.
+     *
+     * @param list            The first list.
+     * @param other           The second list.
+     * @param checkOrder      Whether or not to check the list order.
+     * @param expectedToEqual Whether the lists are expected to be equal or not.
+     * @param <T>             The type of the lists.
+     * @see ListUtility#equals(List, List, boolean)
+     */
+    private static <T> void compareLists(List<T> list, List<? extends T> other, boolean checkOrder, boolean expectedToEqual) {
+        final boolean equals = ListUtility.equals(list, other, checkOrder);
+        if (expectedToEqual) {
+            AssertWrapper.assertTrue(equals);
+        } else {
+            AssertWrapper.assertFalse(equals);
+        }
+    }
+    
+    /**
+     * Asserts that a list has the expected contents.
+     *
+     * @param list       The list.
+     * @param expected   The expected contents as a collection.
+     * @param checkOrder Whether or not to check the list order.
+     * @param <T>        The type of the list.
+     * @see ListUtility#toList(Collection)
+     * @see #compareLists(List, List, boolean, boolean)
+     */
+    public static <T> void assertListEquals(List<T> list, Collection<? extends T> expected, boolean checkOrder) {
+        compareLists(list, ListUtility.toList(expected), checkOrder, true);
+    }
+    
+    /**
+     * Asserts that a list has the expected contents.
+     *
+     * @param list     The list.
+     * @param expected The expected contents as a collection.
+     * @param <T>      The type of the list.
+     * @see #assertListEquals(List, Collection, boolean)
+     */
+    public static <T> void assertListEquals(List<T> list, Collection<? extends T> expected) {
+        assertListEquals(list, expected, true);
+    }
+    
+    /**
+     * Asserts that a list has the expected contents.
+     *
+     * @param list       The list.
+     * @param expected   The expected contents as an array.
+     * @param checkOrder Whether or not to check the list order.
+     * @param <T>        The type of the list.
+     * @param <T2>       The type of the expected contents.
+     * @see ListUtility#toList(Object[])
+     * @see #compareLists(List, List, boolean, boolean)
+     */
+    public static <T, T2 extends T> void assertListEquals(List<T> list, T2[] expected, boolean checkOrder) {
+        compareLists(list, ListUtility.toList(expected), checkOrder, true);
+    }
+    
+    /**
+     * Asserts that a list has the expected contents.
+     *
+     * @param list     The list.
+     * @param expected The expected contents as an array.
+     * @param <T>      The type of the list.
+     * @param <T2>     The type of the expected contents.
+     * @see #assertListEquals(List, Object[], boolean)
+     */
+    public static <T, T2 extends T> void assertListEquals(List<T> list, T2[] expected) {
+        assertListEquals(list, expected, true);
+    }
+    
+    /**
+     * Asserts that a list does not have the unexpected contents.
+     *
+     * @param list       The list.
+     * @param unexpected The unexpected contents as a collection.
+     * @param checkOrder Whether or not to check the list order.
+     * @param <T>        The type of the list.
+     * @see ListUtility#toList(Collection)
+     * @see #compareLists(List, List, boolean, boolean)
+     */
+    public static <T> void assertListNotEquals(List<T> list, Collection<? extends T> unexpected, boolean checkOrder) {
+        compareLists(list, ListUtility.toList(unexpected), checkOrder, false);
+    }
+    
+    /**
+     * Asserts that a list does not have the unexpected contents.
+     *
+     * @param list       The list.
+     * @param unexpected The unexpected contents as a collection.
+     * @param <T>        The type of the list.
+     * @see #assertListNotEquals(List, Collection, boolean)
+     */
+    public static <T> void assertListNotEquals(List<T> list, Collection<? extends T> unexpected) {
+        assertListNotEquals(list, unexpected, true);
+    }
+    
+    /**
+     * Asserts that a list does not have the unexpected contents.
+     *
+     * @param list       The list.
+     * @param unexpected The unexpected contents as an array.
+     * @param checkOrder Whether or not to check the list order.
+     * @param <T>        The type of the list.
+     * @param <T2>       The type of the unexpected contents.
+     * @see ListUtility#toList(Object[])
+     * @see #compareLists(List, List, boolean, boolean)
+     */
+    public static <T, T2 extends T> void assertListNotEquals(List<T> list, T2[] unexpected, boolean checkOrder) {
+        compareLists(list, ListUtility.toList(unexpected), checkOrder, false);
+    }
+    
+    /**
+     * Asserts that a list does not have the unexpected contents.
+     *
+     * @param list       The list.
+     * @param unexpected The unexpected contents as an array.
+     * @param <T>        The type of the list.
+     * @param <T2>       The type of the unexpected contents.
+     * @see #assertListNotEquals(List, Object[], boolean)
+     */
+    public static <T, T2 extends T> void assertListNotEquals(List<T> list, T2[] unexpected) {
+        assertListNotEquals(list, unexpected, true);
+    }
+    
+    /**
+     * Compares two arrays.
+     *
+     * @param array           The first array.
+     * @param other           The second array.
+     * @param checkOrder      Whether or not to check the array order.
+     * @param expectedToEqual Whether the arrays are expected to be equal or not.
+     * @param <T>             The type of the first array.
+     * @param <T2>            The type of the second array.
+     * @see ArrayUtility#equals(Object[], Object[], boolean)
+     */
+    private static <T, T2 extends T> void compareArrays(T[] array, T2[] other, boolean checkOrder, boolean expectedToEqual) {
+        final boolean equals = ArrayUtility.equals(array, other, checkOrder);
+        if (expectedToEqual) {
+            AssertWrapper.assertTrue(equals);
+        } else {
+            AssertWrapper.assertFalse(equals);
+        }
+    }
+    
+    /**
+     * Asserts that an array has the expected contents.
+     *
+     * @param array      The array.
+     * @param expected   The expected contents as a collection.
+     * @param checkOrder Whether or not to check the array order.
+     * @param <T>        The type of the array.
+     * @see ArrayUtility#toArray(Collection)
+     * @see #compareArrays(Object[], Object[], boolean, boolean)
+     */
+    public static <T> void assertArrayEquals(T[] array, Collection<? extends T> expected, boolean checkOrder) {
+        compareArrays(array, ArrayUtility.toArray(expected), checkOrder, true);
+    }
+    
+    /**
+     * Asserts that an array has the expected contents.
+     *
+     * @param array    The array.
+     * @param expected The expected contents as a collection.
+     * @param <T>      The type of the array.
+     * @see #assertArrayEquals(Object[], Collection, boolean)
+     */
+    public static <T> void assertArrayEquals(T[] array, Collection<? extends T> expected) {
+        assertArrayEquals(array, expected, true);
+    }
+    
+    /**
+     * Asserts that an array has the expected contents.
+     *
+     * @param array      The array.
+     * @param expected   The expected contents as an array.
+     * @param checkOrder Whether or not to check the array order.
+     * @param <T>        The type of the array.
+     * @param <T2>       The type of the expected contents.
+     * @see #compareArrays(Object[], Object[], boolean, boolean)
+     */
+    public static <T, T2 extends T> void assertArrayEquals(T[] array, T2[] expected, boolean checkOrder) {
+        compareArrays(array, expected, checkOrder, true);
+    }
+    
+    /**
+     * Asserts that an array has the expected contents.
+     *
+     * @param array    The array.
+     * @param expected The expected contents as an array.
+     * @param <T>      The type of the array.
+     * @param <T2>     The type of the expected contents.
+     * @see #assertArrayEquals(Object[], Object[], boolean)
+     */
+    public static <T, T2 extends T> void assertArrayEquals(T[] array, T2[] expected) {
+        assertArrayEquals(array, expected, true);
+    }
+    
+    /**
+     * Asserts that an array does not have the unexpected contents.
+     *
+     * @param array      The array.
+     * @param unexpected The unexpected contents as a collection.
+     * @param checkOrder Whether or not to check the array order.
+     * @param <T>        The type of the array.
+     * @see ArrayUtility#toArray(Collection)
+     * @see #compareArrays(Object[], Object[], boolean, boolean)
+     */
+    public static <T> void assertArrayNotEquals(T[] array, Collection<? extends T> unexpected, boolean checkOrder) {
+        compareArrays(array, ArrayUtility.toArray(unexpected), checkOrder, false);
+    }
+    
+    /**
+     * Asserts that an array does not have the unexpected contents.
+     *
+     * @param array      The array.
+     * @param unexpected The unexpected contents as a collection.
+     * @param <T>        The type of the array.
+     * @see #assertArrayNotEquals(Object[], Collection, boolean)
+     */
+    public static <T> void assertArrayNotEquals(T[] array, Collection<? extends T> unexpected) {
+        assertArrayNotEquals(array, unexpected, true);
+    }
+    
+    /**
+     * Asserts that an array does not have the unexpected contents.
+     *
+     * @param array      The array.
+     * @param unexpected The unexpected contents as an array.
+     * @param checkOrder Whether or not to check the array order.
+     * @param <T>        The type of the array.
+     * @param <T2>       The type of the unexpected contents.
+     * @see #compareArrays(Object[], Object[], boolean, boolean)
+     */
+    public static <T, T2 extends T> void assertArrayNotEquals(T[] array, T2[] unexpected, boolean checkOrder) {
+        compareArrays(array, unexpected, checkOrder, false);
+    }
+    
+    /**
+     * Asserts that an array does not have the unexpected contents.
+     *
+     * @param array      The array.
+     * @param unexpected The unexpected contents as an array.
+     * @param <T>        The type of the array.
+     * @param <T2>       The type of the unexpected contents.
+     * @see #assertArrayNotEquals(Object[], Object[], boolean)
+     */
+    public static <T, T2 extends T> void assertArrayNotEquals(T[] array, T2[] unexpected) {
+        assertArrayNotEquals(array, unexpected, true);
+    }
+    
+    /**
+     * Compares two maps.
+     *
+     * @param map             The first map.
+     * @param other           The second map.
+     * @param expectedToEqual Whether the maps are expected to be equal or not.
+     * @param <K>             The type of the keys of the maps.
+     * @param <V>             The type of the values of the maps.
+     * @see MapUtility#equals(Map, Map)
+     */
+    private static <K, V> void compareMaps(Map<K, V> map, Map<? extends K, ? extends V> other, boolean expectedToEqual) {
+        final boolean equals = MapUtility.equals(map, other);
+        if (expectedToEqual) {
+            AssertWrapper.assertTrue(equals);
+        } else {
+            AssertWrapper.assertFalse(equals);
+        }
+    }
+    
+    /**
+     * Asserts that a map has the expected contents.
+     *
+     * @param map      The map.
+     * @param expected The expected contents as a map.
+     * @param <K>      The type of the keys of the map.
+     * @param <V>      The type of the values of the map.
+     * @see #compareMaps(Map, Map, boolean)
+     */
+    public static <K, V> void assertMapEquals(Map<K, V> map, Map<? extends K, ? extends V> expected) {
+        compareMaps(map, expected, true);
+    }
+    
+    /**
+     * Asserts that a map does not have the unexpected contents.
+     *
+     * @param map        The map.
+     * @param unexpected The unexpected contents as a map.
+     * @param <K>        The type of the keys of the map.
+     * @param <V>        The type of the values of the map.
+     * @see #compareMaps(Map, Map, boolean)
+     */
+    public static <K, V> void assertMapNotEquals(Map<K, V> map, Map<? extends K, ? extends V> unexpected) {
+        compareMaps(map, unexpected, false);
     }
     
     /**
@@ -474,6 +778,15 @@ public final class TestUtils {
         /**
          * Calls Assert.fail().
          *
+         * @see Assert#fail()
+         */
+        private static void fail() {
+            Assert.fail();
+        }
+        
+        /**
+         * Calls Assert.fail().
+         *
          * @param message The message.
          * @see Assert#fail(String)
          */
@@ -495,15 +808,133 @@ public final class TestUtils {
         }
         
         /**
+         * Calls Assert.assertTrue().
+         *
+         * @param condition The condition.
+         * @see Assert#assertTrue(boolean)
+         */
+        private static void assertTrue(boolean condition) {
+            Assert.assertTrue(condition);
+        }
+        
+        /**
+         * Calls Assert.assertTrue().
+         *
+         * @param message   The message on a failure.
+         * @param condition The condition.
+         * @see Assert#assertTrue(String, boolean)
+         */
+        private static void assertTrue(String message, boolean condition) {
+            Assert.assertTrue(message, condition);
+        }
+        
+        /**
+         * Calls Assert.assertFalse().
+         *
+         * @param condition The condition.
+         * @see Assert#assertFalse(boolean)
+         */
+        private static void assertFalse(boolean condition) {
+            Assert.assertFalse(condition);
+        }
+        
+        /**
+         * Calls Assert.assertFalse().
+         *
+         * @param message   The message on a failure.
+         * @param condition The condition.
+         * @see Assert#assertFalse(String, boolean)
+         */
+        private static void assertFalse(String message, boolean condition) {
+            Assert.assertFalse(message, condition);
+        }
+        
+        /**
+         * Calls Assert.assertNull().
+         *
+         * @param object The object.
+         * @see Assert#assertNull(Object)
+         */
+        private static void assertNull(Object object) {
+            Assert.assertNull(object);
+        }
+        
+        /**
+         * Calls Assert.assertNull().
+         *
+         * @param message The message on a failure.
+         * @param object  The object.
+         * @see Assert#assertNull(String, Object)
+         */
+        private static void assertNull(String message, Object object) {
+            Assert.assertNull(message, object);
+        }
+        
+        /**
+         * Calls Assert.assertNotNull().
+         *
+         * @param object The object.
+         * @see Assert#assertNotNull(Object)
+         */
+        private static void assertNotNull(Object object) {
+            Assert.assertNotNull(object);
+        }
+        
+        /**
+         * Calls Assert.assertNotNull().
+         *
+         * @param message The message on a failure.
+         * @param object  The object.
+         * @see Assert#assertNotNull(String, Object)
+         */
+        private static void assertNotNull(String message, Object object) {
+            Assert.assertNotNull(message, object);
+        }
+        
+        /**
+         * Calls Assert.assertEquals().
+         *
+         * @param expected The expected object.
+         * @param actual   The actual object.
+         * @see Assert#assertEquals(Object, Object)
+         */
+        private static void assertEquals(Object expected, Object actual) {
+            Assert.assertEquals(expected, actual);
+        }
+        
+        /**
          * Calls Assert.assertEquals().
          *
          * @param message  The message on a failure.
          * @param expected The expected object.
          * @param actual   The actual object.
-         * @see Assert#assertEquals(Object, Object)
+         * @see Assert#assertEquals(String, Object, Object)
          */
         private static void assertEquals(String message, Object expected, Object actual) {
             Assert.assertEquals(message, expected, actual);
+        }
+        
+        /**
+         * Calls Assert.assertNotEquals().
+         *
+         * @param unexpected The unexpected object.
+         * @param actual     The actual object.
+         * @see Assert#assertNotEquals(Object, Object)
+         */
+        private static void assertNotEquals(Object unexpected, Object actual) {
+            Assert.assertNotEquals(unexpected, actual);
+        }
+        
+        /**
+         * Calls Assert.assertNotEquals().
+         *
+         * @param message    The message on a failure.
+         * @param unexpected The unexpected object.
+         * @param actual     The actual object.
+         * @see Assert#assertNotEquals(String, Object, Object)
+         */
+        private static void assertNotEquals(String message, Object unexpected, Object actual) {
+            Assert.assertNotEquals(message, unexpected, actual);
         }
         
     }

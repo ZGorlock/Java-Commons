@@ -10,6 +10,7 @@ package commons.object.collection;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
@@ -611,46 +612,38 @@ public class ArrayUtilityTest {
      * @see ArrayUtility#arrayOf(Class, Object[])
      * @see ArrayUtility#arrayOf(Object[])
      */
+    @SuppressWarnings("ThrowableNotThrown")
     @Test
     public void testArrayOf() throws Exception {
         //boolean
         Boolean[] booleanArrayTest = new Boolean[] {true, false, false, true, false};
         Boolean[] booleanArray = ArrayUtility.arrayOf(Boolean.class, true, false, false, true, false);
-        Assert.assertEquals(booleanArrayTest.length, booleanArray.length);
-        Assert.assertArrayEquals(booleanArrayTest, booleanArray);
+        TestUtils.assertArrayEquals(booleanArray, booleanArrayTest);
         
         //integer
         Integer[] integerArrayTest = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         Integer[] integerArray = ArrayUtility.arrayOf(Integer.class, 15, 312, 48, 5, -4, -9, 6);
-        Assert.assertEquals(integerArrayTest.length, integerArray.length);
-        Assert.assertArrayEquals(integerArrayTest, integerArray);
+        TestUtils.assertArrayEquals(integerArray, integerArrayTest);
         
         //float
         Float[] floatArrayTest = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         Float[] floatArray = ArrayUtility.arrayOf(Float.class, 15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f);
-        Assert.assertEquals(floatArrayTest.length, floatArray.length);
-        Assert.assertArrayEquals(floatArrayTest, floatArray);
+        TestUtils.assertArrayEquals(floatArray, floatArrayTest);
         
         //double
         Double[] doubleArrayTest = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         Double[] doubleArray = ArrayUtility.arrayOf(Double.class, 15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d);
-        Assert.assertEquals(doubleArrayTest.length, doubleArray.length);
-        Assert.assertArrayEquals(doubleArrayTest, doubleArray);
+        TestUtils.assertArrayEquals(doubleArray, doubleArrayTest);
         
         //long
         Long[] longArrayTest = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         Long[] longArray = ArrayUtility.arrayOf(Long.class, 15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L);
-        Assert.assertEquals(longArrayTest.length, longArray.length);
-        Assert.assertArrayEquals(longArrayTest, longArray);
+        TestUtils.assertArrayEquals(longArray, longArrayTest);
         
         //object
         Object[] objectArrayTest = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
-        Object[] objectArray = ArrayUtility.arrayOf(Object.class, objectArrayTest[0], objectArrayTest[1], objectArrayTest[2], objectArrayTest[3], objectArrayTest[4]);
-        Assert.assertEquals(objectArrayTest.length, objectArray.length);
-        Assert.assertArrayEquals(objectArrayTest, objectArray);
-        objectArray = ArrayUtility.arrayOf(objectArrayTest[0], objectArrayTest[1], objectArrayTest[2], objectArrayTest[3], objectArrayTest[4]);
-        Assert.assertEquals(objectArrayTest.length, objectArray.length);
-        Assert.assertArrayEquals(objectArrayTest, objectArray);
+        Object[] objectArray = ArrayUtility.arrayOf(Object.class, "", 54, objectArrayTest[2], objectArrayTest[3], objectArrayTest[4]);
+        TestUtils.assertArrayEquals(objectArray, objectArrayTest);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -675,52 +668,45 @@ public class ArrayUtilityTest {
         List<Boolean> booleanList = ListUtility.toList(booleanArray);
         Boolean[] booleanListArray = ArrayUtility.toArray(booleanList, Boolean.class);
         Assert.assertNotNull(booleanListArray);
-        Assert.assertEquals(booleanList.size(), booleanListArray.length);
-        Assert.assertArrayEquals(booleanList.toArray(), booleanListArray);
+        TestUtils.assertArrayEquals(booleanListArray, booleanList);
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         List<Integer> integerList = ListUtility.toList(integerArray);
         Integer[] integerListArray = ArrayUtility.toArray(integerList, Integer.class);
         Assert.assertNotNull(integerListArray);
-        Assert.assertEquals(integerList.size(), integerListArray.length);
-        Assert.assertArrayEquals(integerList.toArray(), integerListArray);
+        TestUtils.assertArrayEquals(integerListArray, integerList);
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         List<Float> floatList = ListUtility.toList(floatArray);
         Float[] floatListArray = ArrayUtility.toArray(floatList, Float.class);
         Assert.assertNotNull(floatListArray);
-        Assert.assertEquals(floatList.size(), floatListArray.length);
-        Assert.assertArrayEquals(floatList.toArray(), floatListArray);
+        TestUtils.assertArrayEquals(floatListArray, floatList);
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         List<Double> doubleList = ListUtility.toList(doubleArray);
         Double[] doubleListArray = ArrayUtility.toArray(doubleList, Double.class);
         Assert.assertNotNull(doubleListArray);
-        Assert.assertEquals(doubleList.size(), doubleListArray.length);
-        Assert.assertArrayEquals(doubleList.toArray(), doubleListArray);
+        TestUtils.assertArrayEquals(doubleListArray, doubleList);
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         List<Long> longList = ListUtility.toList(longArray);
         Long[] longListArray = ArrayUtility.toArray(longList, Long.class);
         Assert.assertNotNull(longListArray);
-        Assert.assertEquals(longList.size(), longListArray.length);
-        Assert.assertArrayEquals(longList.toArray(), longListArray);
+        TestUtils.assertArrayEquals(longListArray, longList);
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         List<Object> objectList = ListUtility.toList(objectArray);
         Object[] objectListArray = ArrayUtility.toArray(objectList, Object.class);
         Assert.assertNotNull(objectListArray);
-        Assert.assertEquals(objectList.size(), objectListArray.length);
-        Assert.assertArrayEquals(objectList.toArray(), objectListArray);
+        TestUtils.assertArrayEquals(objectListArray, objectList);
         objectListArray = ArrayUtility.toArray(objectList);
         Assert.assertNotNull(objectListArray);
-        Assert.assertEquals(objectList.size(), objectListArray.length);
-        Assert.assertArrayEquals(objectList.toArray(), objectListArray);
+        TestUtils.assertArrayEquals(objectListArray, objectList);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -737,52 +723,46 @@ public class ArrayUtilityTest {
      * @throws Exception When there is an exception.
      * @see ArrayUtility#clone(Object[])
      */
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testClone() throws Exception {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
         Boolean[] booleanClone = ArrayUtility.clone(booleanArray);
-        Assert.assertEquals(booleanArray.length, booleanClone.length);
-        Assert.assertArrayEquals(booleanArray, booleanClone);
+        TestUtils.assertArrayEquals(booleanClone, booleanArray);
         Assert.assertNotSame(booleanArray, booleanClone);
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         Integer[] integerClone = ArrayUtility.clone(integerArray);
-        Assert.assertEquals(integerArray.length, integerClone.length);
-        Assert.assertArrayEquals(integerArray, integerClone);
+        TestUtils.assertArrayEquals(integerClone, integerArray);
         Assert.assertNotSame(integerArray, integerClone);
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         Float[] floatClone = ArrayUtility.clone(floatArray);
-        Assert.assertEquals(floatArray.length, floatClone.length);
-        Assert.assertArrayEquals(floatArray, floatClone);
+        TestUtils.assertArrayEquals(floatClone, floatArray);
         Assert.assertNotSame(floatArray, floatClone);
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         Double[] doubleClone = ArrayUtility.clone(doubleArray);
-        Assert.assertEquals(doubleArray.length, doubleClone.length);
-        Assert.assertArrayEquals(doubleArray, doubleClone);
+        TestUtils.assertArrayEquals(doubleClone, doubleArray);
         Assert.assertNotSame(doubleArray, doubleClone);
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         Long[] longClone = ArrayUtility.clone(longArray);
-        Assert.assertEquals(longArray.length, longClone.length);
-        Assert.assertArrayEquals(longArray, longClone);
+        TestUtils.assertArrayEquals(longClone, longArray);
         Assert.assertNotSame(longArray, longClone);
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         Object[] objectClone = ArrayUtility.clone(objectArray);
-        Assert.assertEquals(objectArray.length, objectClone.length);
-        Assert.assertArrayEquals(objectArray, objectClone);
+        TestUtils.assertArrayEquals(objectClone, objectArray);
         Assert.assertNotSame(objectArray, objectClone);
         
         //invalid
-        //noinspection ResultOfMethodCallIgnored
         TestUtils.assertException(NullPointerException.class, () ->
                 ArrayUtility.clone(null));
     }
@@ -799,39 +779,44 @@ public class ArrayUtilityTest {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
         Boolean[] booleanSubArray = ArrayUtility.subArray(booleanArray, 2, 4);
-        Assert.assertEquals(2, booleanSubArray.length);
-        Assert.assertArrayEquals(new Boolean[] {false, true}, booleanSubArray);
+        TestUtils.assertArrayEquals(
+                booleanSubArray,
+                new Boolean[] {false, true});
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         Integer[] integerSubArray = ArrayUtility.subArray(integerArray, 2);
-        Assert.assertEquals(5, integerSubArray.length);
-        Assert.assertArrayEquals(new Integer[] {48, 5, -4, -9, 6}, integerSubArray);
+        TestUtils.assertArrayEquals(
+                integerSubArray,
+                new Integer[] {48, 5, -4, -9, 6});
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         Float[] floatSubArray = ArrayUtility.subArray(floatArray, 0, 4);
-        Assert.assertEquals(4, floatSubArray.length);
-        Assert.assertArrayEquals(new Float[] {15.1f, 312.91f, 48.0f, 5.45f}, floatSubArray);
+        TestUtils.assertArrayEquals(
+                floatSubArray,
+                new Float[] {15.1f, 312.91f, 48.0f, 5.45f});
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         Double[] doubleSubArray = ArrayUtility.subArray(doubleArray, 0);
-        Assert.assertEquals(7, doubleSubArray.length);
-        Assert.assertArrayEquals(new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d}, doubleSubArray);
+        TestUtils.assertArrayEquals(
+                doubleSubArray,
+                new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d});
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         Long[] longSubArray = ArrayUtility.subArray(longArray, 6, 7);
-        Assert.assertEquals(1, longSubArray.length);
-        Assert.assertArrayEquals(new Long[] {699546101L}, longSubArray);
+        TestUtils.assertArrayEquals(
+                longSubArray,
+                new Long[] {699546101L});
         
         //object
-        Object b = new ArithmeticException();
-        Object[] objectArray = new Object[] {"", 54, b, new HashMap<>(), new Object()};
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         Object[] objectSubArray = ArrayUtility.subArray(objectArray, 1, 3);
-        Assert.assertEquals(2, objectSubArray.length);
-        Assert.assertArrayEquals(new Object[] {54, b}, objectSubArray);
+        TestUtils.assertArrayEquals(
+                objectSubArray,
+                new Object[] {54, objectArray[2]});
         
         //empty
         Object[] subArray = ArrayUtility.subArray(objectArray, 0, 0);
@@ -867,48 +852,49 @@ public class ArrayUtilityTest {
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
         Boolean[] booleanArray2 = new Boolean[] {true, false};
         Boolean[] booleanMergeArray = ArrayUtility.merge(booleanArray, booleanArray2, Boolean.class);
-        Assert.assertEquals(7, booleanMergeArray.length);
-        Assert.assertArrayEquals(new Boolean[] {true, false, false, true, false, true, false}, booleanMergeArray);
+        TestUtils.assertArrayEquals(
+                booleanMergeArray,
+                new Boolean[] {true, false, false, true, false, true, false});
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         Integer[] integerArray2 = new Integer[] {15, 312, 48};
         Integer[] integerMergeArray = ArrayUtility.merge(integerArray, integerArray2, Integer.class);
-        Assert.assertEquals(10, integerMergeArray.length);
-        Assert.assertArrayEquals(new Integer[] {15, 312, 48, 5, -4, -9, 6, 15, 312, 48}, integerMergeArray);
+        TestUtils.assertArrayEquals(
+                integerMergeArray,
+                new Integer[] {15, 312, 48, 5, -4, -9, 6, 15, 312, 48});
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         Float[] floatArray2 = new Float[] {15.1f};
         Float[] floatMergeArray = ArrayUtility.merge(floatArray, floatArray2, Float.class);
-        Assert.assertEquals(9, floatMergeArray.length);
-        Assert.assertArrayEquals(new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f, 15.1f}, floatMergeArray);
+        TestUtils.assertArrayEquals(
+                floatMergeArray,
+                new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f, 15.1f});
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         Double[] doubleArray2 = new Double[] {-4.006005001d, -9.70487745d, 6.99546101d};
         Double[] doubleMergeArray = ArrayUtility.merge(doubleArray, doubleArray2, Double.class);
-        Assert.assertEquals(10, doubleMergeArray.length);
-        Assert.assertArrayEquals(new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d, -4.006005001d, -9.70487745d, 6.99546101d}, doubleMergeArray);
+        TestUtils.assertArrayEquals(
+                doubleMergeArray,
+                new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d, -4.006005001d, -9.70487745d, 6.99546101d});
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         Long[] longArray2 = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         Long[] longMergeArray = ArrayUtility.merge(longArray, longArray2, Long.class);
-        Assert.assertEquals(14, longMergeArray.length);
-        Assert.assertArrayEquals(new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L, 15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L}, longMergeArray);
+        TestUtils.assertArrayEquals(
+                longMergeArray,
+                new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L, 15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L});
         
         //object
-        Object a = "";
-        Object b = 54;
-        Object c = new ArithmeticException();
-        Object d = new HashMap<>();
-        Object e = new Object();
-        Object[] objectArray = new Object[] {a, b, c, d, e};
-        Object[] objectArray2 = new Object[] {b, c, e};
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        Object[] objectArray2 = new Object[] {54, objectArray[2], objectArray[4]};
         Object[] objectMergeArray = ArrayUtility.merge(objectArray, objectArray2, Object.class);
-        Assert.assertEquals(8, objectMergeArray.length);
-        Assert.assertArrayEquals(new Object[] {a, b, c, d, e, b, c, e}, objectMergeArray);
+        TestUtils.assertArrayEquals(
+                objectMergeArray,
+                new Object[] {"", 54, objectArray[2], objectArray[3], objectArray[4], 54, objectArray[2], objectArray[4]});
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -931,49 +917,92 @@ public class ArrayUtilityTest {
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
         Boolean[][] booleanSplitArray = ArrayUtility.split(booleanArray, 3, Boolean.class);
         Assert.assertEquals(2, booleanSplitArray.length);
-        Assert.assertArrayEquals(new Boolean[] {true, false, false}, booleanSplitArray[0]);
-        Assert.assertArrayEquals(new Boolean[] {true, false, null}, booleanSplitArray[1]);
+        Assert.assertTrue(Arrays.stream(booleanSplitArray).allMatch(e -> (e.length == 3)));
+        
+        TestUtils.assertArrayEquals(
+                booleanSplitArray[0],
+                new Boolean[] {true, false, false});
+        TestUtils.assertArrayEquals(
+                booleanSplitArray[1],
+                new Boolean[] {true, false, null});
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         Integer[][] integerSplitArray = ArrayUtility.split(integerArray, 2, Integer.class);
         Assert.assertEquals(4, integerSplitArray.length);
-        Assert.assertArrayEquals(new Integer[] {15, 312}, integerSplitArray[0]);
-        Assert.assertArrayEquals(new Integer[] {48, 5}, integerSplitArray[1]);
-        Assert.assertArrayEquals(new Integer[] {-4, -9}, integerSplitArray[2]);
-        Assert.assertArrayEquals(new Integer[] {6, null}, integerSplitArray[3]);
+        Assert.assertTrue(Arrays.stream(integerSplitArray).allMatch(e -> (e.length == 2)));
+        TestUtils.assertArrayEquals(
+                integerSplitArray[0],
+                new Integer[] {15, 312});
+        TestUtils.assertArrayEquals(
+                integerSplitArray[1],
+                new Integer[] {48, 5});
+        TestUtils.assertArrayEquals(
+                integerSplitArray[2],
+                new Integer[] {-4, -9});
+        TestUtils.assertArrayEquals(
+                integerSplitArray[3],
+                new Integer[] {6, null});
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         Float[][] floatSplitArray = ArrayUtility.split(floatArray, 4, Float.class);
         Assert.assertEquals(2, floatSplitArray.length);
-        Assert.assertArrayEquals(new Float[] {15.1f, 312.91f, 48.0f, 5.45f}, floatSplitArray[0]);
-        Assert.assertArrayEquals(new Float[] {-4.006f, -9.7f, 6.99f, 19776.4f}, floatSplitArray[1]);
+        Assert.assertTrue(Arrays.stream(floatSplitArray).allMatch(e -> (e.length == 4)));
+        TestUtils.assertArrayEquals(
+                floatSplitArray[0],
+                new Float[] {15.1f, 312.91f, 48.0f, 5.45f});
+        TestUtils.assertArrayEquals(
+                floatSplitArray[1],
+                new Float[] {-4.006f, -9.7f, 6.99f, 19776.4f});
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         Double[][] doubleSplitArray = ArrayUtility.split(doubleArray, 7, Double.class);
         Assert.assertEquals(1, doubleSplitArray.length);
-        Assert.assertArrayEquals(new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d}, doubleSplitArray[0]);
+        Assert.assertTrue(Arrays.stream(doubleSplitArray).allMatch(e -> (e.length == 7)));
+        TestUtils.assertArrayEquals(
+                doubleSplitArray[0],
+                new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d});
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         Long[][] longSplitArray = ArrayUtility.split(longArray, 1, Long.class);
         Assert.assertEquals(7, longSplitArray.length);
-        Assert.assertArrayEquals(new Long[] {15104564L}, longSplitArray[0]);
-        Assert.assertArrayEquals(new Long[] {3129113874L}, longSplitArray[1]);
-        Assert.assertArrayEquals(new Long[] {4800000015L}, longSplitArray[2]);
-        Assert.assertArrayEquals(new Long[] {5457894511L}, longSplitArray[3]);
-        Assert.assertArrayEquals(new Long[] {-4006005001L}, longSplitArray[4]);
-        Assert.assertArrayEquals(new Long[] {-970487745L}, longSplitArray[5]);
-        Assert.assertArrayEquals(new Long[] {699546101L}, longSplitArray[6]);
+        Assert.assertTrue(Arrays.stream(longSplitArray).allMatch(e -> (e.length == 1)));
+        TestUtils.assertArrayEquals(
+                longSplitArray[0],
+                new Long[] {15104564L});
+        TestUtils.assertArrayEquals(
+                longSplitArray[1],
+                new Long[] {3129113874L});
+        TestUtils.assertArrayEquals(
+                longSplitArray[2],
+                new Long[] {4800000015L});
+        TestUtils.assertArrayEquals(
+                longSplitArray[3],
+                new Long[] {5457894511L});
+        TestUtils.assertArrayEquals(
+                longSplitArray[4],
+                new Long[] {-4006005001L});
+        TestUtils.assertArrayEquals(
+                longSplitArray[5],
+                new Long[] {-970487745L});
+        TestUtils.assertArrayEquals(
+                longSplitArray[6],
+                new Long[] {699546101L});
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         Object[][] objectSplitArray = ArrayUtility.split(objectArray, 3, Object.class);
         Assert.assertEquals(2, objectSplitArray.length);
-        Assert.assertArrayEquals(new Object[] {"", 54, objectArray[2]}, objectSplitArray[0]);
-        Assert.assertArrayEquals(new Object[] {objectArray[3], objectArray[4], null}, objectSplitArray[1]);
+        Assert.assertTrue(Arrays.stream(objectSplitArray).allMatch(e -> (e.length == 3)));
+        TestUtils.assertArrayEquals(
+                objectSplitArray[0],
+                new Object[] {"", 54, objectArray[2]});
+        TestUtils.assertArrayEquals(
+                objectSplitArray[1],
+                new Object[] {objectArray[3], objectArray[4], null});
         
         //invalid
         objectSplitArray = ArrayUtility.split(objectArray, 0, Object.class);
@@ -1005,37 +1034,55 @@ public class ArrayUtilityTest {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
         Boolean[] booleanReverseArray = ArrayUtility.reverse(booleanArray);
-        Assert.assertArrayEquals(new Boolean[] {false, true, false, false, true}, booleanReverseArray);
+        TestUtils.assertArrayEquals(
+                booleanReverseArray,
+                new Boolean[] {false, true, false, false, true});
+        Assert.assertNotSame(booleanArray, booleanReverseArray);
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         Integer[] integerReversedArray = ArrayUtility.reverse(integerArray);
-        Assert.assertArrayEquals(new Integer[] {6, -9, -4, 5, 48, 312, 15}, integerReversedArray);
+        TestUtils.assertArrayEquals(
+                integerReversedArray,
+                new Integer[] {6, -9, -4, 5, 48, 312, 15});
+        Assert.assertNotSame(integerArray, integerReversedArray);
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         Float[] floatReversedArray = ArrayUtility.reverse(floatArray);
-        Assert.assertArrayEquals(new Float[] {19776.4f, 6.99f, -9.7f, -4.006f, 5.45f, 48.0f, 312.91f, 15.1f}, floatReversedArray);
+        TestUtils.assertArrayEquals(
+                floatReversedArray,
+                new Float[] {19776.4f, 6.99f, -9.7f, -4.006f, 5.45f, 48.0f, 312.91f, 15.1f});
+        Assert.assertNotSame(floatArray, floatReversedArray);
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         Double[] doubleReversedArray = ArrayUtility.reverse(doubleArray);
-        Assert.assertArrayEquals(new Double[] {6.99546101d, -9.70487745d, -4.006005001d, 5.457894511d, 48.00000015d, 312.9113874d, 15.104564d}, doubleReversedArray);
+        TestUtils.assertArrayEquals(
+                doubleReversedArray,
+                new Double[] {6.99546101d, -9.70487745d, -4.006005001d, 5.457894511d, 48.00000015d, 312.9113874d, 15.104564d});
+        Assert.assertNotSame(doubleArray, doubleReversedArray);
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         Long[] longReversedArray = ArrayUtility.reverse(longArray);
-        Assert.assertArrayEquals(new Long[] {699546101L, -970487745L, -4006005001L, 5457894511L, 4800000015L, 3129113874L, 15104564L}, longReversedArray);
+        TestUtils.assertArrayEquals(
+                longReversedArray,
+                new Long[] {699546101L, -970487745L, -4006005001L, 5457894511L, 4800000015L, 3129113874L, 15104564L});
+        Assert.assertNotSame(longArray, longReversedArray);
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         Object[] objectReversedArray = ArrayUtility.reverse(objectArray);
-        Assert.assertArrayEquals(new Object[] {objectArray[4], objectArray[3], objectArray[2], 54, ""}, objectReversedArray);
+        TestUtils.assertArrayEquals(
+                objectReversedArray,
+                new Object[] {objectArray[4], objectArray[3], objectArray[2], 54, ""});
+        Assert.assertNotSame(objectArray, objectReversedArray);
         
         //invalid
         
         Object[] emptyReversedArray = ArrayUtility.reverse(new Object[] {});
-        Assert.assertArrayEquals(new Object[] {}, emptyReversedArray);
+        Assert.assertEquals(0, emptyReversedArray.length);
         
         TestUtils.assertException(NullPointerException.class, () ->
                 ArrayUtility.reverse(null));
@@ -1052,43 +1099,43 @@ public class ArrayUtilityTest {
         //boolean
         Boolean[] booleanArray = ArrayUtility.duplicateInOrder(new Boolean[] {true, false, false, true, false}, 10, Boolean.class);
         Boolean[] booleanShuffledArray = ArrayUtility.shuffle(booleanArray);
-        Assert.assertTrue(ArrayUtility.equals(booleanArray, booleanShuffledArray, false));
-        Assert.assertFalse(ArrayUtility.equals(booleanArray, booleanShuffledArray, true));
+        TestUtils.assertArrayEquals(booleanShuffledArray, booleanArray, false);
+        TestUtils.assertArrayNotEquals(booleanShuffledArray, booleanArray, true);
         
         //int
         Integer[] integerArray = ArrayUtility.duplicateInOrder(new Integer[] {15, 312, 48, 5, -4, -9, 6}, 10, Integer.class);
         Integer[] integerShuffledArray = ArrayUtility.shuffle(integerArray);
-        Assert.assertTrue(ArrayUtility.equals(integerArray, integerShuffledArray, false));
-        Assert.assertFalse(ArrayUtility.equals(integerArray, integerShuffledArray, true));
+        TestUtils.assertArrayEquals(integerShuffledArray, integerArray, false);
+        TestUtils.assertArrayNotEquals(integerShuffledArray, integerArray, true);
         
         //float
         Float[] floatArray = ArrayUtility.duplicateInOrder(new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f}, 10, Float.class);
         Float[] floatShuffledArray = ArrayUtility.shuffle(floatArray);
-        Assert.assertTrue(ArrayUtility.equals(floatArray, floatShuffledArray, false));
-        Assert.assertFalse(ArrayUtility.equals(floatArray, floatShuffledArray, true));
+        TestUtils.assertArrayEquals(floatShuffledArray, floatArray, false);
+        TestUtils.assertArrayNotEquals(floatShuffledArray, floatArray, true);
         
         //double
         Double[] doubleArray = ArrayUtility.duplicateInOrder(new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d}, 10, Double.class);
         Double[] doubleShuffledArray = ArrayUtility.shuffle(doubleArray);
-        Assert.assertTrue(ArrayUtility.equals(doubleArray, doubleShuffledArray, false));
-        Assert.assertFalse(ArrayUtility.equals(doubleArray, doubleShuffledArray, true));
+        TestUtils.assertArrayEquals(doubleShuffledArray, doubleArray, false);
+        TestUtils.assertArrayNotEquals(doubleShuffledArray, doubleArray, true);
         
         //long
         Long[] longArray = ArrayUtility.duplicateInOrder(new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L}, 10, Long.class);
         Long[] longShuffledArray = ArrayUtility.shuffle(longArray);
-        Assert.assertTrue(ArrayUtility.equals(longArray, longShuffledArray, false));
-        Assert.assertFalse(ArrayUtility.equals(longArray, longShuffledArray, true));
+        TestUtils.assertArrayEquals(longShuffledArray, longArray, false);
+        TestUtils.assertArrayNotEquals(longShuffledArray, longArray, true);
         
         //object
         Object[] objectArray = ArrayUtility.duplicateInOrder(new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()}, 10, Object.class);
         Object[] objectShuffledArray = ArrayUtility.shuffle(objectArray);
-        Assert.assertTrue(ArrayUtility.equals(objectArray, objectShuffledArray, false));
-        Assert.assertFalse(ArrayUtility.equals(objectArray, objectShuffledArray, true));
+        TestUtils.assertArrayEquals(objectShuffledArray, objectArray, false);
+        TestUtils.assertArrayNotEquals(objectShuffledArray, objectArray, true);
         
         //invalid
         
         Object[] emptyShuffledArray = ArrayUtility.shuffle(new Object[] {});
-        Assert.assertArrayEquals(new Object[] {}, emptyShuffledArray);
+        Assert.assertEquals(0, emptyShuffledArray.length);
         
         TestUtils.assertException(NullPointerException.class, () ->
                 ArrayUtility.shuffle(null));
@@ -1103,10 +1150,10 @@ public class ArrayUtilityTest {
     @Test
     public void testIsNullOrEmpty() throws Exception {
         //standard
-        Assert.assertFalse(ArrayUtility.isNullOrEmpty(new Object[] {"test"}));
+        Assert.assertFalse(ArrayUtility.isNullOrEmpty(ArrayUtility.arrayOf(String.class, "test", "array")));
         
         //empty
-        Assert.assertTrue(ArrayUtility.isNullOrEmpty(new Object[] {}));
+        Assert.assertTrue(ArrayUtility.isNullOrEmpty(ArrayUtility.emptyArray()));
         
         //null
         Assert.assertTrue(ArrayUtility.isNullOrEmpty(null));
@@ -1750,7 +1797,6 @@ public class ArrayUtilityTest {
         Assert.assertTrue(ArrayUtility.anyNull(array));
         
         //invalid
-        //noinspection ResultOfMethodCallIgnored
         TestUtils.assertException(NullPointerException.class, () ->
                 ArrayUtility.anyNull(null));
     }
@@ -1782,19 +1828,27 @@ public class ArrayUtilityTest {
         
         //all
         array = new Object[] {a, b, c, d, e, f, g, h, i, j, k, l, m, n};
-        Assert.assertArrayEquals(new Object[] {a, c, e, g, i, k, m}, ArrayUtility.removeNull(array));
+        TestUtils.assertArrayEquals(
+                ArrayUtility.removeNull(array),
+                new Object[] {a, c, e, g, i, k, m});
         
         //all not null
         array = new Object[] {a, c, e, g, i, k, m};
-        Assert.assertArrayEquals(new Object[] {a, c, e, g, i, k, m}, ArrayUtility.removeNull(array));
+        TestUtils.assertArrayEquals(
+                ArrayUtility.removeNull(array),
+                new Object[] {a, c, e, g, i, k, m});
         
         //all null
         array = new Object[] {b, d, f, h, j, l, n};
-        Assert.assertArrayEquals(new Object[] {}, ArrayUtility.removeNull(array));
+        TestUtils.assertArrayEquals(
+                ArrayUtility.removeNull(array),
+                new Object[] {});
         
         //none
         array = new Object[] {};
-        Assert.assertArrayEquals(new Object[] {}, ArrayUtility.removeNull(array));
+        TestUtils.assertArrayEquals(
+                ArrayUtility.removeNull(array),
+                new Object[] {});
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -1812,36 +1866,45 @@ public class ArrayUtilityTest {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
         Boolean[] booleanCleanArray = ArrayUtility.removeDuplicates(booleanArray, Boolean.class);
-        Assert.assertEquals(2, booleanCleanArray.length);
+        TestUtils.assertArrayEquals(
+                booleanCleanArray,
+                new Boolean[] {true, false});
         
         //int
         Integer[] integerArray = new Integer[] {15, 15, 312, 48, 5, 5, -4, -9, -9, 6};
-        Integer[] integerCleanList = ArrayUtility.removeDuplicates(integerArray, Integer.class);
-        Assert.assertEquals(7, integerCleanList.length);
+        Integer[] integerCleanArray = ArrayUtility.removeDuplicates(integerArray, Integer.class);
+        TestUtils.assertArrayEquals(
+                integerCleanArray,
+                new Integer[] {15, 312, 48, 5, -4, -9, 6});
         
         //float
         Float[] floatArray = new Float[] {15.1f, 15.1f, 15.1f, 312.91f, 312.91f, 48.0f, 5.45f, -4.006f, -4.006f, -9.7f, 6.99f, 6.99f};
-        Float[] floatCleanList = ArrayUtility.removeDuplicates(floatArray, Float.class);
-        Assert.assertEquals(7, floatCleanList.length);
+        Float[] floatCleanArray = ArrayUtility.removeDuplicates(floatArray, Float.class);
+        TestUtils.assertArrayEquals(
+                floatCleanArray,
+                new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f});
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 15.104564d, 15.104564d, 312.9113874d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -4.006005001d, -9.70487745d, 6.99546101d, 6.99546101d};
-        Double[] doubleCleanList = ArrayUtility.removeDuplicates(doubleArray, Double.class);
-        Assert.assertEquals(7, doubleCleanList.length);
+        Double[] doubleCleanArray = ArrayUtility.removeDuplicates(doubleArray, Double.class);
+        TestUtils.assertArrayEquals(
+                doubleCleanArray,
+                new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d});
         
         //long
         Long[] longArray = new Long[] {15104564L, 15104564L, 15104564L, 3129113874L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -4006005001L, -970487745L, 699546101L, 699546101L};
-        Long[] longCleanList = ArrayUtility.removeDuplicates(longArray, Long.class);
-        Assert.assertEquals(7, longCleanList.length);
+        Long[] longCleanArray = ArrayUtility.removeDuplicates(longArray, Long.class);
+        TestUtils.assertArrayEquals(
+                longCleanArray,
+                new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L});
         
         //object
-        String s = "";
-        ArithmeticException ae = new ArithmeticException();
-        HashMap<Object, Object> hm = new HashMap<>();
-        Object o = new Object();
-        Object[] objectArray = new Object[] {s, s, s, 54, 54, ae, ae, hm, hm, hm, o, o};
-        Object[] objectCleanList = ArrayUtility.removeDuplicates(objectArray, Object.class);
-        Assert.assertEquals(5, objectCleanList.length);
+        Object[] testObjects = new Object[] {new ArithmeticException(), new HashMap<>(), new Object()};
+        Object[] objectArray = new Object[] {"", "", "", 54, 54, testObjects[0], testObjects[0], testObjects[1], testObjects[1], testObjects[1], testObjects[2], testObjects[2]};
+        Object[] objectCleanArray = ArrayUtility.removeDuplicates(objectArray, Object.class);
+        TestUtils.assertArrayEquals(
+                objectCleanArray,
+                new Object[] {"", 54, testObjects[0], testObjects[1], testObjects[2]});
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -1913,7 +1976,7 @@ public class ArrayUtilityTest {
         }
         
         //empty list
-        Assert.assertNull(ArrayUtility.selectRandom(new Object[] {}));
+        Assert.assertNull(ArrayUtility.selectRandom(ArrayUtility.emptyArray()));
         
         //invalid
         Assert.assertNull(ArrayUtility.selectRandom(null));
@@ -2008,165 +2071,75 @@ public class ArrayUtilityTest {
      */
     @Test
     public void testDuplicateInOrder() throws Exception {
-        int x;
-        
-        //standard
-        Object[] standardArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
-        Object[] duplicatedStandardArray = ArrayUtility.duplicateInOrder(standardArray, Object.class);
-        Assert.assertEquals(standardArray.length * 2, duplicatedStandardArray.length);
-        x = 0;
-        for (int y = 0; y < 2; y++) {
-            for (Object o : standardArray) {
-                Assert.assertEquals(o, duplicatedStandardArray[x]);
-                x++;
-            }
-        }
-        duplicatedStandardArray = ArrayUtility.duplicateInOrder(standardArray, 3, Object.class);
-        Assert.assertEquals(standardArray.length * 3, duplicatedStandardArray.length);
-        x = 0;
-        for (int y = 0; y < 3; y++) {
-            for (Object o : standardArray) {
-                Assert.assertEquals(o, duplicatedStandardArray[x]);
-                x++;
-            }
-        }
-        
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
         Boolean[] duplicatedBooleanArray = ArrayUtility.duplicateInOrder(booleanArray, Boolean.class);
-        Assert.assertEquals(booleanArray.length * 2, duplicatedBooleanArray.length);
-        x = 0;
-        for (int y = 0; y < 2; y++) {
-            for (Boolean b : booleanArray) {
-                Assert.assertEquals(b, duplicatedBooleanArray[x]);
-                x++;
-            }
-        }
+        TestUtils.assertArrayEquals(
+                duplicatedBooleanArray,
+                Collections.nCopies(2, booleanArray).stream().flatMap(Arrays::stream).toArray());
         duplicatedBooleanArray = ArrayUtility.duplicateInOrder(booleanArray, 6, Boolean.class);
-        Assert.assertEquals(booleanArray.length * 6, duplicatedBooleanArray.length);
-        x = 0;
-        for (int y = 0; y < 6; y++) {
-            for (Boolean b : booleanArray) {
-                Assert.assertEquals(b, duplicatedBooleanArray[x]);
-                x++;
-            }
-        }
+        TestUtils.assertArrayEquals(
+                duplicatedBooleanArray,
+                Collections.nCopies(6, booleanArray).stream().flatMap(Arrays::stream).toArray());
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         Integer[] duplicatedIntegerArray = ArrayUtility.duplicateInOrder(integerArray, Integer.class);
-        Assert.assertEquals(integerArray.length * 2, duplicatedIntegerArray.length);
-        x = 0;
-        for (int y = 0; y < 2; y++) {
-            for (Integer i : integerArray) {
-                Assert.assertEquals(i, duplicatedIntegerArray[x]);
-                x++;
-            }
-        }
+        TestUtils.assertArrayEquals(
+                duplicatedIntegerArray,
+                Collections.nCopies(2, integerArray).stream().flatMap(Arrays::stream).toArray());
         duplicatedIntegerArray = ArrayUtility.duplicateInOrder(integerArray, 150, Integer.class);
-        Assert.assertEquals(integerArray.length * 150, duplicatedIntegerArray.length);
-        x = 0;
-        for (int y = 0; y < 150; y++) {
-            for (Integer i : integerArray) {
-                Assert.assertEquals(i, duplicatedIntegerArray[x]);
-                x++;
-            }
-        }
+        TestUtils.assertArrayEquals(
+                duplicatedIntegerArray,
+                Collections.nCopies(150, integerArray).stream().flatMap(Arrays::stream).toArray());
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         Float[] duplicatedFloatArray = ArrayUtility.duplicateInOrder(floatArray, Float.class);
-        Assert.assertEquals(floatArray.length * 2, duplicatedFloatArray.length);
-        x = 0;
-        for (int y = 0; y < 2; y++) {
-            for (Float f : floatArray) {
-                Assert.assertEquals(f, duplicatedFloatArray[x]);
-                x++;
-            }
-        }
-        duplicatedFloatArray = ArrayUtility.duplicateInOrder(floatArray, 150, Float.class);
-        Assert.assertEquals(floatArray.length * 150, duplicatedFloatArray.length);
-        x = 0;
-        for (int y = 0; y < 150; y++) {
-            for (Float f : floatArray) {
-                Assert.assertEquals(f, duplicatedFloatArray[x]);
-                x++;
-            }
-        }
+        TestUtils.assertArrayEquals(
+                duplicatedFloatArray,
+                Collections.nCopies(2, floatArray).stream().flatMap(Arrays::stream).toArray());
+        duplicatedFloatArray = ArrayUtility.duplicateInOrder(floatArray, 51, Float.class);
+        TestUtils.assertArrayEquals(
+                duplicatedFloatArray,
+                Collections.nCopies(51, floatArray).stream().flatMap(Arrays::stream).toArray());
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         Double[] duplicatedDoubleArray = ArrayUtility.duplicateInOrder(doubleArray, Double.class);
-        Assert.assertEquals(doubleArray.length * 2, duplicatedDoubleArray.length);
-        x = 0;
-        for (int y = 0; y < 2; y++) {
-            for (Double d : doubleArray) {
-                Assert.assertEquals(d, duplicatedDoubleArray[x]);
-                x++;
-            }
-        }
+        TestUtils.assertArrayEquals(
+                duplicatedDoubleArray,
+                Collections.nCopies(2, doubleArray).stream().flatMap(Arrays::stream).toArray());
         duplicatedDoubleArray = ArrayUtility.duplicateInOrder(doubleArray, 8, Double.class);
-        Assert.assertEquals(doubleArray.length * 8, duplicatedDoubleArray.length);
-        x = 0;
-        for (int y = 0; y < 8; y++) {
-            for (Double d : doubleArray) {
-                Assert.assertEquals(d, duplicatedDoubleArray[x]);
-                x++;
-            }
-        }
+        TestUtils.assertArrayEquals(
+                duplicatedDoubleArray,
+                Collections.nCopies(8, doubleArray).stream().flatMap(Arrays::stream).toArray());
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         Long[] duplicatedLongArray = ArrayUtility.duplicateInOrder(longArray, Long.class);
-        Assert.assertEquals(longArray.length * 2, duplicatedLongArray.length);
-        x = 0;
-        for (int y = 0; y < 2; y++) {
-            for (Long l : longArray) {
-                Assert.assertEquals(l, duplicatedLongArray[x]);
-                x++;
-            }
-        }
+        TestUtils.assertArrayEquals(
+                duplicatedLongArray,
+                Collections.nCopies(2, longArray).stream().flatMap(Arrays::stream).toArray());
         duplicatedLongArray = ArrayUtility.duplicateInOrder(longArray, 10, Long.class);
-        Assert.assertEquals(longArray.length * 10, duplicatedLongArray.length);
-        x = 0;
-        for (int y = 0; y < 10; y++) {
-            for (Long l : longArray) {
-                Assert.assertEquals(l, duplicatedLongArray[x]);
-                x++;
-            }
-        }
+        TestUtils.assertArrayEquals(
+                duplicatedLongArray,
+                Collections.nCopies(10, longArray).stream().flatMap(Arrays::stream).toArray());
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         Object[] duplicatedObjectArray = ArrayUtility.duplicateInOrder(objectArray, Object.class);
-        Assert.assertEquals(objectArray.length * 2, duplicatedObjectArray.length);
-        x = 0;
-        for (int y = 0; y < 2; y++) {
-            for (Object o : objectArray) {
-                Assert.assertEquals(o, duplicatedObjectArray[x]);
-                x++;
-            }
-        }
-        duplicatedObjectArray = ArrayUtility.duplicateInOrder(objectArray, 10, Object.class);
-        Assert.assertEquals(objectArray.length * 10, duplicatedObjectArray.length);
-        x = 0;
-        for (int y = 0; y < 10; y++) {
-            for (Object o : objectArray) {
-                Assert.assertEquals(o, duplicatedObjectArray[x]);
-                x++;
-            }
-        }
+        TestUtils.assertArrayEquals(
+                duplicatedObjectArray,
+                Collections.nCopies(2, objectArray).stream().flatMap(Arrays::stream).toArray());
+        duplicatedObjectArray = ArrayUtility.duplicateInOrder(objectArray, 12, Object.class);
+        TestUtils.assertArrayEquals(
+                duplicatedObjectArray,
+                Collections.nCopies(12, objectArray).stream().flatMap(Arrays::stream).toArray());
         
         //edge case
         duplicatedObjectArray = ArrayUtility.duplicateInOrder(objectArray, 1, Object.class);
-        Assert.assertEquals(objectArray.length, duplicatedObjectArray.length);
-        x = 0;
-        for (int y = 0; y < 1; y++) {
-            for (Object o : objectArray) {
-                Assert.assertEquals(o, duplicatedObjectArray[x]);
-                x++;
-            }
-        }
+        TestUtils.assertArrayEquals(duplicatedObjectArray, objectArray);
         duplicatedObjectArray = ArrayUtility.duplicateInOrder(objectArray, 0, Object.class);
         Assert.assertEquals(0, duplicatedObjectArray.length);
         duplicatedObjectArray = ArrayUtility.duplicateInOrder(objectArray, -1, Object.class);
@@ -2196,47 +2169,77 @@ public class ArrayUtilityTest {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
         Boolean[] sortedBooleanArray = ArrayUtility.sortByNumberOfOccurrences(booleanArray, Boolean.class);
-        Assert.assertArrayEquals(new Boolean[] {false, false, false, true, true}, sortedBooleanArray);
+        TestUtils.assertArrayEquals(
+                sortedBooleanArray,
+                new Boolean[] {false, false, false, true, true});
         sortedBooleanArray = ArrayUtility.sortByNumberOfOccurrences(booleanArray, false, Boolean.class);
-        Assert.assertArrayEquals(new Boolean[] {false, false, false, true, true}, sortedBooleanArray);
+        TestUtils.assertArrayEquals(
+                sortedBooleanArray,
+                new Boolean[] {false, false, false, true, true});
         sortedBooleanArray = ArrayUtility.sortByNumberOfOccurrences(booleanArray, true, Boolean.class);
-        Assert.assertArrayEquals(new Boolean[] {true, true, false, false, false}, sortedBooleanArray);
+        TestUtils.assertArrayEquals(
+                sortedBooleanArray,
+                new Boolean[] {true, true, false, false, false});
         
         //int
         Integer[] integerArray = new Integer[] {1, 3, -5, 8, 4, 1, 1, 1, 3, 3, 1, 1, 4};
         Integer[] sortedIntegerArray = ArrayUtility.sortByNumberOfOccurrences(integerArray, Integer.class);
-        Assert.assertArrayEquals(new Integer[] {1, 1, 1, 1, 1, 1, 3, 3, 3, 4, 4, -5, 8}, sortedIntegerArray);
+        TestUtils.assertArrayEquals(
+                sortedIntegerArray,
+                new Integer[] {1, 1, 1, 1, 1, 1, 3, 3, 3, 4, 4, -5, 8});
         sortedIntegerArray = ArrayUtility.sortByNumberOfOccurrences(integerArray, false, Integer.class);
-        Assert.assertArrayEquals(new Integer[] {1, 1, 1, 1, 1, 1, 3, 3, 3, 4, 4, -5, 8}, sortedIntegerArray);
+        TestUtils.assertArrayEquals(
+                sortedIntegerArray,
+                new Integer[] {1, 1, 1, 1, 1, 1, 3, 3, 3, 4, 4, -5, 8});
         sortedIntegerArray = ArrayUtility.sortByNumberOfOccurrences(integerArray, true, Integer.class);
-        Assert.assertArrayEquals(new Integer[] {-5, 8, 4, 4, 3, 3, 3, 1, 1, 1, 1, 1, 1}, sortedIntegerArray);
+        TestUtils.assertArrayEquals(
+                sortedIntegerArray,
+                new Integer[] {-5, 8, 4, 4, 3, 3, 3, 1, 1, 1, 1, 1, 1});
         
         //float
         Float[] floatArray = new Float[] {1.1f, 3.9f, -5.0f, 8.44f, 4.7f, 1.1f, 1.1f, 1.1f, 3.8f, 3.8f, 1.1f, 1.1f, 4.7f};
         Float[] sortedFloatArray = ArrayUtility.sortByNumberOfOccurrences(floatArray, Float.class);
-        Assert.assertArrayEquals(new Float[] {1.1f, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f, 4.7f, 4.7f, 3.8f, 3.8f, 3.9f, -5.0f, 8.44f}, sortedFloatArray);
+        TestUtils.assertArrayEquals(
+                sortedFloatArray,
+                new Float[] {1.1f, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f, 4.7f, 4.7f, 3.8f, 3.8f, 3.9f, -5.0f, 8.44f});
         sortedFloatArray = ArrayUtility.sortByNumberOfOccurrences(floatArray, false, Float.class);
-        Assert.assertArrayEquals(new Float[] {1.1f, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f, 4.7f, 4.7f, 3.8f, 3.8f, 3.9f, -5.0f, 8.44f}, sortedFloatArray);
+        TestUtils.assertArrayEquals(
+                sortedFloatArray,
+                new Float[] {1.1f, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f, 4.7f, 4.7f, 3.8f, 3.8f, 3.9f, -5.0f, 8.44f});
         sortedFloatArray = ArrayUtility.sortByNumberOfOccurrences(floatArray, true, Float.class);
-        Assert.assertArrayEquals(new Float[] {3.9f, -5.0f, 8.44f, 4.7f, 4.7f, 3.8f, 3.8f, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f}, sortedFloatArray);
+        TestUtils.assertArrayEquals(
+                sortedFloatArray,
+                new Float[] {3.9f, -5.0f, 8.44f, 4.7f, 4.7f, 3.8f, 3.8f, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f, 1.1f});
         
         //double
         Double[] doubleArray = new Double[] {1.1d, 3.9d, -5.0d, 8.44d, 4.7d, 1.1d, 1.1d, 1.1d, 3.8d, 3.8d, 1.1d, 1.1d, 4.7d};
         Double[] sortedDoubleArray = ArrayUtility.sortByNumberOfOccurrences(doubleArray, Double.class);
-        Assert.assertArrayEquals(new Double[] {1.1d, 1.1d, 1.1d, 1.1d, 1.1d, 1.1d, 4.7d, 4.7d, 3.8d, 3.8d, 3.9d, -5.0d, 8.44d}, sortedDoubleArray);
+        TestUtils.assertArrayEquals(
+                sortedDoubleArray,
+                new Double[] {1.1d, 1.1d, 1.1d, 1.1d, 1.1d, 1.1d, 4.7d, 4.7d, 3.8d, 3.8d, 3.9d, -5.0d, 8.44d});
         sortedDoubleArray = ArrayUtility.sortByNumberOfOccurrences(doubleArray, false, Double.class);
-        Assert.assertArrayEquals(new Double[] {1.1d, 1.1d, 1.1d, 1.1d, 1.1d, 1.1d, 4.7d, 4.7d, 3.8d, 3.8d, 3.9d, -5.0d, 8.44d}, sortedDoubleArray);
+        TestUtils.assertArrayEquals(
+                sortedDoubleArray,
+                new Double[] {1.1d, 1.1d, 1.1d, 1.1d, 1.1d, 1.1d, 4.7d, 4.7d, 3.8d, 3.8d, 3.9d, -5.0d, 8.44d});
         sortedDoubleArray = ArrayUtility.sortByNumberOfOccurrences(doubleArray, true, Double.class);
-        Assert.assertArrayEquals(new Double[] {3.9d, -5.0d, 8.44d, 4.7d, 4.7d, 3.8d, 3.8d, 1.1d, 1.1d, 1.1d, 1.1d, 1.1d, 1.1d}, sortedDoubleArray);
+        TestUtils.assertArrayEquals(
+                sortedDoubleArray,
+                new Double[] {3.9d, -5.0d, 8.44d, 4.7d, 4.7d, 3.8d, 3.8d, 1.1d, 1.1d, 1.1d, 1.1d, 1.1d, 1.1d});
         
         //long
         Long[] longArray = new Long[] {1000L, 3000L, -5000L, 8000L, 4000L, 1000L, 1000L, 1000L, 3000L, 3000L, 1000L, 1000L, 4000L};
         Long[] sortedLongArray = ArrayUtility.sortByNumberOfOccurrences(longArray, Long.class);
-        Assert.assertArrayEquals(new Long[] {1000L, 1000L, 1000L, 1000L, 1000L, 1000L, 3000L, 3000L, 3000L, 4000L, 4000L, -5000L, 8000L}, sortedLongArray);
+        TestUtils.assertArrayEquals(
+                sortedLongArray,
+                new Long[] {1000L, 1000L, 1000L, 1000L, 1000L, 1000L, 3000L, 3000L, 3000L, 4000L, 4000L, -5000L, 8000L});
         sortedLongArray = ArrayUtility.sortByNumberOfOccurrences(longArray, false, Long.class);
-        Assert.assertArrayEquals(new Long[] {1000L, 1000L, 1000L, 1000L, 1000L, 1000L, 3000L, 3000L, 3000L, 4000L, 4000L, -5000L, 8000L}, sortedLongArray);
+        TestUtils.assertArrayEquals(
+                sortedLongArray,
+                new Long[] {1000L, 1000L, 1000L, 1000L, 1000L, 1000L, 3000L, 3000L, 3000L, 4000L, 4000L, -5000L, 8000L});
         sortedLongArray = ArrayUtility.sortByNumberOfOccurrences(longArray, true, Long.class);
-        Assert.assertArrayEquals(new Long[] {-5000L, 8000L, 4000L, 4000L, 3000L, 3000L, 3000L, 1000L, 1000L, 1000L, 1000L, 1000L, 1000L}, sortedLongArray);
+        TestUtils.assertArrayEquals(
+                sortedLongArray,
+                new Long[] {-5000L, 8000L, 4000L, 4000L, 3000L, 3000L, 3000L, 1000L, 1000L, 1000L, 1000L, 1000L, 1000L});
         
         //object
         Object a = new Object();
@@ -2245,11 +2248,17 @@ public class ArrayUtilityTest {
         Object d = new HashMap<>();
         Object[] objectArray = new Object[] {a, b, a, a, a, c, d, c, d, c};
         Object[] sortedObjectArray = ArrayUtility.sortByNumberOfOccurrences(objectArray, Object.class);
-        Assert.assertArrayEquals(new Object[] {a, a, a, a, c, c, c, d, d, b}, sortedObjectArray);
+        TestUtils.assertArrayEquals(
+                sortedObjectArray,
+                new Object[] {a, a, a, a, c, c, c, d, d, b});
         sortedObjectArray = ArrayUtility.sortByNumberOfOccurrences(objectArray, false, Object.class);
-        Assert.assertArrayEquals(new Object[] {a, a, a, a, c, c, c, d, d, b}, sortedObjectArray);
+        TestUtils.assertArrayEquals(
+                sortedObjectArray,
+                new Object[] {a, a, a, a, c, c, c, d, d, b});
         sortedObjectArray = ArrayUtility.sortByNumberOfOccurrences(objectArray, true, Object.class);
-        Assert.assertArrayEquals(new Object[] {b, d, d, c, c, c, a, a, a, a}, sortedObjectArray);
+        TestUtils.assertArrayEquals(
+                sortedObjectArray,
+                new Object[] {b, d, d, c, c, c, a, a, a, a});
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->

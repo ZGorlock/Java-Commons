@@ -100,7 +100,9 @@ public class EquationUtilityTest {
     @Test
     public void testConstants() throws Exception {
         //constants
-        Assert.assertArrayEquals(new Character[] {'^', '~', '*', '/', '%', '+', '-'}, EquationUtility.OPERATORS.toArray(Character[]::new));
+        TestUtils.assertArrayEquals(
+                EquationUtility.OPERATORS.toArray(Character[]::new),
+                new Character[] {'^', '~', '*', '/', '%', '+', '-'});
         Assert.assertEquals("^~*/%+-`()", EquationUtility.SYMBOLS);
         
         //patterns

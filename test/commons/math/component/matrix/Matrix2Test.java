@@ -131,17 +131,23 @@ public class Matrix2Test {
     public void testConstructors() throws Exception {
         //components
         Matrix2 matrix = new Matrix2(0.884, 2, 1.1, -9.3);
-        Assert.assertArrayEquals(new Double[] {0.884, 2.0, 1.1, -9.3}, matrix.getRawComponents());
+        TestUtils.assertArrayEquals(
+                matrix.getRawComponents(),
+                new Double[] {0.884, 2.0, 1.1, -9.3});
         Assert.assertEquals(2, matrix.getDimensionality());
         
         //empty
         Matrix2 matrixDefault = new Matrix2();
-        Assert.assertArrayEquals(new Double[] {0.0, 0.0, 0.0, 0.0}, matrixDefault.getRawComponents());
+        TestUtils.assertArrayEquals(
+                matrixDefault.getRawComponents(),
+                new Double[] {0.0, 0.0, 0.0, 0.0});
         Assert.assertEquals(2, matrixDefault.getDimensionality());
         
         //dimensionality (ignored)
         Matrix2 matrixDimensionality = new Matrix2(8);
-        Assert.assertArrayEquals(new Double[] {0.0, 0.0, 0.0, 0.0}, matrixDimensionality.getRawComponents());
+        TestUtils.assertArrayEquals(
+                matrixDimensionality.getRawComponents(),
+                new Double[] {0.0, 0.0, 0.0, 0.0});
         Assert.assertEquals(2, matrixDimensionality.getDimensionality());
         
         //equality
@@ -402,7 +408,9 @@ public class Matrix2Test {
         sut = new Matrix2(8.1, 6.6, 5, 1.09);
         Matrix clone = sut.cloned();
         Assert.assertNotNull(clone);
-        Assert.assertArrayEquals(sut.getRawComponents(), clone.getRawComponents());
+        TestUtils.assertArrayEquals(
+                clone.getRawComponents(),
+                sut.getRawComponents());
         Assert.assertNotSame(sut, clone);
     }
     
@@ -418,7 +426,9 @@ public class Matrix2Test {
         sut = new Matrix2(8.1, 6.6, 5, 1.09);
         Matrix emptyCopy = sut.emptyCopy();
         Assert.assertNotNull(emptyCopy);
-        Assert.assertArrayEquals(Matrix.origin(sut.getDimensionality()).getRawComponents(), emptyCopy.getRawComponents());
+        TestUtils.assertArrayEquals(
+                emptyCopy.getRawComponents(),
+                Matrix.origin(sut.getDimensionality()).getRawComponents());
         Assert.assertNotSame(sut, emptyCopy);
     }
     
@@ -510,14 +520,18 @@ public class Matrix2Test {
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Double[] {-9.3, 1.1, 2.0, 0.884}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Double[] {-9.3, 1.1, 2.0, 0.884});
         
         sut = new Matrix2();
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Double[] {0.0, 0.0, 0.0, 0.0}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Double[] {0.0, 0.0, 0.0, 0.0});
     }
     
     /**
@@ -1392,12 +1406,16 @@ public class Matrix2Test {
     public void testCopyMeta() throws Exception {
         Matrix component1 = new Matrix2(8.5, 1.5, -5.006, 11.1);
         Assert.assertEquals(2, component1.getDimensionality());
-        Assert.assertArrayEquals(new Double[] {8.5, 1.5, -5.006, 11.1}, component1.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component1.getRawComponents(),
+                new Double[] {8.5, 1.5, -5.006, 11.1});
         
         Matrix component2 = new Matrix2(9.1, 6.3, 1.7, 0.3);
         component1.copyMeta(component2);
         Assert.assertEquals(2, component2.getDimensionality());
-        Assert.assertArrayEquals(new Double[] {9.1, 6.3, 1.7, 0.3}, component2.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component2.getRawComponents(),
+                new Double[] {9.1, 6.3, 1.7, 0.3});
     }
     
     /**
@@ -1641,8 +1659,12 @@ public class Matrix2Test {
         
         //standard
         component = new Matrix2(8.51654089415614591484, 1.505684814184524918, -5.00654984504254129841, 11.15260409872454165782);
-        Assert.assertArrayEquals(new Double[] {8.51654089415614591484, 1.505684814184524918, -5.00654984504254129841, 11.15260409872454165782}, component.getRawComponents());
-        Assert.assertArrayEquals(new Double[] {8.516540894156, 1.505684814185, -5.006549845043, 11.152604098725,}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Double[] {8.51654089415614591484, 1.505684814184524918, -5.00654984504254129841, 11.15260409872454165782});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Double[] {8.516540894156, 1.505684814185, -5.006549845043, 11.152604098725,});
     }
     
     /**
@@ -1658,16 +1680,24 @@ public class Matrix2Test {
         //standard
         
         component = new Matrix2(8.5, 1.5, -5.006, 11.1);
-        Assert.assertArrayEquals(new Double[] {8.5, 1.5, -5.006, 11.1}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Double[] {8.5, 1.5, -5.006, 11.1});
         
         component = new Matrix2();
-        Assert.assertArrayEquals(new Double[] {0.0, 0.0, 0.0, 0.0}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Double[] {0.0, 0.0, 0.0, 0.0});
         
         component = new Matrix2(8.500000000001, 1.499999999996, -5.005999999999, 11.099999999999);
-        Assert.assertArrayEquals(new Double[] {8.500000000001, 1.499999999996, -5.005999999999, 11.099999999999}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Double[] {8.500000000001, 1.499999999996, -5.005999999999, 11.099999999999});
         
         component = new Matrix2(8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999, 11.0999999999999999999999);
-        Assert.assertArrayEquals(new Double[] {8.5, 1.5, -5.006, 11.1}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Double[] {8.5, 1.5, -5.006, 11.1});
     }
     
     /**
@@ -1682,8 +1712,12 @@ public class Matrix2Test {
         
         //standard
         component = new Matrix2(8.51654089415614591484, 1.505684814184524918, -5.00654984504254129841, 11.15260409872454165782);
-        Assert.assertArrayEquals(new double[] {8.51654089415614591484, 1.505684814184524918, -5.00654984504254129841, 11.15260409872454165782}, component.getPrimitiveComponents(), TestUtils.DELTA);
-        Assert.assertArrayEquals(new Double[] {8.516540894156, 1.505684814185, -5.006549845043, 11.152604098725,}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                Arrays.stream(component.getPrimitiveComponents()).boxed().toArray(),
+                new Double[] {8.516540894156, 1.505684814185, -5.006549845043, 11.152604098725});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Double[] {8.516540894156, 1.505684814185, -5.006549845043, 11.152604098725,});
     }
     
     /**
@@ -1973,7 +2007,9 @@ public class Matrix2Test {
         newComponents = new Double[] {5.6, 6.7, 1.1, 7.2};
         Assert.assertEquals(2, component.getDimensionality());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new Double[] {5.6, 6.7, 1.1, 7.2}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Double[] {5.6, 6.7, 1.1, 7.2});
         Assert.assertEquals(2, component.getDimensionality());
         
         //invalid
@@ -2001,28 +2037,44 @@ public class Matrix2Test {
         //standard
         
         sut = new Matrix2(8.5, 1.5, -5.006, 11.1);
-        Assert.assertArrayEquals(new Double[] {8.5, 1.5, -5.006, 11.1}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.5, 1.5, -5.006, 11.1});
         sut.set(0, 5.77);
         sut.set(3, 3.0);
-        Assert.assertArrayEquals(new Double[] {5.77, 1.5, -5.006, 3.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {5.77, 1.5, -5.006, 3.0});
         
         sut = new Matrix2();
-        Assert.assertArrayEquals(new Double[] {0.0, 0.0, 0.0, 0.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {0.0, 0.0, 0.0, 0.0});
         sut.set(0, 5.77);
         sut.set(3, 3.0);
-        Assert.assertArrayEquals(new Double[] {5.77, 0.0, 0.0, 3.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {5.77, 0.0, 0.0, 3.0});
         
         sut = new Matrix2(8.500000000001, 1.499999999996, -5.005999999999, 11.099999999999);
-        Assert.assertArrayEquals(new Double[] {8.500000000001, 1.499999999996, -5.005999999999, 11.099999999999}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.500000000001, 1.499999999996, -5.005999999999, 11.099999999999});
         sut.set(0, 5.769999999996);
         sut.set(3, 3.000000000001);
-        Assert.assertArrayEquals(new Double[] {5.769999999996, 1.499999999996, -5.005999999999, 3.000000000001}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {5.769999999996, 1.499999999996, -5.005999999999, 3.000000000001});
         
         sut = new Matrix2(8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999, 11.0999999999999999999999);
-        Assert.assertArrayEquals(new Double[] {8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999, 11.0999999999999999999999}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999, 11.0999999999999999999999});
         sut.set(0, 6.5000000000000000000000001);
         sut.set(3, -1.49999999999999999999996);
-        Assert.assertArrayEquals(new Double[] {6.5, 1.5, -5.006, -1.5}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {6.5, 1.5, -5.006, -1.5});
         
         //invalid
         

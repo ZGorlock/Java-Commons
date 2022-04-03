@@ -133,53 +133,73 @@ public class IntVectorTest {
     public void testConstructors() throws Exception {
         //components
         IntVector vector = new IntVector(1, 2, 1);
-        Assert.assertArrayEquals(new Integer[] {1, 2, 1}, vector.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector.getRawComponents(),
+                new Integer[] {1, 2, 1});
         Assert.assertEquals(3, vector.getDimensionality());
         
         //list of components
         List<Integer> values = Arrays.asList(1, 2, 1, 8, 9);
         IntVector vector2 = new IntVector(values);
-        Assert.assertArrayEquals(new Integer[] {1, 2, 1, 8, 9}, vector2.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector2.getRawComponents(),
+                new Integer[] {1, 2, 1, 8, 9});
         Assert.assertEquals(5, vector2.getDimensionality());
         
         //int vector
         IntVector vector3 = new IntVector(new IntVector(1, 2, 1));
-        Assert.assertArrayEquals(new Integer[] {1, 2, 1}, vector3.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector3.getRawComponents(),
+                new Integer[] {1, 2, 1});
         Assert.assertEquals(3, vector3.getDimensionality());
         
         //vector
         IntVector vector4 = new IntVector(new Vector(1.15, 2.94, 1.3));
-        Assert.assertArrayEquals(new Integer[] {1, 2, 1}, vector4.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector4.getRawComponents(),
+                new Integer[] {1, 2, 1});
         Assert.assertEquals(3, vector4.getDimensionality());
         
         //int vector and component
         IntVector vector5 = new IntVector(new IntVector(1, 2), 1);
-        Assert.assertArrayEquals(new Integer[] {1, 2, 1}, vector5.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector5.getRawComponents(),
+                new Integer[] {1, 2, 1});
         Assert.assertEquals(3, vector5.getDimensionality());
         
         //int vector and components
         IntVector vector6 = new IntVector(new IntVector(1, 2, 1), 8, 9);
-        Assert.assertArrayEquals(new Integer[] {1, 2, 1, 8, 9}, vector6.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector6.getRawComponents(),
+                new Integer[] {1, 2, 1, 8, 9});
         Assert.assertEquals(5, vector6.getDimensionality());
         
         //vector and component
         IntVector vector7 = new IntVector(new Vector(1.15, 2.94), 1);
-        Assert.assertArrayEquals(new Integer[] {1, 2, 1}, vector7.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector7.getRawComponents(),
+                new Integer[] {1, 2, 1});
         Assert.assertEquals(3, vector7.getDimensionality());
         
         //vector and components
         IntVector vector8 = new IntVector(new Vector(1.15, 2.94, 1.3), 8, 9);
-        Assert.assertArrayEquals(new Integer[] {1, 2, 1, 8, 9}, vector8.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector8.getRawComponents(),
+                new Integer[] {1, 2, 1, 8, 9});
         Assert.assertEquals(5, vector8.getDimensionality());
         
         //dimensionality
         IntVector vectorDimensionality = new IntVector(6);
-        Assert.assertArrayEquals(new Integer[] {0, 0, 0, 0, 0, 0}, vectorDimensionality.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vectorDimensionality.getRawComponents(),
+                new Integer[] {0, 0, 0, 0, 0, 0});
         Assert.assertEquals(6, vectorDimensionality.getDimensionality());
         
         //empty
         IntVector vectorDefault = new IntVector();
-        Assert.assertArrayEquals(new Integer[] {}, vectorDefault.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vectorDefault.getRawComponents(),
+                new Integer[] {});
         Assert.assertEquals(0, vectorDefault.getDimensionality());
         
         //equality
@@ -511,7 +531,9 @@ public class IntVectorTest {
         sut = new IntVector(8, 7, 5, 1);
         IntVector clone = sut.cloned();
         Assert.assertNotNull(clone);
-        Assert.assertArrayEquals(sut.getRawComponents(), clone.getRawComponents());
+        TestUtils.assertArrayEquals(
+                clone.getRawComponents(),
+                sut.getRawComponents());
         Assert.assertNotSame(sut, clone);
     }
     
@@ -527,7 +549,9 @@ public class IntVectorTest {
         sut = new IntVector(8, 7, 5, 1);
         IntVector emptyCopy = sut.emptyCopy();
         Assert.assertNotNull(emptyCopy);
-        Assert.assertArrayEquals(IntVector.origin(sut.getDimensionality()).getRawComponents(), emptyCopy.getRawComponents());
+        TestUtils.assertArrayEquals(
+                emptyCopy.getRawComponents(),
+                IntVector.origin(sut.getDimensionality()).getRawComponents());
         Assert.assertNotSame(sut, emptyCopy);
     }
     
@@ -575,35 +599,45 @@ public class IntVectorTest {
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Integer[] {6, 8, 3, -2, 9}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Integer[] {6, 8, 3, -2, 9});
         
         sut = new IntVector(6, 8, 3, -2, 9);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Integer[] {9, -2, 3, 8, 6}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Integer[] {9, -2, 3, 8, 6});
         
         sut = new IntVector(0, 1, 0, 1);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Integer[] {1, 0, 1, 0}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Integer[] {1, 0, 1, 0});
         
         sut = new IntVector(new int[] {6});
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Integer[] {6}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Integer[] {6});
         
         sut = new IntVector();
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Integer[] {}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Integer[] {});
     }
     
     /**
@@ -1425,12 +1459,16 @@ public class IntVectorTest {
     public void testCopyMeta() throws Exception {
         IntVector component1 = new IntVector(8, 7, 7, 3);
         Assert.assertEquals(4, component1.getDimensionality());
-        Assert.assertArrayEquals(new Integer[] {8, 7, 7, 3}, component1.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component1.getRawComponents(),
+                new Integer[] {8, 7, 7, 3});
         
         IntVector component2 = new IntVector(9, 6, 2);
         component1.copyMeta(component2);
         Assert.assertEquals(3, component2.getDimensionality());
-        Assert.assertArrayEquals(new Integer[] {9, 6, 2}, component2.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component2.getRawComponents(),
+                new Integer[] {9, 6, 2});
     }
     
     /**
@@ -1646,8 +1684,12 @@ public class IntVectorTest {
         
         //standard
         component = new IntVector(8, 7, 7, 3);
-        Assert.assertArrayEquals(new Integer[] {8, 7, 7, 3}, component.getRawComponents());
-        Assert.assertArrayEquals(new Integer[] {8, 7, 7, 3}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Integer[] {8, 7, 7, 3});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Integer[] {8, 7, 7, 3});
     }
     
     /**
@@ -1663,13 +1705,19 @@ public class IntVectorTest {
         //standard
         
         component = new IntVector(9, 2, -5);
-        Assert.assertArrayEquals(new Integer[] {9, 2, -5}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Integer[] {9, 2, -5});
         
         component = new IntVector(9, 2);
-        Assert.assertArrayEquals(new Integer[] {9, 2}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Integer[] {9, 2});
         
         component = new IntVector();
-        Assert.assertArrayEquals(new Integer[] {}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Integer[] {});
     }
     
     /**
@@ -1684,8 +1732,12 @@ public class IntVectorTest {
         
         //standard
         component = new IntVector(8, 7, 7, 3);
-        Assert.assertArrayEquals(new int[] {8, 7, 7, 3}, component.getPrimitiveComponents());
-        Assert.assertArrayEquals(new Integer[] {8, 7, 7, 3}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                Arrays.stream(component.getPrimitiveComponents()).boxed().toArray(),
+                new Integer[] {8, 7, 7, 3});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Integer[] {8, 7, 7, 3});
     }
     
     /**
@@ -2162,7 +2214,9 @@ public class IntVectorTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new Integer[] {5, 7, 8, 9}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Integer[] {5, 7, 8, 9});
         Assert.assertEquals(4, component.getDimensionality());
         
         component = new IntVector(6, 3, -2, 9);
@@ -2170,7 +2224,9 @@ public class IntVectorTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new Integer[] {5, 7, 8}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Integer[] {5, 7, 8});
         Assert.assertEquals(3, component.getDimensionality());
         
         component = new IntVector(6, 3, -2, 9);
@@ -2178,7 +2234,9 @@ public class IntVectorTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new Integer[] {5, 7, 8, 9, 10}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Integer[] {5, 7, 8, 9, 10});
         Assert.assertEquals(5, component.getDimensionality());
         
         component = new IntVector(6, 3, -2, 9);
@@ -2186,7 +2244,9 @@ public class IntVectorTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new Integer[] {}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Integer[] {});
         Assert.assertEquals(0, component.getDimensionality());
         
         //invalid
@@ -2208,17 +2268,25 @@ public class IntVectorTest {
         //standard
         
         sut = new IntVector(9, 2, -5);
-        Assert.assertArrayEquals(new Integer[] {9, 2, -5}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {9, 2, -5});
         sut.set(0, 6);
         sut.set(1, 3);
         sut.set(2, 1);
-        Assert.assertArrayEquals(new Integer[] {6, 3, 1}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {6, 3, 1});
         
         sut = new IntVector(9, 2);
-        Assert.assertArrayEquals(new Integer[] {9, 2}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {9, 2});
         sut.set(0, 6);
         sut.set(1, 3);
-        Assert.assertArrayEquals(new Integer[] {6, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {6, 3});
         
         //invalid
         
@@ -2246,27 +2314,43 @@ public class IntVectorTest {
         //standard
         
         sut = new IntVector(4);
-        Assert.assertArrayEquals(new Integer[] {0, 0, 0, 0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {0, 0, 0, 0});
         sut.setX(6);
-        Assert.assertArrayEquals(new Integer[] {6, 0, 0, 0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {6, 0, 0, 0});
         
         sut = new IntVector(8, 77, 1, 3);
-        Assert.assertArrayEquals(new Integer[] {8, 77, 1, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 1, 3});
         sut.setX(6);
-        Assert.assertArrayEquals(new Integer[] {6, 77, 1, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {6, 77, 1, 3});
         
         //invalid
         
         sut = new IntVector();
-        Assert.assertArrayEquals(new Integer[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {});
         sut.setX(6);
-        Assert.assertArrayEquals(new Integer[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {});
         
         sut = new IntVector(8, 77, 1, 3);
-        Assert.assertArrayEquals(new Integer[] {8, 77, 1, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 1, 3});
         TestUtils.assertNoException(() ->
                 sut.setX(null));
-        Assert.assertArrayEquals(new Integer[] {8, 77, 1, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 1, 3});
     }
     
     /**
@@ -2280,32 +2364,52 @@ public class IntVectorTest {
         //standard
         
         sut = new IntVector(4);
-        Assert.assertArrayEquals(new Integer[] {0, 0, 0, 0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {0, 0, 0, 0});
         sut.setY(6);
-        Assert.assertArrayEquals(new Integer[] {0, 6, 0, 0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {0, 6, 0, 0});
         
         sut = new IntVector(8, 77, 1, 3);
-        Assert.assertArrayEquals(new Integer[] {8, 77, 1, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 1, 3});
         sut.setY(6);
-        Assert.assertArrayEquals(new Integer[] {8, 6, 1, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 6, 1, 3});
         
         //invalid
         
         sut = new IntVector();
-        Assert.assertArrayEquals(new Integer[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {});
         sut.setY(6);
-        Assert.assertArrayEquals(new Integer[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {});
         
         sut = new IntVector(new int[] {8});
-        Assert.assertArrayEquals(new Integer[] {8}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8});
         sut.setY(6);
-        Assert.assertArrayEquals(new Integer[] {8}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8});
         
         sut = new IntVector(8, 77, 1, 3);
-        Assert.assertArrayEquals(new Integer[] {8, 77, 1, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 1, 3});
         TestUtils.assertNoException(() ->
                 sut.setY(null));
-        Assert.assertArrayEquals(new Integer[] {8, 77, 1, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 1, 3});
     }
     
     /**
@@ -2319,37 +2423,61 @@ public class IntVectorTest {
         //standard
         
         sut = new IntVector(4);
-        Assert.assertArrayEquals(new Integer[] {0, 0, 0, 0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {0, 0, 0, 0});
         sut.setZ(6);
-        Assert.assertArrayEquals(new Integer[] {0, 0, 6, 0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {0, 0, 6, 0});
         
         sut = new IntVector(8, 77, 1, 3);
-        Assert.assertArrayEquals(new Integer[] {8, 77, 1, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 1, 3});
         sut.setZ(6);
-        Assert.assertArrayEquals(new Integer[] {8, 77, 6, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 6, 3});
         
         //invalid
         
         sut = new IntVector();
-        Assert.assertArrayEquals(new Integer[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {});
         sut.setZ(6);
-        Assert.assertArrayEquals(new Integer[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {});
         
         sut = new IntVector(new int[] {8});
-        Assert.assertArrayEquals(new Integer[] {8}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8});
         sut.setZ(6);
-        Assert.assertArrayEquals(new Integer[] {8}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8});
         
         sut = new IntVector(8, 77);
-        Assert.assertArrayEquals(new Integer[] {8, 77}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77});
         sut.setZ(6);
-        Assert.assertArrayEquals(new Integer[] {8, 77}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77});
         
         sut = new IntVector(8, 77, 1, 3);
-        Assert.assertArrayEquals(new Integer[] {8, 77, 1, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 1, 3});
         TestUtils.assertNoException(() ->
                 sut.setZ(null));
-        Assert.assertArrayEquals(new Integer[] {8, 77, 1, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 1, 3});
     }
     
     /**
@@ -2363,42 +2491,70 @@ public class IntVectorTest {
         //standard
         
         sut = new IntVector(4);
-        Assert.assertArrayEquals(new Integer[] {0, 0, 0, 0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {0, 0, 0, 0});
         sut.setW(6);
-        Assert.assertArrayEquals(new Integer[] {0, 0, 0, 6}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {0, 0, 0, 6});
         
         sut = new IntVector(8, 77, 1, 3);
-        Assert.assertArrayEquals(new Integer[] {8, 77, 1, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 1, 3});
         sut.setW(6);
-        Assert.assertArrayEquals(new Integer[] {8, 77, 1, 6}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 1, 6});
         
         //invalid
         
         sut = new IntVector();
-        Assert.assertArrayEquals(new Integer[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {});
         sut.setW(6);
-        Assert.assertArrayEquals(new Integer[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {});
         
         sut = new IntVector(new int[] {8});
-        Assert.assertArrayEquals(new Integer[] {8}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8});
         sut.setW(6);
-        Assert.assertArrayEquals(new Integer[] {8}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8});
         
         sut = new IntVector(8, 77);
-        Assert.assertArrayEquals(new Integer[] {8, 77}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77});
         sut.setW(6);
-        Assert.assertArrayEquals(new Integer[] {8, 77}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77});
         
         sut = new IntVector(8, 77, 1);
-        Assert.assertArrayEquals(new Integer[] {8, 77, 1}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 1});
         sut.setW(6);
-        Assert.assertArrayEquals(new Integer[] {8, 77, 1}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 1});
         
         sut = new IntVector(8, 77, 1, 3);
-        Assert.assertArrayEquals(new Integer[] {8, 77, 1, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 1, 3});
         TestUtils.assertNoException(() ->
                 sut.setW(null));
-        Assert.assertArrayEquals(new Integer[] {8, 77, 1, 3}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Integer[] {8, 77, 1, 3});
     }
     
     /**

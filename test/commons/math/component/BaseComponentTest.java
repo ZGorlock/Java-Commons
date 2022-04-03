@@ -533,35 +533,45 @@ public class BaseComponentTest {
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Number[] {5.501, 8, 2.67, -1.944, 8.5}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Number[] {5.501, 8, 2.67, -1.944, 8.5});
         
         sut = new TestComponent(5.501, 8, 2.67, -1.944, 8.5);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Number[] {8.5, -1.944, 2.67, 8, 5.501}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Number[] {8.5, -1.944, 2.67, 8, 5.501});
         
         sut = new TestComponent(0, 1, 0, 1);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Number[] {1, 0, 1, 0}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Number[] {1, 0, 1, 0});
         
         sut = new TestComponent(5.501);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Number[] {5.501}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Number[] {5.501});
         
         sut = new TestComponent();
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Number[] {}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Number[] {});
     }
     
     /**
@@ -1388,19 +1398,29 @@ public class BaseComponentTest {
         //standard
         
         component = new TestComponent(8.5, 1.5, -5.006);
-        Assert.assertArrayEquals(new Number[] {8.5, 1.5, -5.006}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Number[] {8.5, 1.5, -5.006});
         
         component = new TestComponent(8.5, 1.5);
-        Assert.assertArrayEquals(new Number[] {8.5, 1.5}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Number[] {8.5, 1.5});
         
         component = new TestComponent();
-        Assert.assertArrayEquals(new Number[] {}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Number[] {});
         
         component = new TestComponent(8.500000000001, 1.499999999996, -5.005999999999);
-        Assert.assertArrayEquals(new Number[] {8.500000000001, 1.499999999996, -5.005999999999}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Number[] {8.500000000001, 1.499999999996, -5.005999999999});
         
         component = new TestComponent(8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999);
-        Assert.assertArrayEquals(new Number[] {8.5, 1.5, -5.006}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Number[] {8.5, 1.5, -5.006});
     }
     
     /**
@@ -2081,7 +2101,9 @@ public class BaseComponentTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new Number[] {5.6, 6.7, 7.8, 8.9}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Number[] {5.6, 6.7, 7.8, 8.9});
         Assert.assertEquals(4, component.getDimensionality());
         
         component = new TestComponent(5.501, 2.67, -1.944, 8.5);
@@ -2089,7 +2111,9 @@ public class BaseComponentTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new Number[] {5.6, 6.7, 7.8}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Number[] {5.6, 6.7, 7.8});
         Assert.assertEquals(3, component.getDimensionality());
         
         component = new TestComponent(5.501, 2.67, -1.944, 8.5);
@@ -2097,7 +2121,9 @@ public class BaseComponentTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new Number[] {5.6, 6.7, 7.8, 8.9, 9.0}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Number[] {5.6, 6.7, 7.8, 8.9, 9.0});
         Assert.assertEquals(5, component.getDimensionality());
         
         component = new TestComponent(5.501, 2.67, -1.944, 8.5);
@@ -2105,7 +2131,9 @@ public class BaseComponentTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new Number[] {}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Number[] {});
         Assert.assertEquals(0, component.getDimensionality());
         
         //invalid
@@ -2133,30 +2161,46 @@ public class BaseComponentTest {
         //standard
         
         sut = new TestComponent(8.5, 1.5, -5.006);
-        Assert.assertArrayEquals(new Number[] {8.5, 1.5, -5.006}, sut.getComponents());
+        TestUtils.assertArrayEquals(
+                sut.getComponents(),
+                new Number[] {8.5, 1.5, -5.006});
         sut.set(0, 5.77);
         sut.set(1, 3);
         sut.set(2, 0.997);
-        Assert.assertArrayEquals(new Number[] {5.77, 3.0, 0.997}, sut.getComponents());
+        TestUtils.assertArrayEquals(
+                sut.getComponents(),
+                new Number[] {5.77, 3.0, 0.997});
         
         sut = new TestComponent(8.5, 1.5);
-        Assert.assertArrayEquals(new Number[] {8.5, 1.5}, sut.getComponents());
+        TestUtils.assertArrayEquals(
+                sut.getComponents(),
+                new Number[] {8.5, 1.5});
         sut.set(0, 5.77);
         sut.set(1, 3);
-        Assert.assertArrayEquals(new Number[] {5.77, 3.0}, sut.getComponents());
+        TestUtils.assertArrayEquals(
+                sut.getComponents(),
+                new Number[] {5.77, 3.0});
         
         sut = new TestComponent(8.500000000001, 1.499999999996, -5.005999999999);
-        Assert.assertArrayEquals(new Number[] {8.500000000001, 1.499999999996, -5.005999999999}, sut.getComponents());
+        TestUtils.assertArrayEquals(
+                sut.getComponents(),
+                new Number[] {8.500000000001, 1.499999999996, -5.005999999999});
         sut.set(0, 5.769999999996);
         sut.set(1, 3.000000000001);
-        Assert.assertArrayEquals(new Number[] {5.769999999996, 3.000000000001, -5.005999999999}, sut.getComponents());
+        TestUtils.assertArrayEquals(
+                sut.getComponents(),
+                new Number[] {5.769999999996, 3.000000000001, -5.005999999999});
         
         sut = new TestComponent(8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999);
-        Assert.assertArrayEquals(new Number[] {8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999}, sut.getComponents());
+        TestUtils.assertArrayEquals(
+                sut.getComponents(),
+                new Number[] {8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999});
         sut.set(0, 6.5000000000000000000000001);
         sut.set(1, -1.49999999999999999999996);
         sut.set(2, 3.0059999999999999999999);
-        Assert.assertArrayEquals(new Number[] {6.5, -1.5, 3.006}, sut.getComponents());
+        TestUtils.assertArrayEquals(
+                sut.getComponents(),
+                new Number[] {6.5, -1.5, 3.006});
         
         //invalid
         

@@ -25,6 +25,7 @@ import java.util.regex.Pattern;
 import commons.log.CommonsLogging;
 import commons.object.string.StringUtility;
 import commons.test.TestAccess;
+import commons.test.TestUtils;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
 import org.junit.AfterClass;
@@ -12788,11 +12789,10 @@ public class FilesystemTest {
         Assert.assertTrue(testFile.isFile());
         fos = Filesystem.openOutputStream(testFile);
         Assert.assertNotNull(fos);
-        byte[] a = "a sample text".getBytes();
-        fos.write(a);
+        fos.write("a sample text".getBytes());
         fos.close();
         dataArray = Filesystem.readFileToByteArray(testFile);
-        Assert.assertArrayEquals("a sample text".getBytes(), dataArray);
+        Assert.assertEquals("a sample text", new String(dataArray));
         Assert.assertTrue(testFile.delete());
         Assert.assertFalse(testFile.exists());
         
@@ -12805,7 +12805,7 @@ public class FilesystemTest {
         fos.write("a sample text\nanother sample text".getBytes());
         fos.close();
         dataArray = Filesystem.readFileToByteArray(testFile);
-        Assert.assertArrayEquals("a sample text\nanother sample text".getBytes(), dataArray);
+        Assert.assertEquals("a sample text\nanother sample text", new String(dataArray));
         Assert.assertTrue(testFile.delete());
         Assert.assertFalse(testFile.exists());
         
@@ -12817,14 +12817,14 @@ public class FilesystemTest {
         Assert.assertNotNull(fos);
         fos.close();
         dataArray = Filesystem.readFileToByteArray(testFile);
-        Assert.assertArrayEquals("".getBytes(), dataArray);
+        Assert.assertEquals("", new String(dataArray));
         Assert.assertTrue(testFile.delete());
         Assert.assertFalse(testFile.exists());
         
         //does not exist
         Assert.assertFalse(testFile.exists());
         dataArray = Filesystem.readFileToByteArray(testFile);
-        Assert.assertArrayEquals("".getBytes(), dataArray);
+        Assert.assertEquals("", new String(dataArray));
         Assert.assertFalse(testFile.exists());
         
         //directory
@@ -12832,7 +12832,7 @@ public class FilesystemTest {
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
         dataArray = Filesystem.readFileToByteArray(testDir);
-        Assert.assertArrayEquals("".getBytes(), dataArray);
+        Assert.assertEquals("", new String(dataArray));
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
     }
@@ -12857,7 +12857,9 @@ public class FilesystemTest {
         fos.write("a sample text".getBytes());
         fos.close();
         dataStrings = Filesystem.readLines(testFile);
-        Assert.assertArrayEquals(new String[] {"a sample text"}, dataStrings.toArray());
+        TestUtils.assertListEquals(
+                dataStrings,
+                new String[] {"a sample text"});
         Assert.assertTrue(testFile.delete());
         Assert.assertFalse(testFile.exists());
         
@@ -12870,7 +12872,9 @@ public class FilesystemTest {
         fos.write("a sample text\nanother sample text\n\n\none more sample text".getBytes());
         fos.close();
         dataStrings = Filesystem.readLines(testFile);
-        Assert.assertArrayEquals(new String[] {"a sample text", "another sample text", "", "", "one more sample text"}, dataStrings.toArray());
+        TestUtils.assertListEquals(
+                dataStrings,
+                new String[] {"a sample text", "another sample text", "", "", "one more sample text"});
         Assert.assertTrue(testFile.delete());
         Assert.assertFalse(testFile.exists());
         
@@ -12882,14 +12886,18 @@ public class FilesystemTest {
         Assert.assertNotNull(fos);
         fos.close();
         dataStrings = Filesystem.readLines(testFile);
-        Assert.assertArrayEquals(new String[] {}, dataStrings.toArray());
+        TestUtils.assertListEquals(
+                dataStrings,
+                new String[] {});
         Assert.assertTrue(testFile.delete());
         Assert.assertFalse(testFile.exists());
         
         //does not exist
         Assert.assertFalse(testFile.exists());
         dataStrings = Filesystem.readLines(testFile);
-        Assert.assertArrayEquals(new String[] {}, dataStrings.toArray());
+        TestUtils.assertListEquals(
+                dataStrings,
+                new String[] {});
         Assert.assertFalse(testFile.exists());
         
         //directory
@@ -12897,7 +12905,9 @@ public class FilesystemTest {
         Assert.assertTrue(testDir.exists());
         Assert.assertTrue(testDir.isDirectory());
         dataStrings = Filesystem.readLines(testDir);
-        Assert.assertArrayEquals(new String[] {}, dataStrings.toArray());
+        TestUtils.assertListEquals(
+                dataStrings,
+                new String[] {});
         Assert.assertTrue(testDir.delete());
         Assert.assertFalse(testDir.exists());
     }

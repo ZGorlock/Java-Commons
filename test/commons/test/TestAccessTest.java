@@ -341,8 +341,7 @@ public class TestAccessTest {
             final List<String> expectedMethods = Stream.of(testClassMethods, objectMethods,
                             (((entity instanceof TestSubClass) || (entity == TestSubClass.class)) ? testSubClassMethods : ListUtility.emptyList()))
                     .flatMap(Collection::stream).map(Object::toString).collect(Collectors.toList());
-            Assert.assertEquals(expectedMethods.size(), methodStrings.size());
-            Assert.assertTrue(ListUtility.equals(expectedMethods, methodStrings, false));
+            TestUtils.assertListEquals(expectedMethods, methodStrings, false);
         });
         
         //invalid
@@ -440,8 +439,7 @@ public class TestAccessTest {
             final List<String> expectedConstructors = Stream.of(testClassConstructors, objectConstructors,
                             (((entity instanceof TestSubClass) || (entity == TestSubClass.class)) ? testSubClassConstructors : ListUtility.emptyList()))
                     .flatMap(Collection::stream).map(Object::toString).collect(Collectors.toList());
-            Assert.assertEquals(expectedConstructors.size(), constructorStrings.size());
-            Assert.assertTrue(ListUtility.equals(expectedConstructors, constructorStrings, false));
+            TestUtils.assertListEquals(expectedConstructors, constructorStrings, false);
         });
         
         //invalid
@@ -538,8 +536,7 @@ public class TestAccessTest {
             final List<String> expectedFields = Stream.of(testClassFields,
                             (((entity instanceof TestSubClass) || (entity == TestSubClass.class)) ? testSubClassFields : ListUtility.emptyList()))
                     .flatMap(Collection::stream).map(Object::toString).collect(Collectors.toList());
-            Assert.assertEquals(expectedFields.size(), fieldStrings.size());
-            Assert.assertTrue(ListUtility.equals(expectedFields, fieldStrings, false));
+            TestUtils.assertListEquals(expectedFields, fieldStrings, false);
         });
         
         //invalid
@@ -904,7 +901,9 @@ public class TestAccessTest {
             final Object[] arguments = (Object[]) params[1];
             Object testInstance = constructorInvoker.apply(new Object[] {caller, arguments});
             Assert.assertEquals(caller, testInstance.getClass());
-            Assert.assertArrayEquals(arguments, TestAccess.getFieldValue(testInstance, Object[].class, "arguments"));
+            TestUtils.assertArrayEquals(
+                    TestAccess.getFieldValue(testInstance, Object[].class, "arguments"),
+                    arguments);
         };
         
         //standard

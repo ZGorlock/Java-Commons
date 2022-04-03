@@ -134,7 +134,9 @@ public class StringUtilityTest {
         //constants
         Assert.assertEquals("AEIOU", StringUtility.VOWEL_CHARS);
         Assert.assertEquals("BCDFGHJKLMNPQRSTVWXYZ", StringUtility.CONSONANT_CHARS);
-        Assert.assertArrayEquals(new String[] {"+", "-", "*", "/", "\\", "%", ">", "<", "!", "==", "!=", "<>", ">=", "<="}, StringUtility.OPERATOR_TOKENS.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.OPERATOR_TOKENS,
+                new String[] {"+", "-", "*", "/", "\\", "%", ">", "<", "!", "==", "!=", "<>", ">=", "<="});
         
         //patterns
         Assert.assertEquals("^(?<indent>\\s*(?:(?:\\d+\\.\\s*)|(?:\\*\\s*))?).*", StringUtility.INDENT_SPACE_PATTERN.pattern());
@@ -578,15 +580,15 @@ public class StringUtilityTest {
     @Test
     public void testCharStream() throws Exception {
         //standard
-        Assert.assertArrayEquals(
-                new Character[] {'t', 'e', 's', 't'},
-                StringUtility.charStream("test").toArray(Character[]::new));
-        Assert.assertArrayEquals(
-                new Character[] {'#', 't', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', '.', ' ', '2', '!'},
-                StringUtility.charStream("#this is a test. 2!").toArray(Character[]::new));
-        Assert.assertArrayEquals(
-                new Character[] {},
-                StringUtility.charStream("").toArray(Character[]::new));
+        TestUtils.assertArrayEquals(
+                StringUtility.charStream("test").toArray(Character[]::new),
+                new Character[] {'t', 'e', 's', 't'});
+        TestUtils.assertArrayEquals(
+                StringUtility.charStream("#this is a test. 2!").toArray(Character[]::new),
+                new Character[] {'#', 't', 'h', 'i', 's', ' ', 'i', 's', ' ', 'a', ' ', 't', 'e', 's', 't', '.', ' ', '2', '!'});
+        TestUtils.assertArrayEquals(
+                StringUtility.charStream("").toArray(Character[]::new),
+                new Character[] {});
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -602,15 +604,15 @@ public class StringUtilityTest {
     @Test
     public void testStringStream() throws Exception {
         //standard
-        Assert.assertArrayEquals(
-                new String[] {"t", "e", "s", "t"},
-                StringUtility.stringStream("test").toArray(String[]::new));
-        Assert.assertArrayEquals(
-                new String[] {"#", "t", "h", "i", "s", " ", "i", "s", " ", "a", " ", "t", "e", "s", "t", ".", " ", "2", "!"},
-                StringUtility.stringStream("#this is a test. 2!").toArray(String[]::new));
-        Assert.assertArrayEquals(
-                new String[] {},
-                StringUtility.stringStream("").toArray(String[]::new));
+        TestUtils.assertArrayEquals(
+                StringUtility.stringStream("test").toArray(String[]::new),
+                new String[] {"t", "e", "s", "t"});
+        TestUtils.assertArrayEquals(
+                StringUtility.stringStream("#this is a test. 2!").toArray(String[]::new),
+                new String[] {"#", "t", "h", "i", "s", " ", "i", "s", " ", "a", " ", "t", "e", "s", "t", ".", " ", "2", "!"});
+        TestUtils.assertArrayEquals(
+                StringUtility.stringStream("").toArray(String[]::new),
+                new String[] {});
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -2118,132 +2120,99 @@ public class StringUtilityTest {
      */
     @Test
     public void testTokenize() throws Exception {
-        List<String> tokens;
-        
         //normal cases
-        
-        tokens = StringUtility.tokenize("This is a string");
-        Assert.assertEquals(4, tokens.size());
-        Assert.assertArrayEquals(new String[] {"This", "is", "a", "string"}, tokens.toArray());
-        
-        tokens = StringUtility.tokenize("Thisisastring");
-        Assert.assertEquals(1, tokens.size());
-        Assert.assertArrayEquals(new String[] {"Thisisastring"}, tokens.toArray());
-        
-        tokens = StringUtility.tokenize("");
-        Assert.assertEquals(1, tokens.size());
-        Assert.assertArrayEquals(new String[] {""}, tokens.toArray());
-        
-        TestUtils.assertException(NullPointerException.class, () ->
-                StringUtility.tokenize(null));
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("This is a string"),
+                new String[] {"This", "is", "a", "string"});
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("Thisisastring"),
+                new String[] {"Thisisastring"});
+        TestUtils.assertListEquals(
+                StringUtility.tokenize(""),
+                new String[] {""});
         
         //delimiter
-        
-        tokens = StringUtility.tokenize("This is a string,This is another string,And another", ",");
-        Assert.assertEquals(3, tokens.size());
-        Assert.assertArrayEquals(new String[] {"This is a string", "This is another string", "And another"}, tokens.toArray());
-        
-        tokens = StringUtility.tokenize("This is a string|This is another string|And another", "\\|");
-        Assert.assertEquals(3, tokens.size());
-        Assert.assertArrayEquals(new String[] {"This is a string", "This is another string", "And another"}, tokens.toArray());
-        
-        tokens = StringUtility.tokenize("This is a string,This is another string,And another", "is");
-        Assert.assertEquals(5, tokens.size());
-        Assert.assertArrayEquals(new String[] {"Th", " ", " a string,Th", " ", " another string,And another"}, tokens.toArray());
-        
-        tokens = StringUtility.tokenize("string", "");
-        Assert.assertEquals(6, tokens.size());
-        Assert.assertArrayEquals(new String[] {"s", "t", "r", "i", "n", "g"}, tokens.toArray());
-        
-        TestUtils.assertException(NullPointerException.class, () ->
-                StringUtility.tokenize(null, "\\|"));
-        
-        TestUtils.assertException(NullPointerException.class, () ->
-                StringUtility.tokenize("string", (String) null));
-        
-        TestUtils.assertException(NullPointerException.class, () ->
-                StringUtility.tokenize(null, (String) null));
-        
-        //hard
-        
-        tokens = StringUtility.tokenize("|This is a string|This is another string|And another|", "\\|", false);
-        Assert.assertEquals(4, tokens.size());
-        Assert.assertArrayEquals(new String[] {"", "This is a string", "This is another string", "And another"}, tokens.toArray());
-        
-        tokens = StringUtility.tokenize("|This is a string|This is another string|And another|", "\\|", true);
-        Assert.assertEquals(5, tokens.size());
-        Assert.assertArrayEquals(new String[] {"", "This is a string", "This is another string", "And another", ""}, tokens.toArray());
-        
-        TestUtils.assertException(NullPointerException.class, () ->
-                StringUtility.tokenize(null, "\\|", true));
-        
-        TestUtils.assertException(NullPointerException.class, () ->
-                StringUtility.tokenize("string", (String) null, true));
-        
-        TestUtils.assertException(NullPointerException.class, () ->
-                StringUtility.tokenize(null, (String) null, true));
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("This is a string,This is another string,And another", ","),
+                new String[] {"This is a string", "This is another string", "And another"});
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("This is a string,This is another string,And another", "is"),
+                new String[] {"Th", " ", " a string,Th", " ", " another string,And another"});
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("This is a string|This is another string|And another", "\\|"),
+                new String[] {"This is a string", "This is another string", "And another"});
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("|This is a string|This is another string|And another|", "\\|", false),
+                new String[] {"", "This is a string", "This is another string", "And another"});
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("|This is a string|This is another string|And another|", "\\|", true),
+                new String[] {"", "This is a string", "This is another string", "And another", ""});
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("string", ""),
+                new String[] {"s", "t", "r", "i", "n", "g"});
         
         //length
-        
-        tokens = StringUtility.tokenize("This is a string,This is another string,And another", 8);
-        Assert.assertEquals(7, tokens.size());
-        Assert.assertArrayEquals(new String[] {"This is ", "a string", ",This is", " another", " string,", "And anot", "her"}, tokens.toArray());
-        
-        tokens = StringUtility.tokenize("This is a string|This is another string|And another", 12);
-        Assert.assertEquals(5, tokens.size());
-        Assert.assertArrayEquals(new String[] {"This is a st", "ring|This is", " another str", "ing|And anot", "her"}, tokens.toArray());
-        
-        tokens = StringUtility.tokenize("This is a string,This is another string,And another", 21);
-        Assert.assertEquals(3, tokens.size());
-        Assert.assertArrayEquals(new String[] {"This is a string,This", " is another string,An", "d another"}, tokens.toArray());
-        
-        tokens = StringUtility.tokenize("string", 1);
-        Assert.assertEquals(6, tokens.size());
-        Assert.assertArrayEquals(new String[] {"s", "t", "r", "i", "n", "g"}, tokens.toArray());
-        
-        tokens = StringUtility.tokenize("string", 0);
-        Assert.assertEquals(1, tokens.size());
-        Assert.assertArrayEquals(new String[] {"string"}, tokens.toArray());
-        
-        TestUtils.assertException(NullPointerException.class, () ->
-                StringUtility.tokenize(null, 1));
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("This is a string,This is another string,And another", 8),
+                new String[] {"This is ", "a string", ",This is", " another", " string,", "And anot", "her"});
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("This is a string|This is another string|And another", 12),
+                new String[] {"This is a st", "ring|This is", " another str", "ing|And anot", "her"});
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("This is a string,This is another string,And another", 21),
+                new String[] {"This is a string,This", " is another string,An", "d another"});
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("string", 1),
+                new String[] {"s", "t", "r", "i", "n", "g"});
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("string", 0),
+                new String[] {"string"});
         
         //token list
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("catdogdogbatantdog", Arrays.asList("ant", "bat", "cat", "dog")),
+                new String[] {"cat", "dog", "dog", "bat", "ant", "dog"});
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("tetestestestte", Arrays.asList("es", "te", "test"), true),
+                new String[] {"te", "test", "es", "test", "te"});
+        Assert.assertNull(StringUtility.tokenize("tetestestestte", Arrays.asList("es", "te", "test"), false));
+        Assert.assertNull(StringUtility.tokenize("tetestestteste", Arrays.asList("te", "tes", "test")));
+        TestUtils.assertListEquals(
+                StringUtility.tokenize("quattuoroctoginmilliamilliamilliamilliasescenquattuorquinquaginmilliamilliamilliaduocenseptendecmilliamilliaundecmilliaquingenquinquadragintillion",
+                        Arrays.asList("thousand", "mi", "bi", "tri", "quadri", "quinti", "sexti", "septi", "octi", "noni", "un", "duo", "tre", "quattuor", "quin", "sex", "septen", "octo", "novem", "dec", "vigin", "trigin", "quadragin", "quinquagin", "sexagin", "septuagin", "octogin", "nonagin", "cen", "duocen", "trecen", "quadringen", "quingen", "sescen", "septingen", "octingen", "nongen", "millia", "llion", "illion", "tillion")),
+                new String[] {"quattuor", "octogin", "millia", "millia", "millia", "millia", "sescen", "quattuor", "quinquagin", "millia", "millia", "millia", "duocen", "septen", "dec", "millia", "millia", "un", "dec", "millia", "quingen", "quin", "quadragin", "tillion"});
+        Assert.assertNull(StringUtility.tokenize("", Arrays.asList("ant", "bat", "cat", "dog")));
+        Assert.assertNull(StringUtility.tokenize("catdogdogbatantdog", ListUtility.emptyList()));
+        Assert.assertNull(StringUtility.tokenize("catdogdogbatantdog", ListUtility.emptyList()));
+        Assert.assertNull(StringUtility.tokenize("cat￨dog�dog�bat￦ant￣dog�", Arrays.asList("ant￣", "bat￦", "cat￨", "dog�")));
         
-        tokens = StringUtility.tokenize("catdogdogbatantdog", Arrays.asList("ant", "bat", "cat", "dog"));
-        Assert.assertEquals(6, tokens.size());
-        Assert.assertArrayEquals(new String[] {"cat", "dog", "dog", "bat", "ant", "dog"}, tokens.toArray());
-        
-        tokens = StringUtility.tokenize("tetestestestte", Arrays.asList("es", "te", "test"), true);
-        Assert.assertEquals(5, tokens.size());
-        Assert.assertArrayEquals(new String[] {"te", "test", "es", "test", "te"}, tokens.toArray());
-        
-        tokens = StringUtility.tokenize("tetestestestte", Arrays.asList("es", "te", "test"), false);
-        Assert.assertNull(tokens);
-        
-        tokens = StringUtility.tokenize("tetestestteste", Arrays.asList("te", "tes", "test"));
-        Assert.assertNull(tokens);
-        
-        tokens = StringUtility.tokenize("quattuoroctoginmilliamilliamilliamilliasescenquattuorquinquaginmilliamilliamilliaduocenseptendecmilliamilliaundecmilliaquingenquinquadragintillion",
-                Arrays.asList("thousand", "mi", "bi", "tri", "quadri", "quinti", "sexti", "septi", "octi", "noni", "un", "duo", "tre", "quattuor", "quin", "sex", "septen", "octo", "novem", "dec", "vigin", "trigin", "quadragin", "quinquagin", "sexagin", "septuagin", "octogin", "nonagin", "cen", "duocen", "trecen", "quadringen", "quingen", "sescen", "septingen", "octingen", "nongen", "millia", "llion", "illion", "tillion"));
-        Assert.assertEquals(24, tokens.size());
-        Assert.assertArrayEquals(new String[] {"quattuor", "octogin", "millia", "millia", "millia", "millia", "sescen", "quattuor", "quinquagin", "millia", "millia", "millia", "duocen", "septen", "dec", "millia", "millia", "un", "dec", "millia", "quingen", "quin", "quadragin", "tillion"}, tokens.toArray());
-        
-        tokens = StringUtility.tokenize("", Arrays.asList("ant", "bat", "cat", "dog"));
-        Assert.assertNull(tokens);
-        
-        tokens = StringUtility.tokenize("catdogdogbatantdog", ListUtility.emptyList());
-        Assert.assertNull(tokens);
-        
-        tokens = StringUtility.tokenize("cat￨dog�dog�bat￦ant￣dog�", Arrays.asList("ant￣", "bat￦", "cat￨", "dog�"));
-        Assert.assertNull(tokens);
-        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null, "\\|"));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize("string", (String) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null, (String) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null, "\\|", true));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null, "\\|", false));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize("string", (String) null, true));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize("string", (String) null, false));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null, (String) null, true));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null, (String) null, false));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.tokenize(null, 1));
         TestUtils.assertException(NullPointerException.class, () ->
                 StringUtility.tokenize(null, Arrays.asList("ant", "bat", "cat", "dog")));
-        
         TestUtils.assertException(NullPointerException.class, () ->
                 StringUtility.tokenize("catdogdogbatantdog", (List<String>) null));
-        
         TestUtils.assertException(NullPointerException.class, () ->
                 StringUtility.tokenize(null, (List<String>) null));
     }
@@ -2493,318 +2462,279 @@ public class StringUtilityTest {
      */
     @Test
     public void testWrapText() throws Exception {
-        String text1 = "    This is an exampletest string, let's format it.";
-        String text2 = "    12. This is an exampletest string, let's format it.";
-        String text3 = "    * This is an exampletest string, let's format it.";
-        String text4 = "    Thisisanexampleteststring,let'sformatit.";
-        List<String> wrapped;
+        final String[] text = new String[] {
+                "    This is an exampletest string, let's format it.",
+                "    12. This is an exampletest string, let's format it.",
+                "    * This is an exampletest string, let's format it.",
+                "    Thisisanexampleteststring,let'sformatit."};
         
         //basic
-        
-        wrapped = StringUtility.wrapText(text1, 20);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    This is an examp", wrapped.get(0));
-        Assert.assertEquals("letest string, let's", wrapped.get(1));
-        Assert.assertEquals(" format it.         ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text2, 20);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    12. This is an e", wrapped.get(0));
-        Assert.assertEquals("xampletest string, l", wrapped.get(1));
-        Assert.assertEquals("et's format it.     ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text3, 20);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    * This is an exa", wrapped.get(0));
-        Assert.assertEquals("mpletest string, let", wrapped.get(1));
-        Assert.assertEquals("'s format it.       ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text4, 20);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    Thisisanexamplet", wrapped.get(0));
-        Assert.assertEquals("eststring,let'sforma", wrapped.get(1));
-        Assert.assertEquals("tit.                ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text1, 60);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    This is an exampletest string, let's format it.         ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text2, 60);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    12. This is an exampletest string, let's format it.     ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text3, 60);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    * This is an exampletest string, let's format it.       ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text4, 60);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    Thisisanexampleteststring,let'sformatit.                ", wrapped.get(0));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[0], 20),
+                List.of("    This is an examp",
+                        "letest string, let's",
+                        " format it.         "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[1], 20),
+                List.of("    12. This is an e",
+                        "xampletest string, l",
+                        "et's format it.     "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[2], 20),
+                List.of("    * This is an exa",
+                        "mpletest string, let",
+                        "'s format it.       "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[3], 20),
+                List.of("    Thisisanexamplet",
+                        "eststring,let'sforma",
+                        "tit.                "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[0], 60),
+                List.of("    This is an exampletest string, let's format it.         "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[1], 60),
+                List.of("    12. This is an exampletest string, let's format it.     "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[2], 60),
+                List.of("    * This is an exampletest string, let's format it.       "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[3], 60),
+                List.of("    Thisisanexampleteststring,let'sformatit.                "));
         
         //clean off
-        
-        wrapped = StringUtility.wrapText(text1, 20, false);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    This is an examp", wrapped.get(0));
-        Assert.assertEquals("letest string, let's", wrapped.get(1));
-        Assert.assertEquals(" format it.         ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text2, 20, false);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    12. This is an e", wrapped.get(0));
-        Assert.assertEquals("xampletest string, l", wrapped.get(1));
-        Assert.assertEquals("et's format it.     ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text3, 20, false);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    * This is an exa", wrapped.get(0));
-        Assert.assertEquals("mpletest string, let", wrapped.get(1));
-        Assert.assertEquals("'s format it.       ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text4, 20, false);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    Thisisanexamplet", wrapped.get(0));
-        Assert.assertEquals("eststring,let'sforma", wrapped.get(1));
-        Assert.assertEquals("tit.                ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text1, 60, false);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    This is an exampletest string, let's format it.         ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text2, 60, false);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    12. This is an exampletest string, let's format it.     ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text3, 60, false);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    * This is an exampletest string, let's format it.       ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text4, 60, false);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    Thisisanexampleteststring,let'sformatit.                ", wrapped.get(0));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[0], 20, false),
+                List.of("    This is an examp",
+                        "letest string, let's",
+                        " format it.         "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[1], 20, false),
+                List.of("    12. This is an e",
+                        "xampletest string, l",
+                        "et's format it.     "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[2], 20, false),
+                List.of("    * This is an exa",
+                        "mpletest string, let",
+                        "'s format it.       "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[3], 20, false),
+                List.of("    Thisisanexamplet",
+                        "eststring,let'sforma",
+                        "tit.                "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[0], 60, false),
+                List.of("    This is an exampletest string, let's format it.         "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[1], 60, false),
+                List.of("    12. This is an exampletest string, let's format it.     "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[2], 60, false),
+                List.of("    * This is an exampletest string, let's format it.       "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[3], 60, false),
+                List.of("    Thisisanexampleteststring,let'sformatit.                "));
         
         //clean on
-        
-        wrapped = StringUtility.wrapText(text1, 20, true);
-        Assert.assertEquals(4, wrapped.size());
-        Assert.assertEquals("    This is an      ", wrapped.get(0));
-        Assert.assertEquals("    exampletest     ", wrapped.get(1));
-        Assert.assertEquals("    string, let's   ", wrapped.get(2));
-        Assert.assertEquals("    format it.      ", wrapped.get(3));
-        
-        wrapped = StringUtility.wrapText(text2, 20, true);
-        Assert.assertEquals(5, wrapped.size());
-        Assert.assertEquals("    12. This is an  ", wrapped.get(0));
-        Assert.assertEquals("        exampletest ", wrapped.get(1));
-        Assert.assertEquals("        string,     ", wrapped.get(2));
-        Assert.assertEquals("        let's format", wrapped.get(3));
-        Assert.assertEquals("        it.         ", wrapped.get(4));
-        
-        wrapped = StringUtility.wrapText(text3, 20, true);
-        Assert.assertEquals(4, wrapped.size());
-        Assert.assertEquals("    * This is an    ", wrapped.get(0));
-        Assert.assertEquals("      exampletest   ", wrapped.get(1));
-        Assert.assertEquals("      string, let's ", wrapped.get(2));
-        Assert.assertEquals("      format it.    ", wrapped.get(3));
-        
-        wrapped = StringUtility.wrapText(text4, 20, true);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    Thisisanexample-", wrapped.get(0));
-        Assert.assertEquals("    teststring,let'-", wrapped.get(1));
-        Assert.assertEquals("    sformatit.      ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text1, 60, true);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    This is an exampletest string, let's format it.         ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text2, 60, true);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    12. This is an exampletest string, let's format it.     ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text3, 60, true);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    * This is an exampletest string, let's format it.       ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text4, 60, true);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    Thisisanexampleteststring,let'sformatit.                ", wrapped.get(0));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[0], 20, true),
+                List.of("    This is an      ",
+                        "    exampletest     ",
+                        "    string, let's   ",
+                        "    format it.      "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[1], 20, true),
+                List.of("    12. This is an  ",
+                        "        exampletest ",
+                        "        string,     ",
+                        "        let's format",
+                        "        it.         "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[2], 20, true),
+                List.of("    * This is an    ",
+                        "      exampletest   ",
+                        "      string, let's ",
+                        "      format it.    "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[3], 20, true),
+                List.of("    Thisisanexample-",
+                        "    teststring,let'-",
+                        "    sformatit.      "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[0], 60, true),
+                List.of("    This is an exampletest string, let's format it.         "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[1], 60, true),
+                List.of("    12. This is an exampletest string, let's format it.     "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[2], 60, true),
+                List.of("    * This is an exampletest string, let's format it.       "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[3], 60, true),
+                List.of("    Thisisanexampleteststring,let'sformatit.                "));
         
         //clean off, break indent off
-        
-        wrapped = StringUtility.wrapText(text1, 20, false, 0);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    This is an examp", wrapped.get(0));
-        Assert.assertEquals("letest string, let's", wrapped.get(1));
-        Assert.assertEquals(" format it.         ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text2, 20, false, 0);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    12. This is an e", wrapped.get(0));
-        Assert.assertEquals("xampletest string, l", wrapped.get(1));
-        Assert.assertEquals("et's format it.     ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text3, 20, false, 0);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    * This is an exa", wrapped.get(0));
-        Assert.assertEquals("mpletest string, let", wrapped.get(1));
-        Assert.assertEquals("'s format it.       ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text4, 20, false, 0);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    Thisisanexamplet", wrapped.get(0));
-        Assert.assertEquals("eststring,let'sforma", wrapped.get(1));
-        Assert.assertEquals("tit.                ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text1, 60, false, 0);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    This is an exampletest string, let's format it.         ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text2, 60, false, 0);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    12. This is an exampletest string, let's format it.     ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text3, 60, false, 0);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    * This is an exampletest string, let's format it.       ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text4, 60, false, 0);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    Thisisanexampleteststring,let'sformatit.                ", wrapped.get(0));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[0], 20, false, 0),
+                List.of("    This is an examp",
+                        "letest string, let's",
+                        " format it.         "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[1], 20, false, 0),
+                List.of("    12. This is an e",
+                        "xampletest string, l",
+                        "et's format it.     "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[2], 20, false, 0),
+                List.of("    * This is an exa",
+                        "mpletest string, let",
+                        "'s format it.       "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[3], 20, false, 0),
+                List.of("    Thisisanexamplet",
+                        "eststring,let'sforma",
+                        "tit.                "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[0], 60, false, 0),
+                List.of("    This is an exampletest string, let's format it.         "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[1], 60, false, 0),
+                List.of("    12. This is an exampletest string, let's format it.     "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[2], 60, false, 0),
+                List.of("    * This is an exampletest string, let's format it.       "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[3], 60, false, 0),
+                List.of("    Thisisanexampleteststring,let'sformatit.                "));
         
         //clean on, break indent off
-        
-        wrapped = StringUtility.wrapText(text1, 20, true, 0);
-        Assert.assertEquals(4, wrapped.size());
-        Assert.assertEquals("    This is an      ", wrapped.get(0));
-        Assert.assertEquals("    exampletest     ", wrapped.get(1));
-        Assert.assertEquals("    string, let's   ", wrapped.get(2));
-        Assert.assertEquals("    format it.      ", wrapped.get(3));
-        
-        wrapped = StringUtility.wrapText(text2, 20, true, 0);
-        Assert.assertEquals(5, wrapped.size());
-        Assert.assertEquals("    12. This is an  ", wrapped.get(0));
-        Assert.assertEquals("        exampletest ", wrapped.get(1));
-        Assert.assertEquals("        string,     ", wrapped.get(2));
-        Assert.assertEquals("        let's format", wrapped.get(3));
-        Assert.assertEquals("        it.         ", wrapped.get(4));
-        
-        wrapped = StringUtility.wrapText(text3, 20, true, 0);
-        Assert.assertEquals(4, wrapped.size());
-        Assert.assertEquals("    * This is an    ", wrapped.get(0));
-        Assert.assertEquals("      exampletest   ", wrapped.get(1));
-        Assert.assertEquals("      string, let's ", wrapped.get(2));
-        Assert.assertEquals("      format it.    ", wrapped.get(3));
-        
-        wrapped = StringUtility.wrapText(text4, 20, true, 0);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    Thisisanexample-", wrapped.get(0));
-        Assert.assertEquals("    teststring,let'-", wrapped.get(1));
-        Assert.assertEquals("    sformatit.      ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text1, 60, true, 0);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    This is an exampletest string, let's format it.         ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text2, 60, true, 0);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    12. This is an exampletest string, let's format it.     ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text3, 60, true, 0);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    * This is an exampletest string, let's format it.       ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text4, 60, true, 0);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    Thisisanexampleteststring,let'sformatit.                ", wrapped.get(0));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[0], 20, true, 0),
+                List.of("    This is an      ",
+                        "    exampletest     ",
+                        "    string, let's   ",
+                        "    format it.      "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[1], 20, true, 0),
+                List.of("    12. This is an  ",
+                        "        exampletest ",
+                        "        string,     ",
+                        "        let's format",
+                        "        it.         "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[2], 20, true, 0),
+                List.of("    * This is an    ",
+                        "      exampletest   ",
+                        "      string, let's ",
+                        "      format it.    "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[3], 20, true, 0),
+                List.of("    Thisisanexample-",
+                        "    teststring,let'-",
+                        "    sformatit.      "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[0], 60, true, 0),
+                List.of("    This is an exampletest string, let's format it.         "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[1], 60, true, 0),
+                List.of("    12. This is an exampletest string, let's format it.     "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[2], 60, true, 0),
+                List.of("    * This is an exampletest string, let's format it.       "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[3], 60, true, 0),
+                List.of("    Thisisanexampleteststring,let'sformatit.                "));
         
         //clean off, break indent on
-        
-        wrapped = StringUtility.wrapText(text1, 20, false, 2);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    This is an examp", wrapped.get(0));
-        Assert.assertEquals("  letest string, let", wrapped.get(1));
-        Assert.assertEquals("  's format it.     ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text2, 20, false, 2);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    12. This is an e", wrapped.get(0));
-        Assert.assertEquals("xampletest string, l", wrapped.get(1));
-        Assert.assertEquals("et's format it.     ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text3, 20, false, 2);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    * This is an exa", wrapped.get(0));
-        Assert.assertEquals("  mpletest string, l", wrapped.get(1));
-        Assert.assertEquals("  et's format it.   ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text4, 20, false, 2);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    Thisisanexamplet", wrapped.get(0));
-        Assert.assertEquals("  eststring,let'sfor", wrapped.get(1));
-        Assert.assertEquals("  matit.            ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text1, 60, false, 2);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    This is an exampletest string, let's format it.         ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text2, 60, false, 2);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    12. This is an exampletest string, let's format it.     ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text3, 60, false, 2);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    * This is an exampletest string, let's format it.       ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text4, 60, false, 2);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    Thisisanexampleteststring,let'sformatit.                ", wrapped.get(0));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[0], 20, false, 2),
+                List.of("    This is an examp",
+                        "  letest string, let",
+                        "  's format it.     "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[1], 20, false, 2),
+                List.of("    12. This is an e",
+                        "xampletest string, l",
+                        "et's format it.     "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[2], 20, false, 2),
+                List.of("    * This is an exa",
+                        "  mpletest string, l",
+                        "  et's format it.   "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[3], 20, false, 2),
+                List.of("    Thisisanexamplet",
+                        "  eststring,let'sfor",
+                        "  matit.            "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[0], 60, false, 2),
+                List.of("    This is an exampletest string, let's format it.         "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[1], 60, false, 2),
+                List.of("    12. This is an exampletest string, let's format it.     "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[2], 60, false, 2),
+                List.of("    * This is an exampletest string, let's format it.       "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[3], 60, false, 2),
+                List.of("    Thisisanexampleteststring,let'sformatit.                "));
         
         //clean on, break indent on
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[0], 20, true, 2),
+                List.of("    This is an      ",
+                        "      exampletest   ",
+                        "      string, let's ",
+                        "      format it.    "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[1], 20, true, 2),
+                List.of("    12. This is an  ",
+                        "        exampletest ",
+                        "        string,     ",
+                        "        let's format",
+                        "        it.         "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[2], 20, true, 2),
+                List.of("    * This is an    ",
+                        "        exampletest ",
+                        "        string,     ",
+                        "        let's format",
+                        "        it.         "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[3], 20, true, 2),
+                List.of("    Thisisanexample-",
+                        "      teststring,le-",
+                        "      t'sformatit.  "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[0], 60, true, 2),
+                List.of("    This is an exampletest string, let's format it.         "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[1], 60, true, 2),
+                List.of("    12. This is an exampletest string, let's format it.     "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[2], 60, true, 2),
+                List.of("    * This is an exampletest string, let's format it.       "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText(text[3], 60, true, 2),
+                List.of("    Thisisanexampleteststring,let'sformatit.                "));
         
-        wrapped = StringUtility.wrapText(text1, 20, true, 2);
-        Assert.assertEquals(4, wrapped.size());
-        Assert.assertEquals("    This is an      ", wrapped.get(0));
-        Assert.assertEquals("      exampletest   ", wrapped.get(1));
-        Assert.assertEquals("      string, let's ", wrapped.get(2));
-        Assert.assertEquals("      format it.    ", wrapped.get(3));
-        
-        wrapped = StringUtility.wrapText(text2, 20, true, 2);
-        Assert.assertEquals(5, wrapped.size());
-        Assert.assertEquals("    12. This is an  ", wrapped.get(0));
-        Assert.assertEquals("        exampletest ", wrapped.get(1));
-        Assert.assertEquals("        string,     ", wrapped.get(2));
-        Assert.assertEquals("        let's format", wrapped.get(3));
-        Assert.assertEquals("        it.         ", wrapped.get(4));
-        
-        wrapped = StringUtility.wrapText(text3, 20, true, 2);
-        Assert.assertEquals(5, wrapped.size());
-        Assert.assertEquals("    * This is an    ", wrapped.get(0));
-        Assert.assertEquals("        exampletest ", wrapped.get(1));
-        Assert.assertEquals("        string,     ", wrapped.get(2));
-        Assert.assertEquals("        let's format", wrapped.get(3));
-        Assert.assertEquals("        it.         ", wrapped.get(4));
-        
-        wrapped = StringUtility.wrapText(text4, 20, true, 2);
-        Assert.assertEquals(3, wrapped.size());
-        Assert.assertEquals("    Thisisanexample-", wrapped.get(0));
-        Assert.assertEquals("      teststring,le-", wrapped.get(1));
-        Assert.assertEquals("      t'sformatit.  ", wrapped.get(2));
-        
-        wrapped = StringUtility.wrapText(text1, 60, true, 2);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    This is an exampletest string, let's format it.         ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text2, 60, true, 2);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    12. This is an exampletest string, let's format it.     ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text3, 60, true, 2);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    * This is an exampletest string, let's format it.       ", wrapped.get(0));
-        
-        wrapped = StringUtility.wrapText(text4, 60, true, 2);
-        Assert.assertEquals(1, wrapped.size());
-        Assert.assertEquals("    Thisisanexampleteststring,let'sformatit.                ", wrapped.get(0));
+        //invalid
+        TestUtils.assertListEquals(
+                StringUtility.wrapText("", 1, false, 0),
+                List.of(" "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText("", 1, false),
+                List.of(" "));
+        TestUtils.assertListEquals(
+                StringUtility.wrapText("", 1),
+                List.of(" "));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.wrapText(null, 1, false, 0));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.wrapText(null, 1, false));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.wrapText(null, 1));
     }
     
     /**
@@ -2819,433 +2749,412 @@ public class StringUtilityTest {
      */
     @Test
     public void testBoxText() throws Exception {
-        String s = "\"The quick brown fox jumps over the lazy dog\"\n" +
-                "is an English-language pangram - \n" +
-                "a sentence that contains all of the letters of the alphabet.";
-        List<String> text = StringUtility.splitLines(s);
-        List<String> expected = new ArrayList<>();
-        List<String> actual;
+        final List<String> text = List.of(
+                "\"The quick brown fox jumps over the lazy dog\"",
+                "is an English-language pangram - ",
+                "a sentence that contains all of the letters of the alphabet.");
         
         //standard
-        actual = StringUtility.boxText(text, 40);
-        expected.add("\"The quick brown fox jumps over the lazy");
-        expected.add("dog\"                                    ");
-        expected.add("is an English-language pangram -        ");
-        expected.add("a sentence that contains all of the     ");
-        expected.add("letters of the alphabet.                ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40),
+                List.of("\"The quick brown fox jumps over the lazy",
+                        "dog\"                                    ",
+                        "is an English-language pangram -        ",
+                        "a sentence that contains all of the     ",
+                        "letters of the alphabet.                "));
         
         //clean off
-        actual = StringUtility.boxText(text, 40, false);
-        expected.clear();
-        expected.add("\"The quick brown fox jumps over the lazy");
-        expected.add(" dog\"                                   ");
-        expected.add("is an English-language pangram -        ");
-        expected.add("a sentence that contains all of the lett");
-        expected.add("ers of the alphabet.                    ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false),
+                List.of("\"The quick brown fox jumps over the lazy",
+                        " dog\"                                   ",
+                        "is an English-language pangram -        ",
+                        "a sentence that contains all of the lett",
+                        "ers of the alphabet.                    "));
         
         //clean on
-        actual = StringUtility.boxText(text, 40, true);
-        expected.clear();
-        expected.add("\"The quick brown fox jumps over the lazy");
-        expected.add("dog\"                                    ");
-        expected.add("is an English-language pangram -        ");
-        expected.add("a sentence that contains all of the     ");
-        expected.add("letters of the alphabet.                ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true),
+                List.of("\"The quick brown fox jumps over the lazy",
+                        "dog\"                                    ",
+                        "is an English-language pangram -        ",
+                        "a sentence that contains all of the     ",
+                        "letters of the alphabet.                "));
         
         //clean off, break indent off
-        actual = StringUtility.boxText(text, 40, false, 0);
-        expected.clear();
-        expected.add("\"The quick brown fox jumps over the lazy");
-        expected.add(" dog\"                                   ");
-        expected.add("is an English-language pangram -        ");
-        expected.add("a sentence that contains all of the lett");
-        expected.add("ers of the alphabet.                    ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 0),
+                List.of("\"The quick brown fox jumps over the lazy",
+                        " dog\"                                   ",
+                        "is an English-language pangram -        ",
+                        "a sentence that contains all of the lett",
+                        "ers of the alphabet.                    "));
         
         //clean on, break indent off
-        actual = StringUtility.boxText(text, 40, true, 0);
-        expected.clear();
-        expected.add("\"The quick brown fox jumps over the lazy");
-        expected.add("dog\"                                    ");
-        expected.add("is an English-language pangram -        ");
-        expected.add("a sentence that contains all of the     ");
-        expected.add("letters of the alphabet.                ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 0),
+                List.of("\"The quick brown fox jumps over the lazy",
+                        "dog\"                                    ",
+                        "is an English-language pangram -        ",
+                        "a sentence that contains all of the     ",
+                        "letters of the alphabet.                "));
         
         //clean off, break indent on
-        actual = StringUtility.boxText(text, 40, false, 5);
-        expected.clear();
-        expected.add("\"The quick brown fox jumps over the lazy");
-        expected.add("      dog\"                              ");
-        expected.add("is an English-language pangram -        ");
-        expected.add("a sentence that contains all of the lett");
-        expected.add("     ers of the alphabet.               ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 5),
+                List.of("\"The quick brown fox jumps over the lazy",
+                        "      dog\"                              ",
+                        "is an English-language pangram -        ",
+                        "a sentence that contains all of the lett",
+                        "     ers of the alphabet.               "));
         
         //clean on, break indent on
-        actual = StringUtility.boxText(text, 40, true, 5);
-        expected.clear();
-        expected.add("\"The quick brown fox jumps over the lazy");
-        expected.add("     dog\"                               ");
-        expected.add("is an English-language pangram -        ");
-        expected.add("a sentence that contains all of the     ");
-        expected.add("     letters of the alphabet.           ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 5),
+                List.of("\"The quick brown fox jumps over the lazy",
+                        "     dog\"                               ",
+                        "is an English-language pangram -        ",
+                        "a sentence that contains all of the     ",
+                        "     letters of the alphabet.           "));
         
         //clean off, break indent off, border off
-        actual = StringUtility.boxText(text, 40, false, 0, 0);
-        expected.clear();
-        expected.add("\"The quick brown fox jumps over the lazy");
-        expected.add(" dog\"                                   ");
-        expected.add("is an English-language pangram -        ");
-        expected.add("a sentence that contains all of the lett");
-        expected.add("ers of the alphabet.                    ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 0, 0),
+                List.of("\"The quick brown fox jumps over the lazy",
+                        " dog\"                                   ",
+                        "is an English-language pangram -        ",
+                        "a sentence that contains all of the lett",
+                        "ers of the alphabet.                    "));
         
         //clean off, break indent off, border on
-        actual = StringUtility.boxText(text, 40, false, 0, 2);
-        expected.clear();
-        expected.add("  \"The quick brown fox jumps over the   ");
-        expected.add("  lazy dog\"                             ");
-        expected.add("  is an English-language pangram -      ");
-        expected.add("  a sentence that contains all of the   ");
-        expected.add("  letters of the alphabet.              ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 0, 2),
+                List.of("  \"The quick brown fox jumps over the   ",
+                        "  lazy dog\"                             ",
+                        "  is an English-language pangram -      ",
+                        "  a sentence that contains all of the   ",
+                        "  letters of the alphabet.              "));
         
         //clean off, break indent on, border off
-        actual = StringUtility.boxText(text, 40, false, 5, 0);
-        expected.clear();
-        expected.add("\"The quick brown fox jumps over the lazy");
-        expected.add("      dog\"                              ");
-        expected.add("is an English-language pangram -        ");
-        expected.add("a sentence that contains all of the lett");
-        expected.add("     ers of the alphabet.               ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 5, 0),
+                List.of("\"The quick brown fox jumps over the lazy",
+                        "      dog\"                              ",
+                        "is an English-language pangram -        ",
+                        "a sentence that contains all of the lett",
+                        "     ers of the alphabet.               "));
         
         //clean off, break indent on, border on
-        actual = StringUtility.boxText(text, 40, false, 5, 2);
-        expected.clear();
-        expected.add("  \"The quick brown fox jumps over the   ");
-        expected.add("       lazy dog\"                        ");
-        expected.add("  is an English-language pangram -      ");
-        expected.add("  a sentence that contains all of the   ");
-        expected.add("       letters of the alphabet.         ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 5, 2),
+                List.of("  \"The quick brown fox jumps over the   ",
+                        "       lazy dog\"                        ",
+                        "  is an English-language pangram -      ",
+                        "  a sentence that contains all of the   ",
+                        "       letters of the alphabet.         "));
         
         //clean on, break indent off, border off
-        actual = StringUtility.boxText(text, 40, true, 0, 0);
-        expected.clear();
-        expected.add("\"The quick brown fox jumps over the lazy");
-        expected.add("dog\"                                    ");
-        expected.add("is an English-language pangram -        ");
-        expected.add("a sentence that contains all of the     ");
-        expected.add("letters of the alphabet.                ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 0, 0),
+                List.of("\"The quick brown fox jumps over the lazy",
+                        "dog\"                                    ",
+                        "is an English-language pangram -        ",
+                        "a sentence that contains all of the     ",
+                        "letters of the alphabet.                "));
         
         //clean on, break indent off, border on
-        actual = StringUtility.boxText(text, 40, true, 0, 2);
-        expected.clear();
-        expected.add("  \"The quick brown fox jumps over the   ");
-        expected.add("  lazy dog\"                             ");
-        expected.add("  is an English-language pangram -      ");
-        expected.add("  a sentence that contains all of the   ");
-        expected.add("  letters of the alphabet.              ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 0, 2),
+                List.of("  \"The quick brown fox jumps over the   ",
+                        "  lazy dog\"                             ",
+                        "  is an English-language pangram -      ",
+                        "  a sentence that contains all of the   ",
+                        "  letters of the alphabet.              "));
         
         //clean on, break indent on, border off
-        actual = StringUtility.boxText(text, 40, true, 5, 0);
-        expected.clear();
-        expected.add("\"The quick brown fox jumps over the lazy");
-        expected.add("     dog\"                               ");
-        expected.add("is an English-language pangram -        ");
-        expected.add("a sentence that contains all of the     ");
-        expected.add("     letters of the alphabet.           ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 5, 0),
+                List.of("\"The quick brown fox jumps over the lazy",
+                        "     dog\"                               ",
+                        "is an English-language pangram -        ",
+                        "a sentence that contains all of the     ",
+                        "     letters of the alphabet.           "));
         
         //clean on, break indent on, border on
-        actual = StringUtility.boxText(text, 40, true, 5, 2);
-        expected.clear();
-        expected.add("  \"The quick brown fox jumps over the   ");
-        expected.add("       lazy dog\"                        ");
-        expected.add("  is an English-language pangram -      ");
-        expected.add("  a sentence that contains all of the   ");
-        expected.add("       letters of the alphabet.         ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 5, 2),
+                List.of("  \"The quick brown fox jumps over the   ",
+                        "       lazy dog\"                        ",
+                        "  is an English-language pangram -      ",
+                        "  a sentence that contains all of the   ",
+                        "       letters of the alphabet.         "));
         
         //clean off, break indent off, border off, box type none
-        actual = StringUtility.boxText(text, 40, false, 0, 0, StringUtility.BoxType.NO_BOX);
-        expected.clear();
-        expected.add("\"The quick brown fox jumps over the lazy");
-        expected.add(" dog\"                                   ");
-        expected.add("is an English-language pangram -        ");
-        expected.add("a sentence that contains all of the lett");
-        expected.add("ers of the alphabet.                    ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 0, 0, StringUtility.BoxType.NO_BOX),
+                List.of("\"The quick brown fox jumps over the lazy",
+                        " dog\"                                   ",
+                        "is an English-language pangram -        ",
+                        "a sentence that contains all of the lett",
+                        "ers of the alphabet.                    "));
         
         //clean off, break indent off, border off, box type single
-        actual = StringUtility.boxText(text, 40, false, 0, 0, StringUtility.BoxType.BOX);
-        expected.clear();
-        expected.add("┌────────────────────────────────────────┐");
-        expected.add("│\"The quick brown fox jumps over the lazy│");
-        expected.add("│ dog\"                                   │");
-        expected.add("│is an English-language pangram -        │");
-        expected.add("│a sentence that contains all of the lett│");
-        expected.add("│ers of the alphabet.                    │");
-        expected.add("└────────────────────────────────────────┘");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 0, 0, StringUtility.BoxType.BOX),
+                List.of("┌────────────────────────────────────────┐",
+                        "│\"The quick brown fox jumps over the lazy│",
+                        "│ dog\"                                   │",
+                        "│is an English-language pangram -        │",
+                        "│a sentence that contains all of the lett│",
+                        "│ers of the alphabet.                    │",
+                        "└────────────────────────────────────────┘"));
         
         //clean off, break indent off, border off, box type double
-        actual = StringUtility.boxText(text, 40, false, 0, 0, StringUtility.BoxType.DOUBLE_BOX);
-        expected.clear();
-        expected.add("╔════════════════════════════════════════╗");
-        expected.add("║\"The quick brown fox jumps over the lazy║");
-        expected.add("║ dog\"                                   ║");
-        expected.add("║is an English-language pangram -        ║");
-        expected.add("║a sentence that contains all of the lett║");
-        expected.add("║ers of the alphabet.                    ║");
-        expected.add("╚════════════════════════════════════════╝");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 0, 0, StringUtility.BoxType.DOUBLE_BOX),
+                List.of("╔════════════════════════════════════════╗",
+                        "║\"The quick brown fox jumps over the lazy║",
+                        "║ dog\"                                   ║",
+                        "║is an English-language pangram -        ║",
+                        "║a sentence that contains all of the lett║",
+                        "║ers of the alphabet.                    ║",
+                        "╚════════════════════════════════════════╝"));
         
         //clean off, break indent off, border on, box type none
-        actual = StringUtility.boxText(text, 40, false, 0, 2, StringUtility.BoxType.NO_BOX);
-        expected.clear();
-        expected.add("  \"The quick brown fox jumps over the   ");
-        expected.add("  lazy dog\"                             ");
-        expected.add("  is an English-language pangram -      ");
-        expected.add("  a sentence that contains all of the   ");
-        expected.add("  letters of the alphabet.              ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 0, 2, StringUtility.BoxType.NO_BOX),
+                List.of("  \"The quick brown fox jumps over the   ",
+                        "  lazy dog\"                             ",
+                        "  is an English-language pangram -      ",
+                        "  a sentence that contains all of the   ",
+                        "  letters of the alphabet.              "));
         
         //clean off, break indent off, border on, box type single
-        actual = StringUtility.boxText(text, 40, false, 0, 2, StringUtility.BoxType.BOX);
-        expected.clear();
-        expected.add("┌────────────────────────────────────────┐");
-        expected.add("│  \"The quick brown fox jumps over the   │");
-        expected.add("│  lazy dog\"                             │");
-        expected.add("│  is an English-language pangram -      │");
-        expected.add("│  a sentence that contains all of the   │");
-        expected.add("│  letters of the alphabet.              │");
-        expected.add("└────────────────────────────────────────┘");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 0, 2, StringUtility.BoxType.BOX),
+                List.of("┌────────────────────────────────────────┐",
+                        "│  \"The quick brown fox jumps over the   │",
+                        "│  lazy dog\"                             │",
+                        "│  is an English-language pangram -      │",
+                        "│  a sentence that contains all of the   │",
+                        "│  letters of the alphabet.              │",
+                        "└────────────────────────────────────────┘"));
         
         //clean off, break indent off, border on, box type double
-        actual = StringUtility.boxText(text, 40, false, 0, 2, StringUtility.BoxType.DOUBLE_BOX);
-        expected.clear();
-        expected.add("╔════════════════════════════════════════╗");
-        expected.add("║  \"The quick brown fox jumps over the   ║");
-        expected.add("║  lazy dog\"                             ║");
-        expected.add("║  is an English-language pangram -      ║");
-        expected.add("║  a sentence that contains all of the   ║");
-        expected.add("║  letters of the alphabet.              ║");
-        expected.add("╚════════════════════════════════════════╝");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 0, 2, StringUtility.BoxType.DOUBLE_BOX),
+                List.of("╔════════════════════════════════════════╗",
+                        "║  \"The quick brown fox jumps over the   ║",
+                        "║  lazy dog\"                             ║",
+                        "║  is an English-language pangram -      ║",
+                        "║  a sentence that contains all of the   ║",
+                        "║  letters of the alphabet.              ║",
+                        "╚════════════════════════════════════════╝"));
         
         //clean off, break indent on, border off, box type none
-        actual = StringUtility.boxText(text, 40, false, 5, 0, StringUtility.BoxType.NO_BOX);
-        expected.clear();
-        expected.add("\"The quick brown fox jumps over the lazy");
-        expected.add("      dog\"                              ");
-        expected.add("is an English-language pangram -        ");
-        expected.add("a sentence that contains all of the lett");
-        expected.add("     ers of the alphabet.               ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 5, 0, StringUtility.BoxType.NO_BOX),
+                List.of("\"The quick brown fox jumps over the lazy",
+                        "      dog\"                              ",
+                        "is an English-language pangram -        ",
+                        "a sentence that contains all of the lett",
+                        "     ers of the alphabet.               "));
         
         //clean off, break indent on, border off, box type single
-        actual = StringUtility.boxText(text, 40, false, 5, 0, StringUtility.BoxType.BOX);
-        expected.clear();
-        expected.add("┌────────────────────────────────────────┐");
-        expected.add("│\"The quick brown fox jumps over the lazy│");
-        expected.add("│      dog\"                              │");
-        expected.add("│is an English-language pangram -        │");
-        expected.add("│a sentence that contains all of the lett│");
-        expected.add("│     ers of the alphabet.               │");
-        expected.add("└────────────────────────────────────────┘");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 5, 0, StringUtility.BoxType.BOX),
+                List.of("┌────────────────────────────────────────┐",
+                        "│\"The quick brown fox jumps over the lazy│",
+                        "│      dog\"                              │",
+                        "│is an English-language pangram -        │",
+                        "│a sentence that contains all of the lett│",
+                        "│     ers of the alphabet.               │",
+                        "└────────────────────────────────────────┘"));
         
         //clean off, break indent on, border off, box type double
-        actual = StringUtility.boxText(text, 40, false, 5, 0, StringUtility.BoxType.DOUBLE_BOX);
-        expected.clear();
-        expected.add("╔════════════════════════════════════════╗");
-        expected.add("║\"The quick brown fox jumps over the lazy║");
-        expected.add("║      dog\"                              ║");
-        expected.add("║is an English-language pangram -        ║");
-        expected.add("║a sentence that contains all of the lett║");
-        expected.add("║     ers of the alphabet.               ║");
-        expected.add("╚════════════════════════════════════════╝");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 5, 0, StringUtility.BoxType.DOUBLE_BOX),
+                List.of("╔════════════════════════════════════════╗",
+                        "║\"The quick brown fox jumps over the lazy║",
+                        "║      dog\"                              ║",
+                        "║is an English-language pangram -        ║",
+                        "║a sentence that contains all of the lett║",
+                        "║     ers of the alphabet.               ║",
+                        "╚════════════════════════════════════════╝"));
         
         //clean off, break indent on, border on, box type none
-        actual = StringUtility.boxText(text, 40, false, 5, 2, StringUtility.BoxType.NO_BOX);
-        expected.clear();
-        expected.add("  \"The quick brown fox jumps over the   ");
-        expected.add("       lazy dog\"                        ");
-        expected.add("  is an English-language pangram -      ");
-        expected.add("  a sentence that contains all of the   ");
-        expected.add("       letters of the alphabet.         ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 5, 2, StringUtility.BoxType.NO_BOX),
+                List.of("  \"The quick brown fox jumps over the   ",
+                        "       lazy dog\"                        ",
+                        "  is an English-language pangram -      ",
+                        "  a sentence that contains all of the   ",
+                        "       letters of the alphabet.         "));
         
         //clean off, break indent on, border on, box type single
-        actual = StringUtility.boxText(text, 40, false, 5, 2, StringUtility.BoxType.BOX);
-        expected.clear();
-        expected.add("┌────────────────────────────────────────┐");
-        expected.add("│  \"The quick brown fox jumps over the   │");
-        expected.add("│       lazy dog\"                        │");
-        expected.add("│  is an English-language pangram -      │");
-        expected.add("│  a sentence that contains all of the   │");
-        expected.add("│       letters of the alphabet.         │");
-        expected.add("└────────────────────────────────────────┘");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 5, 2, StringUtility.BoxType.BOX),
+                List.of("┌────────────────────────────────────────┐",
+                        "│  \"The quick brown fox jumps over the   │",
+                        "│       lazy dog\"                        │",
+                        "│  is an English-language pangram -      │",
+                        "│  a sentence that contains all of the   │",
+                        "│       letters of the alphabet.         │",
+                        "└────────────────────────────────────────┘"));
         
         //clean off, break indent on, border on, box type double
-        actual = StringUtility.boxText(text, 40, false, 5, 2, StringUtility.BoxType.DOUBLE_BOX);
-        expected.clear();
-        expected.add("╔════════════════════════════════════════╗");
-        expected.add("║  \"The quick brown fox jumps over the   ║");
-        expected.add("║       lazy dog\"                        ║");
-        expected.add("║  is an English-language pangram -      ║");
-        expected.add("║  a sentence that contains all of the   ║");
-        expected.add("║       letters of the alphabet.         ║");
-        expected.add("╚════════════════════════════════════════╝");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, false, 5, 2, StringUtility.BoxType.DOUBLE_BOX),
+                List.of("╔════════════════════════════════════════╗",
+                        "║  \"The quick brown fox jumps over the   ║",
+                        "║       lazy dog\"                        ║",
+                        "║  is an English-language pangram -      ║",
+                        "║  a sentence that contains all of the   ║",
+                        "║       letters of the alphabet.         ║",
+                        "╚════════════════════════════════════════╝"));
         
         //clean on, break indent off, border off, box type none
-        actual = StringUtility.boxText(text, 40, true, 0, 0, StringUtility.BoxType.NO_BOX);
-        expected.clear();
-        expected.add("\"The quick brown fox jumps over the lazy");
-        expected.add("dog\"                                    ");
-        expected.add("is an English-language pangram -        ");
-        expected.add("a sentence that contains all of the     ");
-        expected.add("letters of the alphabet.                ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 0, 0, StringUtility.BoxType.NO_BOX),
+                List.of("\"The quick brown fox jumps over the lazy",
+                        "dog\"                                    ",
+                        "is an English-language pangram -        ",
+                        "a sentence that contains all of the     ",
+                        "letters of the alphabet.                "));
         
         //clean on, break indent off, border off, box type single
-        actual = StringUtility.boxText(text, 40, true, 0, 0, StringUtility.BoxType.BOX);
-        expected.clear();
-        expected.add("┌────────────────────────────────────────┐");
-        expected.add("│\"The quick brown fox jumps over the lazy│");
-        expected.add("│dog\"                                    │");
-        expected.add("│is an English-language pangram -        │");
-        expected.add("│a sentence that contains all of the     │");
-        expected.add("│letters of the alphabet.                │");
-        expected.add("└────────────────────────────────────────┘");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 0, 0, StringUtility.BoxType.BOX),
+                List.of("┌────────────────────────────────────────┐",
+                        "│\"The quick brown fox jumps over the lazy│",
+                        "│dog\"                                    │",
+                        "│is an English-language pangram -        │",
+                        "│a sentence that contains all of the     │",
+                        "│letters of the alphabet.                │",
+                        "└────────────────────────────────────────┘"));
         
         //clean on, break indent off, border off, box type double
-        actual = StringUtility.boxText(text, 40, true, 0, 0, StringUtility.BoxType.DOUBLE_BOX);
-        expected.clear();
-        expected.add("╔════════════════════════════════════════╗");
-        expected.add("║\"The quick brown fox jumps over the lazy║");
-        expected.add("║dog\"                                    ║");
-        expected.add("║is an English-language pangram -        ║");
-        expected.add("║a sentence that contains all of the     ║");
-        expected.add("║letters of the alphabet.                ║");
-        expected.add("╚════════════════════════════════════════╝");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 0, 0, StringUtility.BoxType.DOUBLE_BOX),
+                List.of("╔════════════════════════════════════════╗",
+                        "║\"The quick brown fox jumps over the lazy║",
+                        "║dog\"                                    ║",
+                        "║is an English-language pangram -        ║",
+                        "║a sentence that contains all of the     ║",
+                        "║letters of the alphabet.                ║",
+                        "╚════════════════════════════════════════╝"));
         
         //clean on, break indent off, border on, box type none
-        actual = StringUtility.boxText(text, 40, true, 0, 2, StringUtility.BoxType.NO_BOX);
-        expected.clear();
-        expected.add("  \"The quick brown fox jumps over the   ");
-        expected.add("  lazy dog\"                             ");
-        expected.add("  is an English-language pangram -      ");
-        expected.add("  a sentence that contains all of the   ");
-        expected.add("  letters of the alphabet.              ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 0, 2, StringUtility.BoxType.NO_BOX),
+                List.of("  \"The quick brown fox jumps over the   ",
+                        "  lazy dog\"                             ",
+                        "  is an English-language pangram -      ",
+                        "  a sentence that contains all of the   ",
+                        "  letters of the alphabet.              "));
         
         //clean on, break indent off, border on, box type single
-        actual = StringUtility.boxText(text, 40, true, 0, 2, StringUtility.BoxType.BOX);
-        expected.clear();
-        expected.add("┌────────────────────────────────────────┐");
-        expected.add("│  \"The quick brown fox jumps over the   │");
-        expected.add("│  lazy dog\"                             │");
-        expected.add("│  is an English-language pangram -      │");
-        expected.add("│  a sentence that contains all of the   │");
-        expected.add("│  letters of the alphabet.              │");
-        expected.add("└────────────────────────────────────────┘");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 0, 2, StringUtility.BoxType.BOX),
+                List.of("┌────────────────────────────────────────┐",
+                        "│  \"The quick brown fox jumps over the   │",
+                        "│  lazy dog\"                             │",
+                        "│  is an English-language pangram -      │",
+                        "│  a sentence that contains all of the   │",
+                        "│  letters of the alphabet.              │",
+                        "└────────────────────────────────────────┘"));
         
         //clean on, break indent off, border on, box type double
-        actual = StringUtility.boxText(text, 40, true, 0, 2, StringUtility.BoxType.DOUBLE_BOX);
-        expected.clear();
-        expected.add("╔════════════════════════════════════════╗");
-        expected.add("║  \"The quick brown fox jumps over the   ║");
-        expected.add("║  lazy dog\"                             ║");
-        expected.add("║  is an English-language pangram -      ║");
-        expected.add("║  a sentence that contains all of the   ║");
-        expected.add("║  letters of the alphabet.              ║");
-        expected.add("╚════════════════════════════════════════╝");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 0, 2, StringUtility.BoxType.DOUBLE_BOX),
+                List.of("╔════════════════════════════════════════╗",
+                        "║  \"The quick brown fox jumps over the   ║",
+                        "║  lazy dog\"                             ║",
+                        "║  is an English-language pangram -      ║",
+                        "║  a sentence that contains all of the   ║",
+                        "║  letters of the alphabet.              ║",
+                        "╚════════════════════════════════════════╝"));
         
         //clean on, break indent on, border off, box type none
-        actual = StringUtility.boxText(text, 40, true, 5, 0, StringUtility.BoxType.NO_BOX);
-        expected.clear();
-        expected.add("\"The quick brown fox jumps over the lazy");
-        expected.add("     dog\"                               ");
-        expected.add("is an English-language pangram -        ");
-        expected.add("a sentence that contains all of the     ");
-        expected.add("     letters of the alphabet.           ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 5, 0, StringUtility.BoxType.NO_BOX),
+                List.of("\"The quick brown fox jumps over the lazy",
+                        "     dog\"                               ",
+                        "is an English-language pangram -        ",
+                        "a sentence that contains all of the     ",
+                        "     letters of the alphabet.           "));
         
         //clean on, break indent on, border off, box type single
-        actual = StringUtility.boxText(text, 40, true, 5, 0, StringUtility.BoxType.BOX);
-        expected.clear();
-        expected.add("┌────────────────────────────────────────┐");
-        expected.add("│\"The quick brown fox jumps over the lazy│");
-        expected.add("│     dog\"                               │");
-        expected.add("│is an English-language pangram -        │");
-        expected.add("│a sentence that contains all of the     │");
-        expected.add("│     letters of the alphabet.           │");
-        expected.add("└────────────────────────────────────────┘");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 5, 0, StringUtility.BoxType.BOX),
+                List.of("┌────────────────────────────────────────┐",
+                        "│\"The quick brown fox jumps over the lazy│",
+                        "│     dog\"                               │",
+                        "│is an English-language pangram -        │",
+                        "│a sentence that contains all of the     │",
+                        "│     letters of the alphabet.           │",
+                        "└────────────────────────────────────────┘"));
         
         //clean on, break indent on, border off, box type double
-        actual = StringUtility.boxText(text, 40, true, 5, 0, StringUtility.BoxType.DOUBLE_BOX);
-        expected.clear();
-        expected.add("╔════════════════════════════════════════╗");
-        expected.add("║\"The quick brown fox jumps over the lazy║");
-        expected.add("║     dog\"                               ║");
-        expected.add("║is an English-language pangram -        ║");
-        expected.add("║a sentence that contains all of the     ║");
-        expected.add("║     letters of the alphabet.           ║");
-        expected.add("╚════════════════════════════════════════╝");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 5, 0, StringUtility.BoxType.DOUBLE_BOX),
+                List.of("╔════════════════════════════════════════╗",
+                        "║\"The quick brown fox jumps over the lazy║",
+                        "║     dog\"                               ║",
+                        "║is an English-language pangram -        ║",
+                        "║a sentence that contains all of the     ║",
+                        "║     letters of the alphabet.           ║",
+                        "╚════════════════════════════════════════╝"));
         
         //clean on, break indent on, border on, box type none
-        actual = StringUtility.boxText(text, 40, true, 5, 2, StringUtility.BoxType.NO_BOX);
-        expected.clear();
-        expected.add("  \"The quick brown fox jumps over the   ");
-        expected.add("       lazy dog\"                        ");
-        expected.add("  is an English-language pangram -      ");
-        expected.add("  a sentence that contains all of the   ");
-        expected.add("       letters of the alphabet.         ");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 5, 2, StringUtility.BoxType.NO_BOX),
+                List.of("  \"The quick brown fox jumps over the   ",
+                        "       lazy dog\"                        ",
+                        "  is an English-language pangram -      ",
+                        "  a sentence that contains all of the   ",
+                        "       letters of the alphabet.         "));
         
         //clean on, break indent on, border on, box type single
-        actual = StringUtility.boxText(text, 40, true, 5, 2, StringUtility.BoxType.BOX);
-        expected.clear();
-        expected.add("┌────────────────────────────────────────┐");
-        expected.add("│  \"The quick brown fox jumps over the   │");
-        expected.add("│       lazy dog\"                        │");
-        expected.add("│  is an English-language pangram -      │");
-        expected.add("│  a sentence that contains all of the   │");
-        expected.add("│       letters of the alphabet.         │");
-        expected.add("└────────────────────────────────────────┘");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 5, 2, StringUtility.BoxType.BOX),
+                List.of("┌────────────────────────────────────────┐",
+                        "│  \"The quick brown fox jumps over the   │",
+                        "│       lazy dog\"                        │",
+                        "│  is an English-language pangram -      │",
+                        "│  a sentence that contains all of the   │",
+                        "│       letters of the alphabet.         │",
+                        "└────────────────────────────────────────┘"));
         
         //clean on, break indent on, border on, box type double
-        actual = StringUtility.boxText(text, 40, true, 5, 2, StringUtility.BoxType.DOUBLE_BOX);
-        expected.clear();
-        expected.add("╔════════════════════════════════════════╗");
-        expected.add("║  \"The quick brown fox jumps over the   ║");
-        expected.add("║       lazy dog\"                        ║");
-        expected.add("║  is an English-language pangram -      ║");
-        expected.add("║  a sentence that contains all of the   ║");
-        expected.add("║       letters of the alphabet.         ║");
-        expected.add("╚════════════════════════════════════════╝");
-        Assert.assertArrayEquals(expected.toArray(), actual.toArray());
+        TestUtils.assertListEquals(
+                StringUtility.boxText(text, 40, true, 5, 2, StringUtility.BoxType.DOUBLE_BOX),
+                List.of("╔════════════════════════════════════════╗",
+                        "║  \"The quick brown fox jumps over the   ║",
+                        "║       lazy dog\"                        ║",
+                        "║  is an English-language pangram -      ║",
+                        "║  a sentence that contains all of the   ║",
+                        "║       letters of the alphabet.         ║",
+                        "╚════════════════════════════════════════╝"));
+        
+        //invalid
+        Assert.assertTrue(StringUtility.boxText(ListUtility.emptyList(), 1, false, 0, 0, StringUtility.BoxType.NO_BOX).isEmpty());
+        Assert.assertTrue(StringUtility.boxText(ListUtility.emptyList(), 1, false, 0, 0).isEmpty());
+        Assert.assertTrue(StringUtility.boxText(ListUtility.emptyList(), 1, false, 5).isEmpty());
+        Assert.assertTrue(StringUtility.boxText(ListUtility.emptyList(), 1, false).isEmpty());
+        Assert.assertTrue(StringUtility.boxText(ListUtility.emptyList(), 1).isEmpty());
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.boxText(ListUtility.emptyList(), 1, false, 0, 0, null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.boxText(null, 1, true, 0, 0, StringUtility.BoxType.BOX));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.boxText(null, 1, true, 0, 0));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.boxText(null, 1, true, 0));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.boxText(null, 1, true));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.boxText(null, 1));
     }
     
 }

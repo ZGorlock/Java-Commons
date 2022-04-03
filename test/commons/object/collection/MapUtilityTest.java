@@ -20,6 +20,7 @@ import java.util.TreeMap;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import commons.lambda.stream.collector.MapCollectors;
 import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -169,7 +170,7 @@ public class MapUtilityTest {
         Map<Object, Object> unmodifiableMap = MapUtility.unmodifiableMap(testMap);
         Assert.assertNotNull(unmodifiableMap);
         Assert.assertEquals(UnmodifiableMap, unmodifiableMap.getClass());
-        Assert.assertTrue(MapUtility.equals(testMap, unmodifiableMap));
+        TestUtils.assertMapEquals(unmodifiableMap, testMap);
         TestUtils.assertException(UnsupportedOperationException.class, () ->
                 unmodifiableMap.put("test", "test"));
         
@@ -222,7 +223,7 @@ public class MapUtilityTest {
         Map<Object, Object> synchronizedMap = MapUtility.synchronizedMap(testMap);
         Assert.assertNotNull(synchronizedMap);
         Assert.assertEquals(SynchronizedMap, synchronizedMap.getClass());
-        Assert.assertTrue(MapUtility.equals(testMap, synchronizedMap));
+        TestUtils.assertMapEquals(synchronizedMap, testMap);
         
         //new
         map = MapUtility.synchronizedMap(HashMap.class);
@@ -328,6 +329,8 @@ public class MapUtilityTest {
         final List<Pair<Integer, Boolean>> pairList2 = IntStream.range(0, keysList2.size()).boxed().map(i -> new ImmutablePair<>(keysList2.get(i), valuesList2.get(i))).collect(Collectors.toList());
         final Pair<String, String>[] pairArray1 = pairList1.toArray(Pair[]::new);
         final Pair<Integer, Boolean>[] pairArray2 = pairList2.toArray(Pair[]::new);
+        final Map<String, String> testMap1 = Arrays.stream(pairArray1).collect(MapCollectors.toHashMap());
+        final Map<Integer, Boolean> testMap2 = Arrays.stream(pairArray2).collect(MapCollectors.toHashMap());
         Map<String, String> map1;
         Map<Integer, Boolean> map2;
         
@@ -335,249 +338,137 @@ public class MapUtilityTest {
         map1 = MapUtility.mapOf(pairArray1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof HashMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map1 = MapUtility.mapOf(HashMap.class, pairArray1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof HashMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map1 = MapUtility.mapOf(LinkedHashMap.class, pairArray1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof LinkedHashMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map1 = MapUtility.mapOf(TreeMap.class, pairArray1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof TreeMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map2 = MapUtility.mapOf(pairArray2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof HashMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         map2 = MapUtility.mapOf(HashMap.class, pairArray2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof HashMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         map2 = MapUtility.mapOf(LinkedHashMap.class, pairArray2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof LinkedHashMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         map2 = MapUtility.mapOf(TreeMap.class, pairArray2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof TreeMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         
         //pair list
         map1 = MapUtility.mapOf(pairList1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof HashMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map1 = MapUtility.mapOf(HashMap.class, pairList1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof HashMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map1 = MapUtility.mapOf(LinkedHashMap.class, pairList1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof LinkedHashMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map1 = MapUtility.mapOf(TreeMap.class, pairList1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof TreeMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map2 = MapUtility.mapOf(pairList2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof HashMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         map2 = MapUtility.mapOf(HashMap.class, pairList2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof HashMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         map2 = MapUtility.mapOf(LinkedHashMap.class, pairList2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof LinkedHashMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         map2 = MapUtility.mapOf(TreeMap.class, pairList2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof TreeMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         
         //key/value array
         map1 = MapUtility.mapOf(keysArray1, valuesArray1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof HashMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map1 = MapUtility.mapOf(HashMap.class, keysArray1, valuesArray1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof HashMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map1 = MapUtility.mapOf(LinkedHashMap.class, keysArray1, valuesArray1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof LinkedHashMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map1 = MapUtility.mapOf(TreeMap.class, keysArray1, valuesArray1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof TreeMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map2 = MapUtility.mapOf(keysArray2, valuesArray2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof HashMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         map2 = MapUtility.mapOf(HashMap.class, keysArray2, valuesArray2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof HashMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         map2 = MapUtility.mapOf(LinkedHashMap.class, keysArray2, valuesArray2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof LinkedHashMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         map2 = MapUtility.mapOf(TreeMap.class, keysArray2, valuesArray2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof TreeMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         
         //key/value list
         map1 = MapUtility.mapOf(keysList1, valuesList1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof HashMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map1 = MapUtility.mapOf(HashMap.class, keysList1, valuesList1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof HashMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map1 = MapUtility.mapOf(LinkedHashMap.class, keysList1, valuesList1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof LinkedHashMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map1 = MapUtility.mapOf(TreeMap.class, keysList1, valuesList1);
         Assert.assertNotNull(map1);
         Assert.assertTrue(map1 instanceof TreeMap);
-        Assert.assertEquals(3, map1.size());
-        Assert.assertEquals("other", map1.get("string"));
-        Assert.assertEquals("test", map1.get("test"));
-        Assert.assertEquals("value", map1.get("key"));
+        TestUtils.assertMapEquals(map1, testMap1);
         map2 = MapUtility.mapOf(keysList2, valuesList2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof HashMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         map2 = MapUtility.mapOf(HashMap.class, keysList2, valuesList2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof HashMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         map2 = MapUtility.mapOf(LinkedHashMap.class, keysList2, valuesList2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof LinkedHashMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         map2 = MapUtility.mapOf(TreeMap.class, keysList2, valuesList2);
         Assert.assertNotNull(map2);
         Assert.assertTrue(map2 instanceof TreeMap);
-        Assert.assertEquals(4, map2.size());
-        Assert.assertFalse(map2.get(1));
-        Assert.assertFalse(map2.get(3));
-        Assert.assertTrue(map2.get(9));
-        Assert.assertFalse(map2.get(15));
+        TestUtils.assertMapEquals(map2, testMap2);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -657,10 +548,7 @@ public class MapUtilityTest {
         Map<Integer, String> integerStringClone = MapUtility.clone(integerStringMap);
         Assert.assertNotNull(integerStringClone);
         Assert.assertTrue(integerStringClone instanceof HashMap);
-        Assert.assertEquals(3, integerStringClone.size());
-        Assert.assertEquals("t1", integerStringClone.get(1));
-        Assert.assertEquals("t2", integerStringClone.get(3));
-        Assert.assertEquals("t3", integerStringClone.get(9));
+        TestUtils.assertMapEquals(integerStringClone, integerStringMap);
         
         //string, boolean
         Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
@@ -669,9 +557,7 @@ public class MapUtilityTest {
         Map<String, Boolean> stringBooleanClone = MapUtility.clone(stringBooleanMap);
         Assert.assertNotNull(stringBooleanClone);
         Assert.assertTrue(stringBooleanClone instanceof HashMap);
-        Assert.assertEquals(2, stringBooleanClone.size());
-        Assert.assertTrue(stringBooleanClone.get("a"));
-        Assert.assertFalse(stringBooleanClone.get("b"));
+        TestUtils.assertMapEquals(stringBooleanClone, stringBooleanMap);
         
         //string, string
         Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
@@ -680,10 +566,7 @@ public class MapUtilityTest {
         Map<String, String> stringStringClone = MapUtility.clone(stringStringMap);
         Assert.assertNotNull(stringStringClone);
         Assert.assertTrue(stringStringClone instanceof LinkedHashMap);
-        Assert.assertEquals(3, stringStringClone.size());
-        Assert.assertEquals("I", stringStringClone.get("A"));
-        Assert.assertEquals("J", stringStringClone.get("B"));
-        Assert.assertEquals("K", stringStringClone.get("C"));
+        TestUtils.assertMapEquals(stringStringClone, stringStringMap);
         
         //long, object
         Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
@@ -692,9 +575,7 @@ public class MapUtilityTest {
         Map<Long, Object> longObjectClone = MapUtility.clone(longObjectMap);
         Assert.assertNotNull(longObjectClone);
         Assert.assertTrue(longObjectClone instanceof TreeMap);
-        Assert.assertEquals(2, longObjectClone.size());
-        Assert.assertEquals(34, longObjectClone.get(189456L));
-        Assert.assertEquals("", longObjectClone.get(8756156033L));
+        TestUtils.assertMapEquals(longObjectClone, longObjectMap);
     }
     
     /**
@@ -712,10 +593,7 @@ public class MapUtilityTest {
         Map<Integer, String> integerStringClone = MapUtility.cast(integerStringMap, HashMap.class);
         Assert.assertNotNull(integerStringClone);
         Assert.assertTrue(integerStringClone instanceof HashMap);
-        Assert.assertEquals(3, integerStringClone.size());
-        Assert.assertEquals("t1", integerStringClone.get(1));
-        Assert.assertEquals("t2", integerStringClone.get(3));
-        Assert.assertEquals("t3", integerStringClone.get(9));
+        TestUtils.assertMapEquals(integerStringClone, integerStringMap);
         
         //string, boolean
         Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
@@ -724,9 +602,7 @@ public class MapUtilityTest {
         Map<String, Boolean> stringBooleanClone = MapUtility.cast(stringBooleanMap, LinkedHashMap.class);
         Assert.assertNotNull(stringBooleanClone);
         Assert.assertTrue(stringBooleanClone instanceof LinkedHashMap);
-        Assert.assertEquals(2, stringBooleanClone.size());
-        Assert.assertTrue(stringBooleanClone.get("a"));
-        Assert.assertFalse(stringBooleanClone.get("b"));
+        TestUtils.assertMapEquals(stringBooleanClone, stringBooleanMap);
         
         //string, string
         Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
@@ -735,10 +611,7 @@ public class MapUtilityTest {
         Map<String, String> stringStringClone = MapUtility.cast(stringStringMap, TreeMap.class);
         Assert.assertNotNull(stringStringClone);
         Assert.assertTrue(stringStringClone instanceof TreeMap);
-        Assert.assertEquals(3, stringStringClone.size());
-        Assert.assertEquals("I", stringStringClone.get("A"));
-        Assert.assertEquals("J", stringStringClone.get("B"));
-        Assert.assertEquals("K", stringStringClone.get("C"));
+        TestUtils.assertMapEquals(stringStringClone, stringStringMap);
         
         //long, object
         Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
@@ -747,9 +620,7 @@ public class MapUtilityTest {
         Map<Long, Object> longObjectClone = MapUtility.cast(longObjectMap, HashMap.class);
         Assert.assertNotNull(longObjectClone);
         Assert.assertTrue(longObjectClone instanceof HashMap);
-        Assert.assertEquals(2, longObjectClone.size());
-        Assert.assertEquals(34, longObjectClone.get(189456L));
-        Assert.assertEquals("", longObjectClone.get(8756156033L));
+        TestUtils.assertMapEquals(longObjectClone, longObjectMap);
         
         //invalid
         TestUtils.assertException(ClassCastException.class, "class java.awt.Color cannot be cast to class java.lang.Comparable (java.awt.Color is in module java.desktop of loader 'bootstrap'; java.lang.Comparable is in module java.base of loader 'bootstrap')", () ->
@@ -780,13 +651,17 @@ public class MapUtilityTest {
         Map<Integer, String> integerStringMergeMap = MapUtility.merge(integerStringMap, integerStringMap2);
         Assert.assertNotNull(integerStringMergeMap);
         Assert.assertTrue(integerStringMergeMap instanceof HashMap);
-        Assert.assertEquals(4, integerStringMergeMap.size());
-        Assert.assertEquals("t1", integerStringMergeMap.get(1));
-        Assert.assertEquals("t2", integerStringMergeMap.get(3));
-        Assert.assertEquals("t3.5", integerStringMergeMap.get(9));
-        Assert.assertEquals("t4", integerStringMergeMap.get(15));
+        TestUtils.assertMapEquals(
+                integerStringMergeMap,
+                MapUtility.mapOf(
+                        Arrays.asList(1, 3, 9, 15),
+                        Arrays.asList("t1", "t2", "t3.5", "t4")));
         integerStringMergeMap = MapUtility.merge(integerStringMap2, integerStringMap);
-        Assert.assertEquals("t3", integerStringMergeMap.get(9));
+        TestUtils.assertMapEquals(
+                integerStringMergeMap,
+                MapUtility.mapOf(
+                        Arrays.asList(1, 3, 9, 15),
+                        Arrays.asList("t1", "t2", "t3", "t4")));
         
         //string, boolean
         Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(LinkedHashMap.class,
@@ -798,11 +673,11 @@ public class MapUtilityTest {
         Map<String, Boolean> stringBooleanMergeMap = MapUtility.merge(stringBooleanMap, stringBooleanMap2);
         Assert.assertNotNull(stringBooleanMergeMap);
         Assert.assertTrue(stringBooleanMergeMap instanceof LinkedHashMap);
-        Assert.assertEquals(4, stringBooleanMergeMap.size());
-        Assert.assertTrue(stringBooleanMergeMap.get("a"));
-        Assert.assertFalse(stringBooleanMergeMap.get("b"));
-        Assert.assertFalse(stringBooleanMergeMap.get("c"));
-        Assert.assertTrue(stringBooleanMergeMap.get("d"));
+        TestUtils.assertMapEquals(
+                stringBooleanMergeMap,
+                MapUtility.mapOf(
+                        new String[] {"a", "b", "c", "d"},
+                        new Boolean[] {true, false, false, true}));
         
         //string, string
         Map<String, String> stringStringMap = MapUtility.mapOf(TreeMap.class,
@@ -814,11 +689,11 @@ public class MapUtilityTest {
         Map<String, String> stringStringMergeMap = MapUtility.merge(stringStringMap, stringStringMap2);
         Assert.assertNotNull(stringStringMergeMap);
         Assert.assertTrue(stringStringMergeMap instanceof TreeMap);
-        Assert.assertEquals(4, stringStringMergeMap.size());
-        Assert.assertEquals("L", stringStringMergeMap.get("A"));
-        Assert.assertEquals("M", stringStringMergeMap.get("B"));
-        Assert.assertEquals("N", stringStringMergeMap.get("C"));
-        Assert.assertEquals("O", stringStringMergeMap.get("D"));
+        TestUtils.assertMapEquals(
+                stringStringMergeMap,
+                MapUtility.mapOf(
+                        Arrays.asList("A", "B", "C", "D", "C", "B", "A"),
+                        Arrays.asList("I", "J", "K", "O", "N", "M", "L")));
         
         //long, object
         Map<Long, Object> longObjectMap = MapUtility.mapOf(
@@ -830,11 +705,11 @@ public class MapUtilityTest {
         Map<Long, Object> longObjectMergeMap = MapUtility.merge(longObjectMap, longObjectMap2);
         Assert.assertNotNull(longObjectMergeMap);
         Assert.assertTrue(longObjectMergeMap instanceof HashMap);
-        Assert.assertEquals(4, longObjectMergeMap.size());
-        Assert.assertEquals(34, longObjectMergeMap.get(189456L));
-        Assert.assertEquals("", longObjectMergeMap.get(8756156033L));
-        Assert.assertEquals(340, longObjectMergeMap.get(1894560L));
-        Assert.assertEquals("0", longObjectMergeMap.get(87561560330L));
+        TestUtils.assertMapEquals(
+                longObjectMergeMap,
+                MapUtility.mapOf(
+                        new Long[] {189456L, 8756156033L, 1894560L, 87561560330L},
+                        new Object[] {34, "", 340, "0"}));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -859,7 +734,7 @@ public class MapUtilityTest {
                 new String[] {"map", "value"})));
         
         //empty
-        Assert.assertTrue(MapUtility.isNullOrEmpty(new HashMap<>()));
+        Assert.assertTrue(MapUtility.isNullOrEmpty(MapUtility.emptyMap()));
         
         //null
         Assert.assertTrue(MapUtility.isNullOrEmpty(null));
@@ -940,37 +815,41 @@ public class MapUtilityTest {
         Map<Integer, String> integerStringMap = MapUtility.mapOf(
                 Arrays.asList(1, 3, 9),
                 Arrays.asList("t1", "t2", "t3"));
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                Arrays.asList(1, 3, 9, 12),
-                Arrays.asList("t1", "t2", "t3", "t4")
-        ), MapUtility.putAndGet(integerStringMap, 12, "t4")));
+        TestUtils.assertMapEquals(
+                MapUtility.putAndGet(integerStringMap, 12, "t4"),
+                MapUtility.mapOf(
+                        Arrays.asList(1, 3, 9, 12),
+                        Arrays.asList("t1", "t2", "t3", "t4")));
         
         //string, boolean
         Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
                 new String[] {"a", "b"},
                 new Boolean[] {true, false});
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                new String[] {"a", "b", "c"},
-                new Boolean[] {true, false, false}
-        ), MapUtility.putAndGet(stringBooleanMap, "c", false)));
+        TestUtils.assertMapEquals(
+                MapUtility.putAndGet(stringBooleanMap, "c", false),
+                MapUtility.mapOf(
+                        new String[] {"a", "b", "c"},
+                        new Boolean[] {true, false, false}));
         
         //string, string
         Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
                 Arrays.asList("A", "B", "C"),
                 Arrays.asList("I", "J", "K"));
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                Arrays.asList("A", "B", "C", "D"),
-                Arrays.asList("I", "J", "K", "L")
-        ), MapUtility.putAndGet(stringStringMap, "D", "L")));
+        TestUtils.assertMapEquals(
+                MapUtility.putAndGet(stringStringMap, "D", "L"),
+                MapUtility.mapOf(
+                        Arrays.asList("A", "B", "C", "D"),
+                        Arrays.asList("I", "J", "K", "L")));
         
         //long, object
         Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
                 new Long[] {189456L, 8756156033L},
                 new Object[] {34, ""});
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                new Long[] {189456L, 8756156033L},
-                new Object[] {34, 8946L}
-        ), MapUtility.putAndGet(longObjectMap, 8756156033L, 8946L)));
+        TestUtils.assertMapEquals(
+                MapUtility.putAndGet(longObjectMap, 8756156033L, 8946L),
+                MapUtility.mapOf(
+                        new Long[] {189456L, 8756156033L},
+                        new Object[] {34, 8946L}));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -991,45 +870,49 @@ public class MapUtilityTest {
         Map<Integer, String> integerStringMap = MapUtility.mapOf(
                 Arrays.asList(1, 3, 9),
                 Arrays.asList("t1", "t2", "t3"));
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                Arrays.asList(1, 3, 9, 12, 15, 18),
-                Arrays.asList("t1", "t2", "t3", "t4", "t5", "t6")
-        ), MapUtility.putAllAndGet(integerStringMap, MapUtility.mapOf(
-                Arrays.asList(12, 15, 18),
-                Arrays.asList("t4", "t5", "t6")))));
+        TestUtils.assertMapEquals(
+                MapUtility.putAllAndGet(integerStringMap, MapUtility.mapOf(
+                        Arrays.asList(12, 15, 18),
+                        Arrays.asList("t4", "t5", "t6"))),
+                MapUtility.mapOf(
+                        Arrays.asList(1, 3, 9, 12, 15, 18),
+                        Arrays.asList("t1", "t2", "t3", "t4", "t5", "t6")));
         
         //string, boolean
         Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
                 new String[] {"a", "b"},
                 new Boolean[] {true, false});
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                new String[] {"a", "b", "c"},
-                new Boolean[] {true, false, false}
-        ), MapUtility.putAllAndGet(stringBooleanMap, MapUtility.mapOf(
-                new String[] {"c"},
-                new Boolean[] {false}))));
+        TestUtils.assertMapEquals(
+                MapUtility.putAllAndGet(stringBooleanMap, MapUtility.mapOf(
+                        new String[] {"c"},
+                        new Boolean[] {false})),
+                MapUtility.mapOf(
+                        new String[] {"a", "b", "c"},
+                        new Boolean[] {true, false, false}));
         
         //string, string
         Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
                 Arrays.asList("A", "B", "C"),
                 Arrays.asList("I", "J", "K"));
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                Arrays.asList("A", "B", "C"),
-                Arrays.asList("I", "J", "K")
-        ), MapUtility.putAllAndGet(stringStringMap, MapUtility.mapOf(
-                ListUtility.emptyList(),
-                ListUtility.emptyList()))));
+        TestUtils.assertMapEquals(
+                MapUtility.putAllAndGet(stringStringMap, MapUtility.mapOf(
+                        ListUtility.emptyList(),
+                        ListUtility.emptyList())),
+                MapUtility.mapOf(
+                        Arrays.asList("A", "B", "C"),
+                        Arrays.asList("I", "J", "K")));
         
         //long, object
         Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
                 new Long[] {189456L, 8756156033L},
                 new Object[] {34, ""});
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                new Long[] {189456L, 8756156033L, 98070654L},
-                new Object[] {34, 8946L, ""}
-        ), MapUtility.putAllAndGet(longObjectMap, MapUtility.mapOf(
-                new Long[] {8756156033L, 98070654L},
-                new Object[] {8946L, ""}))));
+        TestUtils.assertMapEquals(
+                MapUtility.putAllAndGet(longObjectMap, MapUtility.mapOf(
+                        new Long[] {8756156033L, 98070654L},
+                        new Object[] {8946L, ""})),
+                MapUtility.mapOf(
+                        new Long[] {189456L, 8756156033L, 98070654L},
+                        new Object[] {34, 8946L, ""}));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -1052,37 +935,41 @@ public class MapUtilityTest {
         Map<Integer, String> integerStringMap = MapUtility.mapOf(
                 Arrays.asList(1, 3, 9),
                 Arrays.asList("t1", "t2", "t3"));
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                Arrays.asList(1, 3, 9),
-                Arrays.asList("t1", "t2", "t3")
-        ), MapUtility.putIfAbsentAndGet(integerStringMap, 9, "t4")));
+        TestUtils.assertMapEquals(
+                MapUtility.putIfAbsentAndGet(integerStringMap, 9, "t4"),
+                MapUtility.mapOf(
+                        Arrays.asList(1, 3, 9),
+                        Arrays.asList("t1", "t2", "t3")));
         
         //string, boolean
         Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
                 new String[] {"a", "b"},
                 new Boolean[] {true, false});
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                new String[] {"a", "b", "c"},
-                new Boolean[] {true, false, false}
-        ), MapUtility.putIfAbsentAndGet(stringBooleanMap, "c", false)));
+        TestUtils.assertMapEquals(
+                MapUtility.putIfAbsentAndGet(stringBooleanMap, "c", false),
+                MapUtility.mapOf(
+                        new String[] {"a", "b", "c"},
+                        new Boolean[] {true, false, false}));
         
         //string, string
         Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
                 Arrays.asList("A", "B", "C"),
                 Arrays.asList("I", "J", "K"));
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                Arrays.asList("A", "B", "C", "D"),
-                Arrays.asList("I", "J", "K", "L")
-        ), MapUtility.putIfAbsentAndGet(stringStringMap, "D", "L")));
+        TestUtils.assertMapEquals(
+                MapUtility.putIfAbsentAndGet(stringStringMap, "D", "L"),
+                MapUtility.mapOf(
+                        Arrays.asList("A", "B", "C", "D"),
+                        Arrays.asList("I", "J", "K", "L")));
         
         //long, object
         Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
                 new Long[] {189456L, 8756156033L},
                 new Object[] {34, ""});
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                new Long[] {189456L, 8756156033L},
-                new Object[] {34, ""}
-        ), MapUtility.putIfAbsentAndGet(longObjectMap, 8756156033L, 8946L)));
+        TestUtils.assertMapEquals(
+                MapUtility.putIfAbsentAndGet(longObjectMap, 8756156033L, 8946L),
+                MapUtility.mapOf(
+                        new Long[] {189456L, 8756156033L},
+                        new Object[] {34, ""}));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -1103,37 +990,41 @@ public class MapUtilityTest {
         Map<Integer, String> integerStringMap = MapUtility.mapOf(
                 Arrays.asList(1, 3, 9),
                 Arrays.asList("t1", "t2", "t3"));
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                Arrays.asList(1, 3, 9),
-                Arrays.asList("t1", "t2", "t4")
-        ), MapUtility.replaceAndGet(integerStringMap, 9, "t4")));
+        TestUtils.assertMapEquals(
+                MapUtility.replaceAndGet(integerStringMap, 9, "t4"),
+                MapUtility.mapOf(
+                        Arrays.asList(1, 3, 9),
+                        Arrays.asList("t1", "t2", "t4")));
         
         //string, boolean
         Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
                 new String[] {"a", "b"},
                 new Boolean[] {true, false});
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                new String[] {"a", "b"},
-                new Boolean[] {true, false}
-        ), MapUtility.replaceAndGet(stringBooleanMap, "c", false)));
+        TestUtils.assertMapEquals(
+                MapUtility.replaceAndGet(stringBooleanMap, "c", false),
+                MapUtility.mapOf(
+                        new String[] {"a", "b"},
+                        new Boolean[] {true, false}));
         
         //string, string
         Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
                 Arrays.asList("A", "B", "C"),
                 Arrays.asList("I", "J", "K"));
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                Arrays.asList("A", "B", "C"),
-                Arrays.asList("I", "J", "K")
-        ), MapUtility.replaceAndGet(stringStringMap, "D", "L")));
+        TestUtils.assertMapEquals(
+                MapUtility.replaceAndGet(stringStringMap, "D", "L"),
+                MapUtility.mapOf(
+                        Arrays.asList("A", "B", "C"),
+                        Arrays.asList("I", "J", "K")));
         
         //long, object
         Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
                 new Long[] {189456L, 8756156033L},
                 new Object[] {34, ""});
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                new Long[] {189456L, 8756156033L},
-                new Object[] {34, 8946L}
-        ), MapUtility.replaceAndGet(longObjectMap, 8756156033L, 8946L)));
+        TestUtils.assertMapEquals(
+                MapUtility.replaceAndGet(longObjectMap, 8756156033L, 8946L),
+                MapUtility.mapOf(
+                        new Long[] {189456L, 8756156033L},
+                        new Object[] {34, 8946L}));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -1154,37 +1045,41 @@ public class MapUtilityTest {
         Map<Integer, String> integerStringMap = MapUtility.mapOf(
                 Arrays.asList(1, 3, 9),
                 Arrays.asList("t1", "t2", "t3"));
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                Arrays.asList(1, 3),
-                Arrays.asList("t1", "t2")
-        ), MapUtility.removeAndGet(integerStringMap, 9)));
+        TestUtils.assertMapEquals(
+                MapUtility.removeAndGet(integerStringMap, 9),
+                MapUtility.mapOf(
+                        Arrays.asList(1, 3),
+                        Arrays.asList("t1", "t2")));
         
         //string, boolean
         Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
                 new String[] {"a", "b"},
                 new Boolean[] {true, false});
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                new String[] {"a", "b"},
-                new Boolean[] {true, false}
-        ), MapUtility.removeAndGet(stringBooleanMap, "c")));
+        TestUtils.assertMapEquals(
+                MapUtility.removeAndGet(stringBooleanMap, "c"),
+                MapUtility.mapOf(
+                        new String[] {"a", "b"},
+                        new Boolean[] {true, false}));
         
         //string, string
         Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
                 Arrays.asList("A", "B", "C"),
                 Arrays.asList("I", "J", "K"));
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                Arrays.asList("A", "B", "C"),
-                Arrays.asList("I", "J", "K")
-        ), MapUtility.removeAndGet(stringStringMap, "D")));
+        TestUtils.assertMapEquals(
+                MapUtility.removeAndGet(stringStringMap, "D"),
+                MapUtility.mapOf(
+                        Arrays.asList("A", "B", "C"),
+                        Arrays.asList("I", "J", "K")));
         
         //long, object
         Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
                 new Long[] {189456L, 8756156033L},
                 new Object[] {34, ""});
-        Assert.assertTrue(MapUtility.equals(MapUtility.mapOf(
-                new Long[] {189456L},
-                new Object[] {34}
-        ), MapUtility.removeAndGet(longObjectMap, 8756156033L)));
+        TestUtils.assertMapEquals(
+                MapUtility.removeAndGet(longObjectMap, 8756156033L),
+                MapUtility.mapOf(
+                        new Long[] {189456L},
+                        new Object[] {34}));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->

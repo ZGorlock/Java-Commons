@@ -145,83 +145,115 @@ public class BigVectorTest {
     public void testConstructors() throws Exception {
         //components
         BigVector vector = new BigVector(new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1")}, vector.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1")});
         Assert.assertEquals(3, vector.getDimensionality());
         
         //double components
         BigVector vector2 = new BigVector(0.884, 2, 1.1);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2.0"), new BigDecimal("1.1")}, vector2.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector2.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2.0"), new BigDecimal("1.1")});
         Assert.assertEquals(3, vector2.getDimensionality());
         
         //string components
         BigVector vector3 = new BigVector("0.884", "2", "1.1");
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1")}, vector3.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector3.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1")});
         Assert.assertEquals(3, vector3.getDimensionality());
         
         //list of components
         List<BigDecimal> values = Arrays.asList(new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1"), new BigDecimal("8.4"), new BigDecimal("9.0"));
         BigVector vector4 = new BigVector(values);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1"), new BigDecimal("8.4"), new BigDecimal("9.0")}, vector4.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector4.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1"), new BigDecimal("8.4"), new BigDecimal("9.0")});
         Assert.assertEquals(5, vector4.getDimensionality());
         
         //big vector
         BigVector vector5 = new BigVector(new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1")}, vector5.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector5.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1")});
         Assert.assertEquals(3, vector5.getDimensionality());
         
         //big vector and component
         BigVector vector6 = new BigVector(new BigVector(new BigDecimal("0.884"), new BigDecimal("2")), new BigDecimal("1.1"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1")}, vector6.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector6.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1")});
         Assert.assertEquals(3, vector6.getDimensionality());
         
         //big vector and components
         BigVector vector7 = new BigVector(new BigVector(new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1")), new BigDecimal("8.4"), new BigDecimal("9"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1"), new BigDecimal("8.4"), new BigDecimal("9")}, vector7.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector7.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1"), new BigDecimal("8.4"), new BigDecimal("9")});
         Assert.assertEquals(5, vector7.getDimensionality());
         
         //big vector and double component
         BigVector vector8 = new BigVector(new BigVector(new BigDecimal("0.884"), new BigDecimal("2")), 1.1);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1")}, vector8.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector8.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1")});
         Assert.assertEquals(3, vector8.getDimensionality());
         
         //big vector and string component
         BigVector vector9 = new BigVector(new BigVector(new BigDecimal("0.884"), new BigDecimal("2")), "1.1");
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1")}, vector9.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector9.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2"), new BigDecimal("1.1")});
         Assert.assertEquals(3, vector9.getDimensionality());
         
         //vector
         BigVector vector10 = new BigVector(new BigVector(0.884, 2, 1.1));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2.0"), new BigDecimal("1.1")}, vector10.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector10.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2.0"), new BigDecimal("1.1")});
         Assert.assertEquals(3, vector10.getDimensionality());
         
         //vector and component
         BigVector vector11 = new BigVector(new BigVector(0.884, 2), new BigDecimal("1.1"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2.0"), new BigDecimal("1.1")}, vector11.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector11.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2.0"), new BigDecimal("1.1")});
         Assert.assertEquals(3, vector11.getDimensionality());
         
         //vector and components
         BigVector vector12 = new BigVector(new BigVector(0.884, 2, 1.1), new BigDecimal("8.4"), new BigDecimal("9"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2.0"), new BigDecimal("1.1"), new BigDecimal("8.4"), new BigDecimal("9")}, vector12.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector12.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2.0"), new BigDecimal("1.1"), new BigDecimal("8.4"), new BigDecimal("9")});
         Assert.assertEquals(5, vector12.getDimensionality());
         
         //vector and double component
         BigVector vector13 = new BigVector(new BigVector(0.884, 2), 1.1);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2.0"), new BigDecimal("1.1")}, vector13.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector13.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2.0"), new BigDecimal("1.1")});
         Assert.assertEquals(3, vector13.getDimensionality());
         
         //vector and string component
         BigVector vector14 = new BigVector(new BigVector(0.884, 2), "1.1");
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2.0"), new BigDecimal("1.1")}, vector14.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector14.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0.884"), new BigDecimal("2.0"), new BigDecimal("1.1")});
         Assert.assertEquals(3, vector14.getDimensionality());
         
         //dimensionality
         BigVector vectorDimensionality = new BigVector(6);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0")}, vectorDimensionality.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vectorDimensionality.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0")});
         Assert.assertEquals(6, vectorDimensionality.getDimensionality());
         
         //empty
         BigVector vectorDefault = new BigVector();
-        Assert.assertArrayEquals(new BigDecimal[] {}, vectorDefault.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vectorDefault.getRawComponents(),
+                new BigDecimal[] {});
         Assert.assertEquals(0, vectorDefault.getDimensionality());
         
         //equality
@@ -621,14 +653,18 @@ public class BigVectorTest {
         sut = new BigVector(8.1, 6.6, 5, 1.09);
         BigVector clone = sut.cloned();
         Assert.assertNotNull(clone);
-        Assert.assertArrayEquals(sut.getRawComponents(), clone.getRawComponents());
+        TestUtils.assertArrayEquals(
+                clone.getRawComponents(),
+                sut.getRawComponents());
         Assert.assertNotSame(sut, clone);
         
         //big
         sut = new BigVector(new BigDecimal("8.1798906456468046140621074678418708"), new BigDecimal("6.68987846515405151504957982720704"), new BigDecimal("5.08917984982428719878814854359782987184"), new BigDecimal("1.097084949814687678164861560484198265140"));
         clone = sut.cloned();
         Assert.assertNotNull(clone);
-        Assert.assertArrayEquals(sut.getRawComponents(), clone.getRawComponents());
+        TestUtils.assertArrayEquals(
+                clone.getRawComponents(),
+                sut.getRawComponents());
         Assert.assertNotSame(sut, clone);
     }
     
@@ -644,14 +680,18 @@ public class BigVectorTest {
         sut = new BigVector(8.1, 6.6, 5, 1.09);
         BigVector emptyCopy = sut.emptyCopy();
         Assert.assertNotNull(emptyCopy);
-        Assert.assertArrayEquals(BigVector.origin(sut.getDimensionality()).getRawComponents(), emptyCopy.getRawComponents());
+        TestUtils.assertArrayEquals(
+                emptyCopy.getRawComponents(),
+                BigVector.origin(sut.getDimensionality()).getRawComponents());
         Assert.assertNotSame(sut, emptyCopy);
         
         //big
         sut = new BigVector(new BigDecimal("8.1798906456468046140621074678418708"), new BigDecimal("6.68987846515405151504957982720704"), new BigDecimal("5.08917984982428719878814854359782987184"), new BigDecimal("1.097084949814687678164861560484198265140"));
         emptyCopy = sut.emptyCopy();
         Assert.assertNotNull(emptyCopy);
-        Assert.assertArrayEquals(BigVector.origin(sut.getDimensionality()).getRawComponents(), emptyCopy.getRawComponents());
+        TestUtils.assertArrayEquals(
+                emptyCopy.getRawComponents(),
+                BigVector.origin(sut.getDimensionality()).getRawComponents());
         Assert.assertNotSame(sut, emptyCopy);
     }
     
@@ -699,35 +739,45 @@ public class BigVectorTest {
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.501"), new BigDecimal("8.0"), new BigDecimal("2.67"), new BigDecimal("-1.944"), new BigDecimal("8.5")}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.501"), new BigDecimal("8.0"), new BigDecimal("2.67"), new BigDecimal("-1.944"), new BigDecimal("8.5")});
         
         sut = new BigVector(5.501, 8, 2.67, -1.944, 8.5);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.5"), new BigDecimal("-1.944"), new BigDecimal("2.67"), new BigDecimal("8.0"), new BigDecimal("5.501")}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.5"), new BigDecimal("-1.944"), new BigDecimal("2.67"), new BigDecimal("8.0"), new BigDecimal("5.501")});
         
         sut = new BigVector(0, 1, 0, 1);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("1.0"), new BigDecimal("0.0"), new BigDecimal("1.0"), new BigDecimal("0.0")}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("1.0"), new BigDecimal("0.0"), new BigDecimal("1.0"), new BigDecimal("0.0")});
         
         sut = new BigVector(5.501);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.501")}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.501")});
         
         sut = new BigVector();
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new BigDecimal[] {}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new BigDecimal[] {});
         
         //big
         
@@ -736,7 +786,9 @@ public class BigVectorTest {
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.598779040509846549575492484052654"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("5.50104550454564410654564549828941987897287189798208908")}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.598779040509846549575492484052654"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("5.50104550454564410654564549828941987897287189798208908")});
     }
     
     /**
@@ -1785,12 +1837,16 @@ public class BigVectorTest {
         BigVector component1 = new BigVector(8.1, 6.6, 7.0, 2.6);
         component1.setMathPrecision(mathContext.getPrecision());
         Assert.assertEquals(4, component1.getDimensionality());
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.1"), new BigDecimal("6.6"), new BigDecimal("7.0"), new BigDecimal("2.6")}, component1.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component1.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.1"), new BigDecimal("6.6"), new BigDecimal("7.0"), new BigDecimal("2.6")});
         
         BigVector component2 = new BigVector(9.1, 6.3, 1.7);
         component1.copyMeta(component2);
         Assert.assertEquals(3, component2.getDimensionality());
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("9.1"), new BigDecimal("6.3"), new BigDecimal("1.7")}, component2.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component2.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("9.1"), new BigDecimal("6.3"), new BigDecimal("1.7")});
         MathContext component2MathContext = TestAccess.getFieldValue(component2.getHandler(), MathContext.class, "mathContext");
         Assert.assertEquals(mathContext.getPrecision(), component2MathContext.getPrecision());
         Assert.assertEquals(mathContext.getRoundingMode(), component2MathContext.getRoundingMode());
@@ -1800,12 +1856,16 @@ public class BigVectorTest {
         BigVector component3 = new BigVector(new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654"));
         component3.setMathPrecision(mathContext.getPrecision());
         Assert.assertEquals(5, component3.getDimensionality());
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")}, component3.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component3.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")});
         
         BigVector component4 = new BigVector(9.1, 6.3, 1.7, 0.8, 5.2);
         component3.copyMeta(component4);
         Assert.assertEquals(5, component4.getDimensionality());
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("9.1"), new BigDecimal("6.3"), new BigDecimal("1.7"), new BigDecimal("0.8"), new BigDecimal("5.2")}, component4.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component4.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("9.1"), new BigDecimal("6.3"), new BigDecimal("1.7"), new BigDecimal("0.8"), new BigDecimal("5.2")});
         MathContext component4MathContext = TestAccess.getFieldValue(component4.getHandler(), MathContext.class, "mathContext");
         Assert.assertEquals(mathContext.getPrecision(), component4MathContext.getPrecision());
         Assert.assertEquals(mathContext.getRoundingMode(), component4MathContext.getRoundingMode());
@@ -2062,13 +2122,21 @@ public class BigVectorTest {
         
         //standard
         component = new BigVector(new BigDecimal("8.160456540859010650161"), new BigDecimal("6.64908498410841501980404"), new BigDecimal("7.04808971059084054054"), new BigDecimal("2.6908405165094841828"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.160456540859010650161"), new BigDecimal("6.64908498410841501980404"), new BigDecimal("7.04808971059084054054"), new BigDecimal("2.6908405165094841828")}, component.getRawComponents());
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.160456540859010650161"), new BigDecimal("6.64908498410841501980404"), new BigDecimal("7.04808971059084054054"), new BigDecimal("2.6908405165094841828")}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.160456540859010650161"), new BigDecimal("6.64908498410841501980404"), new BigDecimal("7.04808971059084054054"), new BigDecimal("2.6908405165094841828")});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new BigDecimal[] {new BigDecimal("8.160456540859010650161"), new BigDecimal("6.64908498410841501980404"), new BigDecimal("7.04808971059084054054"), new BigDecimal("2.6908405165094841828")});
         
         //big
         component = new BigVector(new BigDecimal("8.10189480651650154101650154109480164790846540948016479084654059078489194801647908469842"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056054984056042"), new BigDecimal("7.087486240984019519841498049847098080206240920624098401951984149804984146254697784084169804"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350484540981798484904954516"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.10189480651650154101650154109480164790846540948016479084654059078489194801647908469842"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056054984056042"), new BigDecimal("7.087486240984019519841498049847098080206240920624098401951984149804984146254697784084169804"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350484540981798484904954516")}, component.getRawComponents());
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.1018948065165015410165015410948016479084654094801647908465405908"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056"), new BigDecimal("7.0874862409840195198414980498470980802062409206240984019519841498"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350485")}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.10189480651650154101650154109480164790846540948016479084654059078489194801647908469842"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056054984056042"), new BigDecimal("7.087486240984019519841498049847098080206240920624098401951984149804984146254697784084169804"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350484540981798484904954516")});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new BigDecimal[] {new BigDecimal("8.1018948065165015410165015410948016479084654094801647908465405908"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056"), new BigDecimal("7.0874862409840195198414980498470980802062409206240984019519841498"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350485")});
     }
     
     /**
@@ -2084,24 +2152,36 @@ public class BigVectorTest {
         //standard
         
         component = new BigVector(8.5, 1.5, -5.006);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.5"), new BigDecimal("1.5"), new BigDecimal("-5.006")}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new BigDecimal[] {new BigDecimal("8.5"), new BigDecimal("1.5"), new BigDecimal("-5.006")});
         
         component = new BigVector(8.5, 1.5);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.5"), new BigDecimal("1.5")}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new BigDecimal[] {new BigDecimal("8.5"), new BigDecimal("1.5")});
         
         component = new BigVector();
-        Assert.assertArrayEquals(new BigDecimal[] {}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new BigDecimal[] {});
         
         component = new BigVector(8.500000000001, 1.499999999996, -5.005999999999);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.500000000001"), new BigDecimal("1.499999999996"), new BigDecimal("-5.005999999999")}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new BigDecimal[] {new BigDecimal("8.500000000001"), new BigDecimal("1.499999999996"), new BigDecimal("-5.005999999999")});
         
         component = new BigVector(8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.5"), new BigDecimal("1.5"), new BigDecimal("-5.006")}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new BigDecimal[] {new BigDecimal("8.5"), new BigDecimal("1.5"), new BigDecimal("-5.006")});
         
         //big
         
         component = new BigVector(new BigDecimal("8.10189480651650154101650154109480164790846540948016479084654059078489194801647908469842"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056054984056042"), new BigDecimal("7.087486240984019519841498049847098080206240920624098401951984149804984146254697784084169804"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350484540981798484904954516"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.1018948065165015410165015410948016479084654094801647908465405908"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056"), new BigDecimal("7.0874862409840195198414980498470980802062409206240984019519841498"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350485")}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new BigDecimal[] {new BigDecimal("8.1018948065165015410165015410948016479084654094801647908465405908"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056"), new BigDecimal("7.0874862409840195198414980498470980802062409206240984019519841498"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350485")});
     }
     
     /**
@@ -2116,13 +2196,21 @@ public class BigVectorTest {
         
         //standard
         component = new BigVector(new BigDecimal("8.160456540859010650161"), new BigDecimal("6.64908498410841501980404"), new BigDecimal("7.04808971059084054054"), new BigDecimal("2.6908405165094841828"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.160456540859010650161"), new BigDecimal("6.64908498410841501980404"), new BigDecimal("7.04808971059084054054"), new BigDecimal("2.6908405165094841828")}, component.getPrimitiveComponents());
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.160456540859010650161"), new BigDecimal("6.64908498410841501980404"), new BigDecimal("7.04808971059084054054"), new BigDecimal("2.6908405165094841828")}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getPrimitiveComponents(),
+                new BigDecimal[] {new BigDecimal("8.160456540859010650161"), new BigDecimal("6.64908498410841501980404"), new BigDecimal("7.04808971059084054054"), new BigDecimal("2.6908405165094841828")});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new BigDecimal[] {new BigDecimal("8.160456540859010650161"), new BigDecimal("6.64908498410841501980404"), new BigDecimal("7.04808971059084054054"), new BigDecimal("2.6908405165094841828")});
         
         //big
         component = new BigVector(new BigDecimal("8.10189480651650154101650154109480164790846540948016479084654059078489194801647908469842"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056054984056042"), new BigDecimal("7.087486240984019519841498049847098080206240920624098401951984149804984146254697784084169804"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350484540981798484904954516"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.1018948065165015410165015410948016479084654094801647908465405908"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056"), new BigDecimal("7.0874862409840195198414980498470980802062409206240984019519841498"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350485")}, component.getPrimitiveComponents());
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.1018948065165015410165015410948016479084654094801647908465405908"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056"), new BigDecimal("7.0874862409840195198414980498470980802062409206240984019519841498"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350485")}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getPrimitiveComponents(),
+                new BigDecimal[] {new BigDecimal("8.1018948065165015410165015410948016479084654094801647908465405908"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056"), new BigDecimal("7.0874862409840195198414980498470980802062409206240984019519841498"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350485")});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new BigDecimal[] {new BigDecimal("8.1018948065165015410165015410948016479084654094801647908465405908"), new BigDecimal("6.6899078451030610518840560549840560549045160541801498419851884056"), new BigDecimal("7.0874862409840195198414980498470980802062409206240984019519841498"), new BigDecimal("2.6700345131350484540981798465797874161453451313504954165491350485")});
     }
     
     /**
@@ -2731,7 +2819,9 @@ public class BigVectorTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.6"), new BigDecimal("6.7"), new BigDecimal("7.8"), new BigDecimal("8.9")}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.6"), new BigDecimal("6.7"), new BigDecimal("7.8"), new BigDecimal("8.9")});
         Assert.assertEquals(4, component.getDimensionality());
         
         component = new BigVector(5.501, 2.67, -1.944, 8.5);
@@ -2739,7 +2829,9 @@ public class BigVectorTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.6"), new BigDecimal("6.7"), new BigDecimal("7.8")}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.6"), new BigDecimal("6.7"), new BigDecimal("7.8")});
         Assert.assertEquals(3, component.getDimensionality());
         
         component = new BigVector(5.501, 2.67, -1.944, 8.5);
@@ -2747,7 +2839,9 @@ public class BigVectorTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.6"), new BigDecimal("6.7"), new BigDecimal("7.8"), new BigDecimal("8.9"), new BigDecimal("9.0")}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.6"), new BigDecimal("6.7"), new BigDecimal("7.8"), new BigDecimal("8.9"), new BigDecimal("9.0")});
         Assert.assertEquals(5, component.getDimensionality());
         
         component = new BigVector(5.501, 2.67, -1.944, 8.5);
@@ -2755,7 +2849,9 @@ public class BigVectorTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new BigDecimal[] {}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new BigDecimal[] {});
         Assert.assertEquals(0, component.getDimensionality());
         
         //big
@@ -2765,7 +2861,9 @@ public class BigVectorTest {
         Assert.assertEquals(5, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("3.77813680498408489408942080484984840898488404"), new BigDecimal("0.498079845046510549248438249845405049804"), new BigDecimal("-8.15049084918425446549880884184284198442084984"), new BigDecimal("9.0160590498405493545246545642541980498782429842"), new BigDecimal("12.08598791482942540949816541849848425340534906798")}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("3.77813680498408489408942080484984840898488404"), new BigDecimal("0.498079845046510549248438249845405049804"), new BigDecimal("-8.15049084918425446549880884184284198442084984"), new BigDecimal("9.0160590498405493545246545642541980498782429842"), new BigDecimal("12.08598791482942540949816541849848425340534906798")});
         Assert.assertEquals(5, component.getDimensionality());
         
         //invalid
@@ -2787,41 +2885,61 @@ public class BigVectorTest {
         //standard
         
         sut = new BigVector(8.5, 1.5, -5.006);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.5"), new BigDecimal("1.5"), new BigDecimal("-5.006")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.5"), new BigDecimal("1.5"), new BigDecimal("-5.006")});
         sut.set(0, new BigDecimal("5.77"));
         sut.set(1, new BigDecimal("3.0"));
         sut.set(2, new BigDecimal("0.997"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.77"), new BigDecimal("3.0"), new BigDecimal("0.997")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.77"), new BigDecimal("3.0"), new BigDecimal("0.997")});
         
         sut = new BigVector(8.5, 1.5);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.5"), new BigDecimal("1.5")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.5"), new BigDecimal("1.5")});
         sut.set(0, new BigDecimal("5.77"));
         sut.set(1, new BigDecimal("3.0"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.77"), new BigDecimal("3.0")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.77"), new BigDecimal("3.0")});
         
         sut = new BigVector(8.500000000001, 1.499999999996, -5.005999999999);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.500000000001"), new BigDecimal("1.499999999996"), new BigDecimal("-5.005999999999")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.500000000001"), new BigDecimal("1.499999999996"), new BigDecimal("-5.005999999999")});
         sut.set(0, new BigDecimal("5.769999999996"));
         sut.set(1, new BigDecimal("3.000000000001"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.769999999996"), new BigDecimal("3.000000000001"), new BigDecimal("-5.005999999999")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.769999999996"), new BigDecimal("3.000000000001"), new BigDecimal("-5.005999999999")});
         
         sut = new BigVector(8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.5"), new BigDecimal("1.5"), new BigDecimal("-5.006")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.5"), new BigDecimal("1.5"), new BigDecimal("-5.006")});
         sut.set(0, new BigDecimal("6.5000000000000000000000001"));
         sut.set(1, new BigDecimal("-1.49999999999999999999996"));
         sut.set(2, new BigDecimal("3.0059999999999999999999"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("6.5000000000000000000000001"), new BigDecimal("-1.49999999999999999999996"), new BigDecimal("3.0059999999999999999999")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("6.5000000000000000000000001"), new BigDecimal("-1.49999999999999999999996"), new BigDecimal("3.0059999999999999999999")});
         
         //big
         
         sut = new BigVector(new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")});
         sut.set(0, new BigDecimal("3.77813680498408489408942080484984840898488404"));
         sut.set(1, new BigDecimal("0.498079845046510549248438249845405049804"));
         sut.set(2, new BigDecimal("-8.15049084918425446549880884184284198442084984"));
         sut.set(3, new BigDecimal("9.0160590498405493545246545642541980498782429842"));
         sut.set(4, new BigDecimal("12.08598791482942540949816541849848425340534906798"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("3.77813680498408489408942080484984840898488404"), new BigDecimal("0.498079845046510549248438249845405049804"), new BigDecimal("-8.15049084918425446549880884184284198442084984"), new BigDecimal("9.0160590498405493545246545642541980498782429842"), new BigDecimal("12.08598791482942540949816541849848425340534906798")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("3.77813680498408489408942080484984840898488404"), new BigDecimal("0.498079845046510549248438249845405049804"), new BigDecimal("-8.15049084918425446549880884184284198442084984"), new BigDecimal("9.0160590498405493545246545642541980498782429842"), new BigDecimal("12.08598791482942540949816541849848425340534906798")});
         
         //invalid
         
@@ -2864,34 +2982,54 @@ public class BigVectorTest {
         //standard
         
         sut = new BigVector(4);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0")});
         sut.setX(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.555"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.555"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0")});
         
         sut = new BigVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")});
         sut.setX(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.555"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.555"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")});
         
         //big
         
         sut = new BigVector(new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")});
         sut.setX(new BigDecimal("3.77813680498408489408942080484984840898488404"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("3.77813680498408489408942080484984840898488404"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("3.77813680498408489408942080484984840898488404"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")});
         
         //invalid
         
         sut = new BigVector();
-        Assert.assertArrayEquals(new BigDecimal[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {});
         sut.setX(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {});
         
         sut = new BigVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")});
         TestUtils.assertNoException(() ->
                 sut.setX(null));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")});
     }
     
     /**
@@ -2905,39 +3043,63 @@ public class BigVectorTest {
         //standard
         
         sut = new BigVector(4);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0")});
         sut.setY(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0"), new BigDecimal("5.555"), new BigDecimal("0"), new BigDecimal("0")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0"), new BigDecimal("5.555"), new BigDecimal("0"), new BigDecimal("0")});
         
         sut = new BigVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")});
         sut.setY(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("5.555"), new BigDecimal("0.79455"), new BigDecimal("3.3154")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("5.555"), new BigDecimal("0.79455"), new BigDecimal("3.3154")});
         
         //big
         
         sut = new BigVector(new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")});
         sut.setY(new BigDecimal("0.498079845046510549248438249845405049804"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("0.498079845046510549248438249845405049804"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("0.498079845046510549248438249845405049804"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")});
         
         //invalid
         
         sut = new BigVector();
-        Assert.assertArrayEquals(new BigDecimal[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {});
         sut.setY(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {});
         
         sut = new BigVector(8.15);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15")});
         sut.setY(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15")});
         
         sut = new BigVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")});
         TestUtils.assertNoException(() ->
                 sut.setY(null));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")});
     }
     
     /**
@@ -2951,44 +3113,72 @@ public class BigVectorTest {
         //standard
         
         sut = new BigVector(4);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0")});
         sut.setZ(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("5.555"), new BigDecimal("0")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("5.555"), new BigDecimal("0")});
         
         sut = new BigVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")});
         sut.setZ(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("5.555"), new BigDecimal("3.3154")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("5.555"), new BigDecimal("3.3154")});
         
         //big
         
         sut = new BigVector(new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")});
         sut.setZ(new BigDecimal("-8.15049084918425446549880884184284198442084984"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("-8.15049084918425446549880884184284198442084984"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("-8.15049084918425446549880884184284198442084984"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")});
         
         //invalid
         
         sut = new BigVector();
-        Assert.assertArrayEquals(new BigDecimal[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {});
         sut.setZ(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {});
         
         sut = new BigVector(8.15);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15")});
         sut.setZ(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15")});
         
         sut = new BigVector(8.15, 77.1654);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654")});
         sut.setZ(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654")});
         
         sut = new BigVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")});
         TestUtils.assertNoException(() ->
                 sut.setZ(null));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")});
     }
     
     /**
@@ -3002,49 +3192,81 @@ public class BigVectorTest {
         //standard
         
         sut = new BigVector(4);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0")});
         sut.setW(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("5.555")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("0"), new BigDecimal("5.555")});
         
         sut = new BigVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")});
         sut.setW(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("5.555")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("5.555")});
         
         //big
         
         sut = new BigVector(new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("-1.9448907897419872598778418747816878907980484"), new BigDecimal("8.598779040509846549575492484052654")});
         sut.setW(new BigDecimal("9.0160590498405493545246545642541980498782429842"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("9.0160590498405493545246545642541980498782429842"), new BigDecimal("8.598779040509846549575492484052654")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("5.50104550454564410654564549828941987897287189798208908"), new BigDecimal("8.0480987189728798728179857241654509840987187948"), new BigDecimal("2.67504987198727981789702897177287184508797"), new BigDecimal("9.0160590498405493545246545642541980498782429842"), new BigDecimal("8.598779040509846549575492484052654")});
         
         //invalid
         
         sut = new BigVector();
-        Assert.assertArrayEquals(new BigDecimal[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {});
         sut.setW(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {});
         
         sut = new BigVector(8.15);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15")});
         sut.setW(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15")});
         
         sut = new BigVector(8.15, 77.1654);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654")});
         sut.setW(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654")});
         
         sut = new BigVector(8.15, 77.1654, 0.79455);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455")});
         sut.setW(new BigDecimal("5.555"));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455")});
         
         sut = new BigVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")});
         TestUtils.assertNoException(() ->
                 sut.setW(null));
-        Assert.assertArrayEquals(new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new BigDecimal[] {new BigDecimal("8.15"), new BigDecimal("77.1654"), new BigDecimal("0.79455"), new BigDecimal("3.3154")});
     }
     
     /**

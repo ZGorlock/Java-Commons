@@ -133,53 +133,73 @@ public class RawVectorTest {
     public void testConstructors() throws Exception {
         //components
         RawVector vector = new RawVector(0.884, 2, 1.1);
-        Assert.assertArrayEquals(new Number[] {0.884, 2, 1.1}, vector.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector.getRawComponents(),
+                new Number[] {0.884, 2, 1.1});
         Assert.assertEquals(3, vector.getDimensionality());
         
         //list of components
         List<Number> values = Arrays.asList(0.884, 2, 1.1, 8.4, 9.0);
         RawVector vector2 = new RawVector(values);
-        Assert.assertArrayEquals(new Number[] {0.884, 2, 1.1, 8.4, 9.0}, vector2.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector2.getRawComponents(),
+                new Number[] {0.884, 2, 1.1, 8.4, 9.0});
         Assert.assertEquals(5, vector2.getDimensionality());
         
         //raw vector
         RawVector vector3 = new RawVector(new RawVector(0.884, 2, 1.1));
-        Assert.assertArrayEquals(new Number[] {0.884, 2, 1.1}, vector3.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector3.getRawComponents(),
+                new Number[] {0.884, 2, 1.1});
         Assert.assertEquals(3, vector3.getDimensionality());
         
         //vector
         RawVector vector4 = new RawVector(new Vector(0.884, 2, 1.1));
-        Assert.assertArrayEquals(new Number[] {0.884, 2.0, 1.1}, vector4.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector4.getRawComponents(),
+                new Number[] {0.884, 2.0, 1.1});
         Assert.assertEquals(3, vector4.getDimensionality());
         
         //raw vector and component
         RawVector vector5 = new RawVector(new RawVector(0.884, 2), 1.1);
-        Assert.assertArrayEquals(new Number[] {0.884, 2, 1.1}, vector5.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector5.getRawComponents(),
+                new Number[] {0.884, 2, 1.1});
         Assert.assertEquals(3, vector5.getDimensionality());
         
         //raw vector and components
         RawVector vector6 = new RawVector(new RawVector(0.884, 2, 1.1), 8.4, 9);
-        Assert.assertArrayEquals(new Number[] {0.884, 2, 1.1, 8.4, 9}, vector6.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector6.getRawComponents(),
+                new Number[] {0.884, 2, 1.1, 8.4, 9});
         Assert.assertEquals(5, vector6.getDimensionality());
         
         //vector and component
         RawVector vector7 = new RawVector(new Vector(0.884, 2), 1.1);
-        Assert.assertArrayEquals(new Number[] {0.884, 2.0, 1.1}, vector7.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector7.getRawComponents(),
+                new Number[] {0.884, 2.0, 1.1});
         Assert.assertEquals(3, vector7.getDimensionality());
         
         //vector and components
         RawVector vector8 = new RawVector(new Vector(0.884, 2, 1.1), 8.4, 9);
-        Assert.assertArrayEquals(new Number[] {0.884, 2.0, 1.1, 8.4, 9}, vector8.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector8.getRawComponents(),
+                new Number[] {0.884, 2.0, 1.1, 8.4, 9});
         Assert.assertEquals(5, vector8.getDimensionality());
         
         //dimensionality
         RawVector vectorDimensionality = new RawVector(6);
-        Assert.assertArrayEquals(new Number[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0}, vectorDimensionality.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vectorDimensionality.getRawComponents(),
+                new Number[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0});
         Assert.assertEquals(6, vectorDimensionality.getDimensionality());
         
         //empty
         RawVector vectorDefault = new RawVector();
-        Assert.assertArrayEquals(new Number[] {}, vectorDefault.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vectorDefault.getRawComponents(),
+                new Number[] {});
         Assert.assertEquals(0, vectorDefault.getDimensionality());
         
         //equality
@@ -532,7 +552,9 @@ public class RawVectorTest {
         sut = new RawVector(8.1, 6.6, 5, 1.09);
         RawVector clone = sut.cloned();
         Assert.assertNotNull(clone);
-        Assert.assertArrayEquals(sut.getRawComponents(), clone.getRawComponents());
+        TestUtils.assertArrayEquals(
+                clone.getRawComponents(),
+                sut.getRawComponents());
         Assert.assertNotSame(sut, clone);
     }
     
@@ -548,7 +570,9 @@ public class RawVectorTest {
         sut = new RawVector(8.1, 6.6, 5, 1.09);
         RawVector emptyCopy = sut.emptyCopy();
         Assert.assertNotNull(emptyCopy);
-        Assert.assertArrayEquals(RawVector.origin(sut.getDimensionality()).getRawComponents(), emptyCopy.getRawComponents());
+        TestUtils.assertArrayEquals(
+                emptyCopy.getRawComponents(),
+                RawVector.origin(sut.getDimensionality()).getRawComponents());
         Assert.assertNotSame(sut, emptyCopy);
     }
     
@@ -596,35 +620,45 @@ public class RawVectorTest {
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Number[] {5.501, 8, 2.67, -1.944, 8.5}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Number[] {5.501, 8, 2.67, -1.944, 8.5});
         
         sut = new RawVector(5.501, 8, 2.67, -1.944, 8.5);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Number[] {8.5, -1.944, 2.67, 8, 5.501}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Number[] {8.5, -1.944, 2.67, 8, 5.501});
         
         sut = new RawVector(0, 1, 0, 1);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Number[] {1, 0, 1, 0}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Number[] {1, 0, 1, 0});
         
         sut = new RawVector(5.501);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Number[] {5.501}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Number[] {5.501});
         
         sut = new RawVector();
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Number[] {}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Number[] {});
     }
     
     /**
@@ -1450,12 +1484,16 @@ public class RawVectorTest {
     public void testCopyMeta() throws Exception {
         RawVector component1 = new RawVector(8.1, 6.6, 7.0, 2.6);
         Assert.assertEquals(4, component1.getDimensionality());
-        Assert.assertArrayEquals(new Number[] {8.1, 6.6, 7.0, 2.6}, component1.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component1.getRawComponents(),
+                new Number[] {8.1, 6.6, 7.0, 2.6});
         
         RawVector component2 = new RawVector(9.1, 6.3, 1.7);
         component1.copyMeta(component2);
         Assert.assertEquals(3, component2.getDimensionality());
-        Assert.assertArrayEquals(new Number[] {9.1, 6.3, 1.7}, component2.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component2.getRawComponents(),
+                new Number[] {9.1, 6.3, 1.7});
     }
     
     /**
@@ -1671,8 +1709,12 @@ public class RawVectorTest {
         
         //standard
         component = new RawVector(8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054, 2.6908405165094841828);
-        Assert.assertArrayEquals(new Number[] {8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054, 2.6908405165094841828}, component.getRawComponents());
-        Assert.assertArrayEquals(new Number[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Number[] {8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054, 2.6908405165094841828});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Number[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509});
     }
     
     /**
@@ -1688,19 +1730,29 @@ public class RawVectorTest {
         //standard
         
         component = new RawVector(8.5, 1.5, -5.006);
-        Assert.assertArrayEquals(new Number[] {8.5, 1.5, -5.006}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Number[] {8.5, 1.5, -5.006});
         
         component = new RawVector(8.5, 1.5);
-        Assert.assertArrayEquals(new Number[] {8.5, 1.5}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Number[] {8.5, 1.5});
         
         component = new RawVector();
-        Assert.assertArrayEquals(new Number[] {}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Number[] {});
         
         component = new RawVector(8.500000000001, 1.499999999996, -5.005999999999);
-        Assert.assertArrayEquals(new Number[] {8.500000000001, 1.499999999996, -5.005999999999}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Number[] {8.500000000001, 1.499999999996, -5.005999999999});
         
         component = new RawVector(8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999);
-        Assert.assertArrayEquals(new Number[] {8.5, 1.5, -5.006}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Number[] {8.5, 1.5, -5.006});
     }
     
     /**
@@ -1715,8 +1767,12 @@ public class RawVectorTest {
         
         //standard
         component = new RawVector(8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054, 2.6908405165094841828);
-        Assert.assertArrayEquals(new double[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509}, component.getPrimitiveComponents(), TestUtils.DELTA);
-        Assert.assertArrayEquals(new Number[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                Arrays.stream(component.getPrimitiveComponents()).boxed().toArray(),
+                new Double[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Number[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509});
     }
     
     /**
@@ -2243,7 +2299,9 @@ public class RawVectorTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new Number[] {5.6, 6.7, 7.8, 8.9}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Number[] {5.6, 6.7, 7.8, 8.9});
         Assert.assertEquals(4, component.getDimensionality());
         
         component = new RawVector(5.501, 2.67, -1.944, 8.5);
@@ -2251,7 +2309,9 @@ public class RawVectorTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new Number[] {5.6, 6.7, 7.8}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Number[] {5.6, 6.7, 7.8});
         Assert.assertEquals(3, component.getDimensionality());
         
         component = new RawVector(5.501, 2.67, -1.944, 8.5);
@@ -2259,7 +2319,9 @@ public class RawVectorTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new Number[] {5.6, 6.7, 7.8, 8.9, 9}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Number[] {5.6, 6.7, 7.8, 8.9, 9});
         Assert.assertEquals(5, component.getDimensionality());
         
         component = new RawVector(5.501, 2.67, -1.944, 8.5);
@@ -2267,7 +2329,9 @@ public class RawVectorTest {
         Assert.assertEquals(4, component.getDimensionality());
         Assert.assertTrue(component.isResizeable());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new Number[] {}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Number[] {});
         Assert.assertEquals(0, component.getDimensionality());
         
         //invalid
@@ -2289,30 +2353,46 @@ public class RawVectorTest {
         //standard
         
         sut = new RawVector(8.5, 1.5, -5.006);
-        Assert.assertArrayEquals(new Number[] {8.5, 1.5, -5.006}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.5, 1.5, -5.006});
         sut.set(0, 5.77);
         sut.set(1, 3.0);
         sut.set(2, 0.997);
-        Assert.assertArrayEquals(new Number[] {5.77, 3.0, 0.997}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {5.77, 3.0, 0.997});
         
         sut = new RawVector(8.5, 1.5);
-        Assert.assertArrayEquals(new Number[] {8.5, 1.5}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.5, 1.5});
         sut.set(0, 5.77);
         sut.set(1, 3.0);
-        Assert.assertArrayEquals(new Number[] {5.77, 3.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {5.77, 3.0});
         
         sut = new RawVector(8.500000000001, 1.499999999996, -5.005999999999);
-        Assert.assertArrayEquals(new Number[] {8.500000000001, 1.499999999996, -5.005999999999}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.500000000001, 1.499999999996, -5.005999999999});
         sut.set(0, 5.769999999996);
         sut.set(1, 3.000000000001);
-        Assert.assertArrayEquals(new Number[] {5.769999999996, 3.000000000001, -5.005999999999}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {5.769999999996, 3.000000000001, -5.005999999999});
         
         sut = new RawVector(8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999);
-        Assert.assertArrayEquals(new Number[] {8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999});
         sut.set(0, 6.5000000000000000000000001);
         sut.set(1, -1.49999999999999999999996);
         sut.set(2, 3.0059999999999999999999);
-        Assert.assertArrayEquals(new Number[] {6.5, -1.5, 3.006}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {6.5, -1.5, 3.006});
         
         //invalid
         
@@ -2340,27 +2420,43 @@ public class RawVectorTest {
         //standard
         
         sut = new RawVector(4);
-        Assert.assertArrayEquals(new Number[] {0.0, 0.0, 0.0, 0.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {0.0, 0.0, 0.0, 0.0});
         sut.setX(5.555);
-        Assert.assertArrayEquals(new Number[] {5.555, 0.0, 0.0, 0.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {5.555, 0.0, 0.0, 0.0});
         
         sut = new RawVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 0.79455, 3.3154}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 0.79455, 3.3154});
         sut.setX(5.555);
-        Assert.assertArrayEquals(new Number[] {5.555, 77.1654, 0.79455, 3.3154}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {5.555, 77.1654, 0.79455, 3.3154});
         
         //invalid
         
         sut = new RawVector();
-        Assert.assertArrayEquals(new Number[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {});
         sut.setX(5.555);
-        Assert.assertArrayEquals(new Number[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {});
         
         sut = new RawVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 0.79455, 3.3154}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 0.79455, 3.3154});
         TestUtils.assertNoException(() ->
                 sut.setX(null));
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 0.79455, 3.3154}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 0.79455, 3.3154});
     }
     
     /**
@@ -2374,32 +2470,52 @@ public class RawVectorTest {
         //standard
         
         sut = new RawVector(4);
-        Assert.assertArrayEquals(new Number[] {0.0, 0.0, 0.0, 0.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {0.0, 0.0, 0.0, 0.0});
         sut.setY(5.555);
-        Assert.assertArrayEquals(new Number[] {0.0, 5.555, 0.0, 0.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {0.0, 5.555, 0.0, 0.0});
         
         sut = new RawVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 0.79455, 3.3154}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 0.79455, 3.3154});
         sut.setY(5.555);
-        Assert.assertArrayEquals(new Number[] {8.15, 5.555, 0.79455, 3.3154}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 5.555, 0.79455, 3.3154});
         
         //invalid
         
         sut = new RawVector();
-        Assert.assertArrayEquals(new Number[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {});
         sut.setY(5.555);
-        Assert.assertArrayEquals(new Number[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {});
         
         sut = new RawVector(8.15);
-        Assert.assertArrayEquals(new Number[] {8.15}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15});
         sut.setY(5.555);
-        Assert.assertArrayEquals(new Number[] {8.15}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15});
         
         sut = new RawVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 0.79455, 3.3154}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 0.79455, 3.3154});
         TestUtils.assertNoException(() ->
                 sut.setY(null));
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 0.79455, 3.3154}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 0.79455, 3.3154});
     }
     
     /**
@@ -2413,37 +2529,61 @@ public class RawVectorTest {
         //standard
         
         sut = new RawVector(4);
-        Assert.assertArrayEquals(new Number[] {0.0, 0.0, 0.0, 0.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {0.0, 0.0, 0.0, 0.0});
         sut.setZ(5.555);
-        Assert.assertArrayEquals(new Number[] {0.0, 0.0, 5.555, 0.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {0.0, 0.0, 5.555, 0.0});
         
         sut = new RawVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 0.79455, 3.3154}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 0.79455, 3.3154});
         sut.setZ(5.555);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 5.555, 3.3154}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 5.555, 3.3154});
         
         //invalid
         
         sut = new RawVector();
-        Assert.assertArrayEquals(new Number[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {});
         sut.setZ(5.555);
-        Assert.assertArrayEquals(new Number[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {});
         
         sut = new RawVector(8.15);
-        Assert.assertArrayEquals(new Number[] {8.15}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15});
         sut.setZ(5.555);
-        Assert.assertArrayEquals(new Number[] {8.15}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15});
         
         sut = new RawVector(8.15, 77.1654);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654});
         sut.setZ(5.555);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654});
         
         sut = new RawVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 0.79455, 3.3154}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 0.79455, 3.3154});
         TestUtils.assertNoException(() ->
                 sut.setZ(null));
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 0.79455, 3.3154}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 0.79455, 3.3154});
     }
     
     /**
@@ -2457,42 +2597,70 @@ public class RawVectorTest {
         //standard
         
         sut = new RawVector(4);
-        Assert.assertArrayEquals(new Number[] {0.0, 0.0, 0.0, 0.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {0.0, 0.0, 0.0, 0.0});
         sut.setW(5.555);
-        Assert.assertArrayEquals(new Number[] {0.0, 0.0, 0.0, 5.555}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {0.0, 0.0, 0.0, 5.555});
         
         sut = new RawVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 0.79455, 3.3154}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 0.79455, 3.3154});
         sut.setW(5.555);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 0.79455, 5.555}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 0.79455, 5.555});
         
         //invalid
         
         sut = new RawVector();
-        Assert.assertArrayEquals(new Number[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {});
         sut.setW(5.555);
-        Assert.assertArrayEquals(new Number[] {}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {});
         
         sut = new RawVector(8.15);
-        Assert.assertArrayEquals(new Number[] {8.15}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15});
         sut.setW(5.555);
-        Assert.assertArrayEquals(new Number[] {8.15}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15});
         
         sut = new RawVector(8.15, 77.1654);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654});
         sut.setW(5.555);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654});
         
         sut = new RawVector(8.15, 77.1654, 0.79455);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 0.79455});
         sut.setW(5.555);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 0.79455});
         
         sut = new RawVector(8.15, 77.1654, 0.79455, 3.3154);
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 0.79455, 3.3154}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 0.79455, 3.3154});
         TestUtils.assertNoException(() ->
                 sut.setW(null));
-        Assert.assertArrayEquals(new Number[] {8.15, 77.1654, 0.79455, 3.3154}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Number[] {8.15, 77.1654, 0.79455, 3.3154});
     }
     
     /**

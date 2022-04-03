@@ -7,6 +7,8 @@
 
 package commons.math.component;
 
+import java.util.Arrays;
+
 import commons.math.component.handler.math.DoubleComponentMathHandler;
 import commons.math.component.matrix.Matrix;
 import commons.math.component.matrix.Matrix2;
@@ -149,12 +151,16 @@ public class ComponentTest {
     public void testCopyMeta() throws Exception {
         Vector component1 = new Vector(8.1, 6.6, 7.0, 2.6);
         Assert.assertEquals(4, component1.getDimensionality());
-        Assert.assertArrayEquals(new Double[] {8.1, 6.6, 7.0, 2.6}, component1.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component1.getRawComponents(),
+                new Double[] {8.1, 6.6, 7.0, 2.6});
         
         Vector component2 = new Vector(9.1, 6.3, 1.7);
         component1.copyMeta(component2);
         Assert.assertEquals(3, component2.getDimensionality());
-        Assert.assertArrayEquals(new Double[] {9.1, 6.3, 1.7}, component2.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component2.getRawComponents(),
+                new Double[] {9.1, 6.3, 1.7});
     }
     
     /**
@@ -169,8 +175,12 @@ public class ComponentTest {
         
         //standard
         component = new Vector(8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054, 2.6908405165094841828);
-        Assert.assertArrayEquals(new Double[] {8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054, 2.6908405165094841828}, component.getRawComponents());
-        Assert.assertArrayEquals(new Double[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Double[] {8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054, 2.6908405165094841828});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Double[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509});
     }
     
     /**
@@ -185,8 +195,12 @@ public class ComponentTest {
         
         //standard
         component = new Vector(8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054, 2.6908405165094841828);
-        Assert.assertArrayEquals(new double[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509}, component.getPrimitiveComponents(), TestUtils.DELTA);
-        Assert.assertArrayEquals(new Double[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                Arrays.stream(component.getPrimitiveComponents()).boxed().toArray(),
+                new Double[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Double[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509});
     }
     
     /**

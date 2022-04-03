@@ -2643,8 +2643,9 @@ public class ProgressBarTest {
         Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "current"));
         Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "previous"));
         Assert.assertEquals(0L, TestAccess.getFieldValue(sut, "initialProgress"));
-        Assert.assertArrayEquals(new Long[] {},
-                TestAccess.getFieldValue(sut, List.class, "rollingProgress").toArray());
+        TestUtils.assertListEquals(
+                TestAccess.getFieldValue(sut, List.class, "rollingProgress"),
+                new Long[] {});
         TestAccess.setFieldValue(sut, "progress", 54L);
         TestAccess.setFieldValue(sut, "current", 54L);
         TestAccess.setFieldValue(sut, "previous", 51L);
@@ -2657,8 +2658,9 @@ public class ProgressBarTest {
         Assert.assertEquals(54L, TestAccess.getFieldValue(sut, "current"));
         Assert.assertEquals(51L, TestAccess.getFieldValue(sut, "previous"));
         Assert.assertEquals(10L, TestAccess.getFieldValue(sut, "initialProgress"));
-        Assert.assertArrayEquals(new Long[] {39L, 43L, 46L, 51L, 54L},
-                TestAccess.getFieldValue(sut, List.class, "rollingProgress").toArray());
+        TestUtils.assertListEquals(
+                TestAccess.getFieldValue(sut, List.class, "rollingProgress"),
+                new Long[] {39L, 43L, 46L, 51L, 54L});
         sut.updateUnits("ms", 1000);
         Assert.assertEquals("ms", TestAccess.getFieldValue(sut, "units"));
         Assert.assertEquals(100000L, TestAccess.getFieldValue(sut, "total"));
@@ -2666,8 +2668,9 @@ public class ProgressBarTest {
         Assert.assertEquals(54000L, TestAccess.getFieldValue(sut, "current"));
         Assert.assertEquals(51000L, TestAccess.getFieldValue(sut, "previous"));
         Assert.assertEquals(10000L, TestAccess.getFieldValue(sut, "initialProgress"));
-        Assert.assertArrayEquals(new Long[] {39000L, 43000L, 46000L, 51000L, 54000L},
-                TestAccess.getFieldValue(sut, List.class, "rollingProgress").toArray());
+        TestUtils.assertListEquals(
+                TestAccess.getFieldValue(sut, List.class, "rollingProgress"),
+                new Long[] {39000L, 43000L, 46000L, 51000L, 54000L});
     }
     
     /**

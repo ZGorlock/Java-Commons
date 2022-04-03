@@ -9,6 +9,7 @@ package commons.math;
 
 import java.io.File;
 import java.math.BigDecimal;
+import java.util.Arrays;
 import java.util.List;
 
 import commons.access.Filesystem;
@@ -119,51 +120,24 @@ public class NumberStringUtilityTest {
     @Test
     public void testConstants() throws Exception {
         //constants
-        
-        String[][] NUMBER_NAMES = TestAccess.getFieldValue(NumberStringUtility.class, String[][].class, "NUMBER_NAMES");
-        Assert.assertEquals(13, NUMBER_NAMES.length);
-        Assert.assertArrayEquals(
-                new String[] {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine"},
-                NUMBER_NAMES[0]);
-        Assert.assertArrayEquals(
-                new String[] {"", "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety"},
-                NUMBER_NAMES[1]);
-        Assert.assertArrayEquals(
-                new String[] {"", "hundred"},
-                NUMBER_NAMES[2]);
-        Assert.assertArrayEquals(
-                new String[] {"ten", "eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"},
-                NUMBER_NAMES[3]);
-        Assert.assertArrayEquals(
-                new String[] {"", "thousand", "mi", "bi", "tri", "quadri", "quinti", "sexti", "septi", "octi", "noni"},
-                NUMBER_NAMES[4]);
-        Assert.assertArrayEquals(
-                new String[] {"", "un", "duo", "tre", "quattuor", "quin", "sex", "septen", "octo", "novem"},
-                NUMBER_NAMES[5]);
-        Assert.assertArrayEquals(
-                new String[] {"", "dec", "vigin", "trigin", "quadragin", "quinquagin", "sexagin", "septuagin", "octogin", "nonagin"},
-                NUMBER_NAMES[6]);
-        Assert.assertArrayEquals(
-                new String[] {"", "cen", "duocen", "trecen", "quadringen", "quingen", "sescen", "septingen", "octingen", "nongen"},
-                NUMBER_NAMES[7]);
-        Assert.assertArrayEquals(
-                new String[] {"", "millia"},
-                NUMBER_NAMES[8]);
-        Assert.assertArrayEquals(
-                new String[] {"llion", "illion", "tillion"},
-                NUMBER_NAMES[9]);
-        Assert.assertArrayEquals(
-                new String[] {"th", "st", "nd", "rd"},
-                NUMBER_NAMES[10]);
-        Assert.assertArrayEquals(
-                new String[] {"zero", "fir", "seco", "thi", "four", "fif", "six", "seven", "eigh", "nin"},
-                NUMBER_NAMES[11]);
-        Assert.assertArrayEquals(
-                new String[] {"negative", "point", "and", "oh", "o", "times X to the", "s"},
-                NUMBER_NAMES[12]);
-        
-        List<String> validTokens = TestAccess.getFieldValue(NumberStringUtility.class, List.class, "VALID_TOKENS");
-        Assert.assertArrayEquals(
+        TestUtils.assertArrayEquals(
+                Arrays.stream(TestAccess.getFieldValue(NumberStringUtility.class, String[][].class, "NUMBER_NAMES"))
+                        .map(e -> String.join("|", e)).toArray(),
+                new String[] {"zero|one|two|three|four|five|six|seven|eight|nine",
+                              "|ten|twenty|thirty|forty|fifty|sixty|seventy|eighty|ninety",
+                              "|hundred",
+                              "ten|eleven|twelve|thirteen|fourteen|fifteen|sixteen|seventeen|eighteen|nineteen",
+                              "|thousand|mi|bi|tri|quadri|quinti|sexti|septi|octi|noni",
+                              "|un|duo|tre|quattuor|quin|sex|septen|octo|novem",
+                              "|dec|vigin|trigin|quadragin|quinquagin|sexagin|septuagin|octogin|nonagin",
+                              "|cen|duocen|trecen|quadringen|quingen|sescen|septingen|octingen|nongen",
+                              "|millia",
+                              "llion|illion|tillion",
+                              "th|st|nd|rd",
+                              "zero|fir|seco|thi|four|fif|six|seven|eigh|nin",
+                              "negative|point|and|oh|o|times X to the|s"});
+        TestUtils.assertListEquals(
+                TestAccess.getFieldValue(NumberStringUtility.class, List.class, "VALID_TOKENS"),
                 new String[] {"zero", "one", "two", "three", "four", "five", "six", "seven", "eight", "nine",
                               "ten", "twenty", "thirty", "forty", "fifty", "sixty", "seventy", "eighty", "ninety",
                               "hundred",
@@ -176,16 +150,13 @@ public class NumberStringUtilityTest {
                               "llion", "illion", "tillion",
                               "th", "st", "nd", "rd",
                               "fir", "seco", "thi", "fif", "eigh", "nin",
-                              "negative", "point", "and", "oh", "o", "times ten to the", "s"
-                }, validTokens.toArray());
-        
-        List<String> validLatinPowerNameTokens = TestAccess.getFieldValue(NumberStringUtility.class, List.class, "VALID_LATIN_POWER_NAME_TOKENS");
-        Assert.assertArrayEquals(
+                              "negative", "point", "and", "oh", "o", "times ten to the", "s"});
+        TestUtils.assertListEquals(
+                TestAccess.getFieldValue(NumberStringUtility.class, List.class, "VALID_LATIN_POWER_NAME_TOKENS"),
                 new String[] {"quinquagin", "quadringen", "quadragin", "septuagin", "septingen", "thousand", "quattuor", "octingen",
                               "sexagin", "octogin", "nonagin", "quingen", "quadri", "quinti", "septen", "trigin", "duocen", "trecen",
                               "sescen", "nongen", "millia", "sexti", "septi", "novem", "vigin", "octi", "noni", "quin", "octo", "tri",
-                              "duo", "tre", "sex", "dec", "cen", "mi", "bi", "un", "tillion", "illion", "llion"
-                }, validLatinPowerNameTokens.toArray());
+                              "duo", "tre", "sex", "dec", "cen", "mi", "bi", "un", "tillion", "illion", "llion"});
         
         //patterns
         Assert.assertEquals("[+\\-]?(?:(?:\\d+(?:\\.\\d+)?)|(?:\\.\\d+))", NumberStringUtility.NUMBER_PATTERN.pattern());

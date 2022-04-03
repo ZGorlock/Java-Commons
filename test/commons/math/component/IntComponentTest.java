@@ -7,9 +7,12 @@
 
 package commons.math.component;
 
+import java.util.Arrays;
+
 import commons.math.component.handler.math.IntComponentMathHandler;
 import commons.math.component.matrix.IntMatrix;
 import commons.math.component.vector.IntVector;
+import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -130,12 +133,16 @@ public class IntComponentTest {
     public void testCopyMeta() throws Exception {
         IntVector component1 = new IntVector(8, 6, 7, 2);
         Assert.assertEquals(4, component1.getDimensionality());
-        Assert.assertArrayEquals(new Integer[] {8, 6, 7, 2}, component1.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component1.getRawComponents(),
+                new Integer[] {8, 6, 7, 2});
         
         IntVector component2 = new IntVector(9, 6, 1);
         component1.copyMeta(component2);
         Assert.assertEquals(3, component2.getDimensionality());
-        Assert.assertArrayEquals(new Integer[] {9, 6, 1}, component2.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component2.getRawComponents(),
+                new Integer[] {9, 6, 1});
     }
     
     /**
@@ -150,8 +157,12 @@ public class IntComponentTest {
         
         //standard
         component = new IntVector(8, 6, 7, 2);
-        Assert.assertArrayEquals(new Integer[] {8, 6, 7, 2}, component.getRawComponents());
-        Assert.assertArrayEquals(new Integer[] {8, 6, 7, 2}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Integer[] {8, 6, 7, 2});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Integer[] {8, 6, 7, 2});
     }
     
     /**
@@ -166,8 +177,12 @@ public class IntComponentTest {
         
         //standard
         component = new IntVector(8, 6, 7, 2);
-        Assert.assertArrayEquals(new int[] {8, 6, 7, 2}, component.getPrimitiveComponents());
-        Assert.assertArrayEquals(new Integer[] {8, 6, 7, 2}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                Arrays.stream(component.getPrimitiveComponents()).boxed().toArray(),
+                new Integer[] {8, 6, 7, 2});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Integer[] {8, 6, 7, 2});
     }
     
     /**

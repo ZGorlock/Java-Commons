@@ -7,6 +7,8 @@
 
 package commons.math.component;
 
+import java.util.Arrays;
+
 import commons.math.component.handler.math.RawComponentMathHandler;
 import commons.math.component.matrix.RawMatrix;
 import commons.math.component.vector.RawVector;
@@ -131,12 +133,16 @@ public class RawComponentTest {
     public void testCopyMeta() throws Exception {
         RawVector component1 = new RawVector(8.1, 6.6, 7.0, 2.6);
         Assert.assertEquals(4, component1.getDimensionality());
-        Assert.assertArrayEquals(new Number[] {8.1, 6.6, 7.0, 2.6}, component1.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component1.getRawComponents(),
+                new Number[] {8.1, 6.6, 7.0, 2.6});
         
         RawVector component2 = new RawVector(9.1, 6.3, 1.7);
         component1.copyMeta(component2);
         Assert.assertEquals(3, component2.getDimensionality());
-        Assert.assertArrayEquals(new Number[] {9.1, 6.3, 1.7}, component2.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component2.getRawComponents(),
+                new Number[] {9.1, 6.3, 1.7});
     }
     
     /**
@@ -151,8 +157,12 @@ public class RawComponentTest {
         
         //standard
         component = new RawVector(8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054, 2.6908405165094841828);
-        Assert.assertArrayEquals(new Number[] {8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054, 2.6908405165094841828}, component.getRawComponents());
-        Assert.assertArrayEquals(new Number[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Number[] {8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054, 2.6908405165094841828});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Number[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509});
     }
     
     /**
@@ -167,8 +177,12 @@ public class RawComponentTest {
         
         //standard
         component = new RawVector(8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054, 2.6908405165094841828);
-        Assert.assertArrayEquals(new double[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509}, component.getPrimitiveComponents(), TestUtils.DELTA);
-        Assert.assertArrayEquals(new Number[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                Arrays.stream(component.getPrimitiveComponents()).boxed().toArray(),
+                new Double[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Number[] {8.160456540859, 6.649084984108, 7.048089710591, 2.690840516509});
     }
     
     /**

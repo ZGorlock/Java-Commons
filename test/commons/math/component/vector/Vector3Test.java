@@ -130,22 +130,30 @@ public class Vector3Test {
     public void testConstructors() throws Exception {
         //components
         Vector3 vector = new Vector3(0.884, 2, 1.1);
-        Assert.assertArrayEquals(new Double[] {0.884, 2.0, 1.1}, vector.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector.getRawComponents(),
+                new Double[] {0.884, 2.0, 1.1});
         Assert.assertEquals(3, vector.getDimensionality());
         
         //vector
         Vector3 vector2 = new Vector3(new Vector(0.884, 2, 1.1, 8.6, 9.0));
-        Assert.assertArrayEquals(new Double[] {0.884, 2.0, 1.1}, vector2.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector2.getRawComponents(),
+                new Double[] {0.884, 2.0, 1.1});
         Assert.assertEquals(3, vector2.getDimensionality());
         
         //2D vector and component
         Vector3 vector3 = new Vector3(new Vector2(0.884, 2), 1.1);
-        Assert.assertArrayEquals(new Double[] {0.884, 2.0, 1.1}, vector3.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vector3.getRawComponents(),
+                new Double[] {0.884, 2.0, 1.1});
         Assert.assertEquals(3, vector3.getDimensionality());
         
         //empty
         Vector3 vectorDefault = new Vector3();
-        Assert.assertArrayEquals(new Double[] {0.0, 0.0, 0.0}, vectorDefault.getRawComponents());
+        TestUtils.assertArrayEquals(
+                vectorDefault.getRawComponents(),
+                new Double[] {0.0, 0.0, 0.0});
         Assert.assertEquals(3, vectorDefault.getDimensionality());
         
         //equality
@@ -461,7 +469,9 @@ public class Vector3Test {
         sut = new Vector3(8.1, 6.6, 2.9);
         Vector3 clone = sut.cloned();
         Assert.assertNotNull(clone);
-        Assert.assertArrayEquals(sut.getRawComponents(), clone.getRawComponents());
+        TestUtils.assertArrayEquals(
+                clone.getRawComponents(),
+                sut.getRawComponents());
         Assert.assertNotSame(sut, clone);
     }
     
@@ -477,7 +487,9 @@ public class Vector3Test {
         sut = new Vector3(8.1, 6.6, 2.9);
         Vector3 emptyCopy = sut.emptyCopy();
         Assert.assertNotNull(emptyCopy);
-        Assert.assertArrayEquals(Vector3.origin(sut.getDimensionality()).getRawComponents(), emptyCopy.getRawComponents());
+        TestUtils.assertArrayEquals(
+                emptyCopy.getRawComponents(),
+                Vector3.origin(sut.getDimensionality()).getRawComponents());
         Assert.assertNotSame(sut, emptyCopy);
     }
     
@@ -525,28 +537,36 @@ public class Vector3Test {
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Double[] {2.67, -1.944, 8.5}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Double[] {2.67, -1.944, 8.5});
         
         sut = new Vector3(5.501, 8, 2.67);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Double[] {2.67, 8.0, 5.501}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Double[] {2.67, 8.0, 5.501});
         
         sut = new Vector3(0, 1, 0);
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Double[] {0.0, 1.0, 0.0}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Double[] {0.0, 1.0, 0.0});
         
         sut = new Vector3();
         reversed = sut.reverse();
         Assert.assertNotNull(reversed);
         Assert.assertNotSame(sut, reversed);
         Assert.assertEquals(sut.getDimensionality(), reversed.getDimensionality());
-        Assert.assertArrayEquals(new Double[] {0.0, 0.0, 0.0}, reversed.getRawComponents());
+        TestUtils.assertArrayEquals(
+                reversed.getRawComponents(),
+                new Double[] {0.0, 0.0, 0.0});
     }
     
     /**
@@ -1260,12 +1280,16 @@ public class Vector3Test {
     public void testCopyMeta() throws Exception {
         Vector component1 = new Vector3(8.1, 6.6, 7.0);
         Assert.assertEquals(3, component1.getDimensionality());
-        Assert.assertArrayEquals(new Double[] {8.1, 6.6, 7.0}, component1.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component1.getRawComponents(),
+                new Double[] {8.1, 6.6, 7.0});
         
         Vector component2 = new Vector3(9.1, 6.3, 1.7);
         component1.copyMeta(component2);
         Assert.assertEquals(3, component2.getDimensionality());
-        Assert.assertArrayEquals(new Double[] {9.1, 6.3, 1.7}, component2.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component2.getRawComponents(),
+                new Double[] {9.1, 6.3, 1.7});
     }
     
     /**
@@ -1435,8 +1459,12 @@ public class Vector3Test {
         
         //standard
         component = new Vector3(8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054);
-        Assert.assertArrayEquals(new Double[] {8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054}, component.getRawComponents());
-        Assert.assertArrayEquals(new Double[] {8.160456540859, 6.649084984108, 7.048089710591}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Double[] {8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Double[] {8.160456540859, 6.649084984108, 7.048089710591});
     }
     
     /**
@@ -1452,16 +1480,24 @@ public class Vector3Test {
         //standard
         
         component = new Vector3(8.5, 1.5, -5.006);
-        Assert.assertArrayEquals(new Double[] {8.5, 1.5, -5.006}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Double[] {8.5, 1.5, -5.006});
         
         component = new Vector3();
-        Assert.assertArrayEquals(new Double[] {0.0, 0.0, 0.0}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Double[] {0.0, 0.0, 0.0});
         
         component = new Vector3(8.500000000001, 1.499999999996, -5.005999999999);
-        Assert.assertArrayEquals(new Double[] {8.500000000001, 1.499999999996, -5.005999999999}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Double[] {8.500000000001, 1.499999999996, -5.005999999999});
         
         component = new Vector3(8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999);
-        Assert.assertArrayEquals(new Double[] {8.5, 1.5, -5.006}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Double[] {8.5, 1.5, -5.006});
     }
     
     /**
@@ -1476,8 +1512,12 @@ public class Vector3Test {
         
         //standard
         component = new Vector3(8.160456540859010650161, 6.64908498410841501980404, 7.04808971059084054054);
-        Assert.assertArrayEquals(new double[] {8.160456540859, 6.649084984108, 7.04808971059084054054}, component.getPrimitiveComponents(), TestUtils.DELTA);
-        Assert.assertArrayEquals(new Double[] {8.160456540859, 6.649084984108, 7.048089710591}, component.getComponents());
+        TestUtils.assertArrayEquals(
+                Arrays.stream(component.getPrimitiveComponents()).boxed().toArray(),
+                new Double[] {8.160456540859, 6.649084984108, 7.048089710591});
+        TestUtils.assertArrayEquals(
+                component.getComponents(),
+                new Double[] {8.160456540859, 6.649084984108, 7.048089710591});
     }
     
     /**
@@ -1879,7 +1919,9 @@ public class Vector3Test {
         newComponents = new Double[] {5.6, 6.7, 1.1};
         Assert.assertEquals(3, component.getDimensionality());
         component.setComponents(newComponents);
-        Assert.assertArrayEquals(new Double[] {5.6, 6.7, 1.1}, component.getRawComponents());
+        TestUtils.assertArrayEquals(
+                component.getRawComponents(),
+                new Double[] {5.6, 6.7, 1.1});
         Assert.assertEquals(3, component.getDimensionality());
         
         //invalid
@@ -1906,32 +1948,48 @@ public class Vector3Test {
         //standard
         
         sut = new Vector3(8.5, 1.5, -5.006);
-        Assert.assertArrayEquals(new Double[] {8.5, 1.5, -5.006}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.5, 1.5, -5.006});
         sut.set(0, 5.77);
         sut.set(1, 3.0);
         sut.set(2, 0.997);
-        Assert.assertArrayEquals(new Double[] {5.77, 3.0, 0.997}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {5.77, 3.0, 0.997});
         
         sut = new Vector3();
-        Assert.assertArrayEquals(new Double[] {0.0, 0.0, 0.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {0.0, 0.0, 0.0});
         sut.set(0, 8.5);
         sut.set(1, 1.5);
         sut.set(2, -5.006);
-        Assert.assertArrayEquals(new Double[] {8.5, 1.5, -5.006}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.5, 1.5, -5.006});
         
         sut = new Vector3(8.500000000001, 1.499999999996, -5.005999999999);
-        Assert.assertArrayEquals(new Double[] {8.500000000001, 1.499999999996, -5.005999999999}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.500000000001, 1.499999999996, -5.005999999999});
         sut.set(0, 5.769999999996);
         sut.set(1, 3.000000000001);
         sut.set(2, 8.110000000001);
-        Assert.assertArrayEquals(new Double[] {5.769999999996, 3.000000000001, 8.110000000001}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {5.769999999996, 3.000000000001, 8.110000000001});
         
         sut = new Vector3(8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999);
-        Assert.assertArrayEquals(new Double[] {8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.5000000000000000000000001, 1.49999999999999999999996, -5.0059999999999999999999});
         sut.set(0, 6.5000000000000000000000001);
         sut.set(1, -1.49999999999999999999996);
         sut.set(2, 3.0059999999999999999999);
-        Assert.assertArrayEquals(new Double[] {6.5, -1.5, 3.006}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {6.5, -1.5, 3.006});
         
         //invalid
         
@@ -1955,22 +2013,34 @@ public class Vector3Test {
         //standard
         
         sut = new Vector3();
-        Assert.assertArrayEquals(new Double[] {0.0, 0.0, 0.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {0.0, 0.0, 0.0});
         sut.setX(5.555);
-        Assert.assertArrayEquals(new Double[] {5.555, 0.0, 0.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {5.555, 0.0, 0.0});
         
         sut = new Vector3(8.15, 77.1654, 0.79455);
-        Assert.assertArrayEquals(new Double[] {8.15, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.15, 77.1654, 0.79455});
         sut.setX(5.555);
-        Assert.assertArrayEquals(new Double[] {5.555, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {5.555, 77.1654, 0.79455});
         
         //invalid
         
         sut = new Vector3(8.15, 77.1654, 0.79455);
-        Assert.assertArrayEquals(new Double[] {8.15, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.15, 77.1654, 0.79455});
         TestUtils.assertNoException(() ->
                 sut.setX(null));
-        Assert.assertArrayEquals(new Double[] {8.15, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.15, 77.1654, 0.79455});
     }
     
     /**
@@ -1984,22 +2054,34 @@ public class Vector3Test {
         //standard
         
         sut = new Vector3();
-        Assert.assertArrayEquals(new Double[] {0.0, 0.0, 0.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {0.0, 0.0, 0.0});
         sut.setY(5.555);
-        Assert.assertArrayEquals(new Double[] {0.0, 5.555, 0.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {0.0, 5.555, 0.0});
         
         sut = new Vector3(8.15, 77.1654, 0.79455);
-        Assert.assertArrayEquals(new Double[] {8.15, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.15, 77.1654, 0.79455});
         sut.setY(5.555);
-        Assert.assertArrayEquals(new Double[] {8.15, 5.555, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.15, 5.555, 0.79455});
         
         //invalid
         
         sut = new Vector3(8.15, 77.1654, 0.79455);
-        Assert.assertArrayEquals(new Double[] {8.15, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.15, 77.1654, 0.79455});
         TestUtils.assertNoException(() ->
                 sut.setY(null));
-        Assert.assertArrayEquals(new Double[] {8.15, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.15, 77.1654, 0.79455});
     }
     
     /**
@@ -2013,22 +2095,34 @@ public class Vector3Test {
         //standard
         
         sut = new Vector3();
-        Assert.assertArrayEquals(new Double[] {0.0, 0.0, 0.0}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {0.0, 0.0, 0.0});
         sut.setZ(5.555);
-        Assert.assertArrayEquals(new Double[] {0.0, 0.0, 5.555}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {0.0, 0.0, 5.555});
         
         sut = new Vector3(8.15, 77.1654, 0.79455);
-        Assert.assertArrayEquals(new Double[] {8.15, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.15, 77.1654, 0.79455});
         sut.setZ(5.555);
-        Assert.assertArrayEquals(new Double[] {8.15, 77.1654, 5.555}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.15, 77.1654, 5.555});
         
         //invalid
         
         sut = new Vector3(8.15, 77.1654, 0.79455);
-        Assert.assertArrayEquals(new Double[] {8.15, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.15, 77.1654, 0.79455});
         TestUtils.assertNoException(() ->
                 sut.setZ(null));
-        Assert.assertArrayEquals(new Double[] {8.15, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.15, 77.1654, 0.79455});
     }
     
     /**
@@ -2042,17 +2136,25 @@ public class Vector3Test {
         //standard
         
         sut = new Vector3(8.15, 77.1654, 0.79455);
-        Assert.assertArrayEquals(new Double[] {8.15, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.15, 77.1654, 0.79455});
         sut.setW(5.555);
-        Assert.assertArrayEquals(new Double[] {8.15, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.15, 77.1654, 0.79455});
         
         //invalid
         
         sut = new Vector3(8.15, 77.1654, 0.79455);
-        Assert.assertArrayEquals(new Double[] {8.15, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.15, 77.1654, 0.79455});
         TestUtils.assertNoException(() ->
                 sut.setW(null));
-        Assert.assertArrayEquals(new Double[] {8.15, 77.1654, 0.79455}, sut.getRawComponents());
+        TestUtils.assertArrayEquals(
+                sut.getRawComponents(),
+                new Double[] {8.15, 77.1654, 0.79455});
     }
     
     /**
