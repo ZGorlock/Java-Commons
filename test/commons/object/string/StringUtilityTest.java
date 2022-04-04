@@ -362,6 +362,80 @@ public class StringUtilityTest {
     }
     
     /**
+     * JUnit test of containsAll.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#containsAll(String, String[])
+     */
+    @Test
+    public void testContainsAll() throws Exception {
+        //standard
+        Assert.assertTrue(StringUtility.containsAll("This is a string", new String[] {" ", "is", "ing"}));
+        Assert.assertTrue(StringUtility.containsAll("Thisisastring", new String[] {"", "is", "ing"}));
+        Assert.assertTrue(StringUtility.containsAll("Thisisastring", new String[] {"isa", "ing"}));
+        Assert.assertFalse(StringUtility.containsAll("This is a string", new String[] {" ", "is", "\n"}));
+        Assert.assertFalse(StringUtility.containsAllIgnoreCase("Thisisastring", new String[] {"other", "is"}));
+        Assert.assertFalse(StringUtility.containsAll("cat dog bird snake fish lizard", new String[] {"dog", "snake", "ferret"}));
+        Assert.assertTrue(StringUtility.containsAll("cat dog bird snake fish lizard", new String[] {"dog", "snake", "fish", "cat"}));
+        Assert.assertTrue(StringUtility.containsAll("cat dog bird snake fish lizard", new String[] {"lizard", "dog", "snake", "cat"}));
+        
+        //empty
+        Assert.assertTrue(StringUtility.containsAll("test", new String[] {}));
+        Assert.assertTrue(StringUtility.containsAll("test", new String[] {""}));
+        Assert.assertFalse(StringUtility.containsAll("", new String[] {"test"}));
+        Assert.assertTrue(StringUtility.containsAll("", new String[] {""}));
+        Assert.assertTrue(StringUtility.containsAll("", new String[] {}));
+        
+        //invalid
+        Assert.assertTrue(StringUtility.containsAll("test", new String[] {"test", null}));
+        Assert.assertTrue(StringUtility.containsAll("test", new String[] {null, "test"}));
+        Assert.assertTrue(StringUtility.containsAll("test", new String[] {null}));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.containsAll("test", null));
+        Assert.assertFalse(StringUtility.containsAll(null, new String[] {"test"}));
+        Assert.assertFalse(StringUtility.containsAll(null, null));
+    }
+    
+    /**
+     * JUnit test of containsAllIgnoreCase.
+     *
+     * @throws Exception When there is an exception.
+     * @see StringUtility#containsAllIgnoreCase(String, String[])
+     */
+    @Test
+    public void testContainsAllIgnoreCase() throws Exception {
+        //standard
+        Assert.assertTrue(StringUtility.containsAllIgnoreCase("This is a string", new String[] {" ", "is", "ing"}));
+        Assert.assertTrue(StringUtility.containsAllIgnoreCase("This is a string", new String[] {" ", "IS", "ING"}));
+        Assert.assertTrue(StringUtility.containsAllIgnoreCase("This is a string", new String[] {" ", "iS", "iNg"}));
+        Assert.assertTrue(StringUtility.containsAllIgnoreCase("Thisisastring", new String[] {"", "Is", "Ing"}));
+        Assert.assertTrue(StringUtility.containsAllIgnoreCase("Thisisastring", new String[] {"isa", "ing"}));
+        Assert.assertTrue(StringUtility.containsAllIgnoreCase("Thisisastring", new String[] {"IsAs", "InG"}));
+        Assert.assertFalse(StringUtility.containsAllIgnoreCase("This is a string", new String[] {" ", "is", "\n"}));
+        Assert.assertFalse(StringUtility.containsAllIgnoreCase("Thisisastring", new String[] {"other", "is"}));
+        Assert.assertFalse(StringUtility.containsAllIgnoreCase("Thisisastring", new String[] {"OthEr", "iS"}));
+        Assert.assertFalse(StringUtility.containsAllIgnoreCase("cat dog bird snake fish lizard", new String[] {"DOG", "SNAKE", "FERRET"}));
+        Assert.assertTrue(StringUtility.containsAllIgnoreCase("cat dog bird snake fish lizard", new String[] {"DOG", "SNAKE", "FISH", "CAT"}));
+        Assert.assertTrue(StringUtility.containsAllIgnoreCase("cat dog bird snake fish lizard", new String[] {"LiZArD", "dOG", "SNaKe", "CaT"}));
+        
+        //empty
+        Assert.assertTrue(StringUtility.containsAllIgnoreCase("test", new String[] {}));
+        Assert.assertTrue(StringUtility.containsAllIgnoreCase("test", new String[] {""}));
+        Assert.assertFalse(StringUtility.containsAllIgnoreCase("", new String[] {"test"}));
+        Assert.assertTrue(StringUtility.containsAllIgnoreCase("", new String[] {""}));
+        Assert.assertTrue(StringUtility.containsAllIgnoreCase("", new String[] {}));
+        
+        //invalid
+        Assert.assertTrue(StringUtility.containsAllIgnoreCase("test", new String[] {"test", null}));
+        Assert.assertTrue(StringUtility.containsAllIgnoreCase("test", new String[] {null, "test"}));
+        Assert.assertTrue(StringUtility.containsAllIgnoreCase("test", new String[] {null}));
+        TestUtils.assertException(NullPointerException.class, () ->
+                StringUtility.containsAllIgnoreCase("test", null));
+        Assert.assertFalse(StringUtility.containsAllIgnoreCase(null, new String[] {"test"}));
+        Assert.assertFalse(StringUtility.containsAllIgnoreCase(null, null));
+    }
+    
+    /**
      * JUnit test of containsChar.
      *
      * @throws Exception When there is an exception.

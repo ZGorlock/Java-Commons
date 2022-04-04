@@ -173,6 +173,31 @@ public final class StringUtility {
     }
     
     /**
+     * Determines if a string contains all of a set of substrings.
+     *
+     * @param string The string.
+     * @param search The set of substrings to search for.
+     * @return Whether or not the string contains all of the set of substrings.
+     */
+    public static boolean containsAll(String string, String[] search) {
+        return (string != null) &&
+                Arrays.stream(search).filter(Objects::nonNull).allMatch(string::contains);
+    }
+    
+    /**
+     * Determines if a string contains all of a set of substrings, regardless of case.
+     *
+     * @param string The string.
+     * @param search The set of substrings to search for.
+     * @return Whether or not the string contains all of the set of substrings, regardless of case.
+     * @see #containsAll(String, String[])
+     */
+    public static boolean containsAllIgnoreCase(String string, String[] search) {
+        return (string != null) &&
+                containsAll(string.toUpperCase(), Arrays.stream(search).filter(Objects::nonNull).map(String::toUpperCase).toArray(String[]::new));
+    }
+    
+    /**
      * Determines if a string contains a character.
      *
      * @param string The string.
