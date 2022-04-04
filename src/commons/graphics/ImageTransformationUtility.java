@@ -107,8 +107,8 @@ public class ImageTransformationUtility {
         
         visited.parallelStream().forEach(p -> {
             Vector homogeneousSourcePoint = projectiveMatrix.times(new Vector(p % maskWidth, p / maskWidth, 1.0));
-            int sX = BoundUtility.truncateNum(homogeneousSourcePoint.getRawX() / homogeneousSourcePoint.getRawZ(), 0, srcWidth - 1).intValue();
-            int sY = BoundUtility.truncateNum(homogeneousSourcePoint.getRawY() / homogeneousSourcePoint.getRawZ(), 0, srcHeight - 1).intValue();
+            int sX = BoundUtility.truncate((int) (homogeneousSourcePoint.getRawX() / homogeneousSourcePoint.getRawZ()), 0, srcWidth - 1);
+            int sY = BoundUtility.truncate((int) (homogeneousSourcePoint.getRawY() / homogeneousSourcePoint.getRawZ()), 0, srcHeight - 1);
             maskData[p] = srcData[sY * srcWidth + sX];
         });
         visited.clear();

@@ -392,7 +392,7 @@ public final class ArrayUtility {
      * @return The array of arrays of the specified length.
      */
     public static <T> T[][] split(T[] array, int length, Class<T> type) {
-        final int split = BoundUtility.truncateNum(length, 1, array.length).intValue();
+        final int split = BoundUtility.truncate(length, 1, array.length);
         final T[][] result = create2D(type, (int) Math.ceil(array.length / (double) split), split);
         IntStream.range(0, array.length).forEach(i ->
                 result[i / split][i % split] = array[i]);

@@ -91,7 +91,7 @@ public final class StringComparisonUtility {
         }
         
         int length = Math.max(pattern.length(), ignorePunctuation ? StringUtility.removePunctuation(text).length() : text.length());
-        return BoundUtility.truncateNum((double) (length - stringEditDistance(pattern, text, vars, tokens, ignoreCase, ignorePunctuation)) / length, 0.0, 1.0).doubleValue();
+        return BoundUtility.truncate((double) (length - stringEditDistance(pattern, text, vars, tokens, ignoreCase, ignorePunctuation)) / length, 0.0, 1.0);
     }
     
     /**

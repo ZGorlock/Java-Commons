@@ -7,6 +7,8 @@
 
 package commons.math;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 import commons.object.collection.ArrayUtility;
@@ -380,45 +382,94 @@ public class BoundUtilityTest {
     }
     
     /**
-     * JUnit test of truncateNum.
+     * JUnit test of truncate.
      *
      * @throws Exception When there is an exception.
-     * @see BoundUtility#truncateNum(Number, Number, Number)
+     * @see BoundUtility#truncate(Number, Number, Number)
      */
     @Test
-    public void testTruncateNum() throws Exception {
+    public void testTruncate() throws Exception {
+        //byte
+        Assert.assertEquals((byte) 4, BoundUtility.truncate((byte) 4, (byte) 2, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 4, BoundUtility.truncate((byte) 4, (byte) 4, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 6, BoundUtility.truncate((byte) 6, (byte) 2, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 4, BoundUtility.truncate((byte) 1, (byte) 4, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 6, BoundUtility.truncate((byte) 7, (byte) 4, (byte) 6).byteValue());
+        Assert.assertEquals((byte) -2, BoundUtility.truncate((byte) -2, (byte) -4, (byte) 6).byteValue());
+        Assert.assertEquals((byte) -1, BoundUtility.truncate((byte) -2, (byte) -1, (byte) 6).byteValue());
+        
+        //short
+        Assert.assertEquals((short) 44, BoundUtility.truncate((short) 44, (short) 22, (short) 69).shortValue());
+        Assert.assertEquals((short) 48, BoundUtility.truncate((short) 48, (short) 48, (short) 69).shortValue());
+        Assert.assertEquals((short) 69, BoundUtility.truncate((short) 69, (short) 22, (short) 69).shortValue());
+        Assert.assertEquals((short) 40, BoundUtility.truncate((short) 11, (short) 40, (short) 61).shortValue());
+        Assert.assertEquals((short) 61, BoundUtility.truncate((short) 78, (short) 40, (short) 61).shortValue());
+        Assert.assertEquals((short) -27, BoundUtility.truncate((short) -27, (short) -40, (short) 61).shortValue());
+        Assert.assertEquals((short) -11, BoundUtility.truncate((short) -27, (short) -11, (short) 61).shortValue());
+        
         //int
-        Assert.assertEquals(4, BoundUtility.truncateNum(4, 2, 6));
-        Assert.assertEquals(4, BoundUtility.truncateNum(4, 4, 6));
-        Assert.assertEquals(6, BoundUtility.truncateNum(6, 2, 6));
-        Assert.assertEquals(4, BoundUtility.truncateNum(1, 4, 6));
-        Assert.assertEquals(6, BoundUtility.truncateNum(7, 4, 6));
+        Assert.assertEquals(446, BoundUtility.truncate(446, 222, 699).intValue());
+        Assert.assertEquals(481, BoundUtility.truncate(481, 481, 699).intValue());
+        Assert.assertEquals(699, BoundUtility.truncate(699, 222, 699).intValue());
+        Assert.assertEquals(400, BoundUtility.truncate(11, 400, 617).intValue());
+        Assert.assertEquals(617, BoundUtility.truncate(737, 400, 617).intValue());
+        Assert.assertEquals(-278, BoundUtility.truncate(-278, -400, 617).intValue());
+        Assert.assertEquals(-113, BoundUtility.truncate(-278, -113, 617).intValue());
         
         //float
-        Assert.assertEquals(4.5, BoundUtility.truncateNum(4.5, 2.4, 6.4));
-        Assert.assertEquals(4.5, BoundUtility.truncateNum(4.5, 4.5, 6.4));
-        Assert.assertEquals(6.4, BoundUtility.truncateNum(6.4, 2.4, 6.4));
-        Assert.assertEquals(4.5, BoundUtility.truncateNum(1.9, 4.5, 6.4));
-        Assert.assertEquals(6.4, BoundUtility.truncateNum(7.1, 4.5, 6.4));
-        Assert.assertEquals(4.5, BoundUtility.truncateNum(4.5, 4.4, 4.6));
-        Assert.assertEquals(4.4, BoundUtility.truncateNum(4.4, 4.4, 4.6));
-        Assert.assertEquals(4.6, BoundUtility.truncateNum(4.6, 4.4, 4.6));
-        Assert.assertEquals(4.4, BoundUtility.truncateNum(4.3, 4.4, 4.6));
-        Assert.assertEquals(4.6, BoundUtility.truncateNum(4.7, 4.4, 4.6));
+        Assert.assertEquals(4.46f, BoundUtility.truncate(4.46f, 2.22f, 6.99f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(4.81f, BoundUtility.truncate(4.81f, 4.81f, 6.99f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(6.99f, BoundUtility.truncate(6.99f, 2.22f, 6.99f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(4.00f, BoundUtility.truncate(1.1f, 4.00f, 6.17f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(6.17f, BoundUtility.truncate(7.37f, 4.00f, 6.17f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(-2.78f, BoundUtility.truncate(-2.78f, -4.00f, 6.17f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(-1.13f, BoundUtility.truncate(-2.78f, -1.13f, 6.17f), TestUtils.DELTA_FLOAT);
         
         //double
-        Assert.assertEquals(4.5, BoundUtility.truncateNum(4.5, 4.4999, 4.5001));
-        Assert.assertEquals(4.4999, BoundUtility.truncateNum(4.4999, 4.4999, 4.5001));
-        Assert.assertEquals(4.5001, BoundUtility.truncateNum(4.5001, 4.4999, 4.5001));
-        Assert.assertEquals(4.4999, BoundUtility.truncateNum(4.4998, 4.4999, 4.5001));
-        Assert.assertEquals(4.5001, BoundUtility.truncateNum(4.5002, 4.4999, 4.5001));
+        Assert.assertEquals(4.469845d, BoundUtility.truncate(4.469845d, 2.228808404d, 6.99198702d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(4.8100154d, BoundUtility.truncate(4.8100154d, 4.8100154d, 6.99198702d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(6.99198702d, BoundUtility.truncate(6.99198702d, 2.228808404d, 6.99198702d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(4.0000001d, BoundUtility.truncate(1.1d, 4.0000001d, 6.17348095d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(6.17348095d, BoundUtility.truncate(7.37980798d, 4.0000001d, 6.17348095d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(-2.7858074887d, BoundUtility.truncate(-2.7858074887d, -4.0000001d, 6.17348095d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(-1.139805605774d, BoundUtility.truncate(-2.7858074887d, -1.139805605774d, 6.17348095d), TestUtils.DELTA_DOUBLE);
         
         //long
-        Assert.assertEquals(123456789L, BoundUtility.truncateNum(123456789L, 123456788L, 123456790L));
-        Assert.assertEquals(123456788L, BoundUtility.truncateNum(123456788L, 123456788L, 123456790L));
-        Assert.assertEquals(123456790L, BoundUtility.truncateNum(123456790L, 123456788L, 123456790L));
-        Assert.assertEquals(123456788L, BoundUtility.truncateNum(123456787L, 123456788L, 123456790L));
-        Assert.assertEquals(123456790L, BoundUtility.truncateNum(123456791L, 123456788L, 123456790L));
+        Assert.assertEquals(4469845000L, BoundUtility.truncate(4469845000L, 2228808404L, 6991987020L).longValue());
+        Assert.assertEquals(48100154L, BoundUtility.truncate(48100154L, 48100154L, 6991987020L).longValue());
+        Assert.assertEquals(6991987020L, BoundUtility.truncate(6991987020L, 2228808404L, 6991987020L).longValue());
+        Assert.assertEquals(40000001L, BoundUtility.truncate(11L, 40000001L, 617348095L).longValue());
+        Assert.assertEquals(617348095L, BoundUtility.truncate(737980798L, 40000001L, 617348095L).longValue());
+        Assert.assertEquals(-27858074887L, BoundUtility.truncate(-27858074887L, -40000001000L, 617348095L).longValue());
+        Assert.assertEquals(-11398056057L, BoundUtility.truncate(-27858074887L, -11398056057L, 617348095L).longValue());
+        
+        //big decimal
+        Assert.assertEquals(new BigDecimal("498048940365649408940894156.46989846504649845"), BoundUtility.truncate(new BigDecimal("498048940365649408940894156.46989846504649845"), new BigDecimal("298766565984054313210050444.22850908748485456409594808404"), new BigDecimal("690890450454565456960987894649.991987020989845645645458")));
+        Assert.assertEquals(new BigDecimal("4161561587498065454121635654.0000000006546508100154"), BoundUtility.truncate(new BigDecimal("4161561587498065454121635654.0000000006546508100154"), new BigDecimal("4161561587498065454121635654.0000000006546508100154"), new BigDecimal("690890450454565456960987894649.991987020989845645645458")));
+        Assert.assertEquals(new BigDecimal("690890450454565456960987894649.991987020989845645645458"), BoundUtility.truncate(new BigDecimal("690890450454565456960987894649.991987020989845645645458"), new BigDecimal("298766565984054313210050444.22850908748485456409594808404"), new BigDecimal("690890450454565456960987894649.991987020989845645645458")));
+        Assert.assertEquals(new BigDecimal("400000000000000000000.000000000000000000000001"), BoundUtility.truncate(new BigDecimal("1.1"), new BigDecimal("400000000000000000000.000000000000000000000001"), new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        Assert.assertEquals(new BigDecimal("6664598409846520651984845149.1734680098980487489408995"), BoundUtility.truncate(new BigDecimal("70000000000490988798465065653212318888.370989889489740546506505156980798"), new BigDecimal("400000000000000000000.000000000000000000000001"), new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        Assert.assertEquals(new BigDecimal("-234605409480456054264.785804564655496574887"), BoundUtility.truncate(new BigDecimal("-234605409480456054264.785804564655496574887"), new BigDecimal("-400000000000000000000.000000000000000000000001"), new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        Assert.assertEquals(new BigDecimal("-100870798769504941324.139805605774"), BoundUtility.truncate(new BigDecimal("-234605409480456054264.785804564655496574887"), new BigDecimal("-100870798769504941324.139805605774"), new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        
+        //big integer
+        Assert.assertEquals(new BigInteger("498048940365649408940894156"), BoundUtility.truncate(new BigInteger("498048940365649408940894156"), new BigInteger("298766565984054313210050444"), new BigInteger("690890450454565456960987894649")));
+        Assert.assertEquals(new BigInteger("4161561587498065454121635654"), BoundUtility.truncate(new BigInteger("4161561587498065454121635654"), new BigInteger("4161561587498065454121635654"), new BigInteger("690890450454565456960987894649")));
+        Assert.assertEquals(new BigInteger("690890450454565456960987894649"), BoundUtility.truncate(new BigInteger("690890450454565456960987894649"), new BigInteger("298766565984054313210050444"), new BigInteger("690890450454565456960987894649")));
+        Assert.assertEquals(new BigInteger("400000000000000000000"), BoundUtility.truncate(new BigInteger("1"), new BigInteger("400000000000000000000"), new BigInteger("6664598409846520651984845149")));
+        Assert.assertEquals(new BigInteger("6664598409846520651984845149"), BoundUtility.truncate(new BigInteger("70000000000490988798465065653212318888"), new BigInteger("400000000000000000000"), new BigInteger("6664598409846520651984845149")));
+        Assert.assertEquals(new BigInteger("-234605409480456054264"), BoundUtility.truncate(new BigInteger("-234605409480456054264"), new BigInteger("-400000000000000000000"), new BigInteger("6664598409846520651984845149")));
+        Assert.assertEquals(new BigInteger("-100870798769504941324"), BoundUtility.truncate(new BigInteger("-234605409480456054264"), new BigInteger("-100870798769504941324"), new BigInteger("6664598409846520651984845149")));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                BoundUtility.truncate(15, 10, null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                BoundUtility.truncate(15, null, 25));
+        TestUtils.assertException(NullPointerException.class, () ->
+                BoundUtility.truncate(null, 10, 25));
+        TestUtils.assertException(NullPointerException.class, () ->
+                BoundUtility.truncate(null, null, null));
     }
     
 }

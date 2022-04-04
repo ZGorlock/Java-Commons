@@ -644,7 +644,7 @@ public final class ListUtility {
      */
     @SuppressWarnings("unchecked")
     public static <T> List<List<T>> split(List<T> list, int length) {
-        final int split = BoundUtility.truncateNum(length, 1, list.size()).intValue();
+        final int split = BoundUtility.truncate(length, 1, list.size());
         final List<List<T>> result = create2D(list.getClass(), (Class<T>) list.getClass(), (int) Math.ceil(list.size() / (double) split), split);
         IntStream.range(0, list.size()).forEach(i ->
                 result.get(i / split).set((i % split), list.get(i)));

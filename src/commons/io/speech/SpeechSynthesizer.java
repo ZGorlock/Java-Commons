@@ -337,7 +337,7 @@ public class SpeechSynthesizer {
      * @param percent A percent value from 0.0 to 100.0.
      */
     public void setVolume(float percent) {
-        volume = (float) MathUtility.roundWithPrecision(BoundUtility.truncateNum(percent, 0.0, 100.0).doubleValue(), 1);
+        volume = (float) MathUtility.roundWithPrecision(BoundUtility.truncate(percent, 0.0f, 100.0f), 1);
         String parameters = String.format("amount:%.2f", (volume / 100.0));
         
         logger.trace("Setting volume to: " + volume + '%');
@@ -369,7 +369,7 @@ public class SpeechSynthesizer {
      * @param percent An intensity percent value from 0.0 to 100.0.
      */
     public void addSpeechEffect(SpeechEffect effect, float percent) {
-        percent = (float) MathUtility.roundWithPrecision(BoundUtility.truncateNum(percent, 0.0, 100.0).doubleValue(), 1);
+        percent = (float) MathUtility.roundWithPrecision(BoundUtility.truncate(percent, 0.0f, 100.0f), 1);
         String parameters = String.format("amount:%.1f", percent);
         
         logger.trace("Adding speech effect: {} with intensity: {}%", effect.name.toLowerCase(), percent);

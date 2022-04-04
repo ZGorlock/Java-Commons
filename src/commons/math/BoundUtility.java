@@ -38,13 +38,8 @@ public final class BoundUtility {
      * @return Whether the number is in the defined bounds or not.
      */
     public static boolean inBounds(Number num, Number lower, Number upper, boolean touchLower, boolean touchUpper) {
-        double n = num.doubleValue();
-        double min = lower.doubleValue();
-        double max = upper.doubleValue();
-        
-        boolean inLower = touchLower ? (n >= min) : (n > min);
-        boolean inUpper = touchUpper ? (n <= max) : (n < max);
-        return inLower && inUpper;
+        return (touchLower ? (num.doubleValue() >= lower.doubleValue()) : (num.doubleValue() > lower.doubleValue())) &&
+                (touchUpper ? (num.doubleValue() <= upper.doubleValue()) : (num.doubleValue() < upper.doubleValue()));
     }
     
     /**
@@ -101,22 +96,18 @@ public final class BoundUtility {
     }
     
     /**
-     * Forces a number within defined bounds.
+     * Truncates a number within defined bounds.
      *
-     * @param num The number value.
-     * @param min The minimum value allowed.
-     * @param max The maximum value allowed.
+     * @param num The number.
+     * @param min The minimum value.
+     * @param max The maximum value.
+     * @param <T> The type of the number.
      * @return The truncated number.
      */
-    public static Number truncateNum(Number num, Number min, Number max) {
-        Number n = num;
-        if (num.doubleValue() < min.doubleValue()) {
-            n = min;
-        }
-        if (num.doubleValue() > max.doubleValue()) {
-            n = max;
-        }
-        return n;
+    public static <T extends Number> T truncate(T num, T min, T max) {
+        return (num.doubleValue() < min.doubleValue()) ? min :
+               (num.doubleValue() > max.doubleValue()) ? max :
+               num;
     }
     
 }

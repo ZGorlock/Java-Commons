@@ -338,10 +338,10 @@ public class ImageUtility {
             return image;
         }
         
-        rect.x = BoundUtility.truncateNum(rect.getX(), 0, image.getWidth() - 1).intValue();
-        rect.y = BoundUtility.truncateNum(rect.getY(), 0, image.getHeight() - 1).intValue();
-        rect.width = BoundUtility.truncateNum(rect.getWidth(), 1, image.getWidth() - rect.x).intValue();
-        rect.height = BoundUtility.truncateNum(rect.getHeight(), 1, image.getHeight() - rect.y).intValue();
+        rect.x = BoundUtility.truncate((int) rect.getX(), 0, image.getWidth() - 1);
+        rect.y = BoundUtility.truncate((int) rect.getY(), 0, image.getHeight() - 1);
+        rect.width = BoundUtility.truncate((int) rect.getWidth(), 1, image.getWidth() - rect.x);
+        rect.height = BoundUtility.truncate((int) rect.getHeight(), 1, image.getHeight() - rect.y);
         
         BufferedImage cropped = new BufferedImage((int) rect.getWidth(), (int) rect.getHeight(), image.getType());
         Graphics2D g2 = (Graphics2D) cropped.getGraphics();
@@ -366,14 +366,14 @@ public class ImageUtility {
             return null;
         }
         
-        offTheLeft = BoundUtility.truncateNum(offTheLeft, 0, image.getWidth() - 1).intValue();
-        offTheTop = BoundUtility.truncateNum(offTheTop, 0, image.getHeight() - 1).intValue();
-        offTheRight = BoundUtility.truncateNum(offTheRight, 0, image.getWidth() - 1).intValue();
-        offTheBottom = BoundUtility.truncateNum(offTheBottom, 0, image.getHeight() - 1).intValue();
+        offTheLeft = BoundUtility.truncate(offTheLeft, 0, image.getWidth() - 1);
+        offTheTop = BoundUtility.truncate(offTheTop, 0, image.getHeight() - 1);
+        offTheRight = BoundUtility.truncate(offTheRight, 0, image.getWidth() - 1);
+        offTheBottom = BoundUtility.truncate(offTheBottom, 0, image.getHeight() - 1);
         
         Rectangle rect = new Rectangle(offTheLeft, offTheTop,
-                BoundUtility.truncateNum((image.getWidth() - offTheLeft - offTheRight), 1, image.getWidth() - offTheLeft).intValue(),
-                BoundUtility.truncateNum((image.getHeight() - offTheTop - offTheBottom), 1, image.getHeight() - offTheTop).intValue());
+                BoundUtility.truncate((image.getWidth() - offTheLeft - offTheRight), 1, image.getWidth() - offTheLeft),
+                BoundUtility.truncate((image.getHeight() - offTheTop - offTheBottom), 1, image.getHeight() - offTheTop));
         return cropImage(image, rect);
     }
     

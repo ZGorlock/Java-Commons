@@ -352,7 +352,7 @@ public class ProgressBar {
         }
         
         firstUpdate = (firstUpdate == 0) ? System.nanoTime() : firstUpdate;
-        progress = BoundUtility.truncateNum(newProgress, 0, total).longValue();
+        progress = BoundUtility.truncate(newProgress, 0L, total);
         
         boolean needsUpdate = (Math.abs(System.nanoTime() - currentUpdate) >= TimeUnit.MILLISECONDS.toNanos(PROGRESS_BAR_MINIMUM_UPDATE_DELAY));
         if (needsUpdate || (progress == total)) {
