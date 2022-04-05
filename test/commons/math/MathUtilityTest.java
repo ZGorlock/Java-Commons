@@ -8,6 +8,7 @@
 package commons.math;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.math.RoundingMode;
 import java.util.Arrays;
 
@@ -371,11 +372,12 @@ public class MathUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see MathUtility#xmod(long, long)
+     * @see MathUtility#xmod(int, int)
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testXmod() throws Exception {
-        //standard
+        //int
         Assert.assertEquals(3, MathUtility.xmod(6, 3));
         Assert.assertEquals(2, MathUtility.xmod(5, 3));
         Assert.assertEquals(1, MathUtility.xmod(4, 3));
@@ -406,6 +408,38 @@ public class MathUtilityTest {
         Assert.assertEquals(160, MathUtility.xmod(160, 154621));
         Assert.assertEquals(141449, MathUtility.xmod(165431298, 154621));
         
+        //long
+        Assert.assertEquals(3L, MathUtility.xmod(6L, 3L));
+        Assert.assertEquals(2L, MathUtility.xmod(5L, 3L));
+        Assert.assertEquals(1L, MathUtility.xmod(4L, 3L));
+        Assert.assertEquals(3L, MathUtility.xmod(3L, 3L));
+        Assert.assertEquals(2L, MathUtility.xmod(2L, 3L));
+        Assert.assertEquals(1L, MathUtility.xmod(1L, 3L));
+        Assert.assertEquals(3L, MathUtility.xmod(0L, 3L));
+        Assert.assertEquals(-1L, MathUtility.xmod(-1L, 3L));
+        Assert.assertEquals(-2L, MathUtility.xmod(-2L, 3L));
+        Assert.assertEquals(-3L, MathUtility.xmod(-3L, 3L));
+        Assert.assertEquals(-1L, MathUtility.xmod(-4L, 3L));
+        Assert.assertEquals(-2L, MathUtility.xmod(-5L, 3L));
+        Assert.assertEquals(-3L, MathUtility.xmod(-6L, 3L));
+        Assert.assertEquals(3L, MathUtility.xmod(6L, -3L));
+        Assert.assertEquals(2L, MathUtility.xmod(5L, -3L));
+        Assert.assertEquals(1L, MathUtility.xmod(4L, -3L));
+        Assert.assertEquals(3L, MathUtility.xmod(3L, -3L));
+        Assert.assertEquals(2L, MathUtility.xmod(2L, -3L));
+        Assert.assertEquals(1L, MathUtility.xmod(1L, -3L));
+        Assert.assertEquals(3L, MathUtility.xmod(0L, -3L));
+        Assert.assertEquals(-1L, MathUtility.xmod(-1L, -3L));
+        Assert.assertEquals(-2L, MathUtility.xmod(-2L, -3L));
+        Assert.assertEquals(-3L, MathUtility.xmod(-3L, -3L));
+        Assert.assertEquals(-1L, MathUtility.xmod(-4L, -3L));
+        Assert.assertEquals(-2L, MathUtility.xmod(-5L, -3L));
+        Assert.assertEquals(-3L, MathUtility.xmod(-6L, -3L));
+        Assert.assertEquals(61L, MathUtility.xmod(154621L, 160L));
+        Assert.assertEquals(160L, MathUtility.xmod(160L, 154621L));
+        Assert.assertEquals(141449L, MathUtility.xmod(165431298L, 154621L));
+        Assert.assertEquals(252175269L, MathUtility.xmod(894654165431298L, 654154621L));
+        
         //invalid
         TestUtils.assertException(ArithmeticException.class, () ->
                 MathUtility.xmod(15, 0));
@@ -416,12 +450,46 @@ public class MathUtilityTest {
      *
      * @throws Exception When there is an exception.
      * @see MathUtility#roundWithPrecision(double, int)
+     * @see MathUtility#roundWithPrecision(float, int)
      * @see MathUtility#roundWithPrecision(BigDecimal, int, java.math.RoundingMode)
      * @see MathUtility#roundWithPrecision(BigDecimal, int)
      */
     @Test
     public void testRoundWithPrecision() throws Exception {
-        //standard
+        //float
+        
+        Assert.assertEquals("111.704",
+                String.valueOf(MathUtility.roundWithPrecision(111.70400001f, 6)));
+        Assert.assertEquals("111.704",
+                String.valueOf(MathUtility.roundWithPrecision(111.704000000000001f, 6)));
+        Assert.assertEquals("111.704",
+                String.valueOf(MathUtility.roundWithPrecision(111.7040001f, 6)));
+        Assert.assertEquals("111.704",
+                String.valueOf(MathUtility.roundWithPrecision(111.704001f, 6)));
+        Assert.assertEquals("111.704008",
+                String.valueOf(MathUtility.roundWithPrecision(111.70401f, 6)));
+        Assert.assertEquals("111.704008",
+                String.valueOf(MathUtility.roundWithPrecision(111.70401f, 6)));
+        
+        Assert.assertEquals("0.5933",
+                String.valueOf(MathUtility.roundWithPrecision(0.59329996f, 6)));
+        Assert.assertEquals("0.5933",
+                String.valueOf(MathUtility.roundWithPrecision(0.59329996f, 4)));
+        Assert.assertEquals("0.59",
+                String.valueOf(MathUtility.roundWithPrecision(0.59329996f, 2)));
+        Assert.assertEquals("0.6",
+                String.valueOf(MathUtility.roundWithPrecision(0.59329996f, 1)));
+        
+        Assert.assertEquals("112.0",
+                String.valueOf(MathUtility.roundWithPrecision(111.70400000001f, 0)));
+        Assert.assertEquals("110.0",
+                String.valueOf(MathUtility.roundWithPrecision(111.70400000001f, -1)));
+        Assert.assertEquals("100.0",
+                String.valueOf(MathUtility.roundWithPrecision(111.70400000001f, -2)));
+        Assert.assertEquals("0.0",
+                String.valueOf(MathUtility.roundWithPrecision(111.70400000001f, -3)));
+        
+        //double
         
         Assert.assertEquals("111.704",
                 String.valueOf(MathUtility.roundWithPrecision(111.70400000000001, 12)));
@@ -504,6 +572,232 @@ public class MathUtilityTest {
                 MathUtility.roundWithPrecision(new BigDecimal("111.70400000001"), -3).toPlainString());
         Assert.assertEquals("120",
                 MathUtility.roundWithPrecision(new BigDecimal("111.70400000001"), -1, RoundingMode.UP).toPlainString());
+    }
+    
+    /**
+     * JUnit test of min.
+     *
+     * @throws Exception When there is an exception.
+     * @see MathUtility#min(Number[])
+     */
+    @Test
+    public void testMin() throws Exception {
+        //byte
+        Assert.assertEquals((byte) 2, MathUtility.min((byte) 4, (byte) 2, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 4, MathUtility.min((byte) 4, (byte) 4, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 2, MathUtility.min((byte) 6, (byte) 2, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 1, MathUtility.min((byte) 1, (byte) 4, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 4, MathUtility.min((byte) 7, (byte) 4, (byte) 6).byteValue());
+        Assert.assertEquals((byte) -4, MathUtility.min((byte) -2, (byte) -4, (byte) 6).byteValue());
+        Assert.assertEquals((byte) -2, MathUtility.min((byte) -2, (byte) -1, (byte) 6).byteValue());
+        Assert.assertEquals((byte) -2, MathUtility.min((byte) 4, (byte) 2, (byte) 6, (byte) -2, (byte) -1, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 6, MathUtility.min((byte) 6).byteValue());
+        
+        //short
+        Assert.assertEquals((short) 22, MathUtility.min((short) 44, (short) 22, (short) 69).shortValue());
+        Assert.assertEquals((short) 48, MathUtility.min((short) 48, (short) 48, (short) 69).shortValue());
+        Assert.assertEquals((short) 22, MathUtility.min((short) 69, (short) 22, (short) 69).shortValue());
+        Assert.assertEquals((short) 11, MathUtility.min((short) 11, (short) 40, (short) 61).shortValue());
+        Assert.assertEquals((short) 40, MathUtility.min((short) 78, (short) 40, (short) 61).shortValue());
+        Assert.assertEquals((short) -40, MathUtility.min((short) -27, (short) -40, (short) 61).shortValue());
+        Assert.assertEquals((short) -27, MathUtility.min((short) -27, (short) -11, (short) 61).shortValue());
+        Assert.assertEquals((short) -27, MathUtility.min((short) 44, (short) 22, (short) 69, (short) -27, (short) -11, (short) 61).shortValue());
+        Assert.assertEquals((short) 61, MathUtility.min((short) 61).shortValue());
+        
+        //int
+        Assert.assertEquals(222, MathUtility.min(446, 222, 699).intValue());
+        Assert.assertEquals(481, MathUtility.min(481, 481, 699).intValue());
+        Assert.assertEquals(222, MathUtility.min(699, 222, 699).intValue());
+        Assert.assertEquals(11, MathUtility.min(11, 400, 617).intValue());
+        Assert.assertEquals(400, MathUtility.min(737, 400, 617).intValue());
+        Assert.assertEquals(-400, MathUtility.min(-278, -400, 617).intValue());
+        Assert.assertEquals(-278, MathUtility.min(-278, -113, 617).intValue());
+        Assert.assertEquals(-278, MathUtility.min(446, 222, 699, -278, -113, 617).intValue());
+        Assert.assertEquals(617, MathUtility.min(617).intValue());
+        
+        //float
+        Assert.assertEquals(2.22f, MathUtility.min(4.46f, 2.22f, 6.99f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(4.81f, MathUtility.min(4.81f, 4.81f, 6.99f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(2.22f, MathUtility.min(6.99f, 2.22f, 6.99f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(1.1f, MathUtility.min(1.1f, 4.00f, 6.17f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(4.00f, MathUtility.min(7.37f, 4.00f, 6.17f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(-4.00f, MathUtility.min(-2.78f, -4.00f, 6.17f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(-2.78f, MathUtility.min(-2.78f, -1.13f, 6.17f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(-2.78f, MathUtility.min(4.46f, 2.22f, 6.99f, -2.78f, -1.13f, 6.17f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(6.17f, MathUtility.min(6.17f), TestUtils.DELTA_FLOAT);
+        
+        //double
+        Assert.assertEquals(2.228808404d, MathUtility.min(4.469845d, 2.228808404d, 6.99198702d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(4.8100154d, MathUtility.min(4.8100154d, 4.8100154d, 6.99198702d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(2.228808404d, MathUtility.min(6.99198702d, 2.228808404d, 6.99198702d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(1.1d, MathUtility.min(1.1d, 4.0000001d, 6.17348095d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(4.0000001d, MathUtility.min(7.37980798d, 4.0000001d, 6.17348095d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(-4.0000001d, MathUtility.min(-2.7858074887d, -4.0000001d, 6.17348095d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(-2.7858074887d, MathUtility.min(-2.7858074887d, -1.139805605774d, 6.17348095d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(-2.7858074887d, MathUtility.min(4.469845d, 2.228808404d, 6.99198702d, -2.7858074887d, -1.139805605774d, 6.17348095d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(6.17348095d, MathUtility.min(6.17348095d), TestUtils.DELTA_DOUBLE);
+        
+        //long
+        Assert.assertEquals(2228808404L, MathUtility.min(4469845000L, 2228808404L, 6991987020L).longValue());
+        Assert.assertEquals(48100154L, MathUtility.min(48100154L, 48100154L, 6991987020L).longValue());
+        Assert.assertEquals(2228808404L, MathUtility.min(6991987020L, 2228808404L, 6991987020L).longValue());
+        Assert.assertEquals(11L, MathUtility.min(11L, 40000001L, 617348095L).longValue());
+        Assert.assertEquals(40000001L, MathUtility.min(737980798L, 40000001L, 617348095L).longValue());
+        Assert.assertEquals(-40000001000L, MathUtility.min(-27858074887L, -40000001000L, 617348095L).longValue());
+        Assert.assertEquals(-27858074887L, MathUtility.min(-27858074887L, -11398056057L, 617348095L).longValue());
+        Assert.assertEquals(-27858074887L, MathUtility.min(4469845000L, 2228808404L, 6991987020L, -27858074887L, -11398056057L, 617348095L).longValue());
+        Assert.assertEquals(617348095L, MathUtility.min(617348095L).longValue());
+        
+        //big decimal
+        Assert.assertEquals(new BigDecimal("298766565984054313210050444.22850908748485456409594808404"), MathUtility.min(new BigDecimal("498048940365649408940894156.46989846504649845"), new BigDecimal("298766565984054313210050444.22850908748485456409594808404"), new BigDecimal("690890450454565456960987894649.991987020989845645645458")));
+        Assert.assertEquals(new BigDecimal("4161561587498065454121635654.0000000006546508100154"), MathUtility.min(new BigDecimal("4161561587498065454121635654.0000000006546508100154"), new BigDecimal("4161561587498065454121635654.0000000006546508100154"), new BigDecimal("690890450454565456960987894649.991987020989845645645458")));
+        Assert.assertEquals(new BigDecimal("298766565984054313210050444.22850908748485456409594808404"), MathUtility.min(new BigDecimal("690890450454565456960987894649.991987020989845645645458"), new BigDecimal("298766565984054313210050444.22850908748485456409594808404"), new BigDecimal("690890450454565456960987894649.991987020989845645645458")));
+        Assert.assertEquals(new BigDecimal("1.1"), MathUtility.min(new BigDecimal("1.1"), new BigDecimal("400000000000000000000.000000000000000000000001"), new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        Assert.assertEquals(new BigDecimal("400000000000000000000.000000000000000000000001"), MathUtility.min(new BigDecimal("70000000000490988798465065653212318888.370989889489740546506505156980798"), new BigDecimal("400000000000000000000.000000000000000000000001"), new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        Assert.assertEquals(new BigDecimal("-400000000000000000000.000000000000000000000001"), MathUtility.min(new BigDecimal("-234605409480456054264.785804564655496574887"), new BigDecimal("-400000000000000000000.000000000000000000000001"), new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        Assert.assertEquals(new BigDecimal("-234605409480456054264.785804564655496574887"), MathUtility.min(new BigDecimal("-234605409480456054264.785804564655496574887"), new BigDecimal("-100870798769504941324.139805605774"), new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        Assert.assertEquals(new BigDecimal("-234605409480456054264.785804564655496574887"), MathUtility.min(new BigDecimal("498048940365649408940894156.46989846504649845"), new BigDecimal("298766565984054313210050444.22850908748485456409594808404"), new BigDecimal("690890450454565456960987894649.991987020989845645645458"), new BigDecimal("-234605409480456054264.785804564655496574887"), new BigDecimal("-100870798769504941324.139805605774"), new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        Assert.assertEquals(new BigDecimal("6664598409846520651984845149.1734680098980487489408995"), MathUtility.min(new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        
+        //big integer
+        Assert.assertEquals(new BigInteger("298766565984054313210050444"), MathUtility.min(new BigInteger("498048940365649408940894156"), new BigInteger("298766565984054313210050444"), new BigInteger("690890450454565456960987894649")));
+        Assert.assertEquals(new BigInteger("4161561587498065454121635654"), MathUtility.min(new BigInteger("4161561587498065454121635654"), new BigInteger("4161561587498065454121635654"), new BigInteger("690890450454565456960987894649")));
+        Assert.assertEquals(new BigInteger("298766565984054313210050444"), MathUtility.min(new BigInteger("690890450454565456960987894649"), new BigInteger("298766565984054313210050444"), new BigInteger("690890450454565456960987894649")));
+        Assert.assertEquals(new BigInteger("1"), MathUtility.min(new BigInteger("1"), new BigInteger("400000000000000000000"), new BigInteger("6664598409846520651984845149")));
+        Assert.assertEquals(new BigInteger("400000000000000000000"), MathUtility.min(new BigInteger("70000000000490988798465065653212318888"), new BigInteger("400000000000000000000"), new BigInteger("6664598409846520651984845149")));
+        Assert.assertEquals(new BigInteger("-400000000000000000000"), MathUtility.min(new BigInteger("-234605409480456054264"), new BigInteger("-400000000000000000000"), new BigInteger("6664598409846520651984845149")));
+        Assert.assertEquals(new BigInteger("-234605409480456054264"), MathUtility.min(new BigInteger("-234605409480456054264"), new BigInteger("-100870798769504941324"), new BigInteger("6664598409846520651984845149")));
+        Assert.assertEquals(new BigInteger("-234605409480456054264"), MathUtility.min(new BigInteger("498048940365649408940894156"), new BigInteger("298766565984054313210050444"), new BigInteger("690890450454565456960987894649"), new BigInteger("-234605409480456054264"), new BigInteger("-100870798769504941324"), new BigInteger("6664598409846520651984845149")));
+        Assert.assertEquals(new BigInteger("6664598409846520651984845149"), MathUtility.min(new BigInteger("6664598409846520651984845149")));
+        
+        //empty
+        Assert.assertEquals((byte) 0, MathUtility.min().byteValue());
+        Assert.assertEquals((short) 0, MathUtility.min().shortValue());
+        Assert.assertEquals(0, MathUtility.min().intValue());
+        Assert.assertEquals(0.0f, MathUtility.min().floatValue(), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(0.0d, MathUtility.min().doubleValue(), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(0L, MathUtility.min().longValue());
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                MathUtility.min((Number[]) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                MathUtility.min((Number) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                MathUtility.min(15, 10, null));
+    }
+    
+    /**
+     * JUnit test of max.
+     *
+     * @throws Exception When there is an exception.
+     * @see MathUtility#max(Number[])
+     */
+    @Test
+    public void testMax() throws Exception {
+        //byte
+        Assert.assertEquals((byte) 6, MathUtility.max((byte) 4, (byte) 2, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 6, MathUtility.max((byte) 4, (byte) 4, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 6, MathUtility.max((byte) 6, (byte) 2, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 6, MathUtility.max((byte) 1, (byte) 4, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 7, MathUtility.max((byte) 7, (byte) 4, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 6, MathUtility.max((byte) -2, (byte) -4, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 6, MathUtility.max((byte) -2, (byte) -1, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 6, MathUtility.max((byte) 4, (byte) 2, (byte) 6, (byte) -2, (byte) -1, (byte) 6).byteValue());
+        Assert.assertEquals((byte) 6, MathUtility.max((byte) 6).byteValue());
+        
+        //short
+        Assert.assertEquals((short) 69, MathUtility.max((short) 44, (short) 22, (short) 69).shortValue());
+        Assert.assertEquals((short) 69, MathUtility.max((short) 48, (short) 48, (short) 69).shortValue());
+        Assert.assertEquals((short) 69, MathUtility.max((short) 69, (short) 22, (short) 69).shortValue());
+        Assert.assertEquals((short) 61, MathUtility.max((short) 11, (short) 40, (short) 61).shortValue());
+        Assert.assertEquals((short) 78, MathUtility.max((short) 78, (short) 40, (short) 61).shortValue());
+        Assert.assertEquals((short) 61, MathUtility.max((short) -27, (short) -40, (short) 61).shortValue());
+        Assert.assertEquals((short) 61, MathUtility.max((short) -27, (short) -11, (short) 61).shortValue());
+        Assert.assertEquals((short) 69, MathUtility.max((short) 44, (short) 22, (short) 69, (short) -27, (short) -11, (short) 61).shortValue());
+        Assert.assertEquals((short) 61, MathUtility.max((short) 61).shortValue());
+        
+        //int
+        Assert.assertEquals(699, MathUtility.max(446, 222, 699).intValue());
+        Assert.assertEquals(699, MathUtility.max(481, 481, 699).intValue());
+        Assert.assertEquals(699, MathUtility.max(699, 222, 699).intValue());
+        Assert.assertEquals(617, MathUtility.max(11, 400, 617).intValue());
+        Assert.assertEquals(737, MathUtility.max(737, 400, 617).intValue());
+        Assert.assertEquals(617, MathUtility.max(-278, -400, 617).intValue());
+        Assert.assertEquals(617, MathUtility.max(-278, -113, 617).intValue());
+        Assert.assertEquals(699, MathUtility.max(446, 222, 699, -278, -113, 617).intValue());
+        Assert.assertEquals(617, MathUtility.max(617).intValue());
+        
+        //float
+        Assert.assertEquals(6.99f, MathUtility.max(4.46f, 2.22f, 6.99f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(6.99f, MathUtility.max(4.81f, 4.81f, 6.99f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(6.99f, MathUtility.max(6.99f, 2.22f, 6.99f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(6.17f, MathUtility.max(1.1f, 4.00f, 6.17f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(7.37f, MathUtility.max(7.37f, 4.00f, 6.17f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(6.17f, MathUtility.max(-2.78f, -4.00f, 6.17f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(6.17f, MathUtility.max(-2.78f, -1.13f, 6.17f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(6.99f, MathUtility.max(4.46f, 2.22f, 6.99f, -2.78f, -1.13f, 6.17f), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(6.17f, MathUtility.max(6.17f), TestUtils.DELTA_FLOAT);
+        
+        //double
+        Assert.assertEquals(6.99198702d, MathUtility.max(4.469845d, 2.228808404d, 6.99198702d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(6.99198702d, MathUtility.max(4.8100154d, 4.8100154d, 6.99198702d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(6.99198702d, MathUtility.max(6.99198702d, 2.228808404d, 6.99198702d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(6.17348095d, MathUtility.max(1.1d, 4.0000001d, 6.17348095d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(7.37980798d, MathUtility.max(7.37980798d, 4.0000001d, 6.17348095d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(6.17348095d, MathUtility.max(-2.7858074887d, -4.0000001d, 6.17348095d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(6.17348095d, MathUtility.max(-2.7858074887d, -1.139805605774d, 6.17348095d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(6.99198702d, MathUtility.max(4.469845d, 2.228808404d, 6.99198702d, -2.7858074887d, -1.139805605774d, 6.17348095d), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(6.17348095d, MathUtility.max(6.17348095d), TestUtils.DELTA_DOUBLE);
+        
+        //long
+        Assert.assertEquals(6991987020L, MathUtility.max(4469845000L, 2228808404L, 6991987020L).longValue());
+        Assert.assertEquals(6991987020L, MathUtility.max(48100154L, 48100154L, 6991987020L).longValue());
+        Assert.assertEquals(6991987020L, MathUtility.max(6991987020L, 2228808404L, 6991987020L).longValue());
+        Assert.assertEquals(617348095L, MathUtility.max(11L, 40000001L, 617348095L).longValue());
+        Assert.assertEquals(737980798L, MathUtility.max(737980798L, 40000001L, 617348095L).longValue());
+        Assert.assertEquals(617348095L, MathUtility.max(-27858074887L, -40000001000L, 617348095L).longValue());
+        Assert.assertEquals(617348095L, MathUtility.max(-27858074887L, -11398056057L, 617348095L).longValue());
+        Assert.assertEquals(6991987020L, MathUtility.max(4469845000L, 2228808404L, 6991987020L, -27858074887L, -11398056057L, 617348095L).longValue());
+        Assert.assertEquals(617348095L, MathUtility.max(617348095L).longValue());
+        
+        //big decimal
+        Assert.assertEquals(new BigDecimal("690890450454565456960987894649.991987020989845645645458"), MathUtility.max(new BigDecimal("498048940365649408940894156.46989846504649845"), new BigDecimal("298766565984054313210050444.22850908748485456409594808404"), new BigDecimal("690890450454565456960987894649.991987020989845645645458")));
+        Assert.assertEquals(new BigDecimal("690890450454565456960987894649.991987020989845645645458"), MathUtility.max(new BigDecimal("4161561587498065454121635654.0000000006546508100154"), new BigDecimal("4161561587498065454121635654.0000000006546508100154"), new BigDecimal("690890450454565456960987894649.991987020989845645645458")));
+        Assert.assertEquals(new BigDecimal("690890450454565456960987894649.991987020989845645645458"), MathUtility.max(new BigDecimal("690890450454565456960987894649.991987020989845645645458"), new BigDecimal("298766565984054313210050444.22850908748485456409594808404"), new BigDecimal("690890450454565456960987894649.991987020989845645645458")));
+        Assert.assertEquals(new BigDecimal("6664598409846520651984845149.1734680098980487489408995"), MathUtility.max(new BigDecimal("1.1"), new BigDecimal("400000000000000000000.000000000000000000000001"), new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        Assert.assertEquals(new BigDecimal("70000000000490988798465065653212318888.370989889489740546506505156980798"), MathUtility.max(new BigDecimal("70000000000490988798465065653212318888.370989889489740546506505156980798"), new BigDecimal("400000000000000000000.000000000000000000000001"), new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        Assert.assertEquals(new BigDecimal("6664598409846520651984845149.1734680098980487489408995"), MathUtility.max(new BigDecimal("-234605409480456054264.785804564655496574887"), new BigDecimal("-400000000000000000000.000000000000000000000001"), new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        Assert.assertEquals(new BigDecimal("6664598409846520651984845149.1734680098980487489408995"), MathUtility.max(new BigDecimal("-234605409480456054264.785804564655496574887"), new BigDecimal("-100870798769504941324.139805605774"), new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        Assert.assertEquals(new BigDecimal("690890450454565456960987894649.991987020989845645645458"), MathUtility.max(new BigDecimal("498048940365649408940894156.46989846504649845"), new BigDecimal("298766565984054313210050444.22850908748485456409594808404"), new BigDecimal("690890450454565456960987894649.991987020989845645645458"), new BigDecimal("-234605409480456054264.785804564655496574887"), new BigDecimal("-100870798769504941324.139805605774"), new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        Assert.assertEquals(new BigDecimal("6664598409846520651984845149.1734680098980487489408995"), MathUtility.max(new BigDecimal("6664598409846520651984845149.1734680098980487489408995")));
+        
+        //big integer
+        Assert.assertEquals(new BigInteger("690890450454565456960987894649"), MathUtility.max(new BigInteger("498048940365649408940894156"), new BigInteger("298766565984054313210050444"), new BigInteger("690890450454565456960987894649")));
+        Assert.assertEquals(new BigInteger("690890450454565456960987894649"), MathUtility.max(new BigInteger("4161561587498065454121635654"), new BigInteger("4161561587498065454121635654"), new BigInteger("690890450454565456960987894649")));
+        Assert.assertEquals(new BigInteger("690890450454565456960987894649"), MathUtility.max(new BigInteger("690890450454565456960987894649"), new BigInteger("298766565984054313210050444"), new BigInteger("690890450454565456960987894649")));
+        Assert.assertEquals(new BigInteger("6664598409846520651984845149"), MathUtility.max(new BigInteger("1"), new BigInteger("400000000000000000000"), new BigInteger("6664598409846520651984845149")));
+        Assert.assertEquals(new BigInteger("70000000000490988798465065653212318888"), MathUtility.max(new BigInteger("70000000000490988798465065653212318888"), new BigInteger("400000000000000000000"), new BigInteger("6664598409846520651984845149")));
+        Assert.assertEquals(new BigInteger("6664598409846520651984845149"), MathUtility.max(new BigInteger("-234605409480456054264"), new BigInteger("-400000000000000000000"), new BigInteger("6664598409846520651984845149")));
+        Assert.assertEquals(new BigInteger("6664598409846520651984845149"), MathUtility.max(new BigInteger("-234605409480456054264"), new BigInteger("-100870798769504941324"), new BigInteger("6664598409846520651984845149")));
+        Assert.assertEquals(new BigInteger("690890450454565456960987894649"), MathUtility.max(new BigInteger("498048940365649408940894156"), new BigInteger("298766565984054313210050444"), new BigInteger("690890450454565456960987894649"), new BigInteger("-234605409480456054264"), new BigInteger("-100870798769504941324"), new BigInteger("6664598409846520651984845149")));
+        Assert.assertEquals(new BigInteger("6664598409846520651984845149"), MathUtility.max(new BigInteger("6664598409846520651984845149")));
+        
+        //empty
+        Assert.assertEquals((byte) 0, MathUtility.max().byteValue());
+        Assert.assertEquals((short) 0, MathUtility.max().shortValue());
+        Assert.assertEquals(0, MathUtility.max().intValue());
+        Assert.assertEquals(0.0f, MathUtility.max().floatValue(), TestUtils.DELTA_FLOAT);
+        Assert.assertEquals(0.0d, MathUtility.max().doubleValue(), TestUtils.DELTA_DOUBLE);
+        Assert.assertEquals(0L, MathUtility.max().longValue());
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                MathUtility.max((Number[]) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                MathUtility.max((Number) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                MathUtility.max(15, 10, null));
     }
     
     /**

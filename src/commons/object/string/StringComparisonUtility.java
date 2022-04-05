@@ -16,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 
 import commons.math.BoundUtility;
+import commons.math.MathUtility;
 import org.apache.commons.codec.language.Metaphone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -301,8 +302,7 @@ public final class StringComparisonUtility {
                         } else {
                             matchChar = (patternChar == textChar) ? 1 : 0;
                         }
-                        D[i][j] = 1 + Math.min(Math.min(D[i - 1][j], D[i][j - 1]),
-                                D[i - 1][j - 1] - matchChar);
+                        D[i][j] = 1 + MathUtility.min(D[i - 1][j], D[i][j - 1], (D[i - 1][j - 1] - matchChar));
                     }
                     init = true;
                 }
@@ -491,7 +491,7 @@ public final class StringComparisonUtility {
                 
             } else {
                 if (row > 0) {
-                    int min = Math.min(Math.min(D[row - 1][col], D[row - 1][col - 1]), D[row][col - 1]); //move
+                    int min = MathUtility.min(D[row - 1][col], D[row - 1][col - 1], D[row][col - 1]); //move
                     if (col > 0) {
                         if ((D[row - 1][col] == min) && (D[row - 1][col] == D[row - 1][col - 1]) && (D[row][col] == D[row][col - 1])) {
                             row--; //move up;

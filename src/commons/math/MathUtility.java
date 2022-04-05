@@ -9,6 +9,8 @@ package commons.math;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Arrays;
+import java.util.Comparator;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -147,8 +149,8 @@ public class MathUtility {
             return false;
         }
         
-        double sqrt = Math.sqrt(value);
-        return sqrt - Math.floor(sqrt) == 0;
+        final double sqrt = Math.sqrt(value);
+        return (sqrt == Math.floor(sqrt));
     }
     
     /**
@@ -195,24 +197,48 @@ public class MathUtility {
     }
     
     /**
-     * Rounds a decimal number with a certain precision.
+     * Calculates the modulus of a number but returns a value in the range [1,mod] rather than [0,mod-1].
      *
-     * @param value         The number.
-     * @param decimalPlaces The maximum number of decimal places of the result.
-     * @return The rounded number.
+     * @param num The number.
+     * @param mod The modulus.
+     * @return The adjusted modulus of the number.
+     * @see #xmod(long, long)
      */
-    public static double roundWithPrecision(double value, int decimalPlaces) {
-        double decimalInverse = Math.pow(10.0, decimalPlaces);
-        return (double) Math.round(value * decimalInverse) / decimalInverse;
+    public static int xmod(int num, int mod) {
+        return (int) xmod((long) num, mod);
     }
     
     /**
-     * Rounds a Big Decimal number with a certain precision.
+     * Rounds a float with a certain precision.
+     *
+     * @param value         The number.
+     * @param decimalPlaces The maximum number of decimal places of the result.
+     * @return The rounded float.
+     */
+    public static double roundWithPrecision(float value, int decimalPlaces) {
+        final double decimalInverse = Math.pow(10.0, decimalPlaces);
+        return (float) Math.round(value * decimalInverse) / decimalInverse;
+    }
+    
+    /**
+     * Rounds a double with a certain precision.
+     *
+     * @param value         The number.
+     * @param decimalPlaces The maximum number of decimal places of the result.
+     * @return The rounded double.
+     */
+    public static double roundWithPrecision(double value, int decimalPlaces) {
+        final double decimalInverse = Math.pow(10.0, decimalPlaces);
+        return Math.round(value * decimalInverse) / decimalInverse;
+    }
+    
+    /**
+     * Rounds a Big Decimal with a certain precision.
      *
      * @param value         The number.
      * @param decimalPlaces The maximum number of decimal places of the result.
      * @param roundingMode  The rounding mode to use when rounding the result.
-     * @return The rounded number.
+     * @return The rounded Big Decimal.
      */
     public static BigDecimal roundWithPrecision(BigDecimal value, int decimalPlaces, RoundingMode roundingMode) {
         return new BigDecimal(value.setScale(decimalPlaces, roundingMode).stripTrailingZeros().toPlainString());
@@ -228,6 +254,30 @@ public class MathUtility {
      */
     public static BigDecimal roundWithPrecision(BigDecimal value, int decimalPlaces) {
         return roundWithPrecision(value, decimalPlaces, RoundingMode.HALF_UP);
+    }
+    
+    /**
+     * Finds the minimum value of a set of numbers.
+     *
+     * @param values The set of numbers.
+     * @param <T>    The type of the numbers.
+     * @return The minimum value.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Number> T min(T... values) {
+        return Arrays.stream(values).min(Comparator.comparingDouble(Number::doubleValue)).orElse((T) ((Integer) 0));
+    }
+    
+    /**
+     * Finds the maximum value of a set of numbers.
+     *
+     * @param values The set of numbers.
+     * @param <T>    The type of the numbers.
+     * @return The maximum value.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends Number> T max(T... values) {
+        return Arrays.stream(values).max(Comparator.comparingDouble(Number::doubleValue)).orElse((T) ((Integer) 0));
     }
     
     /**
@@ -299,13 +349,9 @@ public class MathUtility {
      * @return The value after it has been mapped from the input range to the output range.
      */
     public static double mapValue(double value, double inputStart, double inputEnd, double outputStart, double outputEnd) {
-        if (value < inputStart) {
-            return outputStart;
-        }
-        if (value > inputEnd) {
-            return outputEnd;
-        }
-        return (value - inputStart) / (inputEnd - inputStart) * (outputEnd - outputStart) + outputStart;
+        return (value < inputStart) ? outputStart :
+               (value > inputEnd) ? outputEnd :
+               (value - inputStart) / (inputEnd - inputStart) * (outputEnd - outputStart) + outputStart;
     }
     
 }
