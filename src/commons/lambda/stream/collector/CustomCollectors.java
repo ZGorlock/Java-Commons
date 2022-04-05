@@ -40,7 +40,7 @@ public final class CustomCollectors {
      * @param combiner        The combiner of the collector.
      * @param finisher        The finisher of the collector.
      * @param characteristics The characteristics of the collector.
-     * @param <T>             The type of the elements of the stream to collect.
+     * @param <T>             The type of the elements of the stream.
      * @param <A>             The type of the accumulator of the collector.
      * @param <R>             The type of the result of the collector.
      * @return The custom collector.
@@ -57,7 +57,7 @@ public final class CustomCollectors {
      * @param accumulator     The accumulator of the collector.
      * @param combiner        The combiner of the collector.
      * @param characteristics The characteristics of the collector.
-     * @param <T>             The type of the elements of the stream to collect.
+     * @param <T>             The type of the elements of the stream.
      * @param <A>             The type of the accumulator of the collector.
      * @param <R>             The type of the result of the collector.
      * @return The custom collector.
@@ -65,7 +65,7 @@ public final class CustomCollectors {
      */
     @SuppressWarnings("unchecked")
     public static <T, A, R> Collector<T, A, R> collect(Supplier<A> supplier, BiConsumer<A, T> accumulator, BinaryOperator<A> combiner, Set<Collector.Characteristics> characteristics) {
-        return collect(supplier, accumulator, combiner, ((x) -> (R) x), characteristics);
+        return collect(supplier, accumulator, combiner, (x -> (R) x), characteristics);
     }
     
     /**
@@ -74,7 +74,7 @@ public final class CustomCollectors {
      * @param supplier    The supplier of the collector.
      * @param accumulator The accumulator of the collector.
      * @param combiner    The combiner of the collector.
-     * @param <T>         The type of the elements of the stream to collect.
+     * @param <T>         The type of the elements of the stream.
      * @param <A>         The type of the accumulator of the collector.
      * @param <R>         The type of the result of the collector.
      * @return The custom collector.
@@ -90,7 +90,7 @@ public final class CustomCollectors {
     /**
      * Defines a custom collector.
      *
-     * @param <T> The type of the elements of the stream to collect.
+     * @param <T> The type of the elements of the stream.
      * @param <A> The type of the accumulator of the collector.
      * @param <R> The type of the result of the collector.
      * @see Collector

@@ -12,7 +12,6 @@ import java.awt.GraphicsEnvironment;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.IntStream;
 
 import commons.lambda.stream.collector.MapCollectors;
@@ -272,9 +271,9 @@ public class ScreenTest {
     @Test
     public void testGetDimension() throws Exception {
         final Map<Screen.Dimension, Map<Integer, Integer>> mockDimensions = Arrays.stream(Screen.Dimension.values())
-                .collect(MapCollectors.toHashMap(Function.identity(), (e -> MapUtility.mapOf(
+                .collect(MapCollectors.mapEachTo(e -> MapUtility.mapOf(
                         new Integer[] {0, 1, 2},
-                        new Integer[] {e.name().hashCode(), (e.name().hashCode() + 1), (e.name().hashCode() + 2)}))));
+                        new Integer[] {e.name().hashCode(), (e.name().hashCode() + 1), (e.name().hashCode() + 2)})));
         
         //standard
         Assert.assertTrue(TestAccess.setFieldValue(Screen.class, "dimensions", mockDimensions));

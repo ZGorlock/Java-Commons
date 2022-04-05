@@ -217,10 +217,11 @@ public final class MapUtility {
      * @param <M>     The class of the map.
      * @return The created and populated map.
      * @throws ClassCastException When attempting to create a TreeMap with a key type that is not Comparable.
+     * @see MapCollectors#toMap(Class)
      */
     @SuppressWarnings("unchecked")
     public static <K, V, M extends Map<?, ?>> Map<K, V> mapOf(Class<M> clazz, Pair<K, V>... entries) throws ClassCastException {
-        return Arrays.stream(entries).collect(MapCollectors.toMap(() -> emptyMap((Class<Map<K, V>>) clazz)));
+        return Arrays.stream(entries).collect(MapCollectors.toMap(clazz));
     }
     
     /**

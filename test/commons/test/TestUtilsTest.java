@@ -349,11 +349,11 @@ public class TestUtilsTest {
                         Stream.of(mockList2, null).flatMap(comparisonList ->
                                 Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
                                         (1 + System.identityHashCode(list) + System.identityHashCode(comparisonList)) * (checkOrder ? 1 : -1))))
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Boolean, AtomicInteger> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Boolean, AtomicInteger> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final UncheckedConsumer<Object[]> compareListsAsserter = (Object[] params) -> {
@@ -424,14 +424,14 @@ public class TestUtilsTest {
                 new ImmutablePair<>(Object[].class, mockArray),
                 new ImmutablePair<>(Collection.class, mockCollection));
         final Map<Object, AtomicInteger> toListCalls = Stream.of(mockList2, mockArray, mockCollection, Collection.class, Object[].class)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockList, null).flatMap(list ->
                         Stream.of(mockList2, null).flatMap(comparisonList ->
                                 Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
                                         (1 + System.identityHashCode(list) + System.identityHashCode(comparisonList)) * (checkOrder ? 1 : -1))))
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Boolean, AtomicInteger> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final Consumer<Object[]> listEqualsCollectionInvoker = (Object[] params) -> {
@@ -529,14 +529,14 @@ public class TestUtilsTest {
                 new ImmutablePair<>(Object[].class, mockArray),
                 new ImmutablePair<>(Collection.class, mockCollection));
         final Map<Object, AtomicInteger> toListCalls = Stream.of(mockList2, mockArray, mockCollection, Collection.class, Object[].class)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockList, null).flatMap(list ->
                         Stream.of(mockList2, null).flatMap(comparisonList ->
                                 Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
                                         (1 + System.identityHashCode(list) + System.identityHashCode(comparisonList)) * (checkOrder ? 1 : -1))))
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Boolean, AtomicInteger> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final Consumer<Object[]> listNotEqualsCollectionInvoker = (Object[] params) -> {
@@ -628,11 +628,11 @@ public class TestUtilsTest {
                         Stream.of(mockArray2, null).flatMap(comparisonArray ->
                                 Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
                                         (1 + System.identityHashCode(array) + System.identityHashCode(comparisonArray)) * (checkOrder ? 1 : -1))))
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Boolean, AtomicInteger> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Boolean, AtomicInteger> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final UncheckedConsumer<Object[]> compareArraysAsserter = (Object[] params) -> {
@@ -703,14 +703,14 @@ public class TestUtilsTest {
                 new ImmutablePair<>(List.class, mockList),
                 new ImmutablePair<>(Collection.class, mockCollection));
         final Map<Object, AtomicInteger> toArrayCalls = Stream.of(mockList, mockCollection, Collection.class)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockArray, null).flatMap(array ->
                         Stream.of(mockArray2, null).flatMap(comparisonArray ->
                                 Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
                                         (1 + System.identityHashCode(array) + System.identityHashCode(comparisonArray)) * (checkOrder ? 1 : -1))))
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Boolean, AtomicInteger> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final Consumer<Object[]> arrayEqualsCollectionInvoker = (Object[] params) -> {
@@ -805,14 +805,14 @@ public class TestUtilsTest {
                 new ImmutablePair<>(List.class, mockList),
                 new ImmutablePair<>(Collection.class, mockCollection));
         final Map<Object, AtomicInteger> toArrayCalls = Stream.of(mockList, mockCollection, Collection.class)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockArray, null).flatMap(array ->
                         Stream.of(mockArray2, null).flatMap(comparisonArray ->
                                 Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
                                         (1 + System.identityHashCode(array) + System.identityHashCode(comparisonArray)) * (checkOrder ? 1 : -1))))
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Boolean, AtomicInteger> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final Consumer<Object[]> arrayNotEqualsCollectionInvoker = (Object[] params) -> {
@@ -900,11 +900,11 @@ public class TestUtilsTest {
         final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockMap, null).flatMap(map ->
                         Stream.of(mockMap2, null).map(comparisonMap ->
                                 (1 + System.identityHashCode(map) + System.identityHashCode(comparisonMap))))
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Boolean, AtomicInteger> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Boolean, AtomicInteger> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final UncheckedConsumer<Object[]> compareMapsAsserter = (Object[] params) -> {
@@ -964,9 +964,9 @@ public class TestUtilsTest {
         final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockMap, null).flatMap(map ->
                         Stream.of(mockMap2, null).map(comparisonMap ->
                                 (1 + System.identityHashCode(map) + System.identityHashCode(comparisonMap))))
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Boolean, AtomicInteger> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final UncheckedBiConsumer<Map<Object, Object>, Map<Object, Object>> mapEqualsAsserter = (Map<Object, Object> map, Map<Object, Object> comparisonMap) -> {
@@ -1015,9 +1015,9 @@ public class TestUtilsTest {
         final Map<Integer, AtomicInteger> equalsCalls = Stream.of(mockMap, null).flatMap(map ->
                         Stream.of(mockMap2, null).map(comparisonMap ->
                                 (1 + System.identityHashCode(map) + System.identityHashCode(comparisonMap))))
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final Map<Boolean, AtomicInteger> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .collect(MapCollectors.toAtomicCounterMap());
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final UncheckedBiConsumer<Map<Object, Object>, Map<Object, Object>> mapNotEqualsAsserter = (Map<Object, Object> map, Map<Object, Object> comparisonMap) -> {
@@ -1399,7 +1399,7 @@ public class TestUtilsTest {
     @Test
     public void testAssertMethodExists() throws Exception {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
-                .map(EntityStringUtility::simpleClassString).collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .map(EntityStringUtility::simpleClassString).collect(MapCollectors.toAtomicCounterMap());
         
         final Consumer<Object[]> methodExistsAsserter = (Object[] params) -> {
             final Object caller = params[0];
@@ -1468,7 +1468,7 @@ public class TestUtilsTest {
     @Test
     public void testAssertMethodDoesNotExist() throws Exception {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
-                .map(EntityStringUtility::simpleClassString).collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .map(EntityStringUtility::simpleClassString).collect(MapCollectors.toAtomicCounterMap());
         
         final Consumer<Object[]> methodDoesNotExistAsserter = (Object[] params) -> {
             final Object caller = params[0];
@@ -1533,7 +1533,7 @@ public class TestUtilsTest {
     @Test
     public void testAssertConstructorExists() throws Exception {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
-                .map(EntityStringUtility::simpleClassString).collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .map(EntityStringUtility::simpleClassString).collect(MapCollectors.toAtomicCounterMap());
         
         final Consumer<Object[]> constructorExistsAsserter = (Object[] params) -> {
             final Object caller = params[0];
@@ -1596,7 +1596,7 @@ public class TestUtilsTest {
     @Test
     public void testAssertConstructorDoesNotExist() throws Exception {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
-                .map(EntityStringUtility::simpleClassString).collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .map(EntityStringUtility::simpleClassString).collect(MapCollectors.toAtomicCounterMap());
         
         final Consumer<Object[]> constructorDoesNotExistAsserter = (Object[] params) -> {
             final Object caller = params[0];
@@ -1653,7 +1653,7 @@ public class TestUtilsTest {
     @Test
     public void testAssertFieldExists() throws Exception {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
-                .map(EntityStringUtility::simpleClassString).collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .map(EntityStringUtility::simpleClassString).collect(MapCollectors.toAtomicCounterMap());
         
         final Consumer<Object[]> fieldExistsAsserter = (Object[] params) -> {
             final Object caller = params[0];
@@ -1715,7 +1715,7 @@ public class TestUtilsTest {
     @Test
     public void testAssertFieldDoesNotExist() throws Exception {
         final Map<String, AtomicInteger> calls = Stream.of(classes, new Object[] {null}).flatMap(Arrays::stream)
-                .map(EntityStringUtility::simpleClassString).collect(MapCollectors.mapEachTo(() -> new AtomicInteger(0)));
+                .map(EntityStringUtility::simpleClassString).collect(MapCollectors.toAtomicCounterMap());
         
         final Consumer<Object[]> fieldDoesNotExistAsserter = (Object[] params) -> {
             final Object caller = params[0];

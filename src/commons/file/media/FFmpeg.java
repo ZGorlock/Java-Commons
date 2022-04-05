@@ -3814,7 +3814,7 @@ public class FFmpeg {
             
             return IntStream.range(0, identifiers.size()).boxed()
                     .map(i -> decomposer.apply(identifiers.get(i)).stream().filter(Objects::nonNull)
-                            .collect(MapCollectors.toHashMap(Function.identity(), (e -> ListUtility.getOrNull(mappedValues, i))))
+                            .collect(MapCollectors.mapEachTo(ListUtility.getOrNull(mappedValues, i)))
                     ).flatMap(e -> e.entrySet().stream()).sorted(Map.Entry.comparingByKey())
                     .collect(MapCollectors.toLinkedHashMap());
         }
