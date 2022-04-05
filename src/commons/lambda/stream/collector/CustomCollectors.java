@@ -53,19 +53,18 @@ public final class CustomCollectors {
     /**
      * Creates a new custom collector.
      *
-     * @param supplier        The supplier of the collector.
-     * @param accumulator     The accumulator of the collector.
-     * @param combiner        The combiner of the collector.
-     * @param characteristics The characteristics of the collector.
-     * @param <T>             The type of the elements of the stream.
-     * @param <A>             The type of the accumulator of the collector.
-     * @param <R>             The type of the result of the collector.
+     * @param supplier    The supplier of the collector.
+     * @param accumulator The accumulator of the collector.
+     * @param combiner    The combiner of the collector.
+     * @param finisher    The finisher of the collector.
+     * @param <T>         The type of the elements of the stream.
+     * @param <A>         The type of the accumulator of the collector.
+     * @param <R>         The type of the result of the collector.
      * @return The custom collector.
      * @see #collect(Supplier, BiConsumer, BinaryOperator, Function, Set)
      */
-    @SuppressWarnings("unchecked")
-    public static <T, A, R> Collector<T, A, R> collect(Supplier<A> supplier, BiConsumer<A, T> accumulator, BinaryOperator<A> combiner, Set<Collector.Characteristics> characteristics) {
-        return collect(supplier, accumulator, combiner, (x -> (R) x), characteristics);
+    public static <T, A, R> Collector<T, A, R> collect(Supplier<A> supplier, BiConsumer<A, T> accumulator, BinaryOperator<A> combiner, Function<A, R> finisher) {
+        return collect(supplier, accumulator, combiner, finisher, Set.of());
     }
     
     /**
@@ -75,13 +74,12 @@ public final class CustomCollectors {
      * @param accumulator The accumulator of the collector.
      * @param combiner    The combiner of the collector.
      * @param <T>         The type of the elements of the stream.
-     * @param <A>         The type of the accumulator of the collector.
-     * @param <R>         The type of the result of the collector.
+     * @param <A>         The type of the accumulator and the result of the collector.
      * @return The custom collector.
-     * @see #collect(Supplier, BiConsumer, BinaryOperator, Set)
+     * @see #collect(Supplier, BiConsumer, BinaryOperator, Function, Set)
      */
-    public static <T, A, R> Collector<T, A, R> collect(Supplier<A> supplier, BiConsumer<A, T> accumulator, BinaryOperator<A> combiner) {
-        return collect(supplier, accumulator, combiner, Set.of(Collector.Characteristics.IDENTITY_FINISH));
+    public static <T, A> Collector<T, A, A> collect(Supplier<A> supplier, BiConsumer<A, T> accumulator, BinaryOperator<A> combiner) {
+        return collect(supplier, accumulator, combiner, Function.identity(), Set.of(Collector.Characteristics.IDENTITY_FINISH));
     }
     
     

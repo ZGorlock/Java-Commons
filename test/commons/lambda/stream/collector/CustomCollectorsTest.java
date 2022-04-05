@@ -124,7 +124,7 @@ public class CustomCollectorsTest {
      *
      * @throws Exception When there is an exception.
      * @see CustomCollectors#collect(Supplier, BiConsumer, BinaryOperator, Function, Set)
-     * @see CustomCollectors#collect(Supplier, BiConsumer, BinaryOperator, Set)
+     * @see CustomCollectors#collect(Supplier, BiConsumer, BinaryOperator, Function)
      * @see CustomCollectors#collect(Supplier, BiConsumer, BinaryOperator)
      */
     @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -139,6 +139,7 @@ public class CustomCollectorsTest {
                 new String[] {"supplier", "accumulator", "combiner", "finisher", "characteristics"},
                 new Object[] {mockSupplier, mockAccumulator, mockCombiner, mockFinisher, characteristics});
         Collector<Object, List<?>, String> testCollector;
+        Collector<Object, List<?>, List<?>> testCollectorIdentity;
         
         final Consumer<Collector<?, ?, ?>> collectorValidator = (Collector<?, ?, ?> collector) -> {
             Assert.assertNotNull(collector);
@@ -163,17 +164,17 @@ public class CustomCollectorsTest {
         testCollector = CustomCollectors.collect(mockSupplier, mockAccumulator, mockCombiner, mockFinisher, characteristics);
         collectorValidator.accept(testCollector);
         
-        //default finisher
-        testCollector = CustomCollectors.collect(mockSupplier, mockAccumulator, mockCombiner, characteristics);
-        testCollectorFields.replace("finisher", null);
-        collectorValidator.accept(testCollector);
-        testCollectorFields.replace("finisher", mockFinisher);
-        
         //default characteristics
-        testCollector = CustomCollectors.collect(mockSupplier, mockAccumulator, mockCombiner);
+        testCollector = CustomCollectors.collect(mockSupplier, mockAccumulator, mockCombiner, mockFinisher);
+        testCollectorFields.replace("characteristics", Set.of());
+        collectorValidator.accept(testCollector);
+        testCollectorFields.replace("characteristics", characteristics);
+        
+        //default finisher
+        testCollectorIdentity = CustomCollectors.collect(mockSupplier, mockAccumulator, mockCombiner);
         testCollectorFields.replace("finisher", null);
         testCollectorFields.replace("characteristics", Set.of(Collector.Characteristics.IDENTITY_FINISH));
-        collectorValidator.accept(testCollector);
+        collectorValidator.accept(testCollectorIdentity);
         testCollectorFields.replace("finisher", mockFinisher);
         testCollectorFields.replace("characteristics", characteristics);
         
