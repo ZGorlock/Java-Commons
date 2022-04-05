@@ -17,6 +17,7 @@ import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import commons.object.collection.MapUtility;
 import org.slf4j.Logger;
@@ -35,7 +36,84 @@ public final class MapCollectors {
     private static final Logger logger = LoggerFactory.getLogger(MapCollectors.class);
     
     
+    //Enums
+    
+    /**
+     * An enumeration of Map Flavors.
+     */
+    public enum MapFlavor {
+        
+        //Values
+        
+        STANDARD(Function.identity()),
+        UNMODIFIABLE(MapUtility::unmodifiableMap),
+        SYNCHRONIZED(MapUtility::synchronizedMap);
+        
+        
+        //Fields
+        
+        /**
+         * The function for applying the Map Flavor.
+         */
+        private final Function<Map<?, ?>, Map<?, ?>> styler;
+        
+        
+        //Constructors
+        
+        /**
+         * Constructs a Map Flavor.
+         *
+         * @param styler The function for applying the Map Flavor.
+         */
+        MapFlavor(Function<Map<?, ?>, Map<?, ?>> styler) {
+            this.styler = styler;
+        }
+        
+        
+        //Methods
+        
+        /**
+         * Applies the Map Flavor.
+         *
+         * @param map The map.
+         * @param <K> The type of the keys of the map.
+         * @param <V> The type of the values of the map.
+         * @param <R> The type of the map.
+         * @return The map with the Map Flavor.
+         */
+        @SuppressWarnings("unchecked")
+        public <K, V, R extends Map<K, V>> R apply(R map) {
+            return (R) styler.apply(map);
+        }
+        
+    }
+    
+    
     //Static Methods
+    
+    /**
+     * Creates a new custom collector that collects a stream to a map.
+     *
+     * @param mapSupplier The supplier that provides a map of a certain type.
+     * @param mapFlavor   The flavor of the map.
+     * @param keyMapper   The function that produces the keys of the map.
+     * @param valueMapper The function that produces the values of the map.
+     * @param <T>         The type of the elements of the stream.
+     * @param <K>         The type of the keys of the map.
+     * @param <V>         The type of the values of the map.
+     * @param <R>         The type of the map.
+     * @return The custom collector.
+     * @see CustomCollectors#collect(Supplier, BiConsumer, BinaryOperator)
+     * @see MapFlavor#apply(Map)
+     */
+    public static <T, K, V, R extends Map<K, V>> Collector<T, ?, R> toMap(Supplier<R> mapSupplier, MapFlavor mapFlavor, Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
+        return Collectors.collectingAndThen(
+                CustomCollectors.collect(
+                        mapSupplier,
+                        (m, e) -> m.put(keyMapper.apply(e), valueMapper.apply(e)),
+                        MapUtility::putAllAndGet),
+                mapFlavor::apply);
+    }
     
     /**
      * Creates a new custom collector that collects a stream to a map.
@@ -48,13 +126,28 @@ public final class MapCollectors {
      * @param <V>         The type of the values of the map.
      * @param <R>         The type of the map.
      * @return The custom collector.
-     * @see CustomCollectors#collect(Supplier, BiConsumer, BinaryOperator)
+     * @see #toMap(Supplier, MapFlavor, Function, Function)
      */
     public static <T, K, V, R extends Map<K, V>> Collector<T, ?, R> toMap(Supplier<R> mapSupplier, Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
-        return CustomCollectors.collect(
-                mapSupplier,
-                (m, e) -> m.put(keyMapper.apply(e), valueMapper.apply(e)),
-                MapUtility::putAllAndGet);
+        return toMap(mapSupplier, MapFlavor.STANDARD, keyMapper, valueMapper);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream to a map.
+     *
+     * @param mapClass    The class of the map.
+     * @param mapFlavor   The flavor of the map.
+     * @param keyMapper   The function that produces the keys of the map.
+     * @param valueMapper The function that produces the values of the map.
+     * @param <T>         The type of the elements of the stream.
+     * @param <K>         The type of the keys of the map.
+     * @param <V>         The type of the values of the map.
+     * @param <M>         The class of the map.
+     * @return The custom collector.
+     * @see #toMap(Supplier, MapFlavor, Function, Function)
+     */
+    public static <T, K, V, M extends Map<?, ?>> Collector<T, ?, Map<K, V>> toMap(Class<M> mapClass, MapFlavor mapFlavor, Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
+        return toMap(generator(mapClass), mapFlavor, keyMapper, valueMapper);
     }
     
     /**
@@ -68,10 +161,25 @@ public final class MapCollectors {
      * @param <V>         The type of the values of the map.
      * @param <M>         The class of the map.
      * @return The custom collector.
-     * @see CustomCollectors#collect(Supplier, BiConsumer, BinaryOperator)
+     * @see #toMap(Class, MapFlavor, Function, Function)
      */
     public static <T, K, V, M extends Map<?, ?>> Collector<T, ?, Map<K, V>> toMap(Class<M> mapClass, Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
-        return toMap(generator(mapClass), keyMapper, valueMapper);
+        return toMap(mapClass, MapFlavor.STANDARD, keyMapper, valueMapper);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream of map entries to a map.
+     *
+     * @param mapSupplier The supplier that provides a map of a certain type.
+     * @param mapFlavor   The flavor of the map.
+     * @param <K>         The type of the keys of the map.
+     * @param <V>         The type of the values of the map.
+     * @param <R>         The type of the map.
+     * @return The custom collector.
+     * @see #toMap(Supplier, MapFlavor, Function, Function)
+     */
+    public static <K, V, R extends Map<K, V>> Collector<Map.Entry<K, V>, ?, R> toMap(Supplier<R> mapSupplier, MapFlavor mapFlavor) {
+        return toMap(mapSupplier, mapFlavor, Map.Entry::getKey, Map.Entry::getValue);
     }
     
     /**
@@ -82,10 +190,25 @@ public final class MapCollectors {
      * @param <V>         The type of the values of the map.
      * @param <R>         The type of the map.
      * @return The custom collector.
-     * @see #toMap(Supplier, Function, Function)
+     * @see #toMap(Supplier, MapFlavor)
      */
     public static <K, V, R extends Map<K, V>> Collector<Map.Entry<K, V>, ?, R> toMap(Supplier<R> mapSupplier) {
-        return toMap(mapSupplier, Map.Entry::getKey, Map.Entry::getValue);
+        return toMap(mapSupplier, MapFlavor.STANDARD);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream of map entries to a map.
+     *
+     * @param mapClass  The class of the map.
+     * @param mapFlavor The flavor of the map.
+     * @param <K>       The type of the keys of the map.
+     * @param <V>       The type of the values of the map.
+     * @param <M>       The class of the map.
+     * @return The custom collector.
+     * @see #toMap(Supplier, MapFlavor)
+     */
+    public static <K, V, M extends Map<?, ?>> Collector<Map.Entry<K, V>, ?, Map<K, V>> toMap(Class<M> mapClass, MapFlavor mapFlavor) {
+        return toMap(generator(mapClass), mapFlavor);
     }
     
     /**
@@ -96,10 +219,10 @@ public final class MapCollectors {
      * @param <V>      The type of the values of the map.
      * @param <M>      The class of the map.
      * @return The custom collector.
-     * @see #toMap(Supplier)
+     * @see #toMap(Class, MapFlavor)
      */
     public static <K, V, M extends Map<?, ?>> Collector<Map.Entry<K, V>, ?, Map<K, V>> toMap(Class<M> mapClass) {
-        return toMap(generator(mapClass));
+        return toMap(mapClass, MapFlavor.STANDARD);
     }
     
     /**
@@ -141,8 +264,37 @@ public final class MapCollectors {
      * @return The map supplier.
      * @see #generator(Class)
      */
-    public static <K, V, M extends Map<?, ?>> Supplier<Map<K, V>> generator() {
+    public static <K, V> Supplier<Map<K, V>> generator() {
         return generator(HashMap.class);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream to a hash map.
+     *
+     * @param mapFlavor   The flavor of the map.
+     * @param keyMapper   The function that produces the keys of the map.
+     * @param valueMapper The function that produces the values of the map.
+     * @param <T>         The type of the elements of the stream.
+     * @param <K>         The type of the keys of the map.
+     * @param <V>         The type of the values of the map.
+     * @return The custom collector.
+     * @see #toMap(Supplier, MapFlavor, Function, Function)
+     */
+    public static <T, K, V> Collector<T, ?, HashMap<K, V>> toHashMap(MapFlavor mapFlavor, Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
+        return toMap(HashMap::new, mapFlavor, keyMapper, valueMapper);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream of map entries to a hash map.
+     *
+     * @param mapFlavor The flavor of the map.
+     * @param <K>       The type of the keys of the map.
+     * @param <V>       The type of the values of the map.
+     * @return The custom collector.
+     * @see #toMap(Supplier, MapFlavor)
+     */
+    public static <K, V> Collector<Map.Entry<K, V>, ?, HashMap<K, V>> toHashMap(MapFlavor mapFlavor) {
+        return toMap(HashMap::new, mapFlavor);
     }
     
     /**
@@ -154,10 +306,10 @@ public final class MapCollectors {
      * @param <K>         The type of the keys of the map.
      * @param <V>         The type of the values of the map.
      * @return The custom collector.
-     * @see #toMap(Supplier, Function, Function)
+     * @see #toHashMap(MapFlavor, Function, Function)
      */
     public static <T, K, V> Collector<T, ?, HashMap<K, V>> toHashMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
-        return toMap(HashMap::new, keyMapper, valueMapper);
+        return toHashMap(MapFlavor.STANDARD, keyMapper, valueMapper);
     }
     
     /**
@@ -166,10 +318,93 @@ public final class MapCollectors {
      * @param <K> The type of the keys of the map.
      * @param <V> The type of the values of the map.
      * @return The custom collector.
-     * @see #toMap(Supplier)
+     * @see #toHashMap(MapFlavor)
      */
     public static <K, V> Collector<Map.Entry<K, V>, ?, HashMap<K, V>> toHashMap() {
-        return toMap(HashMap::new);
+        return toHashMap(MapFlavor.STANDARD);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream to an unmodifiable hash map.
+     *
+     * @param keyMapper   The function that produces the keys of the map.
+     * @param valueMapper The function that produces the values of the map.
+     * @param <T>         The type of the elements of the stream.
+     * @param <K>         The type of the keys of the map.
+     * @param <V>         The type of the values of the map.
+     * @return The custom collector.
+     * @see #toHashMap(MapFlavor, Function, Function)
+     */
+    public static <T, K, V> Collector<T, ?, HashMap<K, V>> toUnmodifiableHashMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
+        return toHashMap(MapFlavor.UNMODIFIABLE, keyMapper, valueMapper);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream of map entries to an unmodifiable hash map.
+     *
+     * @param <K> The type of the keys of the map.
+     * @param <V> The type of the values of the map.
+     * @return The custom collector.
+     * @see #toHashMap(MapFlavor)
+     */
+    public static <K, V> Collector<Map.Entry<K, V>, ?, HashMap<K, V>> toUnmodifiableHashMap() {
+        return toHashMap(MapFlavor.UNMODIFIABLE);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream to a synchronized hash map.
+     *
+     * @param keyMapper   The function that produces the keys of the map.
+     * @param valueMapper The function that produces the values of the map.
+     * @param <T>         The type of the elements of the stream.
+     * @param <K>         The type of the keys of the map.
+     * @param <V>         The type of the values of the map.
+     * @return The custom collector.
+     * @see #toHashMap(MapFlavor, Function, Function)
+     */
+    public static <T, K, V> Collector<T, ?, HashMap<K, V>> toSynchronizedHashMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
+        return toHashMap(MapFlavor.SYNCHRONIZED, keyMapper, valueMapper);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream of map entries to a synchronized hash map.
+     *
+     * @param <K> The type of the keys of the map.
+     * @param <V> The type of the values of the map.
+     * @return The custom collector.
+     * @see #toHashMap(MapFlavor)
+     */
+    public static <K, V> Collector<Map.Entry<K, V>, ?, HashMap<K, V>> toSynchronizedHashMap() {
+        return toHashMap(MapFlavor.SYNCHRONIZED);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream to a linked hash map.
+     *
+     * @param mapFlavor   The flavor of the map.
+     * @param keyMapper   The function that produces the keys of the map.
+     * @param valueMapper The function that produces the values of the map.
+     * @param <T>         The type of the elements of the stream.
+     * @param <K>         The type of the keys of the map.
+     * @param <V>         The type of the values of the map.
+     * @return The custom collector.
+     * @see #toMap(Supplier, MapFlavor, Function, Function)
+     */
+    public static <T, K, V> Collector<T, ?, LinkedHashMap<K, V>> toLinkedHashMap(MapFlavor mapFlavor, Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
+        return toMap(LinkedHashMap::new, mapFlavor, keyMapper, valueMapper);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream of map entries to a linked hash map.
+     *
+     * @param mapFlavor The flavor of the map.
+     * @param <K>       The type of the keys of the map.
+     * @param <V>       The type of the values of the map.
+     * @return The custom collector.
+     * @see #toMap(Supplier, MapFlavor)
+     */
+    public static <K, V> Collector<Map.Entry<K, V>, ?, LinkedHashMap<K, V>> toLinkedHashMap(MapFlavor mapFlavor) {
+        return toMap(LinkedHashMap::new, mapFlavor);
     }
     
     /**
@@ -181,10 +416,10 @@ public final class MapCollectors {
      * @param <K>         The type of the keys of the map.
      * @param <V>         The type of the values of the map.
      * @return The custom collector.
-     * @see #toMap(Supplier, Function, Function)
+     * @see #toLinkedHashMap(MapFlavor, Function, Function)
      */
     public static <T, K, V> Collector<T, ?, LinkedHashMap<K, V>> toLinkedHashMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
-        return toMap(LinkedHashMap::new, keyMapper, valueMapper);
+        return toLinkedHashMap(MapFlavor.STANDARD, keyMapper, valueMapper);
     }
     
     /**
@@ -193,10 +428,93 @@ public final class MapCollectors {
      * @param <K> The type of the keys of the map.
      * @param <V> The type of the values of the map.
      * @return The custom collector.
-     * @see #toMap(Supplier)
+     * @see #toLinkedHashMap(MapFlavor)
      */
     public static <K, V> Collector<Map.Entry<K, V>, ?, LinkedHashMap<K, V>> toLinkedHashMap() {
-        return toMap(LinkedHashMap::new);
+        return toLinkedHashMap(MapFlavor.STANDARD);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream to an unmodifiable linked hash map.
+     *
+     * @param keyMapper   The function that produces the keys of the map.
+     * @param valueMapper The function that produces the values of the map.
+     * @param <T>         The type of the elements of the stream.
+     * @param <K>         The type of the keys of the map.
+     * @param <V>         The type of the values of the map.
+     * @return The custom collector.
+     * @see #toLinkedHashMap(MapFlavor, Function, Function)
+     */
+    public static <T, K, V> Collector<T, ?, LinkedHashMap<K, V>> toUnmodifiableLinkedHashMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
+        return toLinkedHashMap(MapFlavor.UNMODIFIABLE, keyMapper, valueMapper);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream of map entries to an unmodifiable linked hash map.
+     *
+     * @param <K> The type of the keys of the map.
+     * @param <V> The type of the values of the map.
+     * @return The custom collector.
+     * @see #toLinkedHashMap(MapFlavor)
+     */
+    public static <K, V> Collector<Map.Entry<K, V>, ?, LinkedHashMap<K, V>> toUnmodifiableLinkedHashMap() {
+        return toLinkedHashMap(MapFlavor.UNMODIFIABLE);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream to a synchronized linked hash map.
+     *
+     * @param keyMapper   The function that produces the keys of the map.
+     * @param valueMapper The function that produces the values of the map.
+     * @param <T>         The type of the elements of the stream.
+     * @param <K>         The type of the keys of the map.
+     * @param <V>         The type of the values of the map.
+     * @return The custom collector.
+     * @see #toLinkedHashMap(MapFlavor, Function, Function)
+     */
+    public static <T, K, V> Collector<T, ?, LinkedHashMap<K, V>> toSynchronizedLinkedHashMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
+        return toLinkedHashMap(MapFlavor.SYNCHRONIZED, keyMapper, valueMapper);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream of map entries to a synchronized linked hash map.
+     *
+     * @param <K> The type of the keys of the map.
+     * @param <V> The type of the values of the map.
+     * @return The custom collector.
+     * @see #toLinkedHashMap(MapFlavor)
+     */
+    public static <K, V> Collector<Map.Entry<K, V>, ?, LinkedHashMap<K, V>> toSynchronizedLinkedHashMap() {
+        return toLinkedHashMap(MapFlavor.SYNCHRONIZED);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream to a tree map.
+     *
+     * @param mapFlavor   The flavor of the map.
+     * @param keyMapper   The function that produces the keys of the map.
+     * @param valueMapper The function that produces the values of the map.
+     * @param <T>         The type of the elements of the stream.
+     * @param <K>         The type of the keys of the map.
+     * @param <V>         The type of the values of the map.
+     * @return The custom collector.
+     * @see #toMap(Supplier, MapFlavor, Function, Function)
+     */
+    public static <T, K extends Comparable<?>, V> Collector<T, ?, TreeMap<K, V>> toTreeMap(MapFlavor mapFlavor, Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
+        return toMap(TreeMap::new, mapFlavor, keyMapper, valueMapper);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream of map entries to a tree map.
+     *
+     * @param mapFlavor The flavor of the map.
+     * @param <K>       The type of the keys of the map.
+     * @param <V>       The type of the values of the map.
+     * @return The custom collector.
+     * @see #toMap(Supplier, MapFlavor)
+     */
+    public static <K extends Comparable<?>, V> Collector<Map.Entry<K, V>, ?, TreeMap<K, V>> toTreeMap(MapFlavor mapFlavor) {
+        return toMap(TreeMap::new, mapFlavor);
     }
     
     /**
@@ -208,10 +526,10 @@ public final class MapCollectors {
      * @param <K>         The type of the keys of the map.
      * @param <V>         The type of the values of the map.
      * @return The custom collector.
-     * @see #toMap(Supplier, Function, Function)
+     * @see #toTreeMap(MapFlavor, Function, Function)
      */
     public static <T, K extends Comparable<?>, V> Collector<T, ?, TreeMap<K, V>> toTreeMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
-        return toMap(TreeMap::new, keyMapper, valueMapper);
+        return toTreeMap(MapFlavor.STANDARD, keyMapper, valueMapper);
     }
     
     /**
@@ -220,10 +538,64 @@ public final class MapCollectors {
      * @param <K> The type of the keys of the map.
      * @param <V> The type of the values of the map.
      * @return The custom collector.
-     * @see #toMap(Supplier)
+     * @see #toTreeMap(MapFlavor)
      */
     public static <K extends Comparable<?>, V> Collector<Map.Entry<K, V>, ?, TreeMap<K, V>> toTreeMap() {
-        return toMap(TreeMap::new);
+        return toTreeMap(MapFlavor.STANDARD);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream to an unmodifiable tree map.
+     *
+     * @param keyMapper   The function that produces the keys of the map.
+     * @param valueMapper The function that produces the values of the map.
+     * @param <T>         The type of the elements of the stream.
+     * @param <K>         The type of the keys of the map.
+     * @param <V>         The type of the values of the map.
+     * @return The custom collector.
+     * @see #toTreeMap(MapFlavor, Function, Function)
+     */
+    public static <T, K extends Comparable<?>, V> Collector<T, ?, TreeMap<K, V>> toUnmodifiableTreeMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
+        return toTreeMap(MapFlavor.UNMODIFIABLE, keyMapper, valueMapper);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream of map entries to an unmodifiable tree map.
+     *
+     * @param <K> The type of the keys of the map.
+     * @param <V> The type of the values of the map.
+     * @return The custom collector.
+     * @see #toTreeMap(MapFlavor)
+     */
+    public static <K extends Comparable<?>, V> Collector<Map.Entry<K, V>, ?, TreeMap<K, V>> toUnmodifiableTreeMap() {
+        return toTreeMap(MapFlavor.UNMODIFIABLE);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream to a synchronized tree map.
+     *
+     * @param keyMapper   The function that produces the keys of the map.
+     * @param valueMapper The function that produces the values of the map.
+     * @param <T>         The type of the elements of the stream.
+     * @param <K>         The type of the keys of the map.
+     * @param <V>         The type of the values of the map.
+     * @return The custom collector.
+     * @see #toTreeMap(MapFlavor, Function, Function)
+     */
+    public static <T, K extends Comparable<?>, V> Collector<T, ?, TreeMap<K, V>> toSynchronizedTreeMap(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
+        return toTreeMap(MapFlavor.SYNCHRONIZED, keyMapper, valueMapper);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream of map entries to a synchronized tree map.
+     *
+     * @param <K> The type of the keys of the map.
+     * @param <V> The type of the values of the map.
+     * @return The custom collector.
+     * @see #toTreeMap(MapFlavor)
+     */
+    public static <K extends Comparable<?>, V> Collector<Map.Entry<K, V>, ?, TreeMap<K, V>> toSynchronizedTreeMap() {
+        return toTreeMap(MapFlavor.SYNCHRONIZED);
     }
     
     /**
