@@ -255,6 +255,26 @@ public class ArrayCollectorsTest {
         Assert.assertNotNull(array6);
         TestUtils.assertArrayEquals(array6, testArray4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                ArrayCollectors.toArray(Object[]::new, Function.identity()),
+                ArrayCollectors.toArray(Object[]::new, Function.identity()));
+        Assert.assertNotSame(
+                ArrayCollectors.toArray(Object.class, Function.identity()),
+                ArrayCollectors.toArray(Object.class, Function.identity()));
+        Assert.assertNotSame(
+                ArrayCollectors.toArray((IntFunction<Object[]>) Object[]::new),
+                ArrayCollectors.toArray((IntFunction<Object[]>) Object[]::new));
+        Assert.assertNotSame(
+                ArrayCollectors.toArray(Object.class),
+                ArrayCollectors.toArray(Object.class));
+        Assert.assertNotSame(
+                ArrayCollectors.toArray(Function.identity()),
+                ArrayCollectors.toArray(Function.identity()));
+        Assert.assertNotSame(
+                ArrayCollectors.toArray(),
+                ArrayCollectors.toArray());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ArrayCollectors.toArray((IntFunction<Integer[]>) null, Function.identity())));
@@ -265,7 +285,7 @@ public class ArrayCollectorsTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ArrayCollectors.toArray((Class<Integer>) null, Function.identity())));
         TestUtils.assertException(NullPointerException.class, () ->
-                Stream.of(1, 2, 3).collect(ArrayCollectors.toArray(Integer[]::new, null)));
+                Stream.of(1, 2, 3).collect(ArrayCollectors.toArray(Integer.class, null)));
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ArrayCollectors.toArray((Class<Integer>) null, null)));
         TestUtils.assertException(NullPointerException.class, () ->
@@ -308,6 +328,14 @@ public class ArrayCollectorsTest {
         Assert.assertEquals(1, array1.length);
         Assert.assertTrue(Arrays.stream(array1).allMatch(Objects::isNull));
         
+        //uniqueness
+        Assert.assertNotSame(
+                ArrayCollectors.generator(Object.class),
+                ArrayCollectors.generator(Object.class));
+        Assert.assertNotSame(
+                ArrayCollectors.generator(),
+                ArrayCollectors.generator());
+        
         //invalid
         TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
                 ArrayCollectors.generator(Object.class).apply(-1));
@@ -348,6 +376,14 @@ public class ArrayCollectorsTest {
         Assert.assertEquals(1, array1.length);
         Assert.assertTrue(Arrays.stream(array1).allMatch(Objects::isNull));
         
+        //uniqueness
+        Assert.assertNotSame(
+                ArrayCollectors.generator2D(Object.class),
+                ArrayCollectors.generator2D(Object.class));
+        Assert.assertNotSame(
+                ArrayCollectors.generator2D(),
+                ArrayCollectors.generator2D());
+        
         //invalid
         TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
                 ArrayCollectors.generator2D(Object.class).apply(-1));
@@ -387,6 +423,14 @@ public class ArrayCollectorsTest {
         Assert.assertNotNull(array1);
         Assert.assertEquals(1, array1.length);
         Assert.assertTrue(Arrays.stream(array1).allMatch(Objects::isNull));
+        
+        //uniqueness
+        Assert.assertNotSame(
+                ArrayCollectors.generator3D(Object.class),
+                ArrayCollectors.generator3D(Object.class));
+        Assert.assertNotSame(
+                ArrayCollectors.generator3D(),
+                ArrayCollectors.generator3D());
         
         //invalid
         TestUtils.assertException(NegativeArraySizeException.class, "-1", () ->
@@ -452,6 +496,14 @@ public class ArrayCollectorsTest {
         Assert.assertNotNull(array4);
         TestUtils.assertArrayEquals(array4, testArray4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                ArrayCollectors.toByteArray(Function.identity()),
+                ArrayCollectors.toByteArray(Function.identity()));
+        Assert.assertNotSame(
+                ArrayCollectors.toByteArray(),
+                ArrayCollectors.toByteArray());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ArrayCollectors.toByteArray(null)));
@@ -511,6 +563,14 @@ public class ArrayCollectorsTest {
         array4 = Arrays.stream(testArray4).collect(ArrayCollectors.toShortArray());
         Assert.assertNotNull(array4);
         TestUtils.assertArrayEquals(array4, testArray4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                ArrayCollectors.toShortArray(Function.identity()),
+                ArrayCollectors.toShortArray(Function.identity()));
+        Assert.assertNotSame(
+                ArrayCollectors.toShortArray(),
+                ArrayCollectors.toShortArray());
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -572,6 +632,14 @@ public class ArrayCollectorsTest {
         Assert.assertNotNull(array4);
         TestUtils.assertArrayEquals(array4, testArray4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                ArrayCollectors.toIntArray(Function.identity()),
+                ArrayCollectors.toIntArray(Function.identity()));
+        Assert.assertNotSame(
+                ArrayCollectors.toIntArray(),
+                ArrayCollectors.toIntArray());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ArrayCollectors.toIntArray(null)));
@@ -631,6 +699,14 @@ public class ArrayCollectorsTest {
         array4 = Arrays.stream(testArray4).collect(ArrayCollectors.toLongArray());
         Assert.assertNotNull(array4);
         TestUtils.assertArrayEquals(array4, testArray4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                ArrayCollectors.toLongArray(Function.identity()),
+                ArrayCollectors.toLongArray(Function.identity()));
+        Assert.assertNotSame(
+                ArrayCollectors.toLongArray(),
+                ArrayCollectors.toLongArray());
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -692,6 +768,14 @@ public class ArrayCollectorsTest {
         Assert.assertNotNull(array4);
         TestUtils.assertArrayEquals(array4, testArray4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                ArrayCollectors.toFloatArray(Function.identity()),
+                ArrayCollectors.toFloatArray(Function.identity()));
+        Assert.assertNotSame(
+                ArrayCollectors.toFloatArray(),
+                ArrayCollectors.toFloatArray());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ArrayCollectors.toFloatArray(null)));
@@ -751,6 +835,14 @@ public class ArrayCollectorsTest {
         array4 = Arrays.stream(testArray4).collect(ArrayCollectors.toDoubleArray());
         Assert.assertNotNull(array4);
         TestUtils.assertArrayEquals(array4, testArray4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                ArrayCollectors.toDoubleArray(Function.identity()),
+                ArrayCollectors.toDoubleArray(Function.identity()));
+        Assert.assertNotSame(
+                ArrayCollectors.toDoubleArray(),
+                ArrayCollectors.toDoubleArray());
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -812,6 +904,14 @@ public class ArrayCollectorsTest {
         Assert.assertNotNull(array4);
         TestUtils.assertArrayEquals(array4, testArray4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                ArrayCollectors.toCharArray(Function.identity()),
+                ArrayCollectors.toCharArray(Function.identity()));
+        Assert.assertNotSame(
+                ArrayCollectors.toCharArray(),
+                ArrayCollectors.toCharArray());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ArrayCollectors.toCharArray(null)));
@@ -871,6 +971,14 @@ public class ArrayCollectorsTest {
         array4 = Arrays.stream(testArray4).collect(ArrayCollectors.toStringArray());
         Assert.assertNotNull(array4);
         TestUtils.assertArrayEquals(array4, testArray4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                ArrayCollectors.toStringArray(Function.identity()),
+                ArrayCollectors.toStringArray(Function.identity()));
+        Assert.assertNotSame(
+                ArrayCollectors.toStringArray(),
+                ArrayCollectors.toStringArray());
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->

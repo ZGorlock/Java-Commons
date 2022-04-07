@@ -366,6 +366,32 @@ public class MapCollectorsTest {
         Assert.assertTrue(map4 instanceof TreeMap);
         TestUtils.assertMapEquals(map4, testMap4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.toMap(HashMap::new, MapCollectors.MapFlavor.UNMODIFIABLE, Function.identity(), Function.identity()),
+                MapCollectors.toMap(HashMap::new, MapCollectors.MapFlavor.UNMODIFIABLE, Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toMap(HashMap::new, Function.identity(), Function.identity()),
+                MapCollectors.toMap(HashMap::new, Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toMap(HashMap.class, MapCollectors.MapFlavor.UNMODIFIABLE, Function.identity(), Function.identity()),
+                MapCollectors.toMap(HashMap.class, MapCollectors.MapFlavor.UNMODIFIABLE, Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toMap(HashMap.class, Function.identity(), Function.identity()),
+                MapCollectors.toMap(HashMap.class, Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toMap(HashMap::new, MapCollectors.MapFlavor.UNMODIFIABLE),
+                MapCollectors.toMap(HashMap::new, MapCollectors.MapFlavor.UNMODIFIABLE));
+        Assert.assertNotSame(
+                MapCollectors.toMap(HashMap::new),
+                MapCollectors.toMap(HashMap::new));
+        Assert.assertNotSame(
+                MapCollectors.toMap(HashMap.class, MapCollectors.MapFlavor.UNMODIFIABLE),
+                MapCollectors.toMap(HashMap.class, MapCollectors.MapFlavor.UNMODIFIABLE));
+        Assert.assertNotSame(
+                MapCollectors.toMap(HashMap.class),
+                MapCollectors.toMap(HashMap.class));
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(MapCollectors.toMap((Supplier<Map<Integer, Integer>>) null, MapCollectors.MapFlavor.UNMODIFIABLE, Function.identity(), Function.identity())));
@@ -388,25 +414,25 @@ public class MapCollectorsTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(MapCollectors.toMap((Class<Map<Integer, Integer>>) null, MapCollectors.MapFlavor.UNMODIFIABLE, Function.identity(), Function.identity())));
         TestUtils.assertException(NullPointerException.class, () ->
-                Stream.of(1, 2, 3).collect(MapCollectors.toMap(HashMap::new, null, Function.identity(), Function.identity())));
+                Stream.of(1, 2, 3).collect(MapCollectors.toMap(HashMap.class, null, Function.identity(), Function.identity())));
         TestUtils.assertException(NullPointerException.class, () ->
-                Stream.of(1, 2, 3).collect(MapCollectors.toMap(HashMap::new, MapCollectors.MapFlavor.UNMODIFIABLE, null, Function.identity())));
+                Stream.of(1, 2, 3).collect(MapCollectors.toMap(HashMap.class, MapCollectors.MapFlavor.UNMODIFIABLE, null, Function.identity())));
         TestUtils.assertException(NullPointerException.class, () ->
-                Stream.of(1, 2, 3).collect(MapCollectors.toMap(HashMap::new, MapCollectors.MapFlavor.UNMODIFIABLE, Function.identity(), null)));
+                Stream.of(1, 2, 3).collect(MapCollectors.toMap(HashMap.class, MapCollectors.MapFlavor.UNMODIFIABLE, Function.identity(), null)));
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(MapCollectors.toMap((Class<Map<Integer, Integer>>) null, null, null, null)));
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(MapCollectors.toMap((Class<Map<Integer, Integer>>) null, Function.identity(), Function.identity())));
         TestUtils.assertException(NullPointerException.class, () ->
-                Stream.of(1, 2, 3).collect(MapCollectors.toMap(HashMap::new, null, Function.identity())));
+                Stream.of(1, 2, 3).collect(MapCollectors.toMap(HashMap.class, null, Function.identity())));
         TestUtils.assertException(NullPointerException.class, () ->
-                Stream.of(1, 2, 3).collect(MapCollectors.toMap(HashMap::new, Function.identity(), null)));
+                Stream.of(1, 2, 3).collect(MapCollectors.toMap(HashMap.class, Function.identity(), null)));
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(MapCollectors.toMap((Class<Map<Integer, Integer>>) null, null, null)));
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(Map.entry(1, 1), Map.entry(2, 2), Map.entry(3, 3)).collect(MapCollectors.toMap((Supplier<Map<Integer, Integer>>) null, MapCollectors.MapFlavor.UNMODIFIABLE)));
         TestUtils.assertException(NullPointerException.class, () ->
-                Stream.of(Map.entry(1, 1), Map.entry(2, 2), Map.entry(3, 3)).collect(MapCollectors.toMap(HashMap.class, null)));
+                Stream.of(Map.entry(1, 1), Map.entry(2, 2), Map.entry(3, 3)).collect(MapCollectors.toMap(HashMap::new, null)));
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(Map.entry(1, 1), Map.entry(2, 2), Map.entry(3, 3)).collect(MapCollectors.toMap((Supplier<Map<Integer, Integer>>) null, null)));
         TestUtils.assertException(NullPointerException.class, () ->
@@ -456,6 +482,17 @@ public class MapCollectorsTest {
         map3 = MapCollectors.generator(TreeMap.class, Integer.class, Boolean.class).get();
         Assert.assertNotNull(map3);
         Assert.assertTrue(map3 instanceof TreeMap);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.generator(HashMap.class, String.class, String.class),
+                MapCollectors.generator(HashMap.class, String.class, String.class));
+        Assert.assertNotSame(
+                MapCollectors.generator(HashMap.class),
+                MapCollectors.generator(HashMap.class));
+        Assert.assertNotSame(
+                MapCollectors.generator(),
+                MapCollectors.generator());
         
         //invalid
         Assert.assertNotNull(MapCollectors.generator(TreeMap.class, Color.class, String.class).get());
@@ -579,6 +616,20 @@ public class MapCollectorsTest {
         Assert.assertTrue(map4 instanceof HashMap);
         TestUtils.assertMapEquals(map4, testMap4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.toHashMap(MapCollectors.MapFlavor.UNMODIFIABLE, Function.identity(), Function.identity()),
+                MapCollectors.toHashMap(MapCollectors.MapFlavor.UNMODIFIABLE, Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toHashMap(MapCollectors.MapFlavor.UNMODIFIABLE),
+                MapCollectors.toHashMap(MapCollectors.MapFlavor.UNMODIFIABLE));
+        Assert.assertNotSame(
+                MapCollectors.toHashMap(Function.identity(), Function.identity()),
+                MapCollectors.toHashMap(Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toHashMap(),
+                MapCollectors.toHashMap());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(MapCollectors.toHashMap(null, Function.identity(), Function.identity())));
@@ -661,6 +712,14 @@ public class MapCollectorsTest {
         Assert.assertEquals(UnmodifiableMap, map4.getClass());
         TestUtils.assertMapEquals(map4, testMap4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.toUnmodifiableHashMap(Function.identity(), Function.identity()),
+                MapCollectors.toUnmodifiableHashMap(Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toUnmodifiableHashMap(),
+                MapCollectors.toUnmodifiableHashMap());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(MapCollectors.toUnmodifiableHashMap(null, Function.identity())));
@@ -732,6 +791,14 @@ public class MapCollectorsTest {
         Assert.assertNotNull(map4);
         Assert.assertEquals(SynchronizedMap, map4.getClass());
         TestUtils.assertMapEquals(map4, testMap4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.toSynchronizedHashMap(Function.identity(), Function.identity()),
+                MapCollectors.toSynchronizedHashMap(Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toSynchronizedHashMap(),
+                MapCollectors.toSynchronizedHashMap());
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -847,6 +914,20 @@ public class MapCollectorsTest {
         Assert.assertTrue(map4 instanceof LinkedHashMap);
         TestUtils.assertMapEquals(map4, testMap4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.toLinkedHashMap(MapCollectors.MapFlavor.UNMODIFIABLE, Function.identity(), Function.identity()),
+                MapCollectors.toLinkedHashMap(MapCollectors.MapFlavor.UNMODIFIABLE, Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toLinkedHashMap(MapCollectors.MapFlavor.UNMODIFIABLE),
+                MapCollectors.toLinkedHashMap(MapCollectors.MapFlavor.UNMODIFIABLE));
+        Assert.assertNotSame(
+                MapCollectors.toLinkedHashMap(Function.identity(), Function.identity()),
+                MapCollectors.toLinkedHashMap(Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toLinkedHashMap(),
+                MapCollectors.toLinkedHashMap());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(MapCollectors.toLinkedHashMap(null, Function.identity(), Function.identity())));
@@ -929,6 +1010,14 @@ public class MapCollectorsTest {
         Assert.assertEquals(UnmodifiableMap, map4.getClass());
         TestUtils.assertMapEquals(map4, testMap4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.toUnmodifiableLinkedHashMap(Function.identity(), Function.identity()),
+                MapCollectors.toUnmodifiableLinkedHashMap(Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toUnmodifiableLinkedHashMap(),
+                MapCollectors.toUnmodifiableLinkedHashMap());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(MapCollectors.toUnmodifiableLinkedHashMap(null, Function.identity())));
@@ -1000,6 +1089,14 @@ public class MapCollectorsTest {
         Assert.assertNotNull(map4);
         Assert.assertEquals(SynchronizedMap, map4.getClass());
         TestUtils.assertMapEquals(map4, testMap4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.toSynchronizedLinkedHashMap(Function.identity(), Function.identity()),
+                MapCollectors.toSynchronizedLinkedHashMap(Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toSynchronizedLinkedHashMap(),
+                MapCollectors.toSynchronizedLinkedHashMap());
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -1115,6 +1212,20 @@ public class MapCollectorsTest {
         Assert.assertTrue(map4 instanceof TreeMap);
         TestUtils.assertMapEquals(map4, testMap4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.toTreeMap(MapCollectors.MapFlavor.UNMODIFIABLE, Function.identity(), Function.identity()),
+                MapCollectors.toTreeMap(MapCollectors.MapFlavor.UNMODIFIABLE, Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toTreeMap(MapCollectors.MapFlavor.UNMODIFIABLE),
+                MapCollectors.toTreeMap(MapCollectors.MapFlavor.UNMODIFIABLE));
+        Assert.assertNotSame(
+                MapCollectors.toTreeMap(Function.identity(), Function.identity()),
+                MapCollectors.toTreeMap(Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toTreeMap(),
+                MapCollectors.toTreeMap());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(MapCollectors.toTreeMap(null, Function.identity(), Function.identity())));
@@ -1197,6 +1308,14 @@ public class MapCollectorsTest {
         Assert.assertEquals(UnmodifiableMap, map4.getClass());
         TestUtils.assertMapEquals(map4, testMap4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.toUnmodifiableTreeMap(Function.identity(), Function.identity()),
+                MapCollectors.toUnmodifiableTreeMap(Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toUnmodifiableTreeMap(),
+                MapCollectors.toUnmodifiableTreeMap());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(MapCollectors.toUnmodifiableTreeMap(null, Function.identity())));
@@ -1269,6 +1388,14 @@ public class MapCollectorsTest {
         Assert.assertEquals(SynchronizedMap, map4.getClass());
         TestUtils.assertMapEquals(map4, testMap4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.toSynchronizedTreeMap(Function.identity(), Function.identity()),
+                MapCollectors.toSynchronizedTreeMap(Function.identity(), Function.identity()));
+        Assert.assertNotSame(
+                MapCollectors.toSynchronizedTreeMap(),
+                MapCollectors.toSynchronizedTreeMap());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(MapCollectors.toSynchronizedTreeMap(null, Function.identity())));
@@ -1330,6 +1457,17 @@ public class MapCollectorsTest {
                 testMap4.values().stream().map(AtomicInteger::get).toArray());
         Assert.assertEquals(map4.size(), map4.values().stream().distinct().count());
         
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.mapEachTo(e -> 0),
+                MapCollectors.mapEachTo(e -> 0));
+        Assert.assertNotSame(
+                MapCollectors.mapEachTo(() -> 0),
+                MapCollectors.mapEachTo(() -> 0));
+        Assert.assertNotSame(
+                MapCollectors.mapEachTo(0),
+                MapCollectors.mapEachTo(0));
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(MapCollectors.mapEachTo((Function<? super Object, ?>) null)));
@@ -1377,6 +1515,11 @@ public class MapCollectorsTest {
         Assert.assertNotNull(map4);
         Assert.assertTrue(map4 instanceof HashMap);
         TestUtils.assertMapEquals(map4, testMap4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.toCounterMap(),
+                MapCollectors.toCounterMap());
     }
     
     /**
@@ -1427,6 +1570,11 @@ public class MapCollectorsTest {
         Assert.assertNotNull(map4);
         Assert.assertTrue(map4 instanceof HashMap);
         atomicCounterMapVerifier.accept(map4, testMap4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.toAtomicCounterMap(),
+                MapCollectors.toAtomicCounterMap());
     }
     
     /**
@@ -1463,6 +1611,11 @@ public class MapCollectorsTest {
         Assert.assertNotNull(map4);
         Assert.assertTrue(map4 instanceof HashMap);
         TestUtils.assertMapEquals(map4, testMap4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.toStringMap(),
+                MapCollectors.toStringMap());
     }
     
 }

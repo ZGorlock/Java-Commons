@@ -364,6 +364,32 @@ public class ListCollectorsTest {
         Assert.assertTrue(list5 instanceof Vector);
         TestUtils.assertListEquals(list5, testElements4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                ListCollectors.toList(ArrayList::new, ListCollectors.ListFlavor.UNMODIFIABLE, Function.identity()),
+                ListCollectors.toList(ArrayList::new, ListCollectors.ListFlavor.UNMODIFIABLE, Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toList(ArrayList::new, Function.identity()),
+                ListCollectors.toList(ArrayList::new, Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toList(ArrayList.class, ListCollectors.ListFlavor.UNMODIFIABLE, Function.identity()),
+                ListCollectors.toList(ArrayList.class, ListCollectors.ListFlavor.UNMODIFIABLE, Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toList(ArrayList.class, Function.identity()),
+                ListCollectors.toList(ArrayList.class, Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toList(ArrayList::new, ListCollectors.ListFlavor.UNMODIFIABLE),
+                ListCollectors.toList(ArrayList::new, ListCollectors.ListFlavor.UNMODIFIABLE));
+        Assert.assertNotSame(
+                ListCollectors.toList(ArrayList::new),
+                ListCollectors.toList(ArrayList::new));
+        Assert.assertNotSame(
+                ListCollectors.toList(ArrayList.class, ListCollectors.ListFlavor.UNMODIFIABLE),
+                ListCollectors.toList(ArrayList.class, ListCollectors.ListFlavor.UNMODIFIABLE));
+        Assert.assertNotSame(
+                ListCollectors.toList(ArrayList.class),
+                ListCollectors.toList(ArrayList.class));
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toList((Supplier<List<Integer>>) null, ListCollectors.ListFlavor.UNMODIFIABLE, Function.identity())));
@@ -374,13 +400,25 @@ public class ListCollectorsTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toList((Supplier<List<Integer>>) null, null, null)));
         TestUtils.assertException(NullPointerException.class, () ->
+                Stream.of(1, 2, 3).collect(ListCollectors.toList((Supplier<List<Integer>>) null, Function.identity())));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Stream.of(1, 2, 3).collect(ListCollectors.toList(ArrayList::new, (Function<Integer, Integer>) null)));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Stream.of(1, 2, 3).collect(ListCollectors.toList((Supplier<List<Integer>>) null, (Function<Integer, Integer>) null)));
+        TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toList((Class<List<Integer>>) null, ListCollectors.ListFlavor.UNMODIFIABLE, Function.identity())));
         TestUtils.assertException(NullPointerException.class, () ->
-                Stream.of(1, 2, 3).collect(ListCollectors.toList(ArrayList::new, null, Function.identity())));
+                Stream.of(1, 2, 3).collect(ListCollectors.toList(ArrayList.class, null, Function.identity())));
         TestUtils.assertException(NullPointerException.class, () ->
-                Stream.of(1, 2, 3).collect(ListCollectors.toList(ArrayList::new, ListCollectors.ListFlavor.UNMODIFIABLE, null)));
+                Stream.of(1, 2, 3).collect(ListCollectors.toList(ArrayList.class, ListCollectors.ListFlavor.UNMODIFIABLE, null)));
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toList((Class<List<Integer>>) null, null, null)));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Stream.of(1, 2, 3).collect(ListCollectors.toList((Class<List<Integer>>) null, Function.identity())));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Stream.of(1, 2, 3).collect(ListCollectors.toList(ArrayList.class, (Function<Integer, Integer>) null)));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Stream.of(1, 2, 3).collect(ListCollectors.toList((Class<List<Integer>>) null, (Function<Integer, Integer>) null)));
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toList((Supplier<List<Integer>>) null, ListCollectors.ListFlavor.UNMODIFIABLE)));
         TestUtils.assertException(NullPointerException.class, () ->
@@ -390,7 +428,7 @@ public class ListCollectorsTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toList((Class<List<Integer>>) null, ListCollectors.ListFlavor.UNMODIFIABLE)));
         TestUtils.assertException(NullPointerException.class, () ->
-                Stream.of(1, 2, 3).collect(ListCollectors.toList(ArrayList::new, (ListCollectors.ListFlavor) null)));
+                Stream.of(1, 2, 3).collect(ListCollectors.toList(ArrayList.class, (ListCollectors.ListFlavor) null)));
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toList((Class<List<Integer>>) null, (ListCollectors.ListFlavor) null)));
     }
@@ -440,6 +478,17 @@ public class ListCollectorsTest {
         list3 = ListCollectors.generator(Vector.class, Boolean.class).get();
         Assert.assertNotNull(list3);
         Assert.assertTrue(list3 instanceof Vector);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                ListCollectors.generator(ArrayList.class, String.class),
+                ListCollectors.generator(ArrayList.class, String.class));
+        Assert.assertNotSame(
+                ListCollectors.generator(ArrayList.class),
+                ListCollectors.generator(ArrayList.class));
+        Assert.assertNotSame(
+                ListCollectors.generator(),
+                ListCollectors.generator());
         
         //invalid
         Assert.assertNotNull(ListCollectors.generator(ArrayList.class, null).get());
@@ -563,6 +612,20 @@ public class ListCollectorsTest {
         Assert.assertTrue(list5 instanceof ArrayList);
         TestUtils.assertListEquals(list5, testElements4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                ListCollectors.toArrayList(ListCollectors.ListFlavor.UNMODIFIABLE, Function.identity()),
+                ListCollectors.toArrayList(ListCollectors.ListFlavor.UNMODIFIABLE, Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toArrayList(ListCollectors.ListFlavor.UNMODIFIABLE),
+                ListCollectors.toArrayList(ListCollectors.ListFlavor.UNMODIFIABLE));
+        Assert.assertNotSame(
+                ListCollectors.toArrayList(Function.identity()),
+                ListCollectors.toArrayList(Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toArrayList(),
+                ListCollectors.toArrayList());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toArrayList(null, Function.identity())));
@@ -640,6 +703,14 @@ public class ListCollectorsTest {
         Assert.assertEquals(UnmodifiableRandomAccessList, list5.getClass());
         TestUtils.assertListEquals(list5, testElements4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                ListCollectors.toUnmodifiableArrayList(Function.identity()),
+                ListCollectors.toUnmodifiableArrayList(Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toUnmodifiableArrayList(),
+                ListCollectors.toUnmodifiableArrayList());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toUnmodifiableArrayList(null)));
@@ -708,6 +779,14 @@ public class ListCollectorsTest {
         Assert.assertNotNull(list5);
         Assert.assertEquals(SynchronizedRandomAccessList, list5.getClass());
         TestUtils.assertListEquals(list5, testElements4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                ListCollectors.toSynchronizedArrayList(Function.identity()),
+                ListCollectors.toSynchronizedArrayList(Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toSynchronizedArrayList(),
+                ListCollectors.toSynchronizedArrayList());
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -820,6 +899,20 @@ public class ListCollectorsTest {
         Assert.assertTrue(list5 instanceof LinkedList);
         TestUtils.assertListEquals(list5, testElements4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                ListCollectors.toLinkedList(ListCollectors.ListFlavor.UNMODIFIABLE, Function.identity()),
+                ListCollectors.toLinkedList(ListCollectors.ListFlavor.UNMODIFIABLE, Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toLinkedList(ListCollectors.ListFlavor.UNMODIFIABLE),
+                ListCollectors.toLinkedList(ListCollectors.ListFlavor.UNMODIFIABLE));
+        Assert.assertNotSame(
+                ListCollectors.toLinkedList(Function.identity()),
+                ListCollectors.toLinkedList(Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toLinkedList(),
+                ListCollectors.toLinkedList());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toLinkedList(null, Function.identity())));
@@ -897,6 +990,14 @@ public class ListCollectorsTest {
         Assert.assertEquals(UnmodifiableList, list5.getClass());
         TestUtils.assertListEquals(list5, testElements4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                ListCollectors.toUnmodifiableLinkedList(Function.identity()),
+                ListCollectors.toUnmodifiableLinkedList(Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toUnmodifiableLinkedList(),
+                ListCollectors.toUnmodifiableLinkedList());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toUnmodifiableLinkedList(null)));
@@ -965,6 +1066,14 @@ public class ListCollectorsTest {
         Assert.assertNotNull(list5);
         Assert.assertEquals(SynchronizedList, list5.getClass());
         TestUtils.assertListEquals(list5, testElements4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                ListCollectors.toSynchronizedLinkedList(Function.identity()),
+                ListCollectors.toSynchronizedLinkedList(Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toSynchronizedLinkedList(),
+                ListCollectors.toSynchronizedLinkedList());
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -1077,6 +1186,20 @@ public class ListCollectorsTest {
         Assert.assertTrue(list5 instanceof Stack);
         TestUtils.assertListEquals(list5, testElements4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                ListCollectors.toStack(ListCollectors.ListFlavor.UNMODIFIABLE, Function.identity()),
+                ListCollectors.toStack(ListCollectors.ListFlavor.UNMODIFIABLE, Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toStack(ListCollectors.ListFlavor.UNMODIFIABLE),
+                ListCollectors.toStack(ListCollectors.ListFlavor.UNMODIFIABLE));
+        Assert.assertNotSame(
+                ListCollectors.toStack(Function.identity()),
+                ListCollectors.toStack(Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toStack(),
+                ListCollectors.toStack());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toStack(null, Function.identity())));
@@ -1154,6 +1277,14 @@ public class ListCollectorsTest {
         Assert.assertEquals(UnmodifiableRandomAccessList, list5.getClass());
         TestUtils.assertListEquals(list5, testElements4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                ListCollectors.toUnmodifiableStack(Function.identity()),
+                ListCollectors.toUnmodifiableStack(Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toUnmodifiableStack(),
+                ListCollectors.toUnmodifiableStack());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toUnmodifiableStack(null)));
@@ -1222,6 +1353,14 @@ public class ListCollectorsTest {
         Assert.assertNotNull(list5);
         Assert.assertEquals(SynchronizedRandomAccessList, list5.getClass());
         TestUtils.assertListEquals(list5, testElements4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                ListCollectors.toSynchronizedStack(Function.identity()),
+                ListCollectors.toSynchronizedStack(Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toSynchronizedStack(),
+                ListCollectors.toSynchronizedStack());
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -1334,6 +1473,20 @@ public class ListCollectorsTest {
         Assert.assertTrue(list5 instanceof Vector);
         TestUtils.assertListEquals(list5, testElements4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                ListCollectors.toVector(ListCollectors.ListFlavor.UNMODIFIABLE, Function.identity()),
+                ListCollectors.toVector(ListCollectors.ListFlavor.UNMODIFIABLE, Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toVector(ListCollectors.ListFlavor.UNMODIFIABLE),
+                ListCollectors.toVector(ListCollectors.ListFlavor.UNMODIFIABLE));
+        Assert.assertNotSame(
+                ListCollectors.toVector(Function.identity()),
+                ListCollectors.toVector(Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toVector(),
+                ListCollectors.toVector());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toVector(null, Function.identity())));
@@ -1411,6 +1564,14 @@ public class ListCollectorsTest {
         Assert.assertEquals(UnmodifiableRandomAccessList, list5.getClass());
         TestUtils.assertListEquals(list5, testElements4);
         
+        //uniqueness
+        Assert.assertNotSame(
+                ListCollectors.toUnmodifiableVector(Function.identity()),
+                ListCollectors.toUnmodifiableVector(Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toUnmodifiableVector(),
+                ListCollectors.toUnmodifiableVector());
+        
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toUnmodifiableVector(null)));
@@ -1479,6 +1640,14 @@ public class ListCollectorsTest {
         Assert.assertNotNull(list5);
         Assert.assertEquals(SynchronizedRandomAccessList, list5.getClass());
         TestUtils.assertListEquals(list5, testElements4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                ListCollectors.toSynchronizedVector(Function.identity()),
+                ListCollectors.toSynchronizedVector(Function.identity()));
+        Assert.assertNotSame(
+                ListCollectors.toSynchronizedVector(),
+                ListCollectors.toSynchronizedVector());
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->

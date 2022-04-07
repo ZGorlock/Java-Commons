@@ -178,6 +178,17 @@ public class CustomCollectorsTest {
         testCollectorFields.replace("finisher", mockFinisher);
         testCollectorFields.replace("characteristics", characteristics);
         
+        //uniqueness
+        Assert.assertNotSame(
+                CustomCollectors.collect(mockSupplier, mockAccumulator, mockCombiner, mockFinisher, characteristics),
+                CustomCollectors.collect(mockSupplier, mockAccumulator, mockCombiner, mockFinisher, characteristics));
+        Assert.assertNotSame(
+                CustomCollectors.collect(mockSupplier, mockAccumulator, mockCombiner, mockFinisher),
+                CustomCollectors.collect(mockSupplier, mockAccumulator, mockCombiner, mockFinisher));
+        Assert.assertNotSame(
+                CustomCollectors.collect(mockSupplier, mockAccumulator, mockCombiner),
+                CustomCollectors.collect(mockSupplier, mockAccumulator, mockCombiner));
+        
         //invalid
         TestUtils.assertNoException(() ->
                 CustomCollectors.collect(null, null, null, null, null));
