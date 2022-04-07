@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see CommonsLogging
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CommonsLogging.class})
 public class CommonsLoggingTest {

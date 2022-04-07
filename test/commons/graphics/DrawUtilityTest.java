@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see DrawUtility
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({DrawUtility.class, Graphics2D.class})
 public class DrawUtilityTest {

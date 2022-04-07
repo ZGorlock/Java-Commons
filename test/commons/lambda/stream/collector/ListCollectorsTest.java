@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ListCollectors
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ListCollectors.class})
 public class ListCollectorsTest {
@@ -187,7 +187,6 @@ public class ListCollectorsTest {
      * @see ListCollectors#toList(Class, ListCollectors.ListFlavor)
      * @see ListCollectors#toList(Class)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToList() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -441,7 +440,6 @@ public class ListCollectorsTest {
      * @see ListCollectors#generator(Class, Class)
      * @see ListCollectors#generator()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testGenerator() throws Exception {
         List<Object> list1;
@@ -515,7 +513,6 @@ public class ListCollectorsTest {
      * @see ListCollectors#toArrayList(Function)
      * @see ListCollectors#toArrayList()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToArrayList() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -646,7 +643,6 @@ public class ListCollectorsTest {
      * @see ListCollectors#toUnmodifiableArrayList(Function)
      * @see ListCollectors#toUnmodifiableArrayList()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToUnmodifiableArrayList() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -723,7 +719,6 @@ public class ListCollectorsTest {
      * @see ListCollectors#toSynchronizedArrayList(Function)
      * @see ListCollectors#toSynchronizedArrayList()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToSynchronizedArrayList() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -802,7 +797,6 @@ public class ListCollectorsTest {
      * @see ListCollectors#toLinkedList(Function)
      * @see ListCollectors#toLinkedList()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToLinkedList() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -933,7 +927,6 @@ public class ListCollectorsTest {
      * @see ListCollectors#toUnmodifiableLinkedList(Function)
      * @see ListCollectors#toUnmodifiableLinkedList()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToUnmodifiableLinkedList() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -1010,7 +1003,6 @@ public class ListCollectorsTest {
      * @see ListCollectors#toSynchronizedLinkedList(Function)
      * @see ListCollectors#toSynchronizedLinkedList()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToSynchronizedLinkedList() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -1089,7 +1081,6 @@ public class ListCollectorsTest {
      * @see ListCollectors#toStack(Function)
      * @see ListCollectors#toStack()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToStack() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -1220,7 +1211,6 @@ public class ListCollectorsTest {
      * @see ListCollectors#toUnmodifiableStack(Function)
      * @see ListCollectors#toUnmodifiableStack()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToUnmodifiableStack() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -1297,7 +1287,6 @@ public class ListCollectorsTest {
      * @see ListCollectors#toSynchronizedStack(Function)
      * @see ListCollectors#toSynchronizedStack()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToSynchronizedStack() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -1376,7 +1365,6 @@ public class ListCollectorsTest {
      * @see ListCollectors#toVector(Function)
      * @see ListCollectors#toVector()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToVector() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -1507,7 +1495,6 @@ public class ListCollectorsTest {
      * @see ListCollectors#toUnmodifiableVector(Function)
      * @see ListCollectors#toUnmodifiableVector()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToUnmodifiableVector() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -1584,7 +1571,6 @@ public class ListCollectorsTest {
      * @see ListCollectors#toSynchronizedVector(Function)
      * @see ListCollectors#toSynchronizedVector()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToSynchronizedVector() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);

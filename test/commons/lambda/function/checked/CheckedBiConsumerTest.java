@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see CheckedBiConsumer
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CheckedBiConsumer.class})
 public class CheckedBiConsumerTest {

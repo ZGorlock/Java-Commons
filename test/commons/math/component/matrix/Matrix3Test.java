@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see Matrix3
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Matrix3.class})
 public class Matrix3Test {
@@ -210,7 +210,7 @@ public class Matrix3Test {
      * @throws Exception When there is an exception.
      * @see Matrix3#equals(Object)
      */
-    @SuppressWarnings({"SimplifiableAssertion", "EqualsBetweenInconvertibleTypes", "ConstantConditions"})
+    @SuppressWarnings({"SimplifiableAssertion", "EqualsBetweenInconvertibleTypes"})
     @Test
     public void testEquals() throws Exception {
         BaseComponent<?, ?> other;

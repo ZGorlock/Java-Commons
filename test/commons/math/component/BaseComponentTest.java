@@ -54,7 +54,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see BaseComponent
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BaseComponent.class})
 public class BaseComponentTest {
@@ -219,7 +219,7 @@ public class BaseComponentTest {
      * @throws Exception When there is an exception.
      * @see BaseComponent#equals(Object)
      */
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "AssertBetweenInconvertibleTypes", "SimplifiableAssertion", "EqualsBetweenInconvertibleTypes", "ConstantConditions"})
+    @SuppressWarnings({"AssertBetweenInconvertibleTypes", "SimplifiableAssertion", "EqualsBetweenInconvertibleTypes"})
     @Test
     public void testEquals() throws Exception {
         BaseComponent<?, ?> other;
@@ -1581,7 +1581,6 @@ public class BaseComponentTest {
      * @throws Exception When there is an exception.
      * @see BaseComponent#getComponentClass()
      */
-    @SuppressWarnings("AssertBetweenInconvertibleTypes")
     @Test
     public void testGetComponentClass() throws Exception {
         BaseComponent<?, ?> component;

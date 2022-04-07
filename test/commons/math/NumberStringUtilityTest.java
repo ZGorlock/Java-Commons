@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see NumberStringUtility
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({NumberStringUtility.class})
 public class NumberStringUtilityTest {

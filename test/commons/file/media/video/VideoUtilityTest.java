@@ -55,7 +55,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see VideoUtility
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({VideoUtility.class, FFmpeg.class, FFmpeg.Identifier.class, FFmpeg.Identifier.Stream.class, CommonsLogging.class})
 public class VideoUtilityTest {

@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ComponentMathHandlerInterface
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ComponentMathHandlerInterface.class})
 public class ComponentMathHandlerInterfaceTest {

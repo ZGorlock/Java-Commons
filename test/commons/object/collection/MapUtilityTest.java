@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see MapUtility
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MapUtility.class})
 public class MapUtilityTest {
@@ -157,7 +157,6 @@ public class MapUtilityTest {
      * @see MapUtility#unmodifiableMap(Class)
      * @see MapUtility#unmodifiableMap()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testUnmodifiableMap() throws Exception {
         final Class<?> UnmodifiableMap = TestAccess.getClass(Collections.class, "UnmodifiableMap");
@@ -210,7 +209,6 @@ public class MapUtilityTest {
      * @see MapUtility#synchronizedMap(Class)
      * @see MapUtility#synchronizedMap()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testSynchronizedMap() throws Exception {
         final Class<?> SynchronizedMap = TestAccess.getClass(Collections.class, "SynchronizedMap");
@@ -261,7 +259,6 @@ public class MapUtilityTest {
      * @see MapUtility#create(Class, Class, Class)
      * @see MapUtility#create(Class, Class)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testCreate() throws Exception {
         //int, string
@@ -1094,7 +1091,6 @@ public class MapUtilityTest {
      * @throws Exception When there is an exception.
      * @see MapUtility#contains(Map, Object)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testContains() throws Exception {
         //int, string

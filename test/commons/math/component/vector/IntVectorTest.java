@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see IntVector
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IntVector.class})
 public class IntVectorTest {
@@ -278,7 +278,7 @@ public class IntVectorTest {
      * @throws Exception When there is an exception.
      * @see IntVector#equals(Object)
      */
-    @SuppressWarnings({"SimplifiableAssertion", "EqualsBetweenInconvertibleTypes", "ConstantConditions"})
+    @SuppressWarnings({"SimplifiableAssertion", "EqualsBetweenInconvertibleTypes"})
     @Test
     public void testEquals() throws Exception {
         BaseComponent<?, ?> other;

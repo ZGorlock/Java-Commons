@@ -40,7 +40,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ListUtility
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ListUtility.class})
 public class ListUtilityTest {
@@ -159,7 +159,6 @@ public class ListUtilityTest {
      * @see ListUtility#unmodifiableList(Class)
      * @see ListUtility#unmodifiableList()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testUnmodifiableList() throws Exception {
         final Class<?> UnmodifiableList = TestAccess.getClass(Collections.class, "UnmodifiableList");
@@ -216,7 +215,6 @@ public class ListUtilityTest {
      * @see ListUtility#synchronizedList(Class)
      * @see ListUtility#synchronizedList()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testSynchronizedList() throws Exception {
         final Class<?> SynchronizedList = TestAccess.getClass(Collections.class, "SynchronizedList");
@@ -275,7 +273,6 @@ public class ListUtilityTest {
      * @see ListUtility#create(Object, int)
      * @see ListUtility#create(Class)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testCreate() throws Exception {
         //boolean
@@ -532,7 +529,6 @@ public class ListUtilityTest {
      * @see ListUtility#create2D(Object, int, int)
      * @see ListUtility#create2D(Class)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testCreate2D() throws Exception {
         //boolean
@@ -861,7 +857,6 @@ public class ListUtilityTest {
      * @see ListUtility#create3D(Object, int, int, int)
      * @see ListUtility#create3D(Class)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testCreate3D() throws Exception {
         //boolean
@@ -3298,7 +3293,6 @@ public class ListUtilityTest {
      * @throws Exception When there is an exception.
      * @see ListUtility#removeDuplicates(List)
      */
-    @SuppressWarnings("ThrowableNotThrown")
     @Test
     public void testRemoveDuplicates() throws Exception {
         //boolean

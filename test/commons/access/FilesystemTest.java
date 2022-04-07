@@ -46,7 +46,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see Filesystem
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Filesystem.class, FileUtils.class, CommonsLogging.class})
 public class FilesystemTest {
@@ -164,7 +164,6 @@ public class FilesystemTest {
      *
      * @throws Exception When there is an exception.
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @BeforeClass
     public static void setupClass() throws Exception {
         if (!Project.TMP_DIR.exists()) {

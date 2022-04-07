@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ProgressBarInputStream
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ProgressBarInputStream.class})
 public class ProgressBarInputStreamTest {
@@ -138,7 +138,6 @@ public class ProgressBarInputStreamTest {
      * @throws Exception When there is an exception.
      * @see ProgressBarInputStream#read(byte[], int, int)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testRead() throws Exception {
         ProgressBarInputStream sut;

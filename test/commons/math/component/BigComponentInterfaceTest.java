@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see BigComponentInterface
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BigComponentInterface.class})
 public class BigComponentInterfaceTest {

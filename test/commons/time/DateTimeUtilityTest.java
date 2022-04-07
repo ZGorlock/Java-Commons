@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see DateTimeUtility
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({DateTimeUtility.class})
 public class DateTimeUtilityTest {

@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see UncheckedSupplier
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({UncheckedSupplier.class})
 public class UncheckedSupplierTest {

@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see BufferedLineReader
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BufferedLineReader.class})
 public class BufferedLineReaderTest {

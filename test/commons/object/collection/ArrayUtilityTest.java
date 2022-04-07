@@ -35,7 +35,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ArrayUtility
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ArrayUtility.class})
 public class ArrayUtilityTest {
@@ -110,7 +110,6 @@ public class ArrayUtilityTest {
      * @see ArrayUtility#emptyArray(Class)
      * @see ArrayUtility#emptyArray()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testEmptyArray() throws Exception {
         Object[] array;
@@ -141,7 +140,6 @@ public class ArrayUtilityTest {
      * @see ArrayUtility#create(Class)
      * @see ArrayUtility#create(int)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testCreate() throws Exception {
         //boolean
@@ -276,7 +274,6 @@ public class ArrayUtilityTest {
      * @see ArrayUtility#create2D(Class)
      * @see ArrayUtility#create2D(int, int)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testCreate2D() throws Exception {
         //boolean
@@ -436,7 +433,6 @@ public class ArrayUtilityTest {
      * @see ArrayUtility#create3D(Class)
      * @see ArrayUtility#create3D(int, int, int)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testCreate3D() throws Exception {
         //boolean
@@ -612,7 +608,6 @@ public class ArrayUtilityTest {
      * @see ArrayUtility#arrayOf(Class, Object[])
      * @see ArrayUtility#arrayOf(Object[])
      */
-    @SuppressWarnings("ThrowableNotThrown")
     @Test
     public void testArrayOf() throws Exception {
         //boolean
@@ -723,7 +718,6 @@ public class ArrayUtilityTest {
      * @throws Exception When there is an exception.
      * @see ArrayUtility#clone(Object[])
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testClone() throws Exception {
         //boolean

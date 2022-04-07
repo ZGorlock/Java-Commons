@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see StringComparisonUtility
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({StringComparisonUtility.class})
 public class StringComparisonUtilityTest {

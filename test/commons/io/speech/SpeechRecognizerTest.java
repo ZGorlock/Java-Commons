@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see SpeechRecognizer
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SpeechRecognizer.class, HotKeyManager.class, HotKey.class, Filesystem.class, OperatingSystem.class, CmdLine.class, SystemIn.class, WaveRecorder.class})
 public class SpeechRecognizerTest {
@@ -337,7 +337,6 @@ public class SpeechRecognizerTest {
      * @throws Exception When there is an exception.
      * @see SpeechRecognizer#initialize(SpeechRecognizer.RecognitionMode)
      */
-    @SuppressWarnings("ConfusingArgumentToVarargsMethod")
     @Test
     public void testInitialize() throws Exception {
         TestAccess.invokeMethod(sut, "setup");

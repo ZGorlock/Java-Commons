@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see IntComponent
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({IntComponent.class})
 public class IntComponentTest {

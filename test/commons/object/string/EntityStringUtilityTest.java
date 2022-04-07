@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see EntityStringUtility
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({EntityStringUtility.class})
 public class EntityStringUtilityTest {
@@ -108,7 +108,6 @@ public class EntityStringUtilityTest {
      * @throws Exception When there is an exception.
      * @see EntityStringUtility#generateClassString(boolean, Class)
      */
-    @SuppressWarnings("InstantiationOfUtilityClass")
     @Test
     public void testGenerateClassString() throws Exception {
         //class
@@ -202,7 +201,6 @@ public class EntityStringUtilityTest {
      * @throws Exception When there is an exception.
      * @see EntityStringUtility#generateInnerClassString(boolean, Class, String)
      */
-    @SuppressWarnings("InstantiationOfUtilityClass")
     @Test
     public void testGenerateInnerClassString() throws Exception {
         //class
@@ -320,7 +318,6 @@ public class EntityStringUtilityTest {
      * @throws Exception When there is an exception.
      * @see EntityStringUtility#generateMethodString(boolean, Class, String, Class[])
      */
-    @SuppressWarnings("InstantiationOfUtilityClass")
     @Test
     public void testGenerateMethodString() throws Exception {
         //class
@@ -536,7 +533,6 @@ public class EntityStringUtilityTest {
      * @throws Exception When there is an exception.
      * @see EntityStringUtility#generateConstructorString(boolean, Class, Class[])
      */
-    @SuppressWarnings("InstantiationOfUtilityClass")
     @Test
     public void testGenerateConstructorString() throws Exception {
         //class
@@ -714,7 +710,6 @@ public class EntityStringUtilityTest {
      * @throws Exception When there is an exception.
      * @see EntityStringUtility#generateFieldString(boolean, Class, String)
      */
-    @SuppressWarnings("InstantiationOfUtilityClass")
     @Test
     public void testGenerateFieldString() throws Exception {
         //class

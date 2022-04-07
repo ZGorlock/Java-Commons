@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see StringMathUtility
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({StringMathUtility.class})
 public class StringMathUtilityTest {
@@ -5044,7 +5044,6 @@ public class StringMathUtilityTest {
      * @throws Exception When there is an exception.
      * @see StringMathUtility#greaterThan(String, String)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testGreaterThan() throws Exception {
         //standard
@@ -5334,7 +5333,6 @@ public class StringMathUtilityTest {
      * @throws Exception When there is an exception.
      * @see StringMathUtility#lessThan(String, String)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testLessThan() throws Exception {
         //standard
@@ -5624,7 +5622,6 @@ public class StringMathUtilityTest {
      * @throws Exception When there is an exception.
      * @see StringMathUtility#equalTo(String, String)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testEqualTo() throws Exception {
         //standard

@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see MathUtility
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MathUtility.class})
 public class MathUtilityTest {
@@ -374,7 +374,6 @@ public class MathUtilityTest {
      * @see MathUtility#xmod(long, long)
      * @see MathUtility#xmod(int, int)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testXmod() throws Exception {
         //int

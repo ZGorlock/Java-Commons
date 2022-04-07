@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see StringUtility
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({StringUtility.class})
 public class StringUtilityTest {
@@ -441,7 +441,6 @@ public class StringUtilityTest {
      * @throws Exception When there is an exception.
      * @see StringUtility#containsChar(String, char)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testContainsChar() throws Exception {
         //standard
@@ -471,7 +470,6 @@ public class StringUtilityTest {
      * @throws Exception When there is an exception.
      * @see StringUtility#containsCharIgnoreCase(String, char)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testCcontainsCharIgnoreCase() throws Exception {
         //standard

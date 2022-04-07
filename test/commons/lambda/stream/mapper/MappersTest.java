@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see Mappers
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Mappers.class})
 public class MappersTest {
@@ -119,7 +119,6 @@ public class MappersTest {
      * @throws Exception When there is an exception.
      * @see Mappers#modify(CheckedConsumer)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testCollect() throws Exception {
         final List<String> testElements1 = ListUtility.clone((List<String>) testStreamElements[0]);

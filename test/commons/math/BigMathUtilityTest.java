@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see BigMathUtility
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({BigMathUtility.class})
 public class BigMathUtilityTest {
@@ -5089,7 +5089,6 @@ public class BigMathUtilityTest {
      * @throws Exception When there is an exception.
      * @see BigMathUtility#greaterThan(BigDecimal, BigDecimal)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testGreaterThan() throws Exception {
         //standard
@@ -5427,7 +5426,6 @@ public class BigMathUtilityTest {
      * @throws Exception When there is an exception.
      * @see BigMathUtility#lessThan(BigDecimal, BigDecimal)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testLessThan() throws Exception {
         //standard
@@ -5765,7 +5763,6 @@ public class BigMathUtilityTest {
      * @throws Exception When there is an exception.
      * @see BigMathUtility#equalTo(BigDecimal, BigDecimal)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testEqualTo() throws Exception {
         //standard
@@ -6103,7 +6100,6 @@ public class BigMathUtilityTest {
      * @throws Exception When there is an exception.
      * @see BigMathUtility#notEqualTo(BigDecimal, BigDecimal)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testNotEqualTo() throws Exception {
         //standard
@@ -6441,7 +6437,6 @@ public class BigMathUtilityTest {
      * @throws Exception When there is an exception.
      * @see BigMathUtility#greaterThanOrEqualTo(BigDecimal, BigDecimal)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testGreaterThanOrEqualTo() throws Exception {
         //standard
@@ -6779,7 +6774,6 @@ public class BigMathUtilityTest {
      * @throws Exception When there is an exception.
      * @see BigMathUtility#lessThanOrEqualTo(BigDecimal, BigDecimal)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testLessThanOrEqualTo() throws Exception {
         //standard

@@ -52,7 +52,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see SystemIn
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SystemIn.class})
 public class SystemInTest {
@@ -458,7 +458,6 @@ public class SystemInTest {
      * @see SystemIn#readPassword()
      * @see SystemIn#readPassword(Object)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testReadPassword() throws Exception {
         final Console mockConsole = PowerMockito.mock(Console.class);

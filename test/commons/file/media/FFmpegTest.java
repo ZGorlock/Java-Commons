@@ -61,7 +61,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see FFmpeg
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({FFmpeg.class, FFmpeg.Implements.class, FFmpeg.Identifier.class, FFmpeg.Identifier.Stream.class, FFmpeg.Identifier.Chapter.class, FFmpeg.Identifier.Global.class, CmdLine.class, CommonsLogging.class})
 public class FFmpegTest {
@@ -2930,7 +2930,6 @@ public class FFmpegTest {
      * @throws Exception When there is an exception.
      * @see FFmpeg#getDuration(File)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testGetDuration() throws Exception {
         if (!FFmpeg.ffprobeExists()) {
@@ -4282,7 +4281,6 @@ public class FFmpegTest {
      * @throws Exception When there is an exception.
      * @see FFmpeg.FFmpegProgressBar
      */
-    @SuppressWarnings("unchecked")
     @Test
     public void testFFmpegProgressBar() throws Exception {
         FFmpeg.FFmpegProgressBar progressBar;
@@ -7404,7 +7402,6 @@ public class FFmpegTest {
      * @throws Exception When there is an exception.
      * @see FFmpeg.Implements.Implement
      */
-    @SuppressWarnings("OptionalGetWithoutIsPresent")
     private void testImplementsImplement() throws Exception {
         //class
         final Class<?> implement = TestAccess.getClass(FFmpeg.Implements.class, "Implement");

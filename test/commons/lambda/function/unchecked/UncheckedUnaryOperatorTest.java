@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see UncheckedUnaryOperator
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({UncheckedUnaryOperator.class})
 public class UncheckedUnaryOperatorTest {

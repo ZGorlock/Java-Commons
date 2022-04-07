@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ComponentErrorHandler
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ComponentErrorHandler.class})
 public class ComponentErrorHandlerTest {

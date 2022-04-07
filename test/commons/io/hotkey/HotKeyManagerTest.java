@@ -41,7 +41,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see HotKeyManager
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({HotKeyManager.class, GlobalScreen.class, HotKeyManager.GlobalScreenWrapper.class, OperatingSystem.class, NativeKeyEvent.class})
 public class HotKeyManagerTest {

@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see FilesystemMacro
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({FilesystemMacro.class})
 public class FilesystemMacroTest {

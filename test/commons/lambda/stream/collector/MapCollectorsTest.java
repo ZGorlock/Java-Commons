@@ -44,7 +44,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see MapCollectors
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({MapCollectors.class})
 public class MapCollectorsTest {
@@ -190,7 +190,6 @@ public class MapCollectorsTest {
      * @see MapCollectors#toMap(Class, MapCollectors.MapFlavor)
      * @see MapCollectors#toMap(Class)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToMap() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -451,7 +450,6 @@ public class MapCollectorsTest {
      * @see MapCollectors#generator(Class, Class, Class)
      * @see MapCollectors#generator()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testGenerator() throws Exception {
         Map<Object, Object> map1;
@@ -520,7 +518,6 @@ public class MapCollectorsTest {
      * @see MapCollectors#toHashMap(Function, Function)
      * @see MapCollectors#toHashMap()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToHashMap() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -656,7 +653,6 @@ public class MapCollectorsTest {
      * @see MapCollectors#toUnmodifiableHashMap(Function, Function)
      * @see MapCollectors#toUnmodifiableHashMap()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToUnmodifiableHashMap() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -736,7 +732,6 @@ public class MapCollectorsTest {
      * @see MapCollectors#toSynchronizedHashMap(Function, Function)
      * @see MapCollectors#toSynchronizedHashMap()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToSynchronizedHashMap() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -818,7 +813,6 @@ public class MapCollectorsTest {
      * @see MapCollectors#toLinkedHashMap(Function, Function)
      * @see MapCollectors#toLinkedHashMap()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToLinkedHashMap() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -954,7 +948,6 @@ public class MapCollectorsTest {
      * @see MapCollectors#toUnmodifiableLinkedHashMap(Function, Function)
      * @see MapCollectors#toUnmodifiableLinkedHashMap()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToUnmodifiableLinkedHashMap() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -1034,7 +1027,6 @@ public class MapCollectorsTest {
      * @see MapCollectors#toSynchronizedLinkedHashMap(Function, Function)
      * @see MapCollectors#toSynchronizedLinkedHashMap()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToSynchronizedLinkedHashMap() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -1116,7 +1108,6 @@ public class MapCollectorsTest {
      * @see MapCollectors#toTreeMap(Function, Function)
      * @see MapCollectors#toTreeMap()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToTreeMap() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -1252,7 +1243,6 @@ public class MapCollectorsTest {
      * @see MapCollectors#toUnmodifiableTreeMap(Function, Function)
      * @see MapCollectors#toUnmodifiableTreeMap()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToUnmodifiableTreeMap() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -1332,7 +1322,6 @@ public class MapCollectorsTest {
      * @see MapCollectors#toSynchronizedTreeMap(Function, Function)
      * @see MapCollectors#toSynchronizedTreeMap()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToSynchronizedTreeMap() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -1413,7 +1402,6 @@ public class MapCollectorsTest {
      * @see MapCollectors#mapEachTo(Supplier)
      * @see MapCollectors#mapEachTo(Object)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testMapEachTo() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);

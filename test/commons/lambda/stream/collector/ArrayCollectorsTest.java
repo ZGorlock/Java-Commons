@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ArrayCollectors
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ArrayCollectors.class})
 public class ArrayCollectorsTest {
@@ -133,7 +133,6 @@ public class ArrayCollectorsTest {
      * @see ArrayCollectors#toArray(Function)
      * @see ArrayCollectors#toArray()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToArray() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -303,7 +302,6 @@ public class ArrayCollectorsTest {
      * @see ArrayCollectors#generator(Class)
      * @see ArrayCollectors#generator()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testGenerator() throws Exception {
         Object[] array1;
@@ -448,7 +446,6 @@ public class ArrayCollectorsTest {
      * @see ArrayCollectors#toByteArray(Function)
      * @see ArrayCollectors#toByteArray()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToByteArray() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -516,7 +513,6 @@ public class ArrayCollectorsTest {
      * @see ArrayCollectors#toShortArray(Function)
      * @see ArrayCollectors#toShortArray()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToShortArray() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -584,7 +580,6 @@ public class ArrayCollectorsTest {
      * @see ArrayCollectors#toIntArray(Function)
      * @see ArrayCollectors#toIntArray()
      */
-    @SuppressWarnings({"ResultOfMethodCallIgnored", "SimplifyStreamApiCallChains"})
     @Test
     public void testToIntArray() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -652,7 +647,6 @@ public class ArrayCollectorsTest {
      * @see ArrayCollectors#toLongArray(Function)
      * @see ArrayCollectors#toLongArray()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToLongArray() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -720,7 +714,6 @@ public class ArrayCollectorsTest {
      * @see ArrayCollectors#toFloatArray(Function)
      * @see ArrayCollectors#toFloatArray()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToFloatArray() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -788,7 +781,6 @@ public class ArrayCollectorsTest {
      * @see ArrayCollectors#toDoubleArray(Function)
      * @see ArrayCollectors#toDoubleArray()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToDoubleArray() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -856,7 +848,6 @@ public class ArrayCollectorsTest {
      * @see ArrayCollectors#toCharArray(Function)
      * @see ArrayCollectors#toCharArray()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToCharArray() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);
@@ -924,7 +915,6 @@ public class ArrayCollectorsTest {
      * @see ArrayCollectors#toStringArray(Function)
      * @see ArrayCollectors#toStringArray()
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testToStringArray() throws Exception {
         final List<String> testElements1 = ((List<String>) testStreamElements[0]);

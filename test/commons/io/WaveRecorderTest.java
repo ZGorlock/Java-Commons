@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see WaveRecorder
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({WaveRecorder.class, AudioSystem.class})
 public class WaveRecorderTest {

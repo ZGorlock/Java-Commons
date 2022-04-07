@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see UncheckedConsumer
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({UncheckedConsumer.class})
 public class UncheckedConsumerTest {

@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see UncheckedBinaryOperator
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({UncheckedBiFunction.class})
 public class UncheckedBinaryOperatorTest {

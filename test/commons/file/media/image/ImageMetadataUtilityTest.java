@@ -29,7 +29,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see ImageMetadataUtility
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ImageMetadataUtility.class})
 public class ImageMetadataUtilityTest {

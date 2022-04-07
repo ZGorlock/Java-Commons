@@ -43,7 +43,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see CustomCollectors
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CustomCollectors.class})
 public class CustomCollectorsTest {
@@ -127,7 +127,6 @@ public class CustomCollectorsTest {
      * @see CustomCollectors#collect(Supplier, BiConsumer, BinaryOperator, Function)
      * @see CustomCollectors#collect(Supplier, BiConsumer, BinaryOperator)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testCollect() throws Exception {
         final Supplier<List<?>> mockSupplier = Mockito.mock(Supplier.class);

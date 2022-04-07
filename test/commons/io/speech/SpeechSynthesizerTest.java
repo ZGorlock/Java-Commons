@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see SpeechSynthesizer
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SpeechSynthesizer.class})
 public class SpeechSynthesizerTest {

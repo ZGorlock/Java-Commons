@@ -50,7 +50,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see TestAccess
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({TestAccess.class})
 public class TestAccessTest {

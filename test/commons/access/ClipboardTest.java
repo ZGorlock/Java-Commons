@@ -30,7 +30,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see Clipboard
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Clipboard.class, ImageUtility.class, CommonsLogging.class})
 public class ClipboardTest {

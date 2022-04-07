@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see CmdLine
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({CmdLine.class, OperatingSystem.class})
 public class CmdLineTest {

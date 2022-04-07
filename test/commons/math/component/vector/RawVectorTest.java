@@ -42,7 +42,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see RawVector
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({RawVector.class})
 public class RawVectorTest {
@@ -278,7 +278,7 @@ public class RawVectorTest {
      * @throws Exception When there is an exception.
      * @see RawVector#equals(Object)
      */
-    @SuppressWarnings({"SimplifiableAssertion", "EqualsBetweenInconvertibleTypes", "ConstantConditions"})
+    @SuppressWarnings({"SimplifiableAssertion", "EqualsBetweenInconvertibleTypes"})
     @Test
     public void testEquals() throws Exception {
         BaseComponent<?, ?> other;
@@ -545,7 +545,6 @@ public class RawVectorTest {
      * @throws Exception When there is an exception.
      * @see RawVector#cloned()
      */
-    @SuppressWarnings("SimplifiableAssertion")
     @Test
     public void testCloned() throws Exception {
         //standard

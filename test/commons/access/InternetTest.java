@@ -38,7 +38,7 @@ import org.slf4j.LoggerFactory;
  *
  * @see Internet
  */
-@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "unchecked", "SpellCheckingInspection"})
+@SuppressWarnings({"RedundantSuppression", "ConstantConditions", "ResultOfMethodCallIgnored", "unchecked", "SpellCheckingInspection"})
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({Internet.class, CommonsLogging.class, Desktop.class})
 public class InternetTest {
@@ -322,7 +322,6 @@ public class InternetTest {
      * @throws Exception When there is an exception.
      * @see Internet#openUrl(String)
      */
-    @SuppressWarnings("ResultOfMethodCallIgnored")
     @Test
     public void testOpenUrl() throws Exception {
         final Class<?> DesktopWrapper = TestAccess.getClass(Desktop.class, "DesktopWrapper");
