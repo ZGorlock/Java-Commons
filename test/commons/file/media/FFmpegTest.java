@@ -28,8 +28,8 @@ import commons.access.Filesystem;
 import commons.access.Project;
 import commons.console.Console;
 import commons.console.ProgressBar;
-import commons.lambda.stream.collector.ListCollectors;
 import commons.lambda.stream.collector.MapCollectors;
+import commons.lambda.stream.sorter.Sorters;
 import commons.log.CommonsLogging;
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
@@ -5985,10 +5985,8 @@ public class FFmpegTest {
                                 "5", "v", "v:1", "v2", "a", "a:3", "s:0", "s:1", "d:2", "x", "c", "c:3", "c:4", "g",
                                 "1:5", "1:v", "1:v:1", "1:v2", "1:a", "1:a:3", "1:s:0", "1:s:1", "1:d:2", "1:x", "1:c", "1:c:3", "1:c:4", "1:g",
                                 "3:5", "3:v", "3:v:1", "3:v2", "3:a", "3:a:3", "3:s:0", "3:s:1", "3:d:2", "3:x", "3:c", "3:c:3", "3:c:4", "3:g"
-                        ).collect(Collectors.collectingAndThen(ListCollectors.toArrayList(), e -> {
-                            Collections.shuffle(e);
-                            return e;
-                        })).stream().map(FFmpeg.Identifier::of).sorted(Comparator.naturalOrder())
+                        ).sorted(Sorters.shuffle())
+                        .map(FFmpeg.Identifier::of).sorted(Comparator.naturalOrder())
                         .map(FFmpeg.Identifier::toString).collect(Collectors.joining(", "))
         );
         
