@@ -36,6 +36,7 @@ import commons.math.EquationUtility;
 import commons.math.NumberUtility;
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
+import commons.object.string.EntityStringUtility;
 import commons.object.string.StringUtility;
 import commons.time.DateTimeUtility;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -3411,7 +3412,7 @@ public class FFmpeg {
              */
             private static IdentifierScope getScope(Class<? extends Scope> scope) {
                 try {
-                    return valueOf(scope.getSimpleName().toUpperCase());
+                    return valueOf(EntityStringUtility.simpleClassString(scope).toUpperCase());
                 } catch (Exception ignored) {
                     return null;
                 }
@@ -3463,7 +3464,7 @@ public class FFmpeg {
             @SuppressWarnings("rawtypes")
             private static IdentifierType getType(Class<? extends Identifier> clazz) {
                 try {
-                    return valueOf(clazz.getSimpleName().toUpperCase());
+                    return valueOf(EntityStringUtility.simpleClassString(clazz).toUpperCase());
                 } catch (Exception ignored) {
                     return null;
                 }
@@ -4514,7 +4515,7 @@ public class FFmpeg {
         @SuppressWarnings("SpellCheckingInspection")
         private static List<? extends Implement> loadImplement(Class<? extends Implement> type, BiFunction<String, String, ? extends Implement> generator) {
             List<Implement> tmpImplements = new ArrayList<>();
-            String ffmpegKey = type.getSimpleName().toLowerCase()
+            String ffmpegKey = EntityStringUtility.simpleClassString(type).toLowerCase()
                     .replace("bitstreamfilter", "bsf")
                     .replace("pixelformat", "pix_fmt")
                     .replace("sampleformat", "sample_fmt")

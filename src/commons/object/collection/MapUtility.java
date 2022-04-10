@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import commons.lambda.stream.collector.MapCollectors;
+import commons.object.string.EntityStringUtility;
 import commons.object.string.StringUtility;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
@@ -61,7 +62,7 @@ public final class MapUtility {
      */
     @SuppressWarnings("SortedCollectionWithNonComparableKeys")
     public static <K, V, M extends Map<K, V>> Map<K, V> emptyMap(Class<M> clazz) {
-        switch (clazz.getSimpleName()) {
+        switch (EntityStringUtility.simpleClassString(Objects.requireNonNull(clazz))) {
             case "HashMap":
                 return new HashMap<>();
             case "LinkedHashMap":
@@ -186,7 +187,7 @@ public final class MapUtility {
     @SuppressWarnings("unchecked")
     public static <K, V, M extends Map<?, ?>> Map<K, V> create(Class<M> clazz, Class<K> keyType, Class<V> valueType) throws ClassCastException {
         if (clazz.equals(TreeMap.class) && !ArrayUtility.contains(keyType.getInterfaces(), Comparable.class)) {
-            throw new ClassCastException("class " + keyType.getCanonicalName() + " cannot be cast to class " + Comparable.class.getCanonicalName());
+            throw new ClassCastException("class " + EntityStringUtility.classString(keyType) + " cannot be cast to class " + EntityStringUtility.classString(Comparable.class));
         }
         
         return emptyMap((Class<Map<K, V>>) clazz);

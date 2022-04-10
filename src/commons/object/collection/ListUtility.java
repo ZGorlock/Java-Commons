@@ -23,6 +23,7 @@ import java.util.stream.IntStream;
 
 import commons.math.BoundUtility;
 import commons.math.MathUtility;
+import commons.object.string.EntityStringUtility;
 import commons.object.string.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,7 +61,7 @@ public final class ListUtility {
      * @return The list instance.
      */
     public static <T, L extends List<T>> List<T> emptyList(Class<L> clazz) {
-        switch (clazz.getSimpleName()) {
+        switch (EntityStringUtility.simpleClassString(Objects.requireNonNull(clazz))) {
             case "ArrayList":
                 return new ArrayList<>();
             case "LinkedList":

@@ -221,7 +221,7 @@ public final class TestAccess {
             return getAllMethods(clazz).stream().filter(e -> {
                 final Class<?>[] methodArgumentTypes = e.getParameterTypes();
                 return (e.getName().equals(methodName) && (methodArgumentTypes.length == argumentTypes.length) &&
-                        Arrays.stream(methodArgumentTypes).noneMatch(arg -> arg.getSimpleName().equals("IndicateReloadClass")) &&
+                        Arrays.stream(methodArgumentTypes).map(EntityStringUtility::simpleClassString).noneMatch(arg -> arg.equals("IndicateReloadClass")) &&
                         IntStream.range(0, argumentTypes.length).boxed().noneMatch(i ->
                                 (argumentTypes[i] == null) ? methodArgumentTypes[i].isPrimitive() :
                                 ((methodArgumentTypes[i] != argumentTypes[i]) &&
@@ -305,7 +305,7 @@ public final class TestAccess {
             return getAllConstructors(clazz).stream().filter(e -> {
                 final Class<?>[] constructorArgumentTypes = e.getParameterTypes();
                 return ((constructorArgumentTypes.length == argumentTypes.length) &&
-                        Arrays.stream(constructorArgumentTypes).noneMatch(arg -> arg.getSimpleName().equals("IndicateReloadClass")) &&
+                        Arrays.stream(constructorArgumentTypes).map(EntityStringUtility::simpleClassString).noneMatch(arg -> arg.equals("IndicateReloadClass")) &&
                         IntStream.range(0, argumentTypes.length).boxed().noneMatch(i ->
                                 (argumentTypes[i] == null) ? constructorArgumentTypes[i].isPrimitive() :
                                 ((constructorArgumentTypes[i] != argumentTypes[i]) &&

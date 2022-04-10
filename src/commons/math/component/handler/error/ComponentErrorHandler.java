@@ -12,6 +12,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 import commons.math.component.ComponentInterface;
+import commons.object.string.EntityStringUtility;
 
 public class ComponentErrorHandler implements ComponentErrorHandlerInterface {
     
@@ -63,7 +64,7 @@ public class ComponentErrorHandler implements ComponentErrorHandlerInterface {
      */
     @Override
     public <T extends Number> String componentTypeNotEqualErrorMessage(ComponentInterface<?, ?, ?> component, Class<T> type) {
-        return "The " + component.getName() + ": " + component + " does not have the expected component type of: " + type.getSimpleName();
+        return "The " + component.getName() + ": " + component + " does not have the expected component type of: " + EntityStringUtility.simpleClassString(type);
     }
     
     /**

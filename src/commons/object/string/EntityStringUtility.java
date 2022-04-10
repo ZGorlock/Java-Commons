@@ -42,7 +42,7 @@ public final class EntityStringUtility {
      */
     private static String generateClassString(boolean simple, Class<?> clazz) {
         return Optional.ofNullable(clazz)
-                .map(e -> (simple ? e.getSimpleName() : e.getTypeName())).map(e -> e
+                .map(e -> (simple ? e.getSimpleName() : e.getTypeName())).map(classString -> classString
                         .replaceAll("\\$MockitoMock\\$\\d*", "").replaceAll((simple ? "(?:.+\\$)+" : ""), ""))
                 .orElse("null");
     }
@@ -89,6 +89,64 @@ public final class EntityStringUtility {
      */
     public static String simpleClassString(Object object) {
         return simpleClassString(CastUtility.toClass(object));
+    }
+    
+    /**
+     * Returns a string representing a super class.
+     *
+     * @param simple Whether to use simple names or not.
+     * @param clazz  The class.
+     * @return The super class string.
+     * @see #generateClassString(boolean, Class)
+     */
+    private static String generateSuperClassString(boolean simple, Class<?> clazz) {
+        return Optional.ofNullable(clazz)
+                .map(e -> generateClassString(simple, clazz.getSuperclass()))
+                .orElse("null");
+    }
+    
+    /**
+     * Returns a string representing a super class.
+     *
+     * @param clazz The class.
+     * @return The super class string.
+     * @see #generateSuperClassString(boolean, Class)
+     */
+    public static String superClassString(Class<?> clazz) {
+        return generateSuperClassString(false, clazz);
+    }
+    
+    /**
+     * Returns a simple string representing a super class.
+     *
+     * @param clazz The class.
+     * @return The simple super class string.
+     * @see #generateSuperClassString(boolean, Class)
+     */
+    public static String simpleSuperClassString(Class<?> clazz) {
+        return generateSuperClassString(true, clazz);
+    }
+    
+    /**
+     * Returns a string representing a super class.
+     *
+     * @param object The object.
+     * @return The super class string.
+     * @see #superClassString(Class)
+     */
+    public static String superClassString(Object object) {
+        return superClassString(CastUtility.toClass(object));
+    }
+    
+    /**
+     * Returns a simple string representing a super class.
+     *
+     * @param object The object.
+     * @return The simple super class string.
+     * @see #simpleSuperClassString(Class)
+     */
+    public static String simpleSuperClassString(Object object) {
+        return simpleSuperClassString(CastUtility.toClass(object));
     }
     
     /**

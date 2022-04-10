@@ -12,6 +12,7 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Map;
 
+import commons.object.string.EntityStringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -206,7 +207,7 @@ public final class CastUtility {
      */
     public static Class<?> toPrimitiveClass(Class<?> clazz) {
         try {
-            switch (clazz.getSimpleName()) {
+            switch (EntityStringUtility.simpleClassString(clazz)) {
                 case "Boolean":
                     return boolean.class;
                 case "Byte":
@@ -239,7 +240,7 @@ public final class CastUtility {
      */
     public static Class<?> toNonPrimitiveClass(Class<?> clazz) {
         try {
-            switch (clazz.getSimpleName()) {
+            switch (EntityStringUtility.simpleClassString(clazz)) {
                 case "boolean":
                     return Boolean.class;
                 case "byte":

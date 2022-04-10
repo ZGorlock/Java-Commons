@@ -4964,9 +4964,9 @@ public class FFmpegTest {
         TestUtils.assertMethodExists(metadataBase, "get", String.class);
         
         //subclasses
-        Assert.assertEquals(metadataBase.getSimpleName(), FFmpeg.MediaInfo.Format.class.getSuperclass().getSimpleName());
-        Assert.assertEquals(metadataBase.getSimpleName(), FFmpeg.MediaInfo.Stream.class.getSuperclass().getSimpleName());
-        Assert.assertEquals(metadataBase.getSimpleName(), FFmpeg.MediaInfo.Chapter.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(metadataBase, FFmpeg.MediaInfo.Format.class.getSuperclass());
+        Assert.assertEquals(metadataBase, FFmpeg.MediaInfo.Stream.class.getSuperclass());
+        Assert.assertEquals(metadataBase, FFmpeg.MediaInfo.Chapter.class.getSuperclass());
     }
     
     /**
@@ -4979,7 +4979,7 @@ public class FFmpegTest {
         final File testVideo = new File(testResources, "test.mkv");
         final FFmpeg.MediaInfo.Format format = FFmpeg.getFormat(testVideo);
         Assert.assertNotNull(format);
-        Assert.assertEquals("MetadataBase", FFmpeg.MediaInfo.Format.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.MediaInfo.class, "MetadataBase"), FFmpeg.MediaInfo.Format.class.getSuperclass());
         
         //base
         Assert.assertNotNull(format.getData());
@@ -5035,7 +5035,7 @@ public class FFmpegTest {
      * @see #testMediaInfoStreamDisposition()
      */
     private void testMediaInfoStream() throws Exception {
-        Assert.assertEquals("MetadataBase", FFmpeg.MediaInfo.Stream.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.MediaInfo.class, "MetadataBase"), FFmpeg.MediaInfo.Stream.class.getSuperclass());
         
         //components
         testMediaInfoStreamVideoInfo();
@@ -5528,7 +5528,7 @@ public class FFmpegTest {
         List<FFmpeg.MediaInfo.Chapter.ChapterDTO> chapterDTOs;
         String ffmetadataContent;
         File ffmetadataFile;
-        Assert.assertEquals("MetadataBase", FFmpeg.MediaInfo.Chapter.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.MediaInfo.class, "MetadataBase"), FFmpeg.MediaInfo.Chapter.class.getSuperclass());
         
         //base
         Assert.assertNotNull(chapter.getData());
@@ -5693,10 +5693,10 @@ public class FFmpegTest {
         Assert.assertEquals("(?i)^(?:(?<sourceIndex>\\d+):)?(?:(?<type>[gsxc]):?)?(?:(?<streamType>[vasd]):?)?(?<index>\\d+)?$", FFmpeg.Identifier.SPECIFIER_PATTERN.pattern());
         
         //scope
-        Assert.assertNull("Identifier", FFmpeg.Identifier.Scope.class.getSuperclass());
-        Assert.assertEquals("Scope", FFmpeg.Identifier.Scope.Singular.class.getInterfaces()[0].getSimpleName());
-        Assert.assertEquals("Scope", FFmpeg.Identifier.Scope.Type.class.getInterfaces()[0].getSimpleName());
-        Assert.assertEquals("Scope", FFmpeg.Identifier.Scope.All.class.getInterfaces()[0].getSimpleName());
+        Assert.assertNull(FFmpeg.Identifier.Scope.class.getSuperclass());
+        Assert.assertEquals(FFmpeg.Identifier.Scope.class, FFmpeg.Identifier.Scope.Singular.class.getInterfaces()[0]);
+        Assert.assertEquals(FFmpeg.Identifier.Scope.class, FFmpeg.Identifier.Scope.Type.class.getInterfaces()[0]);
+        Assert.assertEquals(FFmpeg.Identifier.Scope.class, FFmpeg.Identifier.Scope.All.class.getInterfaces()[0]);
         
         //static string constructors
         entityId = FFmpeg.Identifier.of("g");
@@ -6319,7 +6319,7 @@ public class FFmpegTest {
      */
     private void testIdentifierGlobal() throws Exception {
         FFmpeg.Identifier.Global globalId;
-        Assert.assertEquals("Identifier", FFmpeg.Identifier.Global.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(FFmpeg.Identifier.class, FFmpeg.Identifier.Global.class.getSuperclass());
         
         //global
         globalId = TestAccess.invokeConstructor(FFmpeg.Identifier.Global.class);
@@ -6486,10 +6486,10 @@ public class FFmpegTest {
      */
     private void testIdentifierStream() throws Exception {
         FFmpeg.Identifier.Stream<?> streamId;
-        Assert.assertEquals("Identifier", FFmpeg.Identifier.Stream.class.getSuperclass().getSimpleName());
-        Assert.assertEquals("Stream", FFmpeg.Identifier.Stream.StreamSpecifier.class.getSuperclass().getSimpleName());
-        Assert.assertEquals("Stream", FFmpeg.Identifier.Stream.StreamTypeSpecifier.class.getSuperclass().getSimpleName());
-        Assert.assertEquals("Stream", FFmpeg.Identifier.Stream.AllStreams.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(FFmpeg.Identifier.class, FFmpeg.Identifier.Stream.class.getSuperclass());
+        Assert.assertEquals(FFmpeg.Identifier.Stream.class, FFmpeg.Identifier.Stream.StreamSpecifier.class.getSuperclass());
+        Assert.assertEquals(FFmpeg.Identifier.Stream.class, FFmpeg.Identifier.Stream.StreamTypeSpecifier.class.getSuperclass());
+        Assert.assertEquals(FFmpeg.Identifier.Stream.class, FFmpeg.Identifier.Stream.AllStreams.class.getSuperclass());
         
         //stream specifier
         streamId = TestAccess.invokeConstructor(FFmpeg.Identifier.Stream.StreamSpecifier.class,
@@ -6962,9 +6962,9 @@ public class FFmpegTest {
      */
     private void testIdentifierChapter() throws Exception {
         FFmpeg.Identifier.Chapter<?> chapterId;
-        Assert.assertEquals("Identifier", FFmpeg.Identifier.Chapter.class.getSuperclass().getSimpleName());
-        Assert.assertEquals("Chapter", FFmpeg.Identifier.Chapter.ChapterSpecifier.class.getSuperclass().getSimpleName());
-        Assert.assertEquals("Chapter", FFmpeg.Identifier.Chapter.AllChapters.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(FFmpeg.Identifier.class, FFmpeg.Identifier.Chapter.class.getSuperclass());
+        Assert.assertEquals(FFmpeg.Identifier.Chapter.class, FFmpeg.Identifier.Chapter.ChapterSpecifier.class.getSuperclass());
+        Assert.assertEquals(FFmpeg.Identifier.Chapter.class, FFmpeg.Identifier.Chapter.AllChapters.class.getSuperclass());
         
         //chapter specifier
         chapterId = TestAccess.invokeConstructor(FFmpeg.Identifier.Chapter.ChapterSpecifier.class,
@@ -7425,17 +7425,17 @@ public class FFmpegTest {
         TestUtils.assertMethodExists(implement, "getImplementLinePattern");
         
         //subclasses
-        Assert.assertEquals(implement.getSimpleName(), FFmpeg.Implements.Format.class.getSuperclass().getSimpleName());
-        Assert.assertEquals(implement.getSimpleName(), FFmpeg.Implements.Codec.class.getSuperclass().getSimpleName());
-        Assert.assertEquals(implement.getSimpleName(), TestAccess.getClass(FFmpeg.Implements.class, "Coder").getSuperclass().getSimpleName());
-        Assert.assertEquals(implement.getSimpleName(), FFmpeg.Implements.BitstreamFilter.class.getSuperclass().getSimpleName());
-        Assert.assertEquals(implement.getSimpleName(), FFmpeg.Implements.Protocol.class.getSuperclass().getSimpleName());
-        Assert.assertEquals(implement.getSimpleName(), FFmpeg.Implements.Filter.class.getSuperclass().getSimpleName());
-        Assert.assertEquals(implement.getSimpleName(), FFmpeg.Implements.PixelFormat.class.getSuperclass().getSimpleName());
-        Assert.assertEquals(implement.getSimpleName(), FFmpeg.Implements.SampleFormat.class.getSuperclass().getSimpleName());
-        Assert.assertEquals(implement.getSimpleName(), FFmpeg.Implements.Channel.class.getSuperclass().getSimpleName());
-        Assert.assertEquals(implement.getSimpleName(), FFmpeg.Implements.ChannelLayout.class.getSuperclass().getSimpleName());
-        Assert.assertEquals(implement.getSimpleName(), FFmpeg.Implements.Color.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(implement, FFmpeg.Implements.Format.class.getSuperclass());
+        Assert.assertEquals(implement, FFmpeg.Implements.Codec.class.getSuperclass());
+        Assert.assertEquals(implement, TestAccess.getClass(FFmpeg.Implements.class, "Coder").getSuperclass());
+        Assert.assertEquals(implement, FFmpeg.Implements.BitstreamFilter.class.getSuperclass());
+        Assert.assertEquals(implement, FFmpeg.Implements.Protocol.class.getSuperclass());
+        Assert.assertEquals(implement, FFmpeg.Implements.Filter.class.getSuperclass());
+        Assert.assertEquals(implement, FFmpeg.Implements.PixelFormat.class.getSuperclass());
+        Assert.assertEquals(implement, FFmpeg.Implements.SampleFormat.class.getSuperclass());
+        Assert.assertEquals(implement, FFmpeg.Implements.Channel.class.getSuperclass());
+        Assert.assertEquals(implement, FFmpeg.Implements.ChannelLayout.class.getSuperclass());
+        Assert.assertEquals(implement, FFmpeg.Implements.Color.class.getSuperclass());
     }
     
     /**
@@ -7445,7 +7445,7 @@ public class FFmpegTest {
      * @see FFmpeg.Implements.Format
      */
     private void testImplementsFormat() throws Exception {
-        Assert.assertEquals("Implement", FFmpeg.Implements.Format.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.Implements.class, "Implement"), FFmpeg.Implements.Format.class.getSuperclass());
         
         FFmpeg.Implements.Format format1;
         FFmpeg.Implements.Format format2;
@@ -7490,9 +7490,9 @@ public class FFmpegTest {
         TestUtils.assertMethodExists(FFmpeg.Implements.Format.class, "getImplementLinePattern");
         
         //subclasses
-        Assert.assertEquals("Format", FFmpeg.Implements.Demuxer.class.getSuperclass().getSimpleName());
-        Assert.assertEquals("Format", FFmpeg.Implements.Muxer.class.getSuperclass().getSimpleName());
-        Assert.assertEquals("Format", FFmpeg.Implements.Device.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(FFmpeg.Implements.Format.class, FFmpeg.Implements.Demuxer.class.getSuperclass());
+        Assert.assertEquals(FFmpeg.Implements.Format.class, FFmpeg.Implements.Muxer.class.getSuperclass());
+        Assert.assertEquals(FFmpeg.Implements.Format.class, FFmpeg.Implements.Device.class.getSuperclass());
     }
     
     /**
@@ -7502,7 +7502,7 @@ public class FFmpegTest {
      * @see FFmpeg.Implements.Demuxer
      */
     private void testImplementsDemuxer() throws Exception {
-        Assert.assertEquals("Format", FFmpeg.Implements.Demuxer.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(FFmpeg.Implements.Format.class, FFmpeg.Implements.Demuxer.class.getSuperclass());
         
         FFmpeg.Implements.Demuxer demuxer1;
         FFmpeg.Implements.Demuxer demuxer2;
@@ -7554,7 +7554,7 @@ public class FFmpegTest {
      * @see FFmpeg.Implements.Muxer
      */
     private void testImplementsMuxer() throws Exception {
-        Assert.assertEquals("Format", FFmpeg.Implements.Muxer.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(FFmpeg.Implements.Format.class, FFmpeg.Implements.Muxer.class.getSuperclass());
         
         FFmpeg.Implements.Muxer muxer1;
         FFmpeg.Implements.Muxer muxer2;
@@ -7606,7 +7606,7 @@ public class FFmpegTest {
      * @see FFmpeg.Implements.Device
      */
     private void testImplementsDevice() throws Exception {
-        Assert.assertEquals("Format", FFmpeg.Implements.Device.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(FFmpeg.Implements.Format.class, FFmpeg.Implements.Device.class.getSuperclass());
         
         FFmpeg.Implements.Device device1;
         FFmpeg.Implements.Device device2;
@@ -7658,7 +7658,7 @@ public class FFmpegTest {
      * @see FFmpeg.Implements.Codec
      */
     private void testImplementsCodec() throws Exception {
-        Assert.assertEquals("Implement", FFmpeg.Implements.Codec.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.Implements.class, "Implement"), FFmpeg.Implements.Codec.class.getSuperclass());
         
         FFmpeg.Implements.Codec codec1;
         FFmpeg.Implements.Codec codec2;
@@ -7725,7 +7725,7 @@ public class FFmpegTest {
         //class
         final Class<?> coder = TestAccess.getClass(FFmpeg.Implements.class, "Coder");
         Assert.assertNotNull(coder);
-        Assert.assertEquals("Implement", coder.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.Implements.class, "Implement"), coder.getSuperclass());
         
         //constants
         Assert.assertEquals("^\\s*(?<type>.)(?<hasFrameLevelMultithreading>.)(?<hasSliceLevelMultithreading>.)(?<isExperimental>.)(?<supportsDrawHorizontalBand>.)(?<supportsDirectRenderingMethod1>.)\\s+(?<name>[^\\s]+)\\s+(?<description>.+)\\s*$",
@@ -7750,8 +7750,8 @@ public class FFmpegTest {
         TestUtils.assertMethodExists(coder, "getImplementLinePattern");
         
         //subclasses
-        Assert.assertEquals(coder.getSimpleName(), FFmpeg.Implements.Decoder.class.getSuperclass().getSimpleName());
-        Assert.assertEquals(coder.getSimpleName(), FFmpeg.Implements.Encoder.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(coder, FFmpeg.Implements.Decoder.class.getSuperclass());
+        Assert.assertEquals(coder, FFmpeg.Implements.Encoder.class.getSuperclass());
     }
     
     /**
@@ -7761,7 +7761,7 @@ public class FFmpegTest {
      * @see FFmpeg.Implements.Decoder
      */
     private void testImplementsDecoder() throws Exception {
-        Assert.assertEquals("Coder", FFmpeg.Implements.Decoder.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.Implements.class, "Coder"), FFmpeg.Implements.Decoder.class.getSuperclass());
         
         FFmpeg.Implements.Decoder decoder1;
         FFmpeg.Implements.Decoder decoder2;
@@ -7825,7 +7825,7 @@ public class FFmpegTest {
      * @see FFmpeg.Implements.Encoder
      */
     private void testImplementsEncoder() throws Exception {
-        Assert.assertEquals("Coder", FFmpeg.Implements.Encoder.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.Implements.class, "Coder"), FFmpeg.Implements.Encoder.class.getSuperclass());
         
         FFmpeg.Implements.Encoder encoder1;
         FFmpeg.Implements.Encoder encoder2;
@@ -7889,7 +7889,7 @@ public class FFmpegTest {
      * @see FFmpeg.Implements.BitstreamFilter
      */
     private void testImplementsBitstreamFilter() throws Exception {
-        Assert.assertEquals("Implement", FFmpeg.Implements.BitstreamFilter.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.Implements.class, "Implement"), FFmpeg.Implements.BitstreamFilter.class.getSuperclass());
         
         FFmpeg.Implements.BitstreamFilter bitstreamFilter1;
         FFmpeg.Implements.BitstreamFilter bitstreamFilter2;
@@ -7921,7 +7921,7 @@ public class FFmpegTest {
      * @see FFmpeg.Implements.Protocol
      */
     private void testImplementsProtocol() throws Exception {
-        Assert.assertEquals("Implement", FFmpeg.Implements.Protocol.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.Implements.class, "Implement"), FFmpeg.Implements.Protocol.class.getSuperclass());
         
         FFmpeg.Implements.Protocol protocol1;
         FFmpeg.Implements.Protocol protocol2;
@@ -7973,7 +7973,7 @@ public class FFmpegTest {
      * @see FFmpeg.Implements.Filter
      */
     private void testImplementsFilter() throws Exception {
-        Assert.assertEquals("Implement", FFmpeg.Implements.Filter.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.Implements.class, "Implement"), FFmpeg.Implements.Filter.class.getSuperclass());
         
         FFmpeg.Implements.Filter filter1;
         FFmpeg.Implements.Filter filter2;
@@ -8033,7 +8033,7 @@ public class FFmpegTest {
      * @see FFmpeg.Implements.PixelFormat
      */
     private void testImplementsPixelFormat() throws Exception {
-        Assert.assertEquals("Implement", FFmpeg.Implements.PixelFormat.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.Implements.class, "Implement"), FFmpeg.Implements.PixelFormat.class.getSuperclass());
         
         FFmpeg.Implements.PixelFormat pixelFormat1;
         FFmpeg.Implements.PixelFormat pixelFormat2;
@@ -8105,7 +8105,7 @@ public class FFmpegTest {
      * @see FFmpeg.Implements.SampleFormat
      */
     private void testImplementsSampleFormat() throws Exception {
-        Assert.assertEquals("Implement", FFmpeg.Implements.SampleFormat.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.Implements.class, "Implement"), FFmpeg.Implements.SampleFormat.class.getSuperclass());
         
         FFmpeg.Implements.SampleFormat sampleFormat1;
         FFmpeg.Implements.SampleFormat sampleFormat2;
@@ -8153,7 +8153,7 @@ public class FFmpegTest {
      * @see FFmpeg.Implements.Channel
      */
     private void testImplementsChannel() throws Exception {
-        Assert.assertEquals("Implement", FFmpeg.Implements.Channel.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.Implements.class, "Implement"), FFmpeg.Implements.Channel.class.getSuperclass());
         
         FFmpeg.Implements.Channel channel1;
         FFmpeg.Implements.Channel channel2;
@@ -8201,7 +8201,7 @@ public class FFmpegTest {
      * @see FFmpeg.Implements.ChannelLayout
      */
     private void testImplementsChannelLayout() throws Exception {
-        Assert.assertEquals("Implement", FFmpeg.Implements.ChannelLayout.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.Implements.class, "Implement"), FFmpeg.Implements.ChannelLayout.class.getSuperclass());
         
         FFmpeg.Implements.ChannelLayout channelLayout1;
         FFmpeg.Implements.ChannelLayout channelLayout2;
@@ -8253,7 +8253,7 @@ public class FFmpegTest {
      * @see FFmpeg.Implements.Color
      */
     private void testImplementsColor() throws Exception {
-        Assert.assertEquals("Implement", FFmpeg.Implements.Color.class.getSuperclass().getSimpleName());
+        Assert.assertEquals(TestAccess.getClass(FFmpeg.Implements.class, "Implement"), FFmpeg.Implements.Color.class.getSuperclass());
         
         FFmpeg.Implements.Color color1;
         FFmpeg.Implements.Color color2;

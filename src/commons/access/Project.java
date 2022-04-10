@@ -10,6 +10,8 @@ package commons.access;
 import java.io.File;
 import java.util.regex.Matcher;
 
+import commons.object.string.EntityStringUtility;
+
 /**
  * Defines directories for the project.
  */
@@ -237,7 +239,7 @@ public final class Project {
         String justifiedPrefix = prefix.replaceAll("[\\\\/]+", Matcher.quoteReplacement(File.separator));
         String classPath = justifiedPrefix + (justifiedPrefix.endsWith(File.separator) ? "" : File.separator) +
                 clazz.getPackage().getName().replace(".", File.separator) +
-                (classOwned ? (File.separator + clazz.getSimpleName()) : "");
+                (classOwned ? (File.separator + EntityStringUtility.simpleClassString(clazz)) : "");
         return new File(projectDir.getPath(), classPath);
     }
     

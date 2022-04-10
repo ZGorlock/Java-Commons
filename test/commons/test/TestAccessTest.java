@@ -145,7 +145,7 @@ public class TestAccessTest {
         //standard
         retrievedClass = TestAccess.getClass(TestAccessTest.class, "TestClass");
         Assert.assertNotNull(retrievedClass);
-        Assert.assertEquals("TestClass", retrievedClass.getSimpleName());
+        Assert.assertEquals(TestClass.class, retrievedClass);
         TestUtils.assertFieldExists(retrievedClass, "field8");
         TestUtils.assertConstructorExists(retrievedClass, String.class, int.class, Long.class, boolean.class, Exception.class);
         TestUtils.assertMethodExists(retrievedClass, "method10");
@@ -155,7 +155,7 @@ public class TestAccessTest {
         //qualified name
         retrievedClass = TestAccess.getClass("commons.test.TestAccessTest$TestSubClass");
         Assert.assertNotNull(retrievedClass);
-        Assert.assertEquals("TestSubClass", retrievedClass.getSimpleName());
+        Assert.assertEquals(TestSubClass.class, retrievedClass);
         TestUtils.assertFieldExists(retrievedClass, "field9");
         TestUtils.assertConstructorExists(retrievedClass, String.class, int.class, Long.class, boolean.class, Exception.class);
         TestUtils.assertMethodExists(retrievedClass, "method10");
@@ -199,7 +199,7 @@ public class TestAccessTest {
         //standard
         retrievedInterface = TestAccess.getInterface(TestAccessTest.class, "TestInterface");
         Assert.assertNotNull(retrievedInterface);
-        Assert.assertEquals("TestInterface", retrievedInterface.getSimpleName());
+        Assert.assertEquals(TestInterface.class, retrievedInterface);
         TestUtils.assertFieldExists(retrievedInterface, "BASE_NAME");
         TestUtils.assertMethodExists(retrievedInterface, "getName");
         Assert.assertEquals("TestInterface", TestAccess.invokeInterfaceDefaultMethod(retrievedInterface, "getName"));
@@ -207,7 +207,7 @@ public class TestAccessTest {
         //qualified name
         retrievedInterface = TestAccess.getInterface("commons.test.TestAccessTest$TestInterface");
         Assert.assertNotNull(retrievedInterface);
-        Assert.assertEquals("TestInterface", retrievedInterface.getSimpleName());
+        Assert.assertEquals(TestInterface.class, retrievedInterface);
         TestUtils.assertFieldExists(retrievedInterface, "BASE_NAME");
         TestUtils.assertMethodExists(retrievedInterface, "getName");
         Assert.assertEquals("TestInterface", TestAccess.invokeInterfaceDefaultMethod(retrievedInterface, "getName"));
@@ -249,7 +249,7 @@ public class TestAccessTest {
         //standard
         retrievedEnum = TestAccess.getEnum(TestClass.class, "Enum0");
         Assert.assertNotNull(retrievedEnum);
-        Assert.assertEquals("Enum0", retrievedEnum.getSimpleName());
+        Assert.assertEquals(TestClass.Enum0.class, retrievedEnum);
         Assert.assertEquals(3, retrievedEnum.getEnumConstants().length);
         Assert.assertEquals("PUBLIC_VALUE_1 | PUBLIC_VALUE_2 | PUBLIC_VALUE_3",
                 Arrays.stream(retrievedEnum.getEnumConstants()).map(Object::toString).collect(Collectors.joining(" | ")));
@@ -259,7 +259,7 @@ public class TestAccessTest {
         //qualified name
         retrievedEnum = TestAccess.getEnum("commons.test.TestAccessTest$TestClass$Enum1");
         Assert.assertNotNull(retrievedEnum);
-        Assert.assertEquals("Enum1", retrievedEnum.getSimpleName());
+        Assert.assertEquals(TestClass.Enum1.class, retrievedEnum);
         Assert.assertEquals(3, retrievedEnum.getEnumConstants().length);
         Assert.assertEquals("PRIVATE_VALUE_1 | PRIVATE_VALUE_2 | PRIVATE_VALUE_3",
                 Arrays.stream(retrievedEnum.getEnumConstants()).map(Object::toString).collect(Collectors.joining(" | ")));
