@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import commons.object.collection.ListUtility;
 import commons.test.TestUtils;
@@ -124,6 +125,8 @@ public class SortersTest {
         final List<String> testSorted1 = testElements1.stream().sorted().collect(Collectors.toList());
         final List<Integer> testSorted2 = testElements2.stream().sorted().collect(Collectors.toList());
         final List<Double> testSorted3 = testElements3.stream().sorted().collect(Collectors.toList());
+        final List<List<?>> testElementSets = List.of(testElements1, testElements2, testElements3);
+        final List<List<?>> testSortedSets = List.of(testSorted1, testSorted2, testSorted3);
         List<String> sorted1;
         List<Integer> sorted2;
         List<Double> sorted3;
@@ -140,10 +143,8 @@ public class SortersTest {
         TestUtils.assertListEquals(sorted3, testSorted3);
         
         //null
-        List.of(testElements1, testElements2, testElements3).forEach(testElements ->
-                testElements.add(2, null));
-        List.of(testSorted1, testSorted2, testSorted3).forEach(testSorted ->
-                testSorted.add(0, null));
+        testElementSets.forEach(testSet -> testSet.add(2, null));
+        testSortedSets.forEach(testSet -> testSet.add(0, null));
         sorted1 = testElements1.stream().sorted(Sorters.sort()).collect(Collectors.toList());
         Assert.assertNotNull(sorted1);
         TestUtils.assertListEquals(sorted1, testSorted1);
@@ -153,13 +154,13 @@ public class SortersTest {
         sorted3 = testElements3.stream().sorted(Sorters.sort()).collect(Collectors.toList());
         Assert.assertNotNull(sorted3);
         TestUtils.assertListEquals(sorted3, testSorted3);
-        List.of(testElements1, testElements2, testElements3).forEach(testElements ->
-                testElements.removeIf(Objects::isNull));
-        List.of(testSorted1, testSorted2, testSorted3).forEach(testSorted ->
-                testSorted.removeIf(Objects::isNull));
+        Stream.concat(testElementSets.stream(), testSortedSets.stream()).forEach(testSet ->
+                testSet.removeIf(Objects::isNull));
         
         //uniqueness
-        Assert.assertSame(Sorters.sort(), Sorters.sort());
+        Assert.assertSame(
+                Sorters.sort(),
+                Sorters.sort());
     }
     
     /**
@@ -176,6 +177,8 @@ public class SortersTest {
         final List<String> testSorted1 = ListUtility.clone(testElements1);
         final List<Integer> testSorted2 = ListUtility.clone(testElements2);
         final List<Double> testSorted3 = ListUtility.clone(testElements3);
+        final List<List<?>> testElementSets = List.of(testElements1, testElements2, testElements3);
+        final List<List<?>> testSortedSets = List.of(testSorted1, testSorted2, testSorted3);
         List<String> sorted1;
         List<Integer> sorted2;
         List<Double> sorted3;
@@ -192,10 +195,8 @@ public class SortersTest {
         TestUtils.assertListEquals(sorted3, testSorted3);
         
         //null
-        List.of(testElements1, testElements2, testElements3).forEach(testElements ->
-                testElements.add(2, null));
-        List.of(testSorted1, testSorted2, testSorted3).forEach(testSorted ->
-                testSorted.add(2, null));
+        Stream.concat(testElementSets.stream(), testSortedSets.stream()).forEach(testSet ->
+                testSet.add(2, null));
         sorted1 = testElements1.stream().sorted(Sorters.preserve()).collect(Collectors.toList());
         Assert.assertNotNull(sorted1);
         TestUtils.assertListEquals(sorted1, testSorted1);
@@ -205,13 +206,13 @@ public class SortersTest {
         sorted3 = testElements3.stream().sorted(Sorters.preserve()).collect(Collectors.toList());
         Assert.assertNotNull(sorted3);
         TestUtils.assertListEquals(sorted3, testSorted3);
-        List.of(testElements1, testElements2, testElements3).forEach(testElements ->
-                testElements.removeIf(Objects::isNull));
-        List.of(testSorted1, testSorted2, testSorted3).forEach(testSorted ->
-                testSorted.removeIf(Objects::isNull));
+        Stream.concat(testElementSets.stream(), testSortedSets.stream()).forEach(testSet ->
+                testSet.removeIf(Objects::isNull));
         
         //uniqueness
-        Assert.assertNotSame(Sorters.preserve(), Sorters.preserve());
+        Assert.assertNotSame(
+                Sorters.preserve(),
+                Sorters.preserve());
     }
     
     /**
@@ -228,6 +229,8 @@ public class SortersTest {
         final List<String> testSorted1 = IntStream.range(0, testElements1.size()).mapToObj(i -> testElements1.get(testElements1.size() - i - 1)).collect(Collectors.toList());
         final List<Integer> testSorted2 = IntStream.range(0, testElements2.size()).mapToObj(i -> testElements2.get(testElements2.size() - i - 1)).collect(Collectors.toList());
         final List<Double> testSorted3 = IntStream.range(0, testElements3.size()).mapToObj(i -> testElements3.get(testElements3.size() - i - 1)).collect(Collectors.toList());
+        final List<List<?>> testElementSets = List.of(testElements1, testElements2, testElements3);
+        final List<List<?>> testSortedSets = List.of(testSorted1, testSorted2, testSorted3);
         List<String> sorted1;
         List<Integer> sorted2;
         List<Double> sorted3;
@@ -244,10 +247,8 @@ public class SortersTest {
         TestUtils.assertListEquals(sorted3, testSorted3);
         
         //null
-        List.of(testElements1, testElements2, testElements3).forEach(testElements ->
-                testElements.add(2, null));
-        List.of(testSorted1, testSorted2, testSorted3).forEach(testSorted ->
-                testSorted.add(testSorted.size() - 2, null));
+        testElementSets.forEach(testSet -> testSet.add(2, null));
+        testSortedSets.forEach(testSet -> testSet.add((testSet.size() - 2), null));
         sorted1 = testElements1.stream().sorted(Sorters.reverse()).collect(Collectors.toList());
         Assert.assertNotNull(sorted1);
         TestUtils.assertListEquals(sorted1, testSorted1);
@@ -257,13 +258,13 @@ public class SortersTest {
         sorted3 = testElements3.stream().sorted(Sorters.reverse()).collect(Collectors.toList());
         Assert.assertNotNull(sorted3);
         TestUtils.assertListEquals(sorted3, testSorted3);
-        List.of(testElements1, testElements2, testElements3).forEach(testElements ->
-                testElements.removeIf(Objects::isNull));
-        List.of(testSorted1, testSorted2, testSorted3).forEach(testSorted ->
-                testSorted.removeIf(Objects::isNull));
+        Stream.concat(testElementSets.stream(), testSortedSets.stream()).forEach(testSet ->
+                testSet.removeIf(Objects::isNull));
         
         //uniqueness
-        Assert.assertNotSame(Sorters.reverse(), Sorters.reverse());
+        Assert.assertNotSame(
+                Sorters.reverse(),
+                Sorters.reverse());
     }
     
     /**
@@ -280,6 +281,8 @@ public class SortersTest {
         final List<String> testSorted1 = ListUtility.clone(testElements1);
         final List<Integer> testSorted2 = ListUtility.clone(testElements2);
         final List<Double> testSorted3 = ListUtility.clone(testElements3);
+        final List<List<?>> testElementSets = List.of(testElements1, testElements2, testElements3);
+        final List<List<?>> testSortedSets = List.of(testSorted1, testSorted2, testSorted3);
         List<String> sorted1;
         List<Integer> sorted2;
         List<Double> sorted3;
@@ -299,10 +302,8 @@ public class SortersTest {
         TestUtils.assertListNotEquals(sorted3, testSorted3, true);
         
         //null
-        List.of(testElements1, testElements2, testElements3).forEach(testElements ->
-                testElements.add(2, null));
-        List.of(testSorted1, testSorted2, testSorted3).forEach(testSorted ->
-                testSorted.add(2, null));
+        Stream.concat(testElementSets.stream(), testSortedSets.stream()).forEach(testSet ->
+                testSet.add(2, null));
         sorted1 = testElements1.stream().sorted(Sorters.shuffle()).collect(Collectors.toList());
         Assert.assertNotNull(sorted1);
         TestUtils.assertListEquals(sorted1, testSorted1, false);
@@ -315,13 +316,13 @@ public class SortersTest {
         Assert.assertNotNull(sorted3);
         TestUtils.assertListEquals(sorted3, testSorted3, false);
         TestUtils.assertListNotEquals(sorted3, testSorted3, true);
-        List.of(testElements1, testElements2, testElements3).forEach(testElements ->
-                testElements.removeIf(Objects::isNull));
-        List.of(testSorted1, testSorted2, testSorted3).forEach(testSorted ->
-                testSorted.removeIf(Objects::isNull));
+        Stream.concat(testElementSets.stream(), testSortedSets.stream()).forEach(testSet ->
+                testSet.removeIf(Objects::isNull));
         
         //uniqueness
-        Assert.assertNotSame(Sorters.shuffle(), Sorters.shuffle());
+        Assert.assertNotSame(
+                Sorters.shuffle(),
+                Sorters.shuffle());
     }
     
 }
