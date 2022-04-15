@@ -7,6 +7,7 @@
 
 package commons.lambda.stream.mapper;
 
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import commons.lambda.function.checked.CheckedConsumer;
@@ -29,17 +30,53 @@ public final class Mappers {
     //Static Methods
     
     /**
-     * Creates a custom mapper that modifies a stream.
+     * Performs an inline action on an element.
      *
-     * @param modifier The consumer that modifies the object.
-     * @param <T>      The type of the object.
-     * @return The object.
+     * @param element The element.
+     * @param action  The consumer that performs an action on the element.
+     * @param <T>     The type of the element.
+     * @return The element.
      */
-    public static <T> Function<T, T> modify(CheckedConsumer<T> modifier) {
-        return e -> {
-            modifier.accept(e);
-            return e;
-        };
+    public static <T> T perform(T element, Consumer<T> action) {
+        action.accept(element);
+        return element;
+    }
+    
+    /**
+     * Tries to perform an inline action on an element.
+     *
+     * @param element The element.
+     * @param action  The consumer that attempts to performs an action on the element, ignoring any exceptions.
+     * @param <T>     The type of the element.
+     * @return The element.
+     * @see #perform(Object, Consumer)
+     */
+    public static <T> T tryPerform(T element, CheckedConsumer<T> action) {
+        return perform(element, action);
+    }
+    
+    /**
+     * Creates a custom mapper that performs an action on each element in a stream.
+     *
+     * @param action The consumer that performs an action on an element.
+     * @param <T>    The type of the elements in the stream.
+     * @return The element.
+     * @see #perform(Object, Consumer)
+     */
+    public static <T> Function<T, T> forEach(Consumer<T> action) {
+        return e -> perform(e, action);
+    }
+    
+    /**
+     * Creates a custom mapper that tries to perform an action on each element in a stream.
+     *
+     * @param action The consumer that attempts to perform an action on an element, ignoring any exceptions.
+     * @param <T>    The type of the elements in the stream.
+     * @return The element.
+     * @see #forEach(Consumer)
+     */
+    public static <T> Function<T, T> tryForEach(CheckedConsumer<T> action) {
+        return forEach(action);
     }
     
 }
