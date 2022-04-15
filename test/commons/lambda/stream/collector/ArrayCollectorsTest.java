@@ -135,10 +135,10 @@ public class ArrayCollectorsTest {
      */
     @Test
     public void testToArray() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final String[] testArray1 = (String[]) testArrays[0];
         final String[] testArray2 = (String[]) testArrays[1];
         final Boolean[] testArray3 = (Boolean[]) testArrays[2];
@@ -448,10 +448,10 @@ public class ArrayCollectorsTest {
      */
     @Test
     public void testToByteArray() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Byte[] testArray1 = ((List<String>) testStreamElements[0]).stream().map(String::length).map(Number::byteValue).toArray(Byte[]::new);
         final Byte[] testArray2 = ((List<String>) testStreamElements[1]).stream().map(e -> e.indexOf(':')).map(Number::byteValue).toArray(Byte[]::new);
         final Byte[] testArray3 = ((List<Integer>) testStreamElements[2]).stream().map(Number::byteValue).toArray(Byte[]::new);
@@ -515,10 +515,10 @@ public class ArrayCollectorsTest {
      */
     @Test
     public void testToShortArray() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Short[] testArray1 = ((List<String>) testStreamElements[0]).stream().map(String::length).map(Number::shortValue).toArray(Short[]::new);
         final Short[] testArray2 = ((List<String>) testStreamElements[1]).stream().map(e -> e.indexOf(':')).map(Number::shortValue).toArray(Short[]::new);
         final Short[] testArray3 = ((List<Integer>) testStreamElements[2]).stream().map(Number::shortValue).toArray(Short[]::new);
@@ -582,10 +582,10 @@ public class ArrayCollectorsTest {
      */
     @Test
     public void testToIntArray() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Integer[] testArray1 = ((List<String>) testStreamElements[0]).stream().map(String::length).map(Number::intValue).toArray(Integer[]::new);
         final Integer[] testArray2 = ((List<String>) testStreamElements[1]).stream().map(e -> e.indexOf(':')).map(Number::intValue).toArray(Integer[]::new);
         final Integer[] testArray3 = ((List<Integer>) testStreamElements[2]).stream().map(Number::intValue).toArray(Integer[]::new);
@@ -649,10 +649,10 @@ public class ArrayCollectorsTest {
      */
     @Test
     public void testToLongArray() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Long[] testArray1 = ((List<String>) testStreamElements[0]).stream().map(String::length).map(Number::longValue).toArray(Long[]::new);
         final Long[] testArray2 = ((List<String>) testStreamElements[1]).stream().map(e -> e.indexOf(':')).map(Number::longValue).toArray(Long[]::new);
         final Long[] testArray3 = ((List<Integer>) testStreamElements[2]).stream().map(Number::longValue).toArray(Long[]::new);
@@ -716,10 +716,10 @@ public class ArrayCollectorsTest {
      */
     @Test
     public void testToFloatArray() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Float[] testArray1 = ((List<String>) testStreamElements[0]).stream().map(String::length).map(Number::floatValue).toArray(Float[]::new);
         final Float[] testArray2 = ((List<String>) testStreamElements[1]).stream().map(e -> e.indexOf(':')).map(Number::floatValue).toArray(Float[]::new);
         final Float[] testArray3 = ((List<Integer>) testStreamElements[2]).stream().map(Number::floatValue).toArray(Float[]::new);
@@ -783,10 +783,10 @@ public class ArrayCollectorsTest {
      */
     @Test
     public void testToDoubleArray() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Double[] testArray1 = ((List<String>) testStreamElements[0]).stream().map(String::length).map(Number::doubleValue).toArray(Double[]::new);
         final Double[] testArray2 = ((List<String>) testStreamElements[1]).stream().map(e -> e.indexOf(':')).map(Number::doubleValue).toArray(Double[]::new);
         final Double[] testArray3 = ((List<Integer>) testStreamElements[2]).stream().map(Number::doubleValue).toArray(Double[]::new);
@@ -850,10 +850,10 @@ public class ArrayCollectorsTest {
      */
     @Test
     public void testToCharArray() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Character[] testArray1 = ((List<String>) testStreamElements[0]).stream().map(e -> e.charAt(0)).toArray(Character[]::new);
         final Character[] testArray2 = ((List<String>) testStreamElements[1]).stream().map(e -> e.charAt(e.indexOf(":") + 1)).toArray(Character[]::new);
         final Character[] testArray3 = ((List<Integer>) testStreamElements[2]).stream().map(e -> (char) e.intValue()).toArray(Character[]::new);
@@ -917,10 +917,10 @@ public class ArrayCollectorsTest {
      */
     @Test
     public void testToStringArray() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final String[] testArray1 = ((List<String>) testStreamElements[0]).stream().map(String::toUpperCase).toArray(String[]::new);
         final String[] testArray2 = ((List<String>) testStreamElements[1]).stream().map(e -> e.substring(e.indexOf(':') + 1)).toArray(String[]::new);
         final String[] testArray3 = ((List<Integer>) testStreamElements[2]).stream().map(StringUtility::spaces).toArray(String[]::new);

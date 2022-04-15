@@ -19,6 +19,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import commons.object.collection.ListUtility;
 import commons.object.string.StringUtility;
 import commons.test.TestAccess;
 import commons.test.TestUtils;
@@ -189,10 +190,10 @@ public class ListCollectorsTest {
      */
     @Test
     public void testToList() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final List<String> testList1 = (List<String>) testLists[0];
         final List<String> testList2 = (List<String>) testLists[1];
         final List<Boolean> testList3 = (List<Boolean>) testLists[2];
@@ -515,10 +516,10 @@ public class ListCollectorsTest {
      */
     @Test
     public void testToArrayList() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final List<String> testList1 = (List<String>) testLists[0];
         final List<String> testList2 = (List<String>) testLists[1];
         final List<Boolean> testList3 = (List<Boolean>) testLists[2];
@@ -645,10 +646,10 @@ public class ListCollectorsTest {
      */
     @Test
     public void testToUnmodifiableArrayList() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final List<String> testList1 = (List<String>) testLists[0];
         final List<String> testList2 = (List<String>) testLists[1];
         final List<Boolean> testList3 = (List<Boolean>) testLists[2];
@@ -721,10 +722,10 @@ public class ListCollectorsTest {
      */
     @Test
     public void testToSynchronizedArrayList() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final List<String> testList1 = (List<String>) testLists[0];
         final List<String> testList2 = (List<String>) testLists[1];
         final List<Boolean> testList3 = (List<Boolean>) testLists[2];
@@ -799,10 +800,10 @@ public class ListCollectorsTest {
      */
     @Test
     public void testToLinkedList() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final List<String> testList1 = (List<String>) testLists[0];
         final List<String> testList2 = (List<String>) testLists[1];
         final List<Boolean> testList3 = (List<Boolean>) testLists[2];
@@ -929,10 +930,10 @@ public class ListCollectorsTest {
      */
     @Test
     public void testToUnmodifiableLinkedList() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final List<String> testList1 = (List<String>) testLists[0];
         final List<String> testList2 = (List<String>) testLists[1];
         final List<Boolean> testList3 = (List<Boolean>) testLists[2];
@@ -1005,10 +1006,10 @@ public class ListCollectorsTest {
      */
     @Test
     public void testToSynchronizedLinkedList() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final List<String> testList1 = (List<String>) testLists[0];
         final List<String> testList2 = (List<String>) testLists[1];
         final List<Boolean> testList3 = (List<Boolean>) testLists[2];
@@ -1083,10 +1084,10 @@ public class ListCollectorsTest {
      */
     @Test
     public void testToStack() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final List<String> testList1 = (List<String>) testLists[0];
         final List<String> testList2 = (List<String>) testLists[1];
         final List<Boolean> testList3 = (List<Boolean>) testLists[2];
@@ -1213,10 +1214,10 @@ public class ListCollectorsTest {
      */
     @Test
     public void testToUnmodifiableStack() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final List<String> testList1 = (List<String>) testLists[0];
         final List<String> testList2 = (List<String>) testLists[1];
         final List<Boolean> testList3 = (List<Boolean>) testLists[2];
@@ -1289,10 +1290,10 @@ public class ListCollectorsTest {
      */
     @Test
     public void testToSynchronizedStack() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final List<String> testList1 = (List<String>) testLists[0];
         final List<String> testList2 = (List<String>) testLists[1];
         final List<Boolean> testList3 = (List<Boolean>) testLists[2];
@@ -1367,10 +1368,10 @@ public class ListCollectorsTest {
      */
     @Test
     public void testToVector() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final List<String> testList1 = (List<String>) testLists[0];
         final List<String> testList2 = (List<String>) testLists[1];
         final List<Boolean> testList3 = (List<Boolean>) testLists[2];
@@ -1497,10 +1498,10 @@ public class ListCollectorsTest {
      */
     @Test
     public void testToUnmodifiableVector() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final List<String> testList1 = (List<String>) testLists[0];
         final List<String> testList2 = (List<String>) testLists[1];
         final List<Boolean> testList3 = (List<Boolean>) testLists[2];
@@ -1573,10 +1574,10 @@ public class ListCollectorsTest {
      */
     @Test
     public void testToSynchronizedVector() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final List<String> testList1 = (List<String>) testLists[0];
         final List<String> testList2 = (List<String>) testLists[1];
         final List<Boolean> testList3 = (List<Boolean>) testLists[2];
@@ -1638,6 +1639,79 @@ public class ListCollectorsTest {
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 Stream.of(1, 2, 3).collect(ListCollectors.toSynchronizedVector(null)));
+    }
+    
+    /**
+     * JUnit test of addTo.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListCollectors#addTo(List)
+     */
+    @Test
+    public void testAddTo() throws Exception {
+        final List<String> testInitial1 = ListUtility.listOf("A", "B", "C");
+        final List<String> testInitial2 = ListUtility.emptyList(LinkedList.class);
+        final List<Boolean> testInitial3 = ListUtility.listOf(Stack.class, true);
+        final List<Integer> testInitial4 = ListUtility.listOf(Vector.class, 0, 0, 0, -8, 1, 0, 3, 3);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
+        final List<String> testList1 = ListUtility.merge(testInitial1, (List<String>) testLists[0]);
+        final List<String> testList2 = ListUtility.merge(testInitial2, (List<String>) testLists[1]);
+        final List<Boolean> testList3 = ListUtility.merge(testInitial3, (List<Boolean>) testLists[2]);
+        final List<Integer> testList4 = ListUtility.merge(testInitial4, (List<Integer>) testLists[3]);
+        List<String> list1;
+        List<String> list2;
+        List<Boolean> list3;
+        List<Integer> list4;
+        
+        //standard
+        list1 = testElements1.stream()
+                .collect(ListCollectors.addTo(testInitial1));
+        Assert.assertNotNull(list1);
+        Assert.assertTrue(list1 instanceof ArrayList);
+        TestUtils.assertListEquals(list1, testList1);
+        TestUtils.assertListEquals(testInitial1, testList1);
+        Assert.assertSame(testInitial1, list1);
+        list2 = testElements2.stream()
+                .map(e -> StringUtility.tokenize(e, ":").get(e.length() / 10))
+                .collect(ListCollectors.addTo(testInitial2));
+        Assert.assertNotNull(list2);
+        Assert.assertTrue(list2 instanceof LinkedList);
+        TestUtils.assertListEquals(list2, testList2);
+        TestUtils.assertListEquals(testInitial2, testList2);
+        Assert.assertSame(testInitial2, list2);
+        list3 = testElements3.stream()
+                .map(e -> (e > 3))
+                .collect(ListCollectors.addTo(testInitial3));
+        Assert.assertNotNull(list3);
+        Assert.assertTrue(list3 instanceof Stack);
+        TestUtils.assertListEquals(list3, testList3);
+        TestUtils.assertListEquals(testInitial3, testList3);
+        Assert.assertSame(testInitial3, list3);
+        list4 = testElements4.stream()
+                .map(e -> (int) e.get(0))
+                .collect(ListCollectors.addTo(testInitial4));
+        Assert.assertNotNull(list4);
+        Assert.assertTrue(list4 instanceof Vector);
+        TestUtils.assertListEquals(list4, testList4);
+        TestUtils.assertListEquals(testInitial4, testList4);
+        Assert.assertSame(testInitial4, list4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                ListCollectors.addTo(testInitial1),
+                ListCollectors.addTo(testInitial1));
+        Assert.assertNotSame(
+                ListCollectors.addTo(ListUtility.emptyList()),
+                ListCollectors.addTo(ListUtility.emptyList()));
+        
+        //invalid
+        TestUtils.assertException(UnsupportedOperationException.class, () ->
+                Stream.of(1, 2, 3).collect(ListCollectors.addTo(ListUtility.unmodifiableList())));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Stream.of(1, 2, 3).collect(ListCollectors.addTo(null)));
     }
     
 }

@@ -21,8 +21,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
 import commons.object.string.StringUtility;
 import commons.test.TestAccess;
@@ -72,16 +74,16 @@ public class MapCollectorsTest {
      * A set of maps corresponding to the streams to use for testing.
      */
     private static final Map<?, ?>[] testMaps = new Map<?, ?>[] {
-            MapUtility.mapOf(
+            MapUtility.mapOf(LinkedHashMap.class,
                     new String[] {"hello", "world", "test"},
                     new String[] {"hello", "world", "test"}),
-            MapUtility.mapOf(
-                    new String[] {"test", "key", "other"},
-                    new String[] {"else", "value", "another"}),
-            MapUtility.mapOf(
+            MapUtility.mapOf(LinkedHashMap.class,
+                    new String[] {"key", "other", "test"},
+                    new String[] {"value", "another", "else"}),
+            MapUtility.mapOf(LinkedHashMap.class,
                     new Integer[] {1, 4, 11},
                     new Boolean[] {false, true, true}),
-            MapUtility.mapOf(
+            MapUtility.mapOf(LinkedHashMap.class,
                     new Integer[] {0, 9, -4, 10},
                     new String[] {"test", "value", "another", "else"})};
     
@@ -192,10 +194,10 @@ public class MapCollectorsTest {
      */
     @Test
     public void testToMap() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Map<String, String> testMap1 = (Map<String, String>) testMaps[0];
         final Map<String, String> testMap2 = (Map<String, String>) testMaps[1];
         final Map<Integer, Boolean> testMap3 = (Map<Integer, Boolean>) testMaps[2];
@@ -510,6 +512,105 @@ public class MapCollectorsTest {
     }
     
     /**
+     * JUnit test of toEntry.
+     *
+     * @throws Exception When there is an exception.
+     * @see MapCollectors#toEntry(Function, Function)
+     */
+    @Test
+    public void testToEntry() throws Exception {
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = ListUtility.subList((List<String>) testStreamElements[1], 1);
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
+        final List<Map.Entry<String, String>> testEntries1 = ListUtility.toList(((LinkedHashMap<String, String>) testMaps[0]).entrySet());
+        final List<Map.Entry<String, String>> testEntries2 = ListUtility.toList(((LinkedHashMap<String, String>) testMaps[1]).entrySet());
+        final List<Map.Entry<Integer, Boolean>> testEntries3 = ListUtility.toList(((LinkedHashMap<Integer, Boolean>) testMaps[2]).entrySet());
+        final List<Map.Entry<Integer, String>> testEntries4 = ListUtility.toList(((LinkedHashMap<Integer, String>) testMaps[3]).entrySet());
+        List<Map.Entry<String, String>> entries1;
+        List<Map.Entry<String, String>> entries2;
+        List<Map.Entry<Integer, Boolean>> entries3;
+        List<Map.Entry<Integer, String>> entries4;
+        
+        //standard
+        IntStream.range(0, testElements1.size()).forEach(i ->
+                Assert.assertEquals(testEntries1.get(i), MapCollectors.toEntry(
+                                Function.identity(), Function.identity())
+                        .apply(testElements1.get(i))));
+        IntStream.range(0, testElements2.size()).forEach(i ->
+                Assert.assertEquals(testEntries2.get(i), MapCollectors.toEntry(
+                                ((String e) -> StringUtility.lSnip(e, e.indexOf(':'))), ((String e) -> StringUtility.rSnip(e, (e.length() - e.indexOf(':') - 1))))
+                        .apply(testElements2.get(i))));
+        IntStream.range(0, testElements3.size()).forEach(i ->
+                Assert.assertEquals(testEntries3.get(i), MapCollectors.toEntry(
+                                Function.identity(), ((Integer e) -> (e > 3)))
+                        .apply(testElements3.get(i))));
+        IntStream.range(0, testElements4.size()).forEach(i ->
+                Assert.assertEquals(testEntries4.get(i), MapCollectors.toEntry(
+                                ((List<Object> e) -> (int) e.get(0)), ((List<Object> e) -> (String) e.get(1)))
+                        .apply(testElements4.get(i))));
+        
+        //mapper
+        entries1 = testElements1.stream().map(MapCollectors.toEntry(
+                        Function.identity(), Function.identity()))
+                .collect(Collectors.toList());
+        Assert.assertNotNull(entries1);
+        TestUtils.assertListEquals(entries1, testEntries1);
+        entries2 = testElements2.stream().map(MapCollectors.toEntry(
+                        (e -> StringUtility.lSnip(e, e.indexOf(':'))), (e -> StringUtility.rSnip(e, (e.length() - e.indexOf(':') - 1)))))
+                .collect(Collectors.toList());
+        Assert.assertNotNull(entries2);
+        TestUtils.assertListEquals(entries2, testEntries2);
+        entries3 = testElements3.stream().map(MapCollectors.toEntry(
+                        Function.identity(), (e -> (e > 3))))
+                .collect(Collectors.toList());
+        Assert.assertNotNull(entries3);
+        TestUtils.assertListEquals(entries3, testEntries3);
+        entries4 = testElements4.stream().map(MapCollectors.toEntry(
+                        (e -> (int) e.get(0)), (e -> (String) e.get(1))))
+                .collect(Collectors.toList());
+        Assert.assertNotNull(entries4);
+        TestUtils.assertListEquals(entries4, testEntries4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.toEntry(Function.identity(), Function.identity()),
+                MapCollectors.toEntry(Function.identity(), Function.identity()));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapCollectors.toEntry(Object::toString, Function.identity()).apply(null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapCollectors.toEntry(Function.identity(), Object::toString).apply(null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapCollectors.toEntry(Object::toString, Object::toString).apply(null));
+        TestUtils.assertException(IndexOutOfBoundsException.class, "Index 0 out of bounds for length 0", () ->
+                MapCollectors.toEntry(((List<Object> e) -> e.get(0)), Function.identity()).apply(ListUtility.emptyList()));
+        TestUtils.assertException(IndexOutOfBoundsException.class, "Index 0 out of bounds for length 0", () ->
+                MapCollectors.toEntry(Function.identity(), ((List<Object> e) -> e.get(0))).apply(ListUtility.emptyList()));
+        TestUtils.assertException(IndexOutOfBoundsException.class, "Index 0 out of bounds for length 0", () ->
+                MapCollectors.toEntry(((List<Object> e) -> e.get(0)), ((List<Object> e) -> e.get(0))).apply(ListUtility.emptyList()));
+        TestUtils.assertNoException(() ->
+                MapCollectors.toEntry(null, Function.identity()));
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapCollectors.toEntry(null, Function.identity()).apply(1));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Stream.of(1, 2, 3).map(MapCollectors.toEntry(null, Function.identity())).collect(Collectors.toList()));
+        TestUtils.assertNoException(() ->
+                MapCollectors.toEntry(Function.identity(), null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapCollectors.toEntry(Function.identity(), null).apply(1));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Stream.of(1, 2, 3).map(MapCollectors.toEntry(Function.identity(), null)).collect(Collectors.toList()));
+        TestUtils.assertNoException(() ->
+                MapCollectors.toEntry(null, null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapCollectors.toEntry(null, null).apply(1));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Stream.of(1, 2, 3).map(MapCollectors.toEntry(null, null)).collect(Collectors.toList()));
+    }
+    
+    /**
      * JUnit test of toHashMap.
      *
      * @throws Exception When there is an exception.
@@ -520,10 +621,10 @@ public class MapCollectorsTest {
      */
     @Test
     public void testToHashMap() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Map<String, String> testMap1 = (Map<String, String>) testMaps[0];
         final Map<String, String> testMap2 = (Map<String, String>) testMaps[1];
         final Map<Integer, Boolean> testMap3 = (Map<Integer, Boolean>) testMaps[2];
@@ -655,10 +756,10 @@ public class MapCollectorsTest {
      */
     @Test
     public void testToUnmodifiableHashMap() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Map<String, String> testMap1 = (Map<String, String>) testMaps[0];
         final Map<String, String> testMap2 = (Map<String, String>) testMaps[1];
         final Map<Integer, Boolean> testMap3 = (Map<Integer, Boolean>) testMaps[2];
@@ -734,10 +835,10 @@ public class MapCollectorsTest {
      */
     @Test
     public void testToSynchronizedHashMap() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Map<String, String> testMap1 = (Map<String, String>) testMaps[0];
         final Map<String, String> testMap2 = (Map<String, String>) testMaps[1];
         final Map<Integer, Boolean> testMap3 = (Map<Integer, Boolean>) testMaps[2];
@@ -815,10 +916,10 @@ public class MapCollectorsTest {
      */
     @Test
     public void testToLinkedHashMap() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Map<String, String> testMap1 = (Map<String, String>) testMaps[0];
         final Map<String, String> testMap2 = (Map<String, String>) testMaps[1];
         final Map<Integer, Boolean> testMap3 = (Map<Integer, Boolean>) testMaps[2];
@@ -950,10 +1051,10 @@ public class MapCollectorsTest {
      */
     @Test
     public void testToUnmodifiableLinkedHashMap() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Map<String, String> testMap1 = (Map<String, String>) testMaps[0];
         final Map<String, String> testMap2 = (Map<String, String>) testMaps[1];
         final Map<Integer, Boolean> testMap3 = (Map<Integer, Boolean>) testMaps[2];
@@ -1029,10 +1130,10 @@ public class MapCollectorsTest {
      */
     @Test
     public void testToSynchronizedLinkedHashMap() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Map<String, String> testMap1 = (Map<String, String>) testMaps[0];
         final Map<String, String> testMap2 = (Map<String, String>) testMaps[1];
         final Map<Integer, Boolean> testMap3 = (Map<Integer, Boolean>) testMaps[2];
@@ -1110,10 +1211,10 @@ public class MapCollectorsTest {
      */
     @Test
     public void testToTreeMap() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Map<String, String> testMap1 = (Map<String, String>) testMaps[0];
         final Map<String, String> testMap2 = (Map<String, String>) testMaps[1];
         final Map<Integer, Boolean> testMap3 = (Map<Integer, Boolean>) testMaps[2];
@@ -1245,10 +1346,10 @@ public class MapCollectorsTest {
      */
     @Test
     public void testToUnmodifiableTreeMap() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Map<String, String> testMap1 = (Map<String, String>) testMaps[0];
         final Map<String, String> testMap2 = (Map<String, String>) testMaps[1];
         final Map<Integer, Boolean> testMap3 = (Map<Integer, Boolean>) testMaps[2];
@@ -1324,10 +1425,10 @@ public class MapCollectorsTest {
      */
     @Test
     public void testToSynchronizedTreeMap() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Map<String, String> testMap1 = (Map<String, String>) testMaps[0];
         final Map<String, String> testMap2 = (Map<String, String>) testMaps[1];
         final Map<Integer, Boolean> testMap3 = (Map<Integer, Boolean>) testMaps[2];
@@ -1404,10 +1505,10 @@ public class MapCollectorsTest {
      */
     @Test
     public void testMapEachTo() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Map<String, Integer> testMap1 = ((List<String>) testStreamElements[0]).stream().collect(Collectors.toMap(Function.identity(), (e -> 0)));
         final Map<String, Integer> testMap2 = ((List<String>) testStreamElements[1]).stream().collect(Collectors.toMap(Function.identity(), String::length));
         final Map<Integer, Long> testMap3 = ((List<Integer>) testStreamElements[2]).stream().collect(Collectors.toMap(Function.identity(), Long::valueOf));
@@ -1473,10 +1574,10 @@ public class MapCollectorsTest {
      */
     @Test
     public void testToCounterMap() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Map<String, Integer> testMap1 = ((List<String>) testStreamElements[0]).stream().collect(Collectors.toMap(Function.identity(), (e -> 0)));
         final Map<String, Integer> testMap2 = ((List<String>) testStreamElements[1]).stream().collect(Collectors.toMap(Function.identity(), (e -> 0)));
         final Map<Integer, Integer> testMap3 = ((List<Integer>) testStreamElements[2]).stream().collect(Collectors.toMap(Function.identity(), (e -> 0)));
@@ -1518,10 +1619,10 @@ public class MapCollectorsTest {
      */
     @Test
     public void testToAtomicCounterMap() throws Exception {
-        final List<String> testElements1 = ((List<String>) testStreamElements[0]);
-        final List<String> testElements2 = ((List<String>) testStreamElements[1]);
-        final List<Integer> testElements3 = ((List<Integer>) testStreamElements[2]);
-        final List<List<Object>> testElements4 = ((List<List<Object>>) testStreamElements[3]);
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
         final Map<String, AtomicInteger> testMap1 = ((List<String>) testStreamElements[0]).stream().collect(Collectors.toMap(Function.identity(), (e -> new AtomicInteger(0))));
         final Map<String, AtomicInteger> testMap2 = ((List<String>) testStreamElements[1]).stream().collect(Collectors.toMap(Function.identity(), (e -> new AtomicInteger(0))));
         final Map<Integer, AtomicInteger> testMap3 = ((List<Integer>) testStreamElements[2]).stream().collect(Collectors.toMap(Function.identity(), (e -> new AtomicInteger(0))));
@@ -1604,6 +1705,86 @@ public class MapCollectorsTest {
         Assert.assertNotSame(
                 MapCollectors.toStringMap(),
                 MapCollectors.toStringMap());
+    }
+    
+    /**
+     * JUnit test of addTo.
+     *
+     * @throws Exception When there is an exception.
+     * @see MapCollectors#addTo(Map)
+     */
+    @Test
+    public void testAddTo() throws Exception {
+        final Map<String, String> testInitial1 = MapUtility.mapOf(
+                new String[] {"A", "B", "C"},
+                new String[] {"C", "B", "A"});
+        final Map<String, String> testInitial2 = MapUtility.emptyMap(HashMap.class);
+        final Map<Integer, Boolean> testInitial3 = MapUtility.mapOf(LinkedHashMap.class,
+                new Integer[] {0},
+                new Boolean[] {true});
+        final Map<Integer, String> testInitial4 = MapUtility.mapOf(TreeMap.class,
+                new Integer[] {0, 0, 0, -8, 1, 0, 3, 3},
+                new String[] {"", "", "", null, " ", "", ".", "."});
+        final List<String> testElements1 = (List<String>) testStreamElements[0];
+        final List<String> testElements2 = (List<String>) testStreamElements[1];
+        final List<Integer> testElements3 = (List<Integer>) testStreamElements[2];
+        final List<List<Object>> testElements4 = (List<List<Object>>) testStreamElements[3];
+        final Map<String, String> testMap1 = MapUtility.merge(testInitial1, (Map<String, String>) testMaps[0]);
+        final Map<String, String> testMap2 = MapUtility.merge(testInitial2, (Map<String, String>) testMaps[1]);
+        final Map<Integer, Boolean> testMap3 = MapUtility.merge(testInitial3, (Map<Integer, Boolean>) testMaps[2]);
+        final Map<Integer, String> testMap4 = MapUtility.merge(testInitial4, (Map<Integer, String>) testMaps[3]);
+        Map<String, String> map1;
+        Map<String, String> map2;
+        Map<Integer, Boolean> map3;
+        Map<Integer, String> map4;
+        
+        //standard
+        map1 = testElements1.stream().map(MapCollectors.toEntry(
+                        Function.identity(), Function.identity()))
+                .collect(MapCollectors.addTo(testInitial1));
+        Assert.assertNotNull(map1);
+        Assert.assertTrue(map1 instanceof HashMap);
+        TestUtils.assertMapEquals(map1, testMap1);
+        TestUtils.assertMapEquals(testInitial1, testMap1);
+        Assert.assertSame(testInitial1, map1);
+        map2 = testElements2.stream().map(MapCollectors.toEntry(
+                        (e -> StringUtility.lSnip(e, e.indexOf(':'))), (e -> StringUtility.rSnip(e, (e.length() - e.indexOf(':') - 1)))))
+                .collect(MapCollectors.addTo(testInitial2));
+        Assert.assertNotNull(map2);
+        Assert.assertTrue(map2 instanceof HashMap);
+        TestUtils.assertMapEquals(map2, testMap2);
+        TestUtils.assertMapEquals(testInitial2, testMap2);
+        Assert.assertSame(testInitial2, map2);
+        map3 = testElements3.stream().map(MapCollectors.toEntry(
+                        Function.identity(), (e -> (e > 3))))
+                .collect(MapCollectors.addTo(testInitial3));
+        Assert.assertNotNull(map3);
+        Assert.assertTrue(map3 instanceof LinkedHashMap);
+        TestUtils.assertMapEquals(map3, testMap3);
+        TestUtils.assertMapEquals(testInitial3, testMap3);
+        Assert.assertSame(testInitial3, map3);
+        map4 = testElements4.stream().map(MapCollectors.toEntry(
+                        (e -> (int) e.get(0)), (e -> (String) e.get(1))))
+                .collect(MapCollectors.addTo(testInitial4));
+        Assert.assertNotNull(map4);
+        Assert.assertTrue(map4 instanceof TreeMap);
+        TestUtils.assertMapEquals(map4, testMap4);
+        TestUtils.assertMapEquals(testInitial4, testMap4);
+        Assert.assertSame(testInitial4, map4);
+        
+        //uniqueness
+        Assert.assertNotSame(
+                MapCollectors.addTo(testInitial1),
+                MapCollectors.addTo(testInitial1));
+        Assert.assertNotSame(
+                MapCollectors.addTo(MapUtility.emptyMap()),
+                MapCollectors.addTo(MapUtility.emptyMap()));
+        
+        //invalid
+        TestUtils.assertException(UnsupportedOperationException.class, () ->
+                Stream.of(Map.entry(1, 1), Map.entry(2, 2), Map.entry(3, 3)).collect(MapCollectors.addTo(MapUtility.unmodifiableMap())));
+        TestUtils.assertException(NullPointerException.class, () ->
+                Stream.of(Map.entry(1, 1), Map.entry(2, 2), Map.entry(3, 3)).collect(MapCollectors.addTo(null)));
     }
     
 }

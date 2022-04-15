@@ -8,6 +8,7 @@
 package commons.lambda.stream.collector;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Stack;
@@ -641,6 +642,22 @@ public final class ListCollectors {
      */
     public static <T> Collector<T, ?, Vector<T>> toSynchronizedVector() {
         return toVector(ListFlavor.SYNCHRONIZED);
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream into an existing list.
+     *
+     * @param list The existing list to add to.
+     * @param <T>  The type of the elements of the stream.
+     * @param <U>  The type of the list.
+     * @return The custom collector.
+     * @see #toArrayList()
+     * @see ListUtility#addAllAndGet(List, Collection)
+     */
+    public static <T extends U, U> Collector<T, ?, List<U>> addTo(List<U> list) {
+        return Collectors.collectingAndThen(
+                toArrayList(),
+                collected -> ListUtility.addAllAndGet(list, collected));
     }
     
 }

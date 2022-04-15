@@ -269,6 +269,20 @@ public final class MapCollectors {
     }
     
     /**
+     * Creates a function that generates a map entry.
+     *
+     * @param keyMapper   The function that produces the key of the map entry.
+     * @param valueMapper The function that produces the value of the map entry.
+     * @param <T>         The type of the elements of the stream.
+     * @param <K>         The type of the key of the map entry.
+     * @param <V>         The type of the value of the map entry.
+     * @return The map entry generator.
+     */
+    public static <T, K, V> Function<T, Map.Entry<K, V>> toEntry(Function<? super T, ? extends K> keyMapper, Function<? super T, ? extends V> valueMapper) {
+        return e -> Map.entry(keyMapper.apply(e), valueMapper.apply(e));
+    }
+    
+    /**
      * Creates a new custom collector that collects a stream to a hash map.
      *
      * @param mapFlavor   The flavor of the map.
@@ -667,6 +681,22 @@ public final class MapCollectors {
      */
     public static Collector<Map.Entry<?, ?>, ?, HashMap<String, String>> toStringMap() {
         return toHashMap((e -> String.valueOf(e.getKey())), (e -> String.valueOf(e.getValue())));
+    }
+    
+    /**
+     * Creates a new custom collector that collects a stream of map entries into an existing map.
+     *
+     * @param map The existing map to add to.
+     * @param <K> The type of the keys of the map.
+     * @param <V> The type of the values of the map.
+     * @return The custom collector.
+     * @see #toLinkedHashMap()
+     * @see MapUtility#putAllAndGet(Map, Map)
+     */
+    public static <K, V> Collector<Map.Entry<K, V>, ?, Map<K, V>> addTo(Map<K, V> map) {
+        return Collectors.collectingAndThen(
+                toLinkedHashMap(),
+                collected -> MapUtility.putAllAndGet(map, collected));
     }
     
 }
