@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
@@ -58,19 +59,22 @@ public class IterableMap<K, V> extends HashMap<K, V> implements Iterable<Map.Ent
      * The constructor for an Iterable Map from a map.
      *
      * @param map The map.
+     * @see #putAll(Map)
      */
-    public IterableMap(Map<K, V> map) {
-        putAll(map);
+    public IterableMap(Map<? extends K, ? extends V> map) {
+        this.putAll(map);
     }
     
     /**
      * The constructor for an Iterable Map from another Iterable Map.
      *
      * @param map The Iterable Map.
+     * @see #iterator()
+     * @see #put(Object, Object)
      */
-    public IterableMap(IterableMap<K, V> map) {
+    public IterableMap(IterableMap<? extends K, ? extends V> map) {
         map.iterator().forEachRemaining(entry ->
-                put(entry.getKey(), entry.getValue()));
+                this.put(entry.getKey(), entry.getValue()));
     }
     
     /**
@@ -369,13 +373,13 @@ public class IterableMap<K, V> extends HashMap<K, V> implements Iterable<Map.Ent
      * @see MapUtility#equals(Map, Map)
      */
     @Override
-    public boolean equals(Object o) {
+    public synchronized boolean equals(Object o) {
         if (!(o instanceof IterableMap)) {
             return false;
         }
         IterableMap<?, ?> other = (IterableMap<?, ?>) o;
         
-        return ListUtility.equals(keyList, other.keyList) &&
+        return ListUtility.equals(keyList, other.keyList, true) &&
                 MapUtility.equals(this, other);
     }
     
@@ -559,10 +563,81 @@ public class IterableMap<K, V> extends HashMap<K, V> implements Iterable<Map.Ent
      * Creates an iterator of the entries of the map.
      *
      * @return The iterator.
+     * @see IterableMapIterator
      */
     @Override
     public Iterator<Map.Entry<K, V>> iterator() {
-        return keyList.stream().map(e -> Map.entry(e, get(e))).iterator();
+        return new IterableMapIterator();
+    }
+    
+    
+    //Inner Classes
+    
+    /**
+     * Defines an iterator for the Iterable Map.
+     */
+    private class IterableMapIterator implements Iterator<Map.Entry<K, V>> {
+        
+        //Fields
+        
+        /**
+         * The elements of the iteration.
+         */
+        private final List<Map.Entry<K, V>> iteration = IterableMap.this.entrySetOrdered();
+        
+        /**
+         * The current index of the iteration.
+         */
+        private int current = -1;
+        
+        /**
+         * A flag indicating whether or not the current element of the iteration can be removed.
+         */
+        private boolean canRemove = false;
+        
+        
+        //Methods
+        
+        /**
+         * Returns whether or not the iteration has more elements.
+         *
+         * @return Whether or not the iteration has more elements.
+         */
+        @Override
+        public boolean hasNext() {
+            return ((current + 1) < iteration.size());
+        }
+        
+        /**
+         * Retrieves the next element of the iteration.
+         *
+         * @return The next element of the iteration.
+         * @throws NoSuchElementException When there is not a next element.
+         */
+        @Override
+        public Map.Entry<K, V> next() {
+            if (!hasNext()) {
+                throw new NoSuchElementException();
+            }
+            canRemove = true;
+            return iteration.get(++current);
+        }
+        
+        /**
+         * Removes the current element of the iteration from the Counter Set.
+         *
+         * @throws IllegalStateException When attempting to remove an element that has already been removed, or when the the current element has not yet been retrieved.
+         * @see IterableMap#remove(Object)
+         */
+        @Override
+        public void remove() {
+            if (!canRemove) {
+                throw new IllegalStateException();
+            }
+            IterableMap.this.remove(iteration.get(current).getKey());
+            canRemove = false;
+        }
+        
     }
     
 }

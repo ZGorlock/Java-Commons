@@ -8,13 +8,12 @@
 package commons.object.collection.map;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -28,6 +27,8 @@ import java.util.stream.Stream;
 
 import commons.lambda.stream.collector.ArrayCollectors;
 import commons.lambda.stream.collector.MapCollectors;
+import commons.math.NumberUtility;
+import commons.object.collection.ArrayUtility;
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
 import commons.object.string.StringUtility;
@@ -101,9 +102,8 @@ public class IterableMapTest {
     //Functions
     
     /**
-     * A runnable that validates the content and order of the system under test.
+     * Validates the content and order of the system under test.
      */
-    @SuppressWarnings("SimplifyStreamApiCallChains")
     private final Runnable sutValidator = () -> {
         final List<Map.Entry<String, Integer>> entrySetOrdered = sut.entrySetOrdered();
         final List<String> keySetOrdered = sut.keySetOrdered();
@@ -138,7 +138,7 @@ public class IterableMapTest {
     };
     
     /**
-     * A function that gets a value of the system under test given a key.
+     * Gets a value of the system under test given a key.
      */
     private final Function<String, Integer> valueGetter = (String key) -> values.get(keys.indexOf(key));
     
@@ -683,11 +683,6 @@ public class IterableMapTest {
                         sut.replace(key, -1, nextValue.incrementAndGet())));
         sutValidator.run();
         
-        //all
-        sut.replaceAll((key, value) -> -value);
-        values.replaceAll(i -> -i);
-        sutValidator.run();
-        
         //invalid
         IntStream.of((sut.size() + 1), -1).forEach(outOfBounds -> {
             TestUtils.assertException(IndexOutOfBoundsException.class, StringUtility.format("Index {} out of bounds for length {}", outOfBounds, sut.size()), () ->
@@ -707,6 +702,24 @@ public class IterableMapTest {
         Assert.assertNull(sut.replace(null, -1));
         Assert.assertNull(sut.replace("~", null));
         Assert.assertNull(sut.replace(null, null));
+    }
+    
+    /**
+     * JUnit test of replaceAll.
+     *
+     * @throws Exception When there is an exception.
+     * @see IterableMap#replaceAll(BiFunction)
+     */
+    @Test
+    public void testReplaceAll() throws Exception {
+        //standard
+        sut.replaceAll((key, value) -> -value);
+        values.replaceAll(i -> -i);
+        sutValidator.run();
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.replaceAll(null));
     }
     
     /**
@@ -816,7 +829,6 @@ public class IterableMapTest {
      * @throws Exception When there is an exception.
      * @see IterableMap#clone()
      */
-    @SuppressWarnings("SimplifiableAssertion")
     @Test
     public void testClone() throws Exception {
         IterableMap<String, Integer> clone;
@@ -858,23 +870,23 @@ public class IterableMapTest {
                     });
                     return map;
                 }));
-        TestUtils.assertMapEquals(sut, other);
+        TestUtils.assertMapEquals(other, sut);
         Assert.assertFalse(sut.equals(other));
         Assert.assertNotSame(sut, other);
         
         //normal map
         other = MapUtility.mapOf(LinkedHashMap.class, keys, values);
-        TestUtils.assertMapEquals(sut, other);
+        TestUtils.assertMapEquals(other, sut);
         Assert.assertFalse(sut.equals(other));
         Assert.assertNotSame(sut, other);
         
-        //empty map
+        //empty
         Assert.assertTrue(new IterableMap<>().equals(new IterableMap<>()));
         TestUtils.assertMapEquals(new IterableMap<>(), new IterableMap<>());
         Assert.assertNotSame(new IterableMap<>(), new IterableMap<>());
-        Assert.assertFalse(new IterableMap<>().equals(new HashMap<>()));
-        TestUtils.assertMapEquals(new IterableMap<>(), new HashMap<>());
-        Assert.assertNotSame(new IterableMap<>(), new HashMap<>());
+        Assert.assertFalse(new IterableMap<>().equals(MapUtility.emptyMap()));
+        TestUtils.assertMapEquals(new IterableMap<>(), MapUtility.emptyMap());
+        Assert.assertNotSame(new IterableMap<>(), MapUtility.emptyMap());
         
         //invalid
         Assert.assertFalse(sut.equals(""));
@@ -1253,17 +1265,17 @@ public class IterableMapTest {
     public void testForEach() throws Exception {
         //standard
         sut.forEach((key, value) -> sut.replace(key, -value));
-        values.replaceAll(i -> -i);
+        values.replaceAll(value -> -value);
         sutValidator.run();
         
         //entries
         sut.forEach(entry -> sut.replace(entry.getKey(), -entry.getValue()));
-        values.replaceAll(i -> -i);
+        values.replaceAll(value -> -value);
         sutValidator.run();
         
         //order
         sut.forEach((key, value) -> sut.replace(key, nextValue.incrementAndGet()));
-        values.replaceAll(i -> (nextValue.get() - sut.size() + values.indexOf(i) + 1));
+        values.replaceAll(value -> (nextValue.get() - sut.size() + values.indexOf(value) + 1));
         sutValidator.run();
         
         //invalid
@@ -1274,6 +1286,29 @@ public class IterableMapTest {
     }
     
     /**
+     * JUnit test of indexedForEach.
+     *
+     * @throws Exception When there is an exception.
+     * @see IterableMap#indexedForEach(BiConsumer)
+     */
+    @Test
+    public void testIndexedForEach() throws Exception {
+        //standard
+        sut.indexedForEach((entry, i) -> sut.replace(entry.getKey(), (entry.getValue() * (NumberUtility.isEven(i) ? -1 : 1))));
+        values.replaceAll(value -> (value * (NumberUtility.isEven(values.indexOf(value)) ? -1 : 1)));
+        sutValidator.run();
+        
+        //order
+        sut.forEach((key, value) -> sut.replace(key, nextValue.incrementAndGet()));
+        values.replaceAll(value -> (nextValue.get() - sut.size() + values.indexOf(value) + 1));
+        sutValidator.run();
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.indexedForEach(null));
+    }
+    
+    /**
      * JUnit test of iterator.
      *
      * @throws Exception When there is an exception.
@@ -1281,29 +1316,76 @@ public class IterableMapTest {
      */
     @Test
     public void testIterator() throws Exception {
-        final List<Map.Entry<String, Integer>> iteratorList1 = new ArrayList<>();
-        final List<Map.Entry<String, Integer>> iteratorList2 = new ArrayList<>();
-        Iterator<Map.Entry<String, Integer>> iterator;
+        final AtomicReference<Iterator<Map.Entry<String, Integer>>> iterator = new AtomicReference<>(null);
         
         //standard
-        iterator = sut.iterator();
-        Assert.assertNotNull(iterator);
+        iterator.set(sut.iterator());
         IntStream.range(0, sut.size()).forEach(i -> {
-            final Map.Entry<String, Integer> entry = iterator.next();
-            Assert.assertEquals(keys.get(i), entry.getKey());
-            Assert.assertEquals(values.get(i), entry.getValue());
+            Assert.assertTrue(iterator.get().hasNext());
+            Assert.assertEquals(Map.entry(keys.get(i), values.get(i)), iterator.get().next());
         });
+        Assert.assertFalse(iterator.get().hasNext());
+        TestUtils.assertException(NoSuchElementException.class, () ->
+                iterator.get().next());
+        sutValidator.run();
         
         //edit
-        TestUtils.assertException(UnsupportedOperationException.class, () ->
-                sut.iterator().next().setValue(-1));
+        iterator.set(sut.iterator());
+        IntStream.range(0, sut.size()).forEach(i -> {
+            Assert.assertEquals(values.get(i), iterator.get().next().setValue(-1));
+            values.set(i, -1);
+        });
+        sutValidator.run();
+        
+        //remove
+        iterator.set(sut.iterator());
+        TestUtils.assertException(IllegalStateException.class, () ->
+                iterator.get().remove());
+        IntStream.range(0, sut.size()).forEach(i -> {
+            iterator.get().next();
+            iterator.get().remove();
+            keys.remove(0);
+            values.remove(0);
+        });
+        TestUtils.assertException(IllegalStateException.class, () ->
+                iterator.get().remove());
+        Assert.assertTrue(sut.isEmpty());
         sutValidator.run();
         
         //equality
-        sut.iterator().forEachRemaining(iteratorList1::add);
-        sut.iterator().forEachRemaining(iteratorList2::add);
-        TestUtils.assertListEquals(iteratorList1, iteratorList2);
         Assert.assertNotSame(sut.iterator(), sut.iterator());
+    }
+    
+    /**
+     * JUnit test of IterableMapIterator.
+     *
+     * @throws Exception When there is an exception.
+     * @see IterableMap.IterableMapIterator
+     */
+    @Test
+    public void testIterableMapIterator() throws Exception {
+        final Class<?> IterableMapIterator = TestAccess.getClass(IterableMap.class, "IterableMapIterator");
+        Iterator<Map.Entry<String, Integer>> iterator;
+        
+        //class
+        Assert.assertNotNull(IterableMapIterator);
+        Assert.assertTrue(ArrayUtility.contains(IterableMapIterator.getInterfaces(), Iterator.class));
+        
+        //instantiation
+        iterator = sut.iterator();
+        TestUtils.assertListEquals(
+                TestAccess.getFieldValue(iterator, List.class, "iteration"),
+                sut.entrySetOrdered(), true);
+        Assert.assertEquals(-1, TestAccess.getFieldValue(iterator, int.class, "current").intValue());
+        Assert.assertFalse(TestAccess.getFieldValue(iterator, boolean.class, "canRemove"));
+        
+        //fields
+        List.of("iteration", "current", "canRemove").forEach(fieldName ->
+                TestUtils.assertFieldExists(IterableMapIterator, fieldName));
+        
+        //methods
+        List.of("hasNext", "next", "remove").forEach(methodName ->
+                TestUtils.assertMethodExists(IterableMapIterator, methodName));
     }
     
 }
