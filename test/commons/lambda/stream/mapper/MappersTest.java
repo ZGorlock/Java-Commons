@@ -278,8 +278,7 @@ public class MappersTest {
                         .collect(ListCollectors.addTo(mapped3)));
         Assert.assertNotNull(mapped3);
         Assert.assertTrue(mapped3.isEmpty());
-        Stream.concat(testElementSets.stream(), testMappedSets.stream()).forEach(testSet ->
-                testSet.removeIf(Objects::isNull));
+        Stream.concat(testElementSets.stream(), testMappedSets.stream()).forEach(ListUtility::removeNull);
         testMapped1.subList(0, 2).forEach(e -> e.setLength(e.length() - 1));
         testMapped2.subList(0, 2).forEach(AtomicInteger::decrementAndGet);
         testMapped3.subList(0, 2).forEach(e -> e.remove(1));
@@ -382,8 +381,7 @@ public class MappersTest {
                     Assert.assertNull(testMapped3.get(i));
                     Assert.assertNull(testElements3.get(i));
                 }));
-        Stream.concat(testElementSets.stream(), testMappedSets.stream()).forEach(testSet ->
-                testSet.removeIf(Objects::isNull));
+        Stream.concat(testElementSets.stream(), testMappedSets.stream()).forEach(ListUtility::removeNull);
         testMapped1.forEach(e -> e.setLength(e.length() - 1));
         testMapped2.forEach(AtomicInteger::decrementAndGet);
         testMapped3.forEach(e -> e.remove(1));

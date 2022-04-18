@@ -11,16 +11,20 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import commons.lambda.stream.mapper.Mappers;
 import commons.math.BoundUtility;
 import commons.math.MathUtility;
 import commons.object.string.EntityStringUtility;
@@ -744,17 +748,31 @@ public final class ListUtility {
     }
     
     /**
+     * Performs an operation on a list and returns the list.
+     *
+     * @param list      The list.
+     * @param operation The operation to perform.
+     * @param <T>       The type of the list.
+     * @param <L>       The class of the list.
+     * @return The same list.
+     * @see Mappers#perform(Object, Consumer)
+     */
+    public static <T, L extends List<T>> L doAndGet(L list, Consumer<L> operation) {
+        return Mappers.perform(list, operation);
+    }
+    
+    /**
      * Adds an element to a list and returns the list.
      *
      * @param list    The list.
      * @param element The element.
      * @param <T>     The type of the list.
      * @param <L>     The class of the list.
-     * @return The list.
+     * @return The same list.
+     * @see #doAndGet(List, Consumer)
      */
     public static <T, L extends List<T>> L addAndGet(L list, T element) {
-        list.add(element);
-        return list;
+        return doAndGet(list, (l -> l.add(element)));
     }
     
     /**
@@ -765,11 +783,11 @@ public final class ListUtility {
      * @param element The element.
      * @param <T>     The type of the list.
      * @param <L>     The class of the list.
-     * @return The list.
+     * @return The same list.
+     * @see #doAndGet(List, Consumer)
      */
     public static <T, L extends List<T>> L addAndGet(L list, int index, T element) {
-        list.add(index, element);
-        return list;
+        return doAndGet(list, (l -> l.add(index, element)));
     }
     
     /**
@@ -779,11 +797,11 @@ public final class ListUtility {
      * @param elements The collection of elements.
      * @param <T>      The type of the list.
      * @param <L>      The class of the list.
-     * @return The list.
+     * @return The same list.
+     * @see #doAndGet(List, Consumer)
      */
     public static <T, L extends List<T>> L addAllAndGet(L list, Collection<? extends T> elements) {
-        list.addAll(elements);
-        return list;
+        return doAndGet(list, (l -> l.addAll(elements)));
     }
     
     /**
@@ -794,11 +812,11 @@ public final class ListUtility {
      * @param elements The collection of elements.
      * @param <T>      The type of the list.
      * @param <L>      The class of the list.
-     * @return The list.
+     * @return The same list.
+     * @see #doAndGet(List, Consumer)
      */
     public static <T, L extends List<T>> L addAllAndGet(L list, int index, Collection<? extends T> elements) {
-        list.addAll(index, elements);
-        return list;
+        return doAndGet(list, (l -> l.addAll(index, elements)));
     }
     
     /**
@@ -809,11 +827,11 @@ public final class ListUtility {
      * @param element The element.
      * @param <T>     The type of the list.
      * @param <L>     The class of the list.
-     * @return The list.
+     * @return The same list.
+     * @see #doAndGet(List, Consumer)
      */
     public static <T, L extends List<T>> L setAndGet(L list, int index, T element) {
-        list.set(index, element);
-        return list;
+        return doAndGet(list, (l -> l.set(index, element)));
     }
     
     /**
@@ -823,11 +841,11 @@ public final class ListUtility {
      * @param element The element.
      * @param <T>     The type of the list.
      * @param <L>     The class of the list.
-     * @return The list.
+     * @return The same list.
+     * @see #doAndGet(List, Consumer)
      */
     public static <T, L extends List<T>> L removeAndGet(L list, T element) {
-        list.remove(element);
-        return list;
+        return doAndGet(list, (l -> l.remove(element)));
     }
     
     /**
@@ -837,11 +855,11 @@ public final class ListUtility {
      * @param index The index of the element.
      * @param <T>   The type of the list.
      * @param <L>   The class of the list.
-     * @return The list.
+     * @return The same list.
+     * @see #doAndGet(List, Consumer)
      */
     public static <T, L extends List<T>> L removeAndGet(L list, int index) {
-        list.remove(index);
-        return list;
+        return doAndGet(list, (l -> l.remove(index)));
     }
     
     /**
@@ -851,11 +869,24 @@ public final class ListUtility {
      * @param elements The collection of elements.
      * @param <T>      The type of the list.
      * @param <L>      The class of the list.
-     * @return The list.
+     * @return The same list.
+     * @see #doAndGet(List, Consumer)
      */
     public static <T, L extends List<T>> L removeAllAndGet(L list, Collection<? extends T> elements) {
-        list.removeAll(elements);
-        return list;
+        return doAndGet(list, (l -> l.removeAll(elements)));
+    }
+    
+    /**
+     * Clears a list and returns the list.
+     *
+     * @param list The list.
+     * @param <T>  The type of the list.
+     * @param <L>  The class of the list.
+     * @return The same list.
+     * @see #doAndGet(List, Consumer)
+     */
+    public static <T, L extends List<T>> L clearAndGet(L list) {
+        return doAndGet(list, List::clear);
     }
     
     /**
@@ -987,11 +1018,11 @@ public final class ListUtility {
      * @param list The list.
      * @param <T>  The type of the list.
      * @param <L>  The class of the list.
-     * @return The list with null elements removed.
+     * @return The same list with null elements removed.
+     * @see #doAndGet(List, Consumer)
      */
-    @SuppressWarnings("unchecked")
     public static <T, L extends List<T>> L removeNull(L list) {
-        return (L) cast(list.stream().filter(Objects::nonNull).collect(Collectors.toList()), list.getClass());
+        return doAndGet(list, (l -> l.removeIf(Objects::isNull)));
     }
     
     /**
@@ -1000,11 +1031,12 @@ public final class ListUtility {
      * @param list The list to operate on.
      * @param <T>  The type of the list.
      * @param <L>  The class of the list.
-     * @return The list with duplicate elements removed.
+     * @return The same list with duplicate elements removed.
+     * @see #doAndGet(List, Consumer)
      */
-    @SuppressWarnings("unchecked")
     public static <T, L extends List<T>> L removeDuplicates(L list) {
-        return (L) cast(list.stream().distinct().collect(Collectors.toList()), list.getClass());
+        final Set<T> seen = new HashSet<>();
+        return doAndGet(list, (l -> l.removeIf(e -> !seen.add(e))));
     }
     
     /**

@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.Stack;
 import java.util.Vector;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import commons.test.TestAccess;
@@ -2270,6 +2271,84 @@ public class ListUtilityTest {
     }
     
     /**
+     * JUnit test of doAndGet.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#doAndGet(List, Consumer)
+     */
+    @Test
+    public void testDoAndGet() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<Boolean> booleanModifyList = ListUtility.doAndGet(booleanList, (l -> l.add(null)));
+        TestUtils.assertListEquals(
+                booleanModifyList,
+                new Boolean[] {true, false, false, true, false, null});
+        Assert.assertSame(booleanList, booleanModifyList);
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        List<Integer> integerModifyList = ListUtility.doAndGet(integerList, (l -> l.add(2, -1)));
+        TestUtils.assertListEquals(
+                integerModifyList,
+                new Integer[] {15, 312, -1, 48, 5, -4, -9, 6});
+        Assert.assertSame(integerList, integerModifyList);
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        List<Float> floatList = ListUtility.toList(floatArray);
+        List<Float> floatModifyList = ListUtility.doAndGet(floatList, (l -> l.set(0, -1.0f)));
+        TestUtils.assertListEquals(
+                floatModifyList,
+                new Float[] {-1.0f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f});
+        Assert.assertSame(floatList, floatModifyList);
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<Double> doubleModifyList = ListUtility.doAndGet(doubleList, (l -> l.remove(-4.006005001d)));
+        TestUtils.assertListEquals(
+                doubleModifyList,
+                new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -9.70487745d, 6.99546101d});
+        Assert.assertSame(doubleList, doubleModifyList);
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        List<Long> longList = ListUtility.toList(longArray);
+        List<Long> longModifyList = ListUtility.doAndGet(longList, (l -> l.remove(6)));
+        TestUtils.assertListEquals(
+                longModifyList,
+                new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L});
+        Assert.assertSame(longList, longModifyList);
+        
+        //string
+        String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        List<String> stringList = ListUtility.toList(stringArray);
+        List<String> stringModifyList = ListUtility.doAndGet(stringList, (l -> l.remove("rat")));
+        TestUtils.assertListEquals(
+                stringModifyList,
+                new String[] {"cat", "dog", "bird", "lizard", "fish"});
+        Assert.assertSame(stringList, stringModifyList);
+        
+        //object
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> objectModifyList = ListUtility.doAndGet(objectList, (List::clear));
+        TestUtils.assertListEquals(objectModifyList, ListUtility.emptyList());
+        Assert.assertSame(objectList, objectModifyList);
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.doAndGet(null, (l -> l.add(0))));
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.doAndGet(ListUtility.emptyList(), null));
+        TestUtils.assertException(UnsupportedOperationException.class, () ->
+                ListUtility.doAndGet(List.of(6, 7, 3), (l -> l.set(0, 10))));
+    }
+    
+    /**
      * JUnit test of addAndGet.
      *
      * @throws Exception When there is an exception.
@@ -2281,72 +2360,93 @@ public class ListUtilityTest {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
         List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<Boolean> booleanModifyList = ListUtility.addAndGet(booleanList, true);
         TestUtils.assertListEquals(
-                ListUtility.addAndGet(booleanList, true),
+                booleanModifyList,
                 new Boolean[] {true, false, false, true, false, true});
+        booleanModifyList = ListUtility.addAndGet(booleanList, 0, false);
         TestUtils.assertListEquals(
-                ListUtility.addAndGet(booleanList, 0, false),
+                booleanModifyList,
                 new Boolean[] {false, true, false, false, true, false, true});
+        Assert.assertSame(booleanList, booleanModifyList);
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         List<Integer> integerList = ListUtility.toList(integerArray);
+        List<Integer> integerModifyList = ListUtility.addAndGet(integerList, 18);
         TestUtils.assertListEquals(
-                ListUtility.addAndGet(integerList, 18),
+                integerModifyList,
                 new Integer[] {15, 312, 48, 5, -4, -9, 6, 18});
+        integerModifyList = ListUtility.addAndGet(integerList, 3, -99);
         TestUtils.assertListEquals(
-                ListUtility.addAndGet(integerList, 3, -99),
+                integerModifyList,
                 new Integer[] {15, 312, 48, -99, 5, -4, -9, 6, 18});
+        Assert.assertSame(integerList, integerModifyList);
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         List<Float> floatList = ListUtility.toList(floatArray);
+        List<Float> floatModifyList = ListUtility.addAndGet(floatList, 6.0034f);
         TestUtils.assertListEquals(
-                ListUtility.addAndGet(floatList, 6.0034f),
+                floatModifyList,
                 new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f, 6.0034f});
+        floatModifyList = ListUtility.addAndGet(floatList, 6, -0.77f);
         TestUtils.assertListEquals(
-                ListUtility.addAndGet(floatList, 6, -0.77f),
+                floatModifyList,
                 new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, -0.77f, 6.99f, 19776.4f, 6.0034f});
+        Assert.assertSame(floatList, floatModifyList);
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<Double> doubleModifyList = ListUtility.addAndGet(doubleList, 111.78946044d);
         TestUtils.assertListEquals(
-                ListUtility.addAndGet(doubleList, 111.78946044d),
+                doubleModifyList,
                 new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d, 111.78946044d});
+        doubleModifyList = ListUtility.addAndGet(doubleList, 1, -6.0897044603524d);
         TestUtils.assertListEquals(
-                ListUtility.addAndGet(doubleList, 1, -6.0897044603524d),
+                doubleModifyList,
                 new Double[] {15.104564d, -6.0897044603524d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d, 111.78946044d});
+        Assert.assertSame(doubleList, doubleModifyList);
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         List<Long> longList = ListUtility.toList(longArray);
+        List<Long> longModifyList = ListUtility.addAndGet(longList, 890454440238L);
         TestUtils.assertListEquals(
-                ListUtility.addAndGet(longList, 890454440238L),
+                longModifyList,
                 new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L, 890454440238L});
+        longModifyList = ListUtility.addAndGet(longList, 5, 10000642399L);
         TestUtils.assertListEquals(
-                ListUtility.addAndGet(longList, 5, 10000642399L),
+                longModifyList,
                 new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, 10000642399L, -970487745L, 699546101L, 890454440238L});
+        Assert.assertSame(longList, longModifyList);
         
         //string
         String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
         List<String> stringList = ListUtility.toList(stringArray);
+        List<String> stringModifyList = ListUtility.addAndGet(stringList, "bat");
         TestUtils.assertListEquals(
-                ListUtility.addAndGet(stringList, "bat"),
+                stringModifyList,
                 new String[] {"cat", "dog", "bird", "lizard", "fish", "bat"});
+        stringModifyList = ListUtility.addAndGet(stringList, 6, "bug");
         TestUtils.assertListEquals(
-                ListUtility.addAndGet(stringList, 6, "bug"),
+                stringModifyList,
                 new String[] {"cat", "dog", "bird", "lizard", "fish", "bat", "bug"});
+        Assert.assertSame(stringList, stringModifyList);
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> objectModifyList = ListUtility.addAndGet(objectList, 't');
         TestUtils.assertListEquals(
-                ListUtility.addAndGet(objectList, 't'),
+                objectModifyList,
                 new Object[] {"", 54, objectArray[2], objectArray[3], objectArray[4], 't'});
+        objectModifyList = ListUtility.addAndGet(objectList, 3, 15.99f);
         TestUtils.assertListEquals(
-                ListUtility.addAndGet(objectList, 3, 15.99f),
+                objectModifyList,
                 new Object[] {"", 54, objectArray[2], 15.99f, objectArray[3], objectArray[4], 't'});
+        Assert.assertSame(objectList, objectModifyList);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -2375,72 +2475,93 @@ public class ListUtilityTest {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
         List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<Boolean> booleanModifyList = ListUtility.addAllAndGet(booleanList, List.of(true, true, false));
         TestUtils.assertListEquals(
-                ListUtility.addAllAndGet(booleanList, List.of(true, true, false)),
+                booleanModifyList,
                 new Boolean[] {true, false, false, true, false, true, true, false});
+        booleanModifyList = ListUtility.addAllAndGet(booleanList, 0, List.of(false, false));
         TestUtils.assertListEquals(
-                ListUtility.addAllAndGet(booleanList, 0, List.of(false, false)),
+                booleanModifyList,
                 new Boolean[] {false, false, true, false, false, true, false, true, true, false});
+        Assert.assertSame(booleanList, booleanModifyList);
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         List<Integer> integerList = ListUtility.toList(integerArray);
+        List<Integer> integerModifyList = ListUtility.addAllAndGet(integerList, List.of(18));
         TestUtils.assertListEquals(
-                ListUtility.addAllAndGet(integerList, List.of(18)),
+                integerModifyList,
                 new Integer[] {15, 312, 48, 5, -4, -9, 6, 18});
+        integerModifyList = ListUtility.addAllAndGet(integerList, 3, List.of(-99, -98, -97));
         TestUtils.assertListEquals(
-                ListUtility.addAllAndGet(integerList, 3, List.of(-99, -98, -97)),
+                integerModifyList,
                 new Integer[] {15, 312, 48, -99, -98, -97, 5, -4, -9, 6, 18});
+        Assert.assertSame(integerList, integerModifyList);
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         List<Float> floatList = ListUtility.toList(floatArray);
+        List<Float> floatModifyList = ListUtility.addAllAndGet(floatList, List.of(6.0034f, 81.9f));
         TestUtils.assertListEquals(
-                ListUtility.addAllAndGet(floatList, List.of(6.0034f, 81.9f)),
+                floatModifyList,
                 new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f, 6.0034f, 81.9f});
+        floatModifyList = ListUtility.addAllAndGet(floatList, 6, List.of(-0.77f, 0.0f, 896.7f, 1.8f));
         TestUtils.assertListEquals(
-                ListUtility.addAllAndGet(floatList, 6, List.of(-0.77f, 0.0f, 896.7f, 1.8f)),
+                floatModifyList,
                 new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, -0.77f, 0.0f, 896.7f, 1.8f, 6.99f, 19776.4f, 6.0034f, 81.9f});
+        Assert.assertSame(floatList, floatModifyList);
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<Double> doubleModifyList = ListUtility.addAllAndGet(doubleList, List.of(111.78946044d, 6.794044d, 77.742390d));
         TestUtils.assertListEquals(
-                ListUtility.addAllAndGet(doubleList, List.of(111.78946044d, 6.794044d, 77.742390d)),
+                doubleModifyList,
                 new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d, 111.78946044d, 6.794044d, 77.742390d});
+        doubleModifyList = ListUtility.addAllAndGet(doubleList, 1, List.of(-6.0897044603524d));
         TestUtils.assertListEquals(
-                ListUtility.addAllAndGet(doubleList, 1, List.of(-6.0897044603524d)),
+                doubleModifyList,
                 new Double[] {15.104564d, -6.0897044603524d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d, 111.78946044d, 6.794044d, 77.742390d});
+        Assert.assertSame(doubleList, doubleModifyList);
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         List<Long> longList = ListUtility.toList(longArray);
+        List<Long> longModifyList = ListUtility.addAllAndGet(longList, List.of(890454440238L, 187044L));
         TestUtils.assertListEquals(
-                ListUtility.addAllAndGet(longList, List.of(890454440238L, 187044L)),
+                longModifyList,
                 new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L, 890454440238L, 187044L});
+        longModifyList = ListUtility.addAllAndGet(longList, 5, List.of(10000642399L, 40987062699L, 9807890169L, 160355L));
         TestUtils.assertListEquals(
-                ListUtility.addAllAndGet(longList, 5, List.of(10000642399L, 40987062699L, 9807890169L, 160355L)),
+                longModifyList,
                 new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, 10000642399L, 40987062699L, 9807890169L, 160355L, -970487745L, 699546101L, 890454440238L, 187044L});
+        Assert.assertSame(longList, longModifyList);
         
         //string
         String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
         List<String> stringList = ListUtility.toList(stringArray);
+        List<String> stringModifyList = ListUtility.addAllAndGet(stringList, List.of("bat", "rat", "mouse"));
         TestUtils.assertListEquals(
-                ListUtility.addAllAndGet(stringList, List.of("bat", "rat", "mouse")),
+                stringModifyList,
                 new String[] {"cat", "dog", "bird", "lizard", "fish", "bat", "rat", "mouse"});
+        stringModifyList = ListUtility.addAllAndGet(stringList, 8, List.of("bug", "turtle"));
         TestUtils.assertListEquals(
-                ListUtility.addAllAndGet(stringList, 8, List.of("bug", "turtle")),
+                stringModifyList,
                 new String[] {"cat", "dog", "bird", "lizard", "fish", "bat", "rat", "mouse", "bug", "turtle"});
+        Assert.assertSame(stringList, stringModifyList);
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> objectModifyList = ListUtility.addAllAndGet(objectList, List.of('t', 'e', "st"));
         TestUtils.assertListEquals(
-                ListUtility.addAllAndGet(objectList, List.of('t', 'e', "st")),
+                objectModifyList,
                 new Object[] {"", 54, objectArray[2], objectArray[3], objectArray[4], 't', 'e', "st"});
+        objectModifyList = ListUtility.addAllAndGet(objectList, 3, List.of(15.99f, 1904.5d, 98045L));
         TestUtils.assertListEquals(
-                ListUtility.addAllAndGet(objectList, 3, List.of(15.99f, 1904.5d, 98045L)),
+                objectModifyList,
                 new Object[] {"", 54, objectArray[2], 15.99f, 1904.5d, 98045L, objectArray[3], objectArray[4], 't', 'e', "st"});
+        Assert.assertSame(objectList, objectModifyList);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -2472,51 +2593,65 @@ public class ListUtilityTest {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
         List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<Boolean> booleanModifyList = ListUtility.setAndGet(booleanList, 1, true);
         TestUtils.assertListEquals(
-                ListUtility.setAndGet(booleanList, 1, true),
+                booleanModifyList,
                 new Boolean[] {true, true, false, true, false});
+        Assert.assertSame(booleanList, booleanModifyList);
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         List<Integer> integerList = ListUtility.toList(integerArray);
+        List<Integer> integerModifyList = ListUtility.setAndGet(integerList, 0, 18);
         TestUtils.assertListEquals(
-                ListUtility.setAndGet(integerList, 0, 18),
+                integerModifyList,
                 new Integer[] {18, 312, 48, 5, -4, -9, 6});
+        Assert.assertSame(integerList, integerModifyList);
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         List<Float> floatList = ListUtility.toList(floatArray);
+        List<Float> floatModifyList = ListUtility.setAndGet(floatList, 6, 6.0034f);
         TestUtils.assertListEquals(
-                ListUtility.setAndGet(floatList, 6, 6.0034f),
+                floatModifyList,
                 new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.0034f, 19776.4f});
+        Assert.assertSame(floatList, floatModifyList);
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<Double> doubleModifyList = ListUtility.setAndGet(doubleList, 3, 111.78946044d);
         TestUtils.assertListEquals(
-                ListUtility.setAndGet(doubleList, 3, 111.78946044d),
+                doubleModifyList,
                 new Double[] {15.104564d, 312.9113874d, 48.00000015d, 111.78946044d, -4.006005001d, -9.70487745d, 6.99546101d});
+        Assert.assertSame(doubleList, doubleModifyList);
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         List<Long> longList = ListUtility.toList(longArray);
+        List<Long> longModifyList = ListUtility.setAndGet(longList, 5, 890454440238L);
         TestUtils.assertListEquals(
-                ListUtility.setAndGet(longList, 5, 890454440238L),
+                longModifyList,
                 new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, 890454440238L, 699546101L});
+        Assert.assertSame(longList, longModifyList);
         
         //string
         String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
         List<String> stringList = ListUtility.toList(stringArray);
+        List<String> stringModifyList = ListUtility.setAndGet(stringList, 4, "bat");
         TestUtils.assertListEquals(
-                ListUtility.setAndGet(stringList, 4, "bat"),
+                stringModifyList,
                 new String[] {"cat", "dog", "bird", "lizard", "bat"});
+        Assert.assertSame(stringList, stringModifyList);
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> objectModifyList = ListUtility.setAndGet(objectList, 3, 't');
         TestUtils.assertListEquals(
-                ListUtility.setAndGet(objectList, 3, 't'),
+                objectModifyList,
                 new Object[] {"", 54, objectArray[2], 't', objectArray[4]});
+        Assert.assertSame(objectList, objectModifyList);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -2541,72 +2676,93 @@ public class ListUtilityTest {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
         List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<Boolean> booleanModifyList = ListUtility.removeAndGet(booleanList, true);
         TestUtils.assertListEquals(
-                ListUtility.removeAndGet(booleanList, true),
+                booleanModifyList,
                 new Boolean[] {false, false, true, false});
+        booleanModifyList = ListUtility.removeAndGet(booleanList, 0);
         TestUtils.assertListEquals(
-                ListUtility.removeAndGet(booleanList, 0),
+                booleanModifyList,
                 new Boolean[] {false, true, false});
+        Assert.assertSame(booleanList, booleanModifyList);
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         List<Integer> integerList = ListUtility.toList(integerArray);
+        List<Integer> integerModifyList = ListUtility.removeAndGet(integerList, (Integer) 5);
         TestUtils.assertListEquals(
-                ListUtility.removeAndGet(integerList, (Integer) 5),
+                integerModifyList,
                 new Integer[] {15, 312, 48, -4, -9, 6});
+        integerModifyList = ListUtility.removeAndGet(integerList, 3);
         TestUtils.assertListEquals(
-                ListUtility.removeAndGet(integerList, 3),
+                integerModifyList,
                 new Integer[] {15, 312, 48, -9, 6});
+        Assert.assertSame(integerList, integerModifyList);
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         List<Float> floatList = ListUtility.toList(floatArray);
+        List<Float> floatModifyList = ListUtility.removeAndGet(floatList, 19776.4f);
         TestUtils.assertListEquals(
-                ListUtility.removeAndGet(floatList, 19776.4f),
+                floatModifyList,
                 new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f});
+        floatModifyList = ListUtility.removeAndGet(floatList, 5);
         TestUtils.assertListEquals(
-                ListUtility.removeAndGet(floatList, 5),
+                floatModifyList,
                 new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, 6.99f});
+        Assert.assertSame(floatList, floatModifyList);
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<Double> doubleModifyList = ListUtility.removeAndGet(doubleList, 312.9113874d);
         TestUtils.assertListEquals(
-                ListUtility.removeAndGet(doubleList, 312.9113874d),
+                doubleModifyList,
                 new Double[] {15.104564d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d});
+        doubleModifyList = ListUtility.removeAndGet(doubleList, 1);
         TestUtils.assertListEquals(
-                ListUtility.removeAndGet(doubleList, 1),
+                doubleModifyList,
                 new Double[] {15.104564d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d});
+        Assert.assertSame(doubleList, doubleModifyList);
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         List<Long> longList = ListUtility.toList(longArray);
+        List<Long> longModifyList = ListUtility.removeAndGet(longList, 15104564L);
         TestUtils.assertListEquals(
-                ListUtility.removeAndGet(longList, 15104564L),
+                longModifyList,
                 new Long[] {3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L});
+        longModifyList = ListUtility.removeAndGet(longList, 3);
         TestUtils.assertListEquals(
-                ListUtility.removeAndGet(longList, 3),
+                longModifyList,
                 new Long[] {3129113874L, 4800000015L, 5457894511L, -970487745L, 699546101L});
+        Assert.assertSame(longList, longModifyList);
         
         //string
         String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
         List<String> stringList = ListUtility.toList(stringArray);
+        List<String> stringModifyList = ListUtility.removeAndGet(stringList, "bat");
         TestUtils.assertListEquals(
-                ListUtility.removeAndGet(stringList, "bat"),
+                stringModifyList,
                 new String[] {"cat", "dog", "bird", "lizard", "fish"});
+        stringModifyList = ListUtility.removeAndGet(stringList, 3);
         TestUtils.assertListEquals(
-                ListUtility.removeAndGet(stringList, 3),
+                stringModifyList,
                 new String[] {"cat", "dog", "bird", "fish"});
+        Assert.assertSame(stringList, stringModifyList);
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> objectModifyList = ListUtility.removeAndGet(objectList, objectArray[2]);
         TestUtils.assertListEquals(
-                ListUtility.removeAndGet(objectList, objectArray[2]),
+                objectModifyList,
                 new Object[] {"", 54, objectArray[3], objectArray[4]});
+        objectModifyList = ListUtility.removeAndGet(objectList, 3);
         TestUtils.assertListEquals(
-                ListUtility.removeAndGet(objectList, 3),
+                objectModifyList,
                 new Object[] {"", 54, objectArray[3]});
+        Assert.assertSame(objectList, objectModifyList);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -2634,51 +2790,65 @@ public class ListUtilityTest {
         //boolean
         Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
         List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<Boolean> booleanModifyList = ListUtility.removeAllAndGet(booleanList, List.of(true));
         TestUtils.assertListEquals(
-                ListUtility.removeAllAndGet(booleanList, List.of(true)),
+                booleanModifyList,
                 new Boolean[] {false, false, false});
+        Assert.assertSame(booleanList, booleanModifyList);
         
         //int
         Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
         List<Integer> integerList = ListUtility.toList(integerArray);
+        List<Integer> integerModifyList = ListUtility.removeAllAndGet(integerList, List.of(5, 312, 48));
         TestUtils.assertListEquals(
-                ListUtility.removeAllAndGet(integerList, List.of(5, 312, 48)),
+                integerModifyList,
                 new Integer[] {15, -4, -9, 6});
+        Assert.assertSame(integerList, integerModifyList);
         
         //float
         Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
         List<Float> floatList = ListUtility.toList(floatArray);
+        List<Float> floatModifyList = ListUtility.removeAllAndGet(floatList, List.of(19776.4f, 5.45f, 15.1f, 6.99f, 8045.5f));
         TestUtils.assertListEquals(
-                ListUtility.removeAllAndGet(floatList, List.of(19776.4f, 5.45f, 15.1f, 6.99f, 8045.5f)),
+                floatModifyList,
                 new Float[] {312.91f, 48.0f, -4.006f, -9.7f});
+        Assert.assertSame(floatList, floatModifyList);
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
         List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<Double> doubleModifyList = ListUtility.removeAllAndGet(doubleList, List.of(312.9113874d, -4.006005001d));
         TestUtils.assertListEquals(
-                ListUtility.removeAllAndGet(doubleList, List.of(312.9113874d, -4.006005001d)),
+                doubleModifyList,
                 new Double[] {15.104564d, 48.00000015d, 5.457894511d, -9.70487745d, 6.99546101d});
+        Assert.assertSame(doubleList, doubleModifyList);
         
         //long
         Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
         List<Long> longList = ListUtility.toList(longArray);
+        List<Long> longModifyList = ListUtility.removeAllAndGet(longList, List.of(98119846L, 116543033L, 809809877L));
         TestUtils.assertListEquals(
-                ListUtility.removeAllAndGet(longList, List.of(98119846L, 116543033L, 809809877L)),
+                longModifyList,
                 new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L});
+        Assert.assertSame(longList, longModifyList);
         
         //string
         String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
         List<String> stringList = ListUtility.toList(stringArray);
+        List<String> stringModifyList = ListUtility.removeAllAndGet(stringList, List.of("cat", "dog", "bird"));
         TestUtils.assertListEquals(
-                ListUtility.removeAllAndGet(stringList, List.of("cat", "dog", "bird")),
+                stringModifyList,
                 new String[] {"lizard", "fish"});
+        Assert.assertSame(stringList, stringModifyList);
         
         //object
         Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
         List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> objectModifyList = ListUtility.removeAllAndGet(objectList, List.of(objectArray[2], objectArray[3], objectArray[4]));
         TestUtils.assertListEquals(
-                ListUtility.removeAllAndGet(objectList, List.of(objectArray[2], objectArray[3], objectArray[4])),
+                objectModifyList,
                 new Object[] {"", 54});
+        Assert.assertSame(objectList, objectModifyList);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -2693,6 +2863,68 @@ public class ListUtilityTest {
                 ListUtility.removeAllAndGet(List.of(6, 7, 3), List.of(6, 3)));
         TestUtils.assertException(UnsupportedOperationException.class, () ->
                 ListUtility.removeAllAndGet(List.of(6, 7, 3), ListUtility.emptyList()));
+    }
+    
+    /**
+     * JUnit test of clearAndGet.
+     *
+     * @throws Exception When there is an exception.
+     * @see ListUtility#clearAndGet(List)
+     */
+    @Test
+    public void testClearAndGet() throws Exception {
+        //boolean
+        Boolean[] booleanArray = new Boolean[] {true, false, false, true, false};
+        List<Boolean> booleanList = ListUtility.toList(booleanArray);
+        List<Boolean> booleanModifyList = ListUtility.clearAndGet(booleanList);
+        TestUtils.assertListEquals(booleanModifyList, ListUtility.emptyList());
+        Assert.assertSame(booleanList, booleanModifyList);
+        
+        //int
+        Integer[] integerArray = new Integer[] {15, 312, 48, 5, -4, -9, 6};
+        List<Integer> integerList = ListUtility.toList(integerArray);
+        List<Integer> integerModifyList = ListUtility.clearAndGet(integerList);
+        TestUtils.assertListEquals(integerModifyList, ListUtility.emptyList());
+        Assert.assertSame(integerList, integerList);
+        
+        //float
+        Float[] floatArray = new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f, 19776.4f};
+        List<Float> floatList = ListUtility.toList(floatArray);
+        List<Float> floatModifyList = ListUtility.clearAndGet(floatList);
+        TestUtils.assertListEquals(floatModifyList, ListUtility.emptyList());
+        Assert.assertSame(floatList, floatModifyList);
+        
+        //double
+        Double[] doubleArray = new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d};
+        List<Double> doubleList = ListUtility.toList(doubleArray);
+        List<Double> doubleModifyList = ListUtility.clearAndGet(doubleList);
+        TestUtils.assertListEquals(doubleModifyList, ListUtility.emptyList());
+        Assert.assertSame(doubleList, doubleModifyList);
+        
+        //long
+        Long[] longArray = new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L};
+        List<Long> longList = ListUtility.toList(longArray);
+        List<Long> longModifyList = ListUtility.clearAndGet(longList);
+        TestUtils.assertListEquals(longModifyList, ListUtility.emptyList());
+        Assert.assertSame(longList, longModifyList);
+        
+        //string
+        String[] stringArray = new String[] {"cat", "dog", "bird", "lizard", "fish"};
+        List<String> stringList = ListUtility.toList(stringArray);
+        List<String> stringModifyList = ListUtility.clearAndGet(stringList);
+        TestUtils.assertListEquals(stringModifyList, ListUtility.emptyList());
+        Assert.assertSame(stringList, stringModifyList);
+        
+        //object
+        Object[] objectArray = new Object[] {"", 54, new ArithmeticException(), new HashMap<>(), new Object()};
+        List<Object> objectList = ListUtility.toList(objectArray);
+        List<Object> objectModifyList = ListUtility.clearAndGet(objectList);
+        TestUtils.assertListEquals(objectModifyList, ListUtility.emptyList());
+        Assert.assertSame(objectList, objectModifyList);
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                ListUtility.clearAndGet(null));
     }
     
     /**
@@ -3249,38 +3481,47 @@ public class ListUtilityTest {
         Object m = new Object();
         Object n = null;
         List<Object> list;
+        List<Object> listNoNull;
         Object[] array;
         
         //all
         array = new Object[] {a, b, c, d, e, f, g, h, i, j, k, l, m, n};
         list = ListUtility.toList(array);
-        Assert.assertTrue(list instanceof ArrayList);
+        listNoNull = ListUtility.removeNull(list);
+        Assert.assertTrue(listNoNull instanceof ArrayList);
         TestUtils.assertListEquals(
-                ListUtility.removeNull(list),
+                listNoNull,
                 new Object[] {a, c, e, g, i, k, m});
+        Assert.assertSame(list, listNoNull);
         
         //all not null
         array = new Object[] {a, c, e, g, i, k, m};
         list = ListUtility.toList(array, LinkedList.class);
-        Assert.assertTrue(list instanceof LinkedList);
+        listNoNull = ListUtility.removeNull(list);
+        Assert.assertTrue(listNoNull instanceof LinkedList);
         TestUtils.assertListEquals(
-                ListUtility.removeNull(list),
+                listNoNull,
                 new Object[] {a, c, e, g, i, k, m});
+        Assert.assertSame(list, listNoNull);
         
         //all null
         array = new Object[] {b, d, f, h, j, l, n};
         list = ListUtility.toList(array, Stack.class);
-        Assert.assertTrue(list instanceof Stack);
+        listNoNull = ListUtility.removeNull(list);
+        Assert.assertTrue(listNoNull instanceof Stack);
         TestUtils.assertListEquals(
-                ListUtility.removeNull(list),
+                listNoNull,
                 new Object[] {});
+        Assert.assertSame(list, listNoNull);
         
         //none
         list = ListUtility.cast(ListUtility.emptyList(), Vector.class);
-        Assert.assertTrue(list instanceof Vector);
+        listNoNull = ListUtility.removeNull(list);
+        Assert.assertTrue(listNoNull instanceof Vector);
         TestUtils.assertListEquals(
-                ListUtility.removeNull(list),
+                listNoNull,
                 new Object[] {});
+        Assert.assertSame(list, listNoNull);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -3303,6 +3544,7 @@ public class ListUtilityTest {
         TestUtils.assertListEquals(
                 booleanCleanList,
                 new Boolean[] {true, false});
+        Assert.assertSame(booleanList, booleanCleanList);
         
         //int
         Integer[] integerArray = new Integer[] {15, 15, 312, 48, 5, 5, -4, -9, -9, 6};
@@ -3312,6 +3554,7 @@ public class ListUtilityTest {
         TestUtils.assertListEquals(
                 integerCleanList,
                 new Integer[] {15, 312, 48, 5, -4, -9, 6});
+        Assert.assertSame(integerList, integerCleanList);
         
         //float
         Float[] floatArray = new Float[] {15.1f, 15.1f, 15.1f, 312.91f, 312.91f, 48.0f, 5.45f, -4.006f, -4.006f, -9.7f, 6.99f, 6.99f};
@@ -3321,6 +3564,7 @@ public class ListUtilityTest {
         TestUtils.assertListEquals(
                 floatCleanList,
                 new Float[] {15.1f, 312.91f, 48.0f, 5.45f, -4.006f, -9.7f, 6.99f});
+        Assert.assertSame(floatList, floatCleanList);
         
         //double
         Double[] doubleArray = new Double[] {15.104564d, 15.104564d, 15.104564d, 312.9113874d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -4.006005001d, -9.70487745d, 6.99546101d, 6.99546101d};
@@ -3330,6 +3574,7 @@ public class ListUtilityTest {
         TestUtils.assertListEquals(
                 doubleCleanList,
                 new Double[] {15.104564d, 312.9113874d, 48.00000015d, 5.457894511d, -4.006005001d, -9.70487745d, 6.99546101d});
+        Assert.assertSame(doubleList, doubleCleanList);
         
         //long
         Long[] longArray = new Long[] {15104564L, 15104564L, 15104564L, 3129113874L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -4006005001L, -970487745L, 699546101L, 699546101L};
@@ -3339,6 +3584,7 @@ public class ListUtilityTest {
         TestUtils.assertListEquals(
                 longCleanList,
                 new Long[] {15104564L, 3129113874L, 4800000015L, 5457894511L, -4006005001L, -970487745L, 699546101L});
+        Assert.assertSame(longList, longCleanList);
         
         //object
         Object[] testObjects = new Object[] {new ArithmeticException(), new HashMap<>(), new Object()};
@@ -3349,6 +3595,7 @@ public class ListUtilityTest {
         TestUtils.assertListEquals(
                 objectCleanList,
                 new Object[] {"", 54, testObjects[0], testObjects[1], testObjects[2]});
+        Assert.assertSame(objectList, objectCleanList);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->

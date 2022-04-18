@@ -8,7 +8,6 @@
 package commons.lambda.stream.sorter;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -154,8 +153,7 @@ public class SortersTest {
         sorted3 = testElements3.stream().sorted(Sorters.sort()).collect(Collectors.toList());
         Assert.assertNotNull(sorted3);
         TestUtils.assertListEquals(sorted3, testSorted3);
-        Stream.concat(testElementSets.stream(), testSortedSets.stream()).forEach(testSet ->
-                testSet.removeIf(Objects::isNull));
+        Stream.concat(testElementSets.stream(), testSortedSets.stream()).forEach(ListUtility::removeNull);
         
         //uniqueness
         Assert.assertSame(
@@ -206,8 +204,7 @@ public class SortersTest {
         sorted3 = testElements3.stream().sorted(Sorters.preserve()).collect(Collectors.toList());
         Assert.assertNotNull(sorted3);
         TestUtils.assertListEquals(sorted3, testSorted3);
-        Stream.concat(testElementSets.stream(), testSortedSets.stream()).forEach(testSet ->
-                testSet.removeIf(Objects::isNull));
+        Stream.concat(testElementSets.stream(), testSortedSets.stream()).forEach(ListUtility::removeNull);
         
         //uniqueness
         Assert.assertNotSame(
@@ -258,8 +255,7 @@ public class SortersTest {
         sorted3 = testElements3.stream().sorted(Sorters.reverse()).collect(Collectors.toList());
         Assert.assertNotNull(sorted3);
         TestUtils.assertListEquals(sorted3, testSorted3);
-        Stream.concat(testElementSets.stream(), testSortedSets.stream()).forEach(testSet ->
-                testSet.removeIf(Objects::isNull));
+        Stream.concat(testElementSets.stream(), testSortedSets.stream()).forEach(ListUtility::removeNull);
         
         //uniqueness
         Assert.assertNotSame(
@@ -316,8 +312,7 @@ public class SortersTest {
         Assert.assertNotNull(sorted3);
         TestUtils.assertListEquals(sorted3, testSorted3, false);
         TestUtils.assertListNotEquals(sorted3, testSorted3, true);
-        Stream.concat(testElementSets.stream(), testSortedSets.stream()).forEach(testSet ->
-                testSet.removeIf(Objects::isNull));
+        Stream.concat(testElementSets.stream(), testSortedSets.stream()).forEach(ListUtility::removeNull);
         
         //uniqueness
         Assert.assertNotSame(

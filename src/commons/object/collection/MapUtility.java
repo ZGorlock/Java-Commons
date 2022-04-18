@@ -16,10 +16,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import commons.lambda.stream.collector.MapCollectors;
+import commons.lambda.stream.mapper.Mappers;
 import commons.object.string.EntityStringUtility;
 import commons.object.string.StringUtility;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -414,6 +416,21 @@ public final class MapUtility {
     }
     
     /**
+     * Performs an operation on a map and returns the map.
+     *
+     * @param map       The map.
+     * @param operation The operation to perform.
+     * @param <K>       The type of the keys of the map.
+     * @param <V>       The type of the values of the map.
+     * @param <M>       The class of the map.
+     * @return The same map.
+     * @see Mappers#perform(Object, Consumer)
+     */
+    public static <K, V, M extends Map<K, V>> M doAndGet(M map, Consumer<M> operation) {
+        return Mappers.perform(map, operation);
+    }
+    
+    /**
      * Puts an entry in a map and returns the map.
      *
      * @param map   The map.
@@ -422,11 +439,11 @@ public final class MapUtility {
      * @param <K>   The type of the keys of the map.
      * @param <V>   The type of the values of the map.
      * @param <M>   The class of the map.
-     * @return The map.
+     * @return The same map.
+     * @see #doAndGet(Map, Consumer)
      */
     public static <K, V, M extends Map<K, V>> M putAndGet(M map, K key, V value) {
-        map.put(key, value);
-        return map;
+        return doAndGet(map, (m -> m.put(key, value)));
     }
     
     /**
@@ -437,11 +454,11 @@ public final class MapUtility {
      * @param <K>     The type of the keys of the map.
      * @param <V>     The type of the values of the map.
      * @param <M>     The class of the map.
-     * @return The map.
+     * @return The same map.
+     * @see #doAndGet(Map, Consumer)
      */
     public static <K, V, M extends Map<K, V>> M putAllAndGet(M map, Map<? extends K, ? extends V> entries) {
-        map.putAll(entries);
-        return map;
+        return doAndGet(map, (m -> m.putAll(entries)));
     }
     
     /**
@@ -453,11 +470,11 @@ public final class MapUtility {
      * @param <K>   The type of the keys of the map.
      * @param <V>   The type of the values of the map.
      * @param <M>   The class of the map.
-     * @return The map.
+     * @return The same map.
+     * @see #doAndGet(Map, Consumer)
      */
     public static <K, V, M extends Map<K, V>> M putIfAbsentAndGet(M map, K key, V value) {
-        map.putIfAbsent(key, value);
-        return map;
+        return doAndGet(map, (m -> m.putIfAbsent(key, value)));
     }
     
     /**
@@ -469,11 +486,11 @@ public final class MapUtility {
      * @param <K>   The type of the keys of the map.
      * @param <V>   The type of the values of the map.
      * @param <M>   The class of the map.
-     * @return The map.
+     * @return The same map.
+     * @see #doAndGet(Map, Consumer)
      */
     public static <K, V, M extends Map<K, V>> M replaceAndGet(M map, K key, V value) {
-        map.replace(key, value);
-        return map;
+        return doAndGet(map, (m -> m.replace(key, value)));
     }
     
     /**
@@ -484,11 +501,25 @@ public final class MapUtility {
      * @param <K> The type of the keys of the map.
      * @param <V> The type of the values of the map.
      * @param <M> The class of the map.
-     * @return The map.
+     * @return The same map.
+     * @see #doAndGet(Map, Consumer)
      */
     public static <K, V, M extends Map<K, V>> M removeAndGet(M map, K key) {
-        map.remove(key);
-        return map;
+        return doAndGet(map, (m -> m.remove(key)));
+    }
+    
+    /**
+     * Clears a map and returns the map.
+     *
+     * @param map The map.
+     * @param <K> The type of the keys of the map.
+     * @param <V> The type of the values of the map.
+     * @param <M> The class of the map.
+     * @return The same map.
+     * @see #doAndGet(Map, Consumer)
+     */
+    public static <K, V, M extends Map<K, V>> M clearAndGet(M map) {
+        return doAndGet(map, Map::clear);
     }
     
     /**

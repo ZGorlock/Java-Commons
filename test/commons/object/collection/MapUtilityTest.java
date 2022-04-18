@@ -17,6 +17,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -801,6 +802,67 @@ public class MapUtilityTest {
     }
     
     /**
+     * JUnit test of doAndGet.
+     *
+     * @throws Exception When there is an exception.
+     * @see MapUtility#doAndGet(Map, Consumer)
+     */
+    @Test
+    public void testDoAndGet() throws Exception {
+        //int, string
+        Map<Integer, String> integerStringMap = MapUtility.mapOf(
+                Arrays.asList(1, 3, 9),
+                Arrays.asList("t1", "t2", "t3"));
+        Map<Integer, String> integerStringModifyMap = MapUtility.doAndGet(integerStringMap, (m -> m.put(0, "t0")));
+        TestUtils.assertMapEquals(
+                integerStringModifyMap,
+                MapUtility.mapOf(
+                        Arrays.asList(0, 1, 3, 9),
+                        Arrays.asList("t0", "t1", "t2", "t3")));
+        Assert.assertSame(integerStringMap, integerStringModifyMap);
+        
+        //string, boolean
+        Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
+                new String[] {"a", "b"},
+                new Boolean[] {true, false});
+        Map<String, Boolean> stringBooleanModifyMap = MapUtility.doAndGet(stringBooleanMap, (m -> m.replace("a", false)));
+        TestUtils.assertMapEquals(
+                stringBooleanModifyMap,
+                MapUtility.mapOf(
+                        new String[] {"a", "b"},
+                        new Boolean[] {false, false}));
+        Assert.assertSame(stringBooleanMap, stringBooleanModifyMap);
+        
+        //string, string
+        Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
+                Arrays.asList("A", "B", "C"),
+                Arrays.asList("I", "J", "K"));
+        Map<String, String> stringStringModifyMap = MapUtility.doAndGet(stringStringMap, (m -> m.remove("B")));
+        TestUtils.assertMapEquals(
+                stringStringModifyMap,
+                MapUtility.mapOf(
+                        Arrays.asList("A", "C"),
+                        Arrays.asList("I", "K")));
+        Assert.assertSame(stringStringMap, stringStringModifyMap);
+        
+        //long, object
+        Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
+                new Long[] {189456L, 8756156033L},
+                new Object[] {34, ""});
+        Map<Long, Object> longObjectModifyMap = MapUtility.doAndGet(longObjectMap, (Map::clear));
+        TestUtils.assertMapEquals(longObjectModifyMap, MapUtility.emptyMap());
+        Assert.assertSame(longObjectMap, longObjectModifyMap);
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapUtility.doAndGet(null, (m -> m.put(0, 0))));
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapUtility.doAndGet(MapUtility.emptyMap(), null));
+        TestUtils.assertException(UnsupportedOperationException.class, () ->
+                MapUtility.doAndGet(MapUtility.unmodifiableMap(), (m -> m.put(0, 0))));
+    }
+    
+    /**
      * JUnit test of putAndGet.
      *
      * @throws Exception When there is an exception.
@@ -812,41 +874,49 @@ public class MapUtilityTest {
         Map<Integer, String> integerStringMap = MapUtility.mapOf(
                 Arrays.asList(1, 3, 9),
                 Arrays.asList("t1", "t2", "t3"));
+        Map<Integer, String> integerStringModifyMap = MapUtility.putAndGet(integerStringMap, 12, "t4");
         TestUtils.assertMapEquals(
-                MapUtility.putAndGet(integerStringMap, 12, "t4"),
+                integerStringModifyMap,
                 MapUtility.mapOf(
                         Arrays.asList(1, 3, 9, 12),
                         Arrays.asList("t1", "t2", "t3", "t4")));
+        Assert.assertSame(integerStringMap, integerStringModifyMap);
         
         //string, boolean
         Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
                 new String[] {"a", "b"},
                 new Boolean[] {true, false});
+        Map<String, Boolean> stringBooleanModifyMap = MapUtility.putAndGet(stringBooleanMap, "c", false);
         TestUtils.assertMapEquals(
-                MapUtility.putAndGet(stringBooleanMap, "c", false),
+                stringBooleanModifyMap,
                 MapUtility.mapOf(
                         new String[] {"a", "b", "c"},
                         new Boolean[] {true, false, false}));
+        Assert.assertSame(stringBooleanMap, stringBooleanModifyMap);
         
         //string, string
         Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
                 Arrays.asList("A", "B", "C"),
                 Arrays.asList("I", "J", "K"));
+        Map<String, String> stringStringModifyMap = MapUtility.putAndGet(stringStringMap, "D", "L");
         TestUtils.assertMapEquals(
-                MapUtility.putAndGet(stringStringMap, "D", "L"),
+                stringStringModifyMap,
                 MapUtility.mapOf(
                         Arrays.asList("A", "B", "C", "D"),
                         Arrays.asList("I", "J", "K", "L")));
+        Assert.assertSame(stringStringMap, stringStringModifyMap);
         
         //long, object
         Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
                 new Long[] {189456L, 8756156033L},
                 new Object[] {34, ""});
+        Map<Long, Object> longObjectModifyMap = MapUtility.putAndGet(longObjectMap, 8756156033L, 8946L);
         TestUtils.assertMapEquals(
-                MapUtility.putAndGet(longObjectMap, 8756156033L, 8946L),
+                longObjectModifyMap,
                 MapUtility.mapOf(
                         new Long[] {189456L, 8756156033L},
                         new Object[] {34, 8946L}));
+        Assert.assertSame(longObjectMap, longObjectModifyMap);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -867,49 +937,57 @@ public class MapUtilityTest {
         Map<Integer, String> integerStringMap = MapUtility.mapOf(
                 Arrays.asList(1, 3, 9),
                 Arrays.asList("t1", "t2", "t3"));
+        Map<Integer, String> integerStringModifyMap = MapUtility.putAllAndGet(integerStringMap, MapUtility.mapOf(
+                Arrays.asList(12, 15, 18),
+                Arrays.asList("t4", "t5", "t6")));
         TestUtils.assertMapEquals(
-                MapUtility.putAllAndGet(integerStringMap, MapUtility.mapOf(
-                        Arrays.asList(12, 15, 18),
-                        Arrays.asList("t4", "t5", "t6"))),
+                integerStringModifyMap,
                 MapUtility.mapOf(
                         Arrays.asList(1, 3, 9, 12, 15, 18),
                         Arrays.asList("t1", "t2", "t3", "t4", "t5", "t6")));
+        Assert.assertSame(integerStringMap, integerStringModifyMap);
         
         //string, boolean
         Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
                 new String[] {"a", "b"},
                 new Boolean[] {true, false});
+        Map<String, Boolean> stringBooleanModifyMap = MapUtility.putAllAndGet(stringBooleanMap, MapUtility.mapOf(
+                new String[] {"c"},
+                new Boolean[] {false}));
         TestUtils.assertMapEquals(
-                MapUtility.putAllAndGet(stringBooleanMap, MapUtility.mapOf(
-                        new String[] {"c"},
-                        new Boolean[] {false})),
+                stringBooleanModifyMap,
                 MapUtility.mapOf(
                         new String[] {"a", "b", "c"},
                         new Boolean[] {true, false, false}));
+        Assert.assertSame(stringBooleanMap, stringBooleanModifyMap);
         
         //string, string
         Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
                 Arrays.asList("A", "B", "C"),
                 Arrays.asList("I", "J", "K"));
+        Map<String, String> stringStringModifyMap = MapUtility.putAllAndGet(stringStringMap, MapUtility.mapOf(
+                ListUtility.emptyList(),
+                ListUtility.emptyList()));
         TestUtils.assertMapEquals(
-                MapUtility.putAllAndGet(stringStringMap, MapUtility.mapOf(
-                        ListUtility.emptyList(),
-                        ListUtility.emptyList())),
+                stringStringModifyMap,
                 MapUtility.mapOf(
                         Arrays.asList("A", "B", "C"),
                         Arrays.asList("I", "J", "K")));
+        Assert.assertSame(stringStringMap, stringStringModifyMap);
         
         //long, object
         Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
                 new Long[] {189456L, 8756156033L},
                 new Object[] {34, ""});
+        Map<Long, Object> longObjectModifyMap = MapUtility.putAllAndGet(longObjectMap, MapUtility.mapOf(
+                new Long[] {8756156033L, 98070654L},
+                new Object[] {8946L, ""}));
         TestUtils.assertMapEquals(
-                MapUtility.putAllAndGet(longObjectMap, MapUtility.mapOf(
-                        new Long[] {8756156033L, 98070654L},
-                        new Object[] {8946L, ""})),
+                longObjectModifyMap,
                 MapUtility.mapOf(
                         new Long[] {189456L, 8756156033L, 98070654L},
                         new Object[] {34, 8946L, ""}));
+        Assert.assertSame(longObjectMap, longObjectModifyMap);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -932,41 +1010,49 @@ public class MapUtilityTest {
         Map<Integer, String> integerStringMap = MapUtility.mapOf(
                 Arrays.asList(1, 3, 9),
                 Arrays.asList("t1", "t2", "t3"));
+        Map<Integer, String> integerStringModifyMap = MapUtility.putIfAbsentAndGet(integerStringMap, 9, "t4");
         TestUtils.assertMapEquals(
-                MapUtility.putIfAbsentAndGet(integerStringMap, 9, "t4"),
+                integerStringModifyMap,
                 MapUtility.mapOf(
                         Arrays.asList(1, 3, 9),
                         Arrays.asList("t1", "t2", "t3")));
+        Assert.assertSame(integerStringMap, integerStringModifyMap);
         
         //string, boolean
         Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
                 new String[] {"a", "b"},
                 new Boolean[] {true, false});
+        Map<String, Boolean> stringBooleanModifyMap = MapUtility.putIfAbsentAndGet(stringBooleanMap, "c", false);
         TestUtils.assertMapEquals(
-                MapUtility.putIfAbsentAndGet(stringBooleanMap, "c", false),
+                stringBooleanModifyMap,
                 MapUtility.mapOf(
                         new String[] {"a", "b", "c"},
                         new Boolean[] {true, false, false}));
+        Assert.assertSame(stringBooleanMap, stringBooleanModifyMap);
         
         //string, string
         Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
                 Arrays.asList("A", "B", "C"),
                 Arrays.asList("I", "J", "K"));
+        Map<String, String> stringStringModifyMap = MapUtility.putIfAbsentAndGet(stringStringMap, "D", "L");
         TestUtils.assertMapEquals(
-                MapUtility.putIfAbsentAndGet(stringStringMap, "D", "L"),
+                stringStringModifyMap,
                 MapUtility.mapOf(
                         Arrays.asList("A", "B", "C", "D"),
                         Arrays.asList("I", "J", "K", "L")));
+        Assert.assertSame(stringStringMap, stringStringModifyMap);
         
         //long, object
         Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
                 new Long[] {189456L, 8756156033L},
                 new Object[] {34, ""});
+        Map<Long, Object> longObjectModifyMap = MapUtility.putIfAbsentAndGet(longObjectMap, 8756156033L, 8946L);
         TestUtils.assertMapEquals(
-                MapUtility.putIfAbsentAndGet(longObjectMap, 8756156033L, 8946L),
+                longObjectModifyMap,
                 MapUtility.mapOf(
                         new Long[] {189456L, 8756156033L},
                         new Object[] {34, ""}));
+        Assert.assertSame(longObjectMap, longObjectModifyMap);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -987,41 +1073,49 @@ public class MapUtilityTest {
         Map<Integer, String> integerStringMap = MapUtility.mapOf(
                 Arrays.asList(1, 3, 9),
                 Arrays.asList("t1", "t2", "t3"));
+        Map<Integer, String> integerStringModifyMap = MapUtility.replaceAndGet(integerStringMap, 9, "t4");
         TestUtils.assertMapEquals(
-                MapUtility.replaceAndGet(integerStringMap, 9, "t4"),
+                integerStringModifyMap,
                 MapUtility.mapOf(
                         Arrays.asList(1, 3, 9),
                         Arrays.asList("t1", "t2", "t4")));
+        Assert.assertSame(integerStringMap, integerStringModifyMap);
         
         //string, boolean
         Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
                 new String[] {"a", "b"},
                 new Boolean[] {true, false});
+        Map<String, Boolean> stringBooleanModifyMap = MapUtility.replaceAndGet(stringBooleanMap, "c", false);
         TestUtils.assertMapEquals(
-                MapUtility.replaceAndGet(stringBooleanMap, "c", false),
+                stringBooleanModifyMap,
                 MapUtility.mapOf(
                         new String[] {"a", "b"},
                         new Boolean[] {true, false}));
+        Assert.assertSame(stringBooleanMap, stringBooleanModifyMap);
         
         //string, string
         Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
                 Arrays.asList("A", "B", "C"),
                 Arrays.asList("I", "J", "K"));
+        Map<String, String> stringStringModifyMap = MapUtility.replaceAndGet(stringStringMap, "D", "L");
         TestUtils.assertMapEquals(
-                MapUtility.replaceAndGet(stringStringMap, "D", "L"),
+                stringStringModifyMap,
                 MapUtility.mapOf(
                         Arrays.asList("A", "B", "C"),
                         Arrays.asList("I", "J", "K")));
+        Assert.assertSame(stringStringMap, stringStringModifyMap);
         
         //long, object
         Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
                 new Long[] {189456L, 8756156033L},
                 new Object[] {34, ""});
+        Map<Long, Object> longObjectModifyMap = MapUtility.replaceAndGet(longObjectMap, 8756156033L, 8946L);
         TestUtils.assertMapEquals(
-                MapUtility.replaceAndGet(longObjectMap, 8756156033L, 8946L),
+                longObjectModifyMap,
                 MapUtility.mapOf(
                         new Long[] {189456L, 8756156033L},
                         new Object[] {34, 8946L}));
+        Assert.assertSame(longObjectMap, longObjectModifyMap);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -1042,41 +1136,96 @@ public class MapUtilityTest {
         Map<Integer, String> integerStringMap = MapUtility.mapOf(
                 Arrays.asList(1, 3, 9),
                 Arrays.asList("t1", "t2", "t3"));
+        Map<Integer, String> integerStringModifyMap = MapUtility.removeAndGet(integerStringMap, 9);
         TestUtils.assertMapEquals(
-                MapUtility.removeAndGet(integerStringMap, 9),
+                integerStringModifyMap,
                 MapUtility.mapOf(
                         Arrays.asList(1, 3),
                         Arrays.asList("t1", "t2")));
+        Assert.assertSame(integerStringMap, integerStringModifyMap);
         
         //string, boolean
         Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
                 new String[] {"a", "b"},
                 new Boolean[] {true, false});
+        Map<String, Boolean> stringBooleanModifyMap = MapUtility.removeAndGet(stringBooleanMap, "c");
         TestUtils.assertMapEquals(
-                MapUtility.removeAndGet(stringBooleanMap, "c"),
+                stringBooleanModifyMap,
                 MapUtility.mapOf(
                         new String[] {"a", "b"},
                         new Boolean[] {true, false}));
+        Assert.assertSame(stringBooleanMap, stringBooleanModifyMap);
         
         //string, string
         Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
                 Arrays.asList("A", "B", "C"),
                 Arrays.asList("I", "J", "K"));
+        Map<String, String> stringStringModifyMap = MapUtility.removeAndGet(stringStringMap, "D");
         TestUtils.assertMapEquals(
-                MapUtility.removeAndGet(stringStringMap, "D"),
+                stringStringModifyMap,
                 MapUtility.mapOf(
                         Arrays.asList("A", "B", "C"),
                         Arrays.asList("I", "J", "K")));
+        Assert.assertSame(stringStringMap, stringStringModifyMap);
         
         //long, object
         Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
                 new Long[] {189456L, 8756156033L},
                 new Object[] {34, ""});
+        Map<Long, Object> longObjectModifyMap = MapUtility.removeAndGet(longObjectMap, 8756156033L);
         TestUtils.assertMapEquals(
-                MapUtility.removeAndGet(longObjectMap, 8756156033L),
+                longObjectModifyMap,
                 MapUtility.mapOf(
                         new Long[] {189456L},
                         new Object[] {34}));
+        Assert.assertSame(longObjectMap, longObjectModifyMap);
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                MapUtility.removeAndGet(null, 0));
+        TestUtils.assertException(UnsupportedOperationException.class, () ->
+                MapUtility.removeAndGet(MapUtility.unmodifiableMap(), 0));
+    }
+    
+    /**
+     * JUnit test of clearAndGet.
+     *
+     * @throws Exception When there is an exception.
+     * @see MapUtility#clearAndGet(Map)
+     */
+    @Test
+    public void testClearAndGet() throws Exception {
+        //int, string
+        Map<Integer, String> integerStringMap = MapUtility.mapOf(
+                Arrays.asList(1, 3, 9),
+                Arrays.asList("t1", "t2", "t3"));
+        Map<Integer, String> integerStringModifyMap = MapUtility.clearAndGet(integerStringMap);
+        TestUtils.assertMapEquals(integerStringModifyMap, MapUtility.emptyMap());
+        Assert.assertSame(integerStringMap, integerStringModifyMap);
+        
+        //string, boolean
+        Map<String, Boolean> stringBooleanMap = MapUtility.mapOf(HashMap.class,
+                new String[] {"a", "b"},
+                new Boolean[] {true, false});
+        Map<String, Boolean> stringBooleanModifyMap = MapUtility.clearAndGet(stringBooleanMap);
+        TestUtils.assertMapEquals(stringBooleanModifyMap, MapUtility.emptyMap());
+        Assert.assertSame(stringBooleanMap, stringBooleanModifyMap);
+        
+        //string, string
+        Map<String, String> stringStringMap = MapUtility.mapOf(LinkedHashMap.class,
+                Arrays.asList("A", "B", "C"),
+                Arrays.asList("I", "J", "K"));
+        Map<String, String> stringStringModifyMap = MapUtility.clearAndGet(stringStringMap);
+        TestUtils.assertMapEquals(stringStringModifyMap, MapUtility.emptyMap());
+        Assert.assertSame(stringStringMap, stringStringModifyMap);
+        
+        //long, object
+        Map<Long, Object> longObjectMap = MapUtility.mapOf(TreeMap.class,
+                new Long[] {189456L, 8756156033L},
+                new Object[] {34, ""});
+        Map<Long, Object> longObjectModifyMap = MapUtility.clearAndGet(longObjectMap);
+        TestUtils.assertMapEquals(longObjectModifyMap, MapUtility.emptyMap());
+        Assert.assertSame(longObjectMap, longObjectModifyMap);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
