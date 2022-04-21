@@ -28,7 +28,6 @@ import java.util.stream.Stream;
 import commons.lambda.stream.collector.ArrayCollectors;
 import commons.lambda.stream.collector.MapCollectors;
 import commons.math.NumberUtility;
-import commons.object.collection.ArrayUtility;
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
 import commons.object.string.StringUtility;
@@ -91,12 +90,12 @@ public class IterableMapTest {
     /**
      * The list of keys of the system under test.
      */
-    private static List<String> keys;
+    private List<String> keys;
     
     /**
      * The list of values of the system under test.
      */
-    private static List<Integer> values;
+    private List<Integer> values;
     
     
     //Functions
@@ -1354,38 +1353,6 @@ public class IterableMapTest {
         
         //equality
         Assert.assertNotSame(sut.iterator(), sut.iterator());
-    }
-    
-    /**
-     * JUnit test of IterableMapIterator.
-     *
-     * @throws Exception When there is an exception.
-     * @see IterableMap.IterableMapIterator
-     */
-    @Test
-    public void testIterableMapIterator() throws Exception {
-        final Class<?> IterableMapIterator = TestAccess.getClass(IterableMap.class, "IterableMapIterator");
-        Iterator<Map.Entry<String, Integer>> iterator;
-        
-        //class
-        Assert.assertNotNull(IterableMapIterator);
-        Assert.assertTrue(ArrayUtility.contains(IterableMapIterator.getInterfaces(), Iterator.class));
-        
-        //instantiation
-        iterator = sut.iterator();
-        TestUtils.assertListEquals(
-                TestAccess.getFieldValue(iterator, List.class, "iteration"),
-                sut.entrySetOrdered(), true);
-        Assert.assertEquals(-1, TestAccess.getFieldValue(iterator, int.class, "current").intValue());
-        Assert.assertFalse(TestAccess.getFieldValue(iterator, boolean.class, "canRemove"));
-        
-        //fields
-        List.of("iteration", "current", "canRemove").forEach(fieldName ->
-                TestUtils.assertFieldExists(IterableMapIterator, fieldName));
-        
-        //methods
-        List.of("hasNext", "next", "remove").forEach(methodName ->
-                TestUtils.assertMethodExists(IterableMapIterator, methodName));
     }
     
 }

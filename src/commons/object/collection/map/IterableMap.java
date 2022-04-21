@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
@@ -25,6 +24,7 @@ import java.util.stream.Collectors;
 import commons.math.BoundUtility;
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
+import commons.object.collection.iterator.CustomIterator;
 import commons.object.string.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -563,81 +563,11 @@ public class IterableMap<K, V> extends HashMap<K, V> implements Iterable<Map.Ent
      * Creates an iterator of the entries of the map.
      *
      * @return The iterator.
-     * @see IterableMapIterator
+     * @see CustomIterator
      */
     @Override
     public Iterator<Map.Entry<K, V>> iterator() {
-        return new IterableMapIterator();
-    }
-    
-    
-    //Inner Classes
-    
-    /**
-     * Defines an iterator for the Iterable Map.
-     */
-    private class IterableMapIterator implements Iterator<Map.Entry<K, V>> {
-        
-        //Fields
-        
-        /**
-         * The elements of the iteration.
-         */
-        private final List<Map.Entry<K, V>> iteration = IterableMap.this.entrySetOrdered();
-        
-        /**
-         * The current index of the iteration.
-         */
-        private int current = -1;
-        
-        /**
-         * A flag indicating whether or not the current element of the iteration can be removed.
-         */
-        private boolean canRemove = false;
-        
-        
-        //Methods
-        
-        /**
-         * Returns whether or not the iteration has more elements.
-         *
-         * @return Whether or not the iteration has more elements.
-         */
-        @Override
-        public boolean hasNext() {
-            return ((current + 1) < iteration.size());
-        }
-        
-        /**
-         * Retrieves the next element of the iteration.
-         *
-         * @return The next element of the iteration.
-         * @throws NoSuchElementException When there is not a next element.
-         */
-        @Override
-        public Map.Entry<K, V> next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
-            canRemove = true;
-            return iteration.get(++current);
-        }
-        
-        /**
-         * Removes the current element of the iteration from the Counter Set.
-         *
-         * @throws IllegalStateException When attempting to remove an element that has already been removed, or when the the current element has not yet been retrieved.
-         * @see IterableMap#remove(Object)
-         */
-        @Override
-        public void remove() {
-            if (!canRemove) {
-                throw new IllegalStateException();
-            }
-            IterableMap.this.remove(iteration.get(current).getKey());
-            canRemove = false;
-        }
-        
+        return new CustomIterator<>(entrySetOrdered(), (entry -> remove(entry.getKey())));
     }
     
 }
