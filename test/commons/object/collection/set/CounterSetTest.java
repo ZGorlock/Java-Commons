@@ -23,12 +23,14 @@ import java.util.function.IntBinaryOperator;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import commons.lambda.stream.collector.ArrayCollectors;
 import commons.lambda.stream.collector.MapCollectors;
 import commons.math.MathUtility;
 import commons.object.collection.ListUtility;
+import commons.object.collection.MapUtility;
 import commons.object.string.StringUtility;
 import commons.test.TestUtils;
 import org.junit.After;
@@ -100,7 +102,7 @@ public class CounterSetTest {
     /**
      * Generates a comparable counter map from a CounterSet.
      */
-    final Function<CounterSet<String>, Map<String, Integer>> counterMapGenerator = (CounterSet<String> set) ->
+    private final Function<CounterSet<String>, Map<String, Integer>> counterMapGenerator = (CounterSet<String> set) ->
             set.stream().collect(MapCollectors.toHashMap(Function.identity(), set::get));
     
     
@@ -166,45 +168,66 @@ public class CounterSetTest {
      *
      * @throws Exception When there is an exception.
      * @see CounterSet#CounterSet(Collection)
+     * @see CounterSet#CounterSet(Map)
      * @see CounterSet#CounterSet(CounterSet)
      * @see CounterSet#CounterSet()
      */
     @SuppressWarnings("rawtypes")
     @Test
     public void testConstructors() throws Exception {
+        final List<String> testList1 = elementSets[2];
+        final List<String> testList2 = ListUtility.duplicateInOrder(testList1, 5);
+        final Map<String, Integer> testMap = MapUtility.mapOf(
+                testList1,
+                IntStream.range(0, testList1.size()).mapToObj(i -> MathUtility.random(100)).collect(Collectors.toList()));
         CounterSet<String> set1;
         CounterSet<String> set2;
         CounterSet<String> set3;
+        CounterSet<String> set4;
+        CounterSet<String> set5;
         
-        //map
-        set1 = new CounterSet<>(elementSets[2]);
+        //distinct collection
+        set1 = new CounterSet<>(testList1);
         Assert.assertNotNull(set1);
         TestUtils.assertListEquals(
                 ListUtility.toList(set1),
-                elementSets[2], false);
-        TestUtils.assertListEquals(
-                set1.stream().map(set1::get).collect(Collectors.toList()),
-                Collections.nCopies(set1.size(), 0));
-        set1.forEach(e -> set1.set(e, MathUtility.random(100)));
+                testList1, false);
+        Assert.assertTrue(set1.stream().allMatch(element -> (set1.get(element) == 1)));
         
-        //iterable map
-        set2 = new CounterSet<>(set1);
+        //collection
+        set2 = new CounterSet<>(testList2);
         Assert.assertNotNull(set2);
         TestUtils.assertListEquals(
                 ListUtility.toList(set2),
-                ListUtility.toList(set1), false);
+                testList1, false);
+        Assert.assertTrue(set2.stream().allMatch(element -> (set2.get(element) == 5)));
+        
+        //map
+        set3 = new CounterSet<>(testMap);
+        Assert.assertNotNull(set3);
         TestUtils.assertListEquals(
-                set2.stream().map(set2::get).collect(Collectors.toList()),
-                set1.stream().map(set1::get).collect(Collectors.toList()));
+                ListUtility.toList(set3),
+                testList1, false);
+        Assert.assertTrue(set3.stream().allMatch(element -> (set3.get(element).intValue() == testMap.get(element).intValue())));
+        
+        //iterable map
+        set4 = new CounterSet<>(set3);
+        Assert.assertNotNull(set4);
+        TestUtils.assertListEquals(
+                ListUtility.toList(set4),
+                ListUtility.toList(set3), false);
+        Assert.assertTrue(set4.stream().allMatch(element -> (set4.get(element).intValue() == set3.get(element).intValue())));
         
         //empty
-        set3 = new CounterSet<>();
-        Assert.assertNotNull(set3);
-        Assert.assertTrue(set3.isEmpty());
+        set5 = new CounterSet<>();
+        Assert.assertNotNull(set5);
+        Assert.assertTrue(set5.isEmpty());
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
                 new CounterSet<>((Collection<?>) null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                new CounterSet<>((Map<?, Integer>) null));
         TestUtils.assertException(NullPointerException.class, () ->
                 new CounterSet<>((CounterSet<?>) null));
     }
@@ -487,6 +510,746 @@ public class CounterSetTest {
     }
     
     /**
+     * JUnit test of resetAll.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#resetAll()
+     */
+    @Test
+    public void testResetAll() throws Exception {
+        //standard
+        sut.resetAll();
+        Assert.assertFalse(sut.isEmpty());
+        counters.keySet().forEach(element -> counters.replace(element, 0));
+        sutValidator.run();
+    }
+    
+    /**
+     * JUnit test of get.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#get(Object)
+     */
+    @Test
+    public void testGet() throws Exception {
+        //standard
+        elementSets[2].forEach(element ->
+                Assert.assertEquals(counters.get(element), sut.get(element)));
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element ->
+                Assert.assertNull(sut.get(element)));
+        sutValidator.run();
+        
+        //invalid
+        Assert.assertNull(sut.get(null));
+    }
+    
+    /**
+     * JUnit test of getAndSet.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#getAndSet(Object, int)
+     */
+    @Test
+    public void testGetAndSet() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            Assert.assertEquals(counters.get(element), sut.getAndSet(element, -1));
+            Assert.assertEquals(-1, sut.get(element).intValue());
+            counters.replace(element, -1);
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            Assert.assertNull(sut.getAndSet(element, -1));
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        Assert.assertNull(sut.getAndSet(null, 0));
+    }
+    
+    /**
+     * JUnit test of set.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#set(Object, int)
+     */
+    @Test
+    public void testSet() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            sut.set(element, -1);
+            Assert.assertEquals(-1, sut.get(element).intValue());
+            counters.replace(element, -1);
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            sut.set(element, -1);
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        sut.set(null, 0);
+    }
+    
+    /**
+     * JUnit test of getAndReset.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#getAndReset(Object)
+     */
+    @Test
+    public void testGetAndReset() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            Assert.assertEquals(counters.get(element), sut.getAndReset(element));
+            Assert.assertEquals(0, sut.get(element).intValue());
+            counters.replace(element, 0);
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            Assert.assertNull(sut.getAndReset(element));
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        Assert.assertNull(sut.getAndReset(null));
+    }
+    
+    /**
+     * JUnit test of reset.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#reset(Object)
+     */
+    @Test
+    public void testReset() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            sut.reset(element);
+            Assert.assertEquals(0, sut.get(element).intValue());
+            counters.replace(element, 0);
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            sut.reset(element);
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        sut.reset(null);
+    }
+    
+    /**
+     * JUnit test of getAndStep.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#getAndStep(Object, int)
+     */
+    @Test
+    public void testGetAndStep() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            Assert.assertEquals(counters.get(element), sut.getAndStep(element, 10));
+            Assert.assertEquals((counters.get(element) + 10), sut.get(element).intValue());
+            counters.replace(element, (counters.get(element) + 10));
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            Assert.assertNull(sut.getAndStep(element, -6));
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        Assert.assertNull(sut.getAndStep(null, 0));
+    }
+    
+    /**
+     * JUnit test of stepAndGet.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#stepAndGet(Object, int)
+     */
+    @Test
+    public void testStepAndGet() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            Assert.assertEquals((counters.get(element) + 10), sut.stepAndGet(element, 10).intValue());
+            Assert.assertEquals((counters.get(element) + 10), sut.get(element).intValue());
+            counters.replace(element, (counters.get(element) + 10));
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            Assert.assertNull(sut.stepAndGet(element, -6));
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        Assert.assertNull(sut.stepAndGet(null, 0));
+    }
+    
+    /**
+     * JUnit test of step.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#step(Object, int)
+     */
+    @Test
+    public void testStep() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            sut.step(element, 10);
+            Assert.assertEquals((counters.get(element) + 10), sut.get(element).intValue());
+            counters.replace(element, (counters.get(element) + 10));
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            sut.step(element, -6);
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        sut.step(null, 0);
+    }
+    
+    /**
+     * JUnit test of getAndIncrement.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#getAndIncrement(Object)
+     */
+    @Test
+    public void testGetAndIncrement() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            Assert.assertEquals(counters.get(element), sut.getAndIncrement(element));
+            Assert.assertEquals((counters.get(element) + 1), sut.get(element).intValue());
+            counters.replace(element, (counters.get(element) + 1));
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            Assert.assertNull(sut.getAndIncrement(element));
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        Assert.assertNull(sut.getAndIncrement(null));
+    }
+    
+    /**
+     * JUnit test of incrementAndGet.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#incrementAndGet(Object)
+     */
+    @Test
+    public void testIncrementAndGet() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            Assert.assertEquals((counters.get(element) + 1), sut.incrementAndGet(element).intValue());
+            Assert.assertEquals((counters.get(element) + 1), sut.get(element).intValue());
+            counters.replace(element, (counters.get(element) + 1));
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            Assert.assertNull(sut.incrementAndGet(element));
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        Assert.assertNull(sut.incrementAndGet(null));
+    }
+    
+    /**
+     * JUnit test of increment.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#increment(Object)
+     */
+    @Test
+    public void testIncrement() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            sut.increment(element);
+            Assert.assertEquals((counters.get(element) + 1), sut.get(element).intValue());
+            counters.replace(element, (counters.get(element) + 1));
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            sut.increment(element);
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        sut.increment(null);
+    }
+    
+    /**
+     * JUnit test of getAndDecrement.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#getAndDecrement(Object)
+     */
+    @Test
+    public void testGetAndDecrement() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            Assert.assertEquals(counters.get(element), sut.getAndDecrement(element));
+            Assert.assertEquals((counters.get(element) - 1), sut.get(element).intValue());
+            counters.replace(element, (counters.get(element) - 1));
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            Assert.assertNull(sut.getAndDecrement(element));
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        Assert.assertNull(sut.getAndDecrement(null));
+    }
+    
+    /**
+     * JUnit test of decrementAndGet.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#decrementAndGet(Object)
+     */
+    @Test
+    public void testDecrementAndGet() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            Assert.assertEquals((counters.get(element) - 1), sut.decrementAndGet(element).intValue());
+            Assert.assertEquals((counters.get(element) - 1), sut.get(element).intValue());
+            counters.replace(element, (counters.get(element) - 1));
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            Assert.assertNull(sut.decrementAndGet(element));
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        Assert.assertNull(sut.decrementAndGet(null));
+    }
+    
+    /**
+     * JUnit test of decrement.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#decrement(Object)
+     */
+    @Test
+    public void testDecrement() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            sut.decrement(element);
+            Assert.assertEquals((counters.get(element) - 1), sut.get(element).intValue());
+            counters.replace(element, (counters.get(element) - 1));
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            sut.decrement(element);
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        sut.decrement(null);
+    }
+    
+    /**
+     * JUnit test of getAndUpdate.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#getAndUpdate(Object, IntUnaryOperator)
+     */
+    @Test
+    public void testGetAndUpdate() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            Assert.assertEquals(counters.get(element), sut.getAndUpdate(element, (i -> -i)));
+            Assert.assertEquals(-counters.get(element), sut.get(element).intValue());
+            counters.replace(element, -counters.get(element));
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            Assert.assertNull(sut.getAndUpdate(element, (i -> ((i + 2) * 2))));
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        Assert.assertNull(sut.getAndUpdate(null, (i -> 0)));
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.getAndUpdate("B", null));
+        Assert.assertNull(sut.getAndUpdate(null, null));
+    }
+    
+    /**
+     * JUnit test of updateAndGet.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#updateAndGet(Object, IntUnaryOperator)
+     */
+    @Test
+    public void testUpdateAndGet() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            Assert.assertEquals(-counters.get(element), sut.updateAndGet(element, (i -> -i)).intValue());
+            Assert.assertEquals(-counters.get(element), sut.get(element).intValue());
+            counters.replace(element, -counters.get(element));
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            Assert.assertNull(sut.updateAndGet(element, (i -> ((i + 2) * 2))));
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        Assert.assertNull(sut.updateAndGet(null, (i -> 0)));
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.updateAndGet("B", null));
+        Assert.assertNull(sut.updateAndGet(null, null));
+    }
+    
+    /**
+     * JUnit test of update.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#update(Object, IntUnaryOperator)
+     */
+    @Test
+    public void testUpdate() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            sut.update(element, (i -> -i));
+            Assert.assertEquals(-counters.get(element), sut.get(element).intValue());
+            counters.replace(element, -counters.get(element));
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            sut.update(element, (i -> ((i + 2) * 2)));
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        sut.update(null, (i -> 0));
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.update("B", null));
+        sut.update(null, null);
+    }
+    
+    /**
+     * JUnit test of getAndAccumulate.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#getAndAccumulate(Object, int, IntBinaryOperator)
+     */
+    @Test
+    public void testGetAndAccumulate() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            Assert.assertEquals(counters.get(element), sut.getAndAccumulate(element, elementSets[2].indexOf(element), ((i, x) -> (-i + x))));
+            Assert.assertEquals((-counters.get(element) + elementSets[2].indexOf(element)), sut.get(element).intValue());
+            counters.replace(element, (-counters.get(element) + elementSets[2].indexOf(element)));
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            Assert.assertNull(sut.getAndAccumulate(element, elementSets[3].indexOf(element), ((i, x) -> ((i + 2) * x))));
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        Assert.assertNull(sut.getAndAccumulate(null, 0, ((i, x) -> 0)));
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.getAndAccumulate("B", 0, null));
+        Assert.assertNull(sut.getAndAccumulate(null, 0, null));
+    }
+    
+    /**
+     * JUnit test of accumulateAndGet.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#accumulateAndGet(Object, int, IntBinaryOperator)
+     */
+    @Test
+    public void testAccumulateAndGet() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            Assert.assertEquals((-counters.get(element) + elementSets[2].indexOf(element)), sut.accumulateAndGet(element, elementSets[2].indexOf(element), ((i, x) -> (-i + x))).intValue());
+            Assert.assertEquals((-counters.get(element) + elementSets[2].indexOf(element)), sut.get(element).intValue());
+            counters.replace(element, (-counters.get(element) + elementSets[2].indexOf(element)));
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            Assert.assertNull(sut.accumulateAndGet(element, elementSets[3].indexOf(element), ((i, x) -> ((i + 2) * x))));
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        Assert.assertNull(sut.accumulateAndGet(null, 0, ((i, x) -> 0)));
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.accumulateAndGet("B", 0, null));
+        Assert.assertNull(sut.accumulateAndGet(null, 0, null));
+    }
+    
+    /**
+     * JUnit test of accumulate.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#accumulate(Object, int, IntBinaryOperator)
+     */
+    @Test
+    public void testAccumulate() throws Exception {
+        //standard
+        elementSets[2].forEach(element -> {
+            Assert.assertEquals(counters.get(element), sut.get(element));
+            sut.accumulate(element, elementSets[2].indexOf(element), ((i, x) -> (-i + x)));
+            Assert.assertEquals((-counters.get(element) + elementSets[2].indexOf(element)), sut.get(element).intValue());
+            counters.replace(element, (-counters.get(element) + elementSets[2].indexOf(element)));
+        });
+        sutValidator.run();
+        
+        //absent
+        elementSets[3].forEach(element -> {
+            Assert.assertNull(sut.get(element));
+            sut.accumulate(element, elementSets[3].indexOf(element), ((i, x) -> ((i + 2) * x)));
+            Assert.assertNull(sut.get(element));
+        });
+        sutValidator.run();
+        
+        //invalid
+        sut.accumulate(null, 0, ((i, x) -> 0));
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.accumulate("B", 0, null));
+        sut.accumulate(null, 0, null);
+    }
+    
+    /**
+     * JUnit test of getAndModify.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#getAndModify(Object, Function)
+     */
+    @Test
+    public void testGetAndModify() throws Exception {
+        final BiConsumer<Object[], Function<AtomicInteger, Integer>> getAndModifyInvoker = (Object[] params, Function<AtomicInteger, Integer> counterFunction) -> {
+            final Integer elementIndex = (Integer) params[0];
+            final Integer value = (Integer) params[1];
+            final Integer postValue = (Integer) params[2];
+            Assert.assertEquals(value, sut.getAndModify(elementSets[2].get(elementIndex), counterFunction));
+            Assert.assertEquals(postValue, sut.get(elementSets[2].get(elementIndex)));
+            counters.replace(elementSets[2].get(elementIndex), postValue);
+        };
+        
+        //standard
+        sut.forEach(element -> sut.set(element, 1));
+        counters.keySet().forEach(element -> counters.replace(element, 1));
+        getAndModifyInvoker.accept(new Object[] {0, 1, 1}, AtomicInteger::get);
+        getAndModifyInvoker.accept(new Object[] {1, 1, 5}, (counter -> counter.getAndSet(5)));
+        getAndModifyInvoker.accept(new Object[] {2, 1, 0}, (counter -> counter.getAndSet(0)));
+        getAndModifyInvoker.accept(new Object[] {3, 1, 8}, (counter -> counter.getAndAdd(7)));
+        getAndModifyInvoker.accept(new Object[] {4, 1, 8}, (counter -> counter.addAndGet(7)));
+        getAndModifyInvoker.accept(new Object[] {5, 1, 2}, AtomicInteger::getAndIncrement);
+        getAndModifyInvoker.accept(new Object[] {6, 1, 2}, AtomicInteger::incrementAndGet);
+        getAndModifyInvoker.accept(new Object[] {7, 1, 0}, AtomicInteger::getAndDecrement);
+        getAndModifyInvoker.accept(new Object[] {8, 1, 0}, AtomicInteger::decrementAndGet);
+        getAndModifyInvoker.accept(new Object[] {9, 1, -1}, (counter -> counter.getAndUpdate(i -> -i)));
+        getAndModifyInvoker.accept(new Object[] {10, 1, -1}, (counter -> counter.updateAndGet(i -> -i)));
+        getAndModifyInvoker.accept(new Object[] {11, 1, -3}, (counter -> counter.getAndAccumulate(3, ((i, x) -> (-i * x)))));
+        getAndModifyInvoker.accept(new Object[] {12, 1, -3}, (counter -> counter.accumulateAndGet(3, ((i, x) -> (-i * x)))));
+        sutValidator.run();
+        
+        //invalid
+        Assert.assertNull(sut.getAndModify(null, AtomicInteger::get));
+        TestUtils.assertException(IndexOutOfBoundsException.class, StringUtility.format("Index 50 out of bounds for length {}", sut.size()), () ->
+                sut.getAndModify("B", (e -> ListUtility.toList(counters.values()).get(50))));
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.getAndModify("B", null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.getAndModify(null, null));
+    }
+    
+    /**
+     * JUnit test of modifyAndGet.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#modifyAndGet(Object, Function)
+     */
+    @Test
+    public void testModifyAndGet() throws Exception {
+        final BiConsumer<Object[], Function<AtomicInteger, Integer>> modifyAndGetInvoker = (Object[] params, Function<AtomicInteger, Integer> counterFunction) -> {
+            final Integer elementIndex = (Integer) params[0];
+            final Integer value = (Integer) params[1];
+            final Integer postValue = (Integer) params[2];
+            Assert.assertEquals(value, sut.modifyAndGet(elementSets[2].get(elementIndex), counterFunction));
+            Assert.assertEquals(postValue, sut.get(elementSets[2].get(elementIndex)));
+            counters.replace(elementSets[2].get(elementIndex), postValue);
+        };
+        
+        //standard
+        sut.forEach(element -> sut.set(element, 1));
+        counters.keySet().forEach(element -> counters.replace(element, 1));
+        modifyAndGetInvoker.accept(new Object[] {0, 1, 1}, AtomicInteger::get);
+        modifyAndGetInvoker.accept(new Object[] {1, 1, 5}, (counter -> counter.getAndSet(5)));
+        modifyAndGetInvoker.accept(new Object[] {2, 1, 0}, (counter -> counter.getAndSet(0)));
+        modifyAndGetInvoker.accept(new Object[] {3, 1, 8}, (counter -> counter.getAndAdd(7)));
+        modifyAndGetInvoker.accept(new Object[] {4, 8, 8}, (counter -> counter.addAndGet(7)));
+        modifyAndGetInvoker.accept(new Object[] {5, 1, 2}, AtomicInteger::getAndIncrement);
+        modifyAndGetInvoker.accept(new Object[] {6, 2, 2}, AtomicInteger::incrementAndGet);
+        modifyAndGetInvoker.accept(new Object[] {7, 1, 0}, AtomicInteger::getAndDecrement);
+        modifyAndGetInvoker.accept(new Object[] {8, 0, 0}, AtomicInteger::decrementAndGet);
+        modifyAndGetInvoker.accept(new Object[] {9, 1, -1}, (counter -> counter.getAndUpdate(i -> -i)));
+        modifyAndGetInvoker.accept(new Object[] {10, -1, -1}, (counter -> counter.updateAndGet(i -> -i)));
+        modifyAndGetInvoker.accept(new Object[] {11, 1, -3}, (counter -> counter.getAndAccumulate(3, ((i, x) -> (-i * x)))));
+        modifyAndGetInvoker.accept(new Object[] {12, -3, -3}, (counter -> counter.accumulateAndGet(3, ((i, x) -> (-i * x)))));
+        sutValidator.run();
+        
+        //invalid
+        Assert.assertNull(sut.modifyAndGet(null, AtomicInteger::get));
+        TestUtils.assertException(IndexOutOfBoundsException.class, StringUtility.format("Index 50 out of bounds for length {}", sut.size()), () ->
+                sut.modifyAndGet("B", (e -> ListUtility.toList(counters.values()).get(50))));
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.modifyAndGet("B", null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.modifyAndGet(null, null));
+    }
+    
+    /**
+     * JUnit test of modify.
+     *
+     * @throws Exception When there is an exception.
+     * @see CounterSet#modify(Object, Function)
+     */
+    @Test
+    public void testModify() throws Exception {
+        final BiConsumer<Object[], Function<AtomicInteger, Integer>> modifyInvoker = (Object[] params, Function<AtomicInteger, Integer> counterFunction) -> {
+            final Integer elementIndex = (Integer) params[0];
+            final Integer postValue = (Integer) params[1];
+            sut.getAndModify(elementSets[2].get(elementIndex), counterFunction);
+            Assert.assertEquals(postValue, sut.get(elementSets[2].get(elementIndex)));
+            counters.replace(elementSets[2].get(elementIndex), postValue);
+        };
+        
+        //standard
+        sut.forEach(element -> sut.set(element, 1));
+        counters.keySet().forEach(element -> counters.replace(element, 1));
+        modifyInvoker.accept(new Object[] {0, 1}, AtomicInteger::get);
+        modifyInvoker.accept(new Object[] {1, 5}, (counter -> counter.getAndSet(5)));
+        modifyInvoker.accept(new Object[] {2, 0}, (counter -> counter.getAndSet(0)));
+        modifyInvoker.accept(new Object[] {3, 8}, (counter -> counter.getAndAdd(7)));
+        modifyInvoker.accept(new Object[] {4, 8}, (counter -> counter.addAndGet(7)));
+        modifyInvoker.accept(new Object[] {5, 2}, AtomicInteger::getAndIncrement);
+        modifyInvoker.accept(new Object[] {6, 2}, AtomicInteger::incrementAndGet);
+        modifyInvoker.accept(new Object[] {7, 0}, AtomicInteger::getAndDecrement);
+        modifyInvoker.accept(new Object[] {8, 0}, AtomicInteger::decrementAndGet);
+        modifyInvoker.accept(new Object[] {9, -1}, (counter -> counter.getAndUpdate(i -> -i)));
+        modifyInvoker.accept(new Object[] {10, -1}, (counter -> counter.updateAndGet(i -> -i)));
+        modifyInvoker.accept(new Object[] {11, -3}, (counter -> counter.getAndAccumulate(3, ((i, x) -> (-i * x)))));
+        modifyInvoker.accept(new Object[] {12, -3}, (counter -> counter.accumulateAndGet(3, ((i, x) -> (-i * x)))));
+        sutValidator.run();
+        
+        //invalid
+        sut.modify(null, AtomicInteger::get);
+        TestUtils.assertException(IndexOutOfBoundsException.class, StringUtility.format("Index 50 out of bounds for length {}", sut.size()), () ->
+                sut.modify("B", (e -> ListUtility.toList(counters.values()).get(50))));
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.modify("B", null));
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.modify(null, null));
+    }
+    
+    /**
      * JUnit test of clone.
      *
      * @throws Exception When there is an exception.
@@ -551,610 +1314,6 @@ public class CounterSetTest {
         Assert.assertFalse(sut.equals(ListUtility.emptyList()));
         Assert.assertFalse(sut.equals(new File(".")));
         Assert.assertFalse(sut.equals(null));
-    }
-    
-    /**
-     * JUnit test of get.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#get(Object)
-     */
-    @Test
-    public void testGet() throws Exception {
-        //standard
-        elementSets[2].forEach(element ->
-                Assert.assertEquals(counters.get(element), sut.get(element)));
-        
-        //absent
-        elementSets[3].forEach(element ->
-                Assert.assertNull(sut.get(element)));
-        
-        //invalid
-        Assert.assertNull(sut.get(null));
-    }
-    
-    /**
-     * JUnit test of getAndSet.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#getAndSet(Object, int)
-     */
-    @Test
-    public void testGetAndSet() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            Assert.assertEquals(counters.get(element), sut.getAndSet(element, -1));
-            Assert.assertEquals(-1, sut.get(element).intValue());
-            counters.replace(element, -1);
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            Assert.assertNull(sut.getAndSet(element, -1));
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        Assert.assertNull(sut.getAndSet(null, 0));
-    }
-    
-    /**
-     * JUnit test of set.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#set(Object, int)
-     */
-    @Test
-    public void testSet() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            sut.set(element, -1);
-            Assert.assertEquals(-1, sut.get(element).intValue());
-            counters.replace(element, -1);
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            sut.set(element, -1);
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        TestUtils.assertNoException(() ->
-                sut.set(null, 0));
-    }
-    
-    /**
-     * JUnit test of getAndReset.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#getAndReset(Object)
-     */
-    @Test
-    public void testGetAndReset() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            Assert.assertEquals(counters.get(element), sut.getAndReset(element));
-            Assert.assertEquals(0, sut.get(element).intValue());
-            counters.replace(element, 0);
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            Assert.assertNull(sut.getAndReset(element));
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        Assert.assertNull(sut.getAndReset(null));
-    }
-    
-    /**
-     * JUnit test of reset.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#reset(Object)
-     */
-    @Test
-    public void testReset() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            sut.reset(element);
-            Assert.assertEquals(0, sut.get(element).intValue());
-            counters.replace(element, 0);
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            sut.reset(element);
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        TestUtils.assertNoException(() ->
-                sut.reset(null));
-    }
-    
-    /**
-     * JUnit test of getAndStep.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#getAndStep(Object, int)
-     */
-    @Test
-    public void testGetAndStep() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            Assert.assertEquals(counters.get(element), sut.getAndStep(element, 10));
-            Assert.assertEquals((counters.get(element) + 10), sut.get(element).intValue());
-            counters.replace(element, (counters.get(element) + 10));
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            Assert.assertNull(sut.getAndStep(element, -6));
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        Assert.assertNull(sut.getAndStep(null, 0));
-    }
-    
-    /**
-     * JUnit test of stepAndGet.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#stepAndGet(Object, int)
-     */
-    @Test
-    public void testStepAndGet() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            Assert.assertEquals((counters.get(element) + 10), sut.stepAndGet(element, 10).intValue());
-            Assert.assertEquals((counters.get(element) + 10), sut.get(element).intValue());
-            counters.replace(element, (counters.get(element) + 10));
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            Assert.assertNull(sut.stepAndGet(element, -6));
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        Assert.assertNull(sut.stepAndGet(null, 0));
-    }
-    
-    /**
-     * JUnit test of step.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#step(Object, int)
-     */
-    @Test
-    public void testStep() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            sut.step(element, 10);
-            Assert.assertEquals((counters.get(element) + 10), sut.get(element).intValue());
-            counters.replace(element, (counters.get(element) + 10));
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            sut.step(element, -6);
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        TestUtils.assertNoException(() ->
-                sut.step(null, 0));
-    }
-    
-    /**
-     * JUnit test of getAndIncrement.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#getAndIncrement(Object)
-     */
-    @Test
-    public void testGetAndIncrement() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            Assert.assertEquals(counters.get(element), sut.getAndIncrement(element));
-            Assert.assertEquals((counters.get(element) + 1), sut.get(element).intValue());
-            counters.replace(element, (counters.get(element) + 1));
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            Assert.assertNull(sut.getAndIncrement(element));
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        Assert.assertNull(sut.getAndIncrement(null));
-    }
-    
-    /**
-     * JUnit test of incrementAndGet.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#incrementAndGet(Object)
-     */
-    @Test
-    public void testIncrementAndGet() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            Assert.assertEquals((counters.get(element) + 1), sut.incrementAndGet(element).intValue());
-            Assert.assertEquals((counters.get(element) + 1), sut.get(element).intValue());
-            counters.replace(element, (counters.get(element) + 1));
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            Assert.assertNull(sut.incrementAndGet(element));
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        Assert.assertNull(sut.incrementAndGet(null));
-    }
-    
-    /**
-     * JUnit test of increment.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#increment(Object)
-     */
-    @Test
-    public void testIncrement() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            sut.increment(element);
-            Assert.assertEquals((counters.get(element) + 1), sut.get(element).intValue());
-            counters.replace(element, (counters.get(element) + 1));
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            sut.increment(element);
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        TestUtils.assertNoException(() ->
-                sut.increment(null));
-    }
-    
-    /**
-     * JUnit test of getAndDecrement.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#getAndDecrement(Object)
-     */
-    @Test
-    public void testGetAndDecrement() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            Assert.assertEquals(counters.get(element), sut.getAndDecrement(element));
-            Assert.assertEquals((counters.get(element) - 1), sut.get(element).intValue());
-            counters.replace(element, (counters.get(element) - 1));
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            Assert.assertNull(sut.getAndDecrement(element));
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        Assert.assertNull(sut.getAndDecrement(null));
-    }
-    
-    /**
-     * JUnit test of decrementAndGet.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#decrementAndGet(Object)
-     */
-    @Test
-    public void testDecrementAndGet() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            Assert.assertEquals((counters.get(element) - 1), sut.decrementAndGet(element).intValue());
-            Assert.assertEquals((counters.get(element) - 1), sut.get(element).intValue());
-            counters.replace(element, (counters.get(element) - 1));
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            Assert.assertNull(sut.decrementAndGet(element));
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        Assert.assertNull(sut.decrementAndGet(null));
-    }
-    
-    /**
-     * JUnit test of decrement.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#decrement(Object)
-     */
-    @Test
-    public void testDecrement() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            sut.decrement(element);
-            Assert.assertEquals((counters.get(element) - 1), sut.get(element).intValue());
-            counters.replace(element, (counters.get(element) - 1));
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            sut.decrement(element);
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        TestUtils.assertNoException(() ->
-                sut.decrement(null));
-    }
-    
-    /**
-     * JUnit test of getAndUpdate.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#getAndUpdate(Object, IntUnaryOperator)
-     */
-    @Test
-    public void testGetAndUpdate() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            Assert.assertEquals(counters.get(element), sut.getAndUpdate(element, (i -> -i)));
-            Assert.assertEquals(-counters.get(element), sut.get(element).intValue());
-            counters.replace(element, -counters.get(element));
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            Assert.assertNull(sut.getAndUpdate(element, (i -> (i * 2))));
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        Assert.assertNull(sut.getAndUpdate(null, (i -> 0)));
-        TestUtils.assertException(NullPointerException.class, () ->
-                sut.getAndUpdate("B", null));
-        Assert.assertNull(sut.getAndUpdate(null, null));
-    }
-    
-    /**
-     * JUnit test of updateAndGet.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#updateAndGet(Object, IntUnaryOperator)
-     */
-    @Test
-    public void testUpdateAndGet() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            Assert.assertEquals(-counters.get(element), sut.updateAndGet(element, (i -> -i)).intValue());
-            Assert.assertEquals(-counters.get(element), sut.get(element).intValue());
-            counters.replace(element, -counters.get(element));
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            Assert.assertNull(sut.updateAndGet(element, (i -> (i * 2))));
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        Assert.assertNull(sut.updateAndGet(null, (i -> 0)));
-        TestUtils.assertException(NullPointerException.class, () ->
-                sut.updateAndGet("B", null));
-        Assert.assertNull(sut.updateAndGet(null, null));
-    }
-    
-    /**
-     * JUnit test of update.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#update(Object, IntUnaryOperator)
-     */
-    @Test
-    public void testUpdate() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            sut.update(element, (i -> -i));
-            Assert.assertEquals(-counters.get(element), sut.get(element).intValue());
-            counters.replace(element, -counters.get(element));
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            sut.update(element, (i -> (i * 2)));
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        TestUtils.assertNoException(() ->
-                sut.update(null, (i -> 0)));
-        TestUtils.assertException(NullPointerException.class, () ->
-                sut.update("B", null));
-        TestUtils.assertNoException(() ->
-                sut.update(null, null));
-    }
-    
-    /**
-     * JUnit test of getAndAccumulate.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#getAndAccumulate(Object, int, IntBinaryOperator)
-     */
-    @Test
-    public void testGetAndAccumulate() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            Assert.assertEquals(counters.get(element), sut.getAndAccumulate(element, elementSets[2].indexOf(element), ((i, x) -> (-i + x))));
-            Assert.assertEquals((-counters.get(element) + elementSets[2].indexOf(element)), sut.get(element).intValue());
-            counters.replace(element, (-counters.get(element) + elementSets[2].indexOf(element)));
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            Assert.assertNull(sut.getAndAccumulate(element, elementSets[3].indexOf(element), ((i, x) -> (i * x))));
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        Assert.assertNull(sut.getAndAccumulate(null, 0, ((i, x) -> 0)));
-        TestUtils.assertException(NullPointerException.class, () ->
-                sut.getAndAccumulate("B", 0, null));
-        Assert.assertNull(sut.getAndAccumulate(null, 0, null));
-    }
-    
-    /**
-     * JUnit test of accumulateAndGet.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#accumulateAndGet(Object, int, IntBinaryOperator)
-     */
-    @Test
-    public void testAccumulateAndGet() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            Assert.assertEquals((-counters.get(element) + elementSets[2].indexOf(element)), sut.accumulateAndGet(element, elementSets[2].indexOf(element), ((i, x) -> (-i + x))).intValue());
-            Assert.assertEquals((-counters.get(element) + elementSets[2].indexOf(element)), sut.get(element).intValue());
-            counters.replace(element, (-counters.get(element) + elementSets[2].indexOf(element)));
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            Assert.assertNull(sut.accumulateAndGet(element, elementSets[3].indexOf(element), ((i, x) -> (i * x))));
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        Assert.assertNull(sut.accumulateAndGet(null, 0, ((i, x) -> 0)));
-        TestUtils.assertException(NullPointerException.class, () ->
-                sut.accumulateAndGet("B", 0, null));
-        Assert.assertNull(sut.accumulateAndGet(null, 0, null));
-    }
-    
-    /**
-     * JUnit test of accumulate.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#accumulate(Object, int, IntBinaryOperator)
-     */
-    @Test
-    public void testAccumulate() throws Exception {
-        //standard
-        elementSets[2].forEach(element -> {
-            Assert.assertEquals(counters.get(element), sut.get(element));
-            sut.accumulate(element, elementSets[2].indexOf(element), ((i, x) -> (-i + x)));
-            Assert.assertEquals((-counters.get(element) + elementSets[2].indexOf(element)), sut.get(element).intValue());
-            counters.replace(element, (-counters.get(element) + elementSets[2].indexOf(element)));
-        });
-        
-        //absent
-        elementSets[3].forEach(element -> {
-            Assert.assertNull(sut.get(element));
-            sut.accumulate(element, elementSets[3].indexOf(element), ((i, x) -> (i * x)));
-            Assert.assertNull(sut.get(element));
-        });
-        
-        //invalid
-        TestUtils.assertNoException(() ->
-                sut.accumulate(null, 0, ((i, x) -> 0)));
-        TestUtils.assertException(NullPointerException.class, () ->
-                sut.accumulate("B", 0, null));
-        TestUtils.assertNoException(() ->
-                sut.accumulate(null, 0, null));
-    }
-    
-    /**
-     * JUnit test of modify.
-     *
-     * @throws Exception When there is an exception.
-     * @see CounterSet#modify(Object, Function)
-     */
-    @Test
-    public void testModify() throws Exception {
-        final BiConsumer<Object[], Function<AtomicInteger, Integer>> modifyInvoker = (Object[] params, Function<AtomicInteger, Integer> counterFunction) -> {
-            final Integer elementIndex = (Integer) params[0];
-            final Integer value = (Integer) params[1];
-            final Integer postValue = (Integer) params[2];
-            Assert.assertEquals(value, sut.modify(elementSets[2].get(elementIndex), counterFunction));
-            Assert.assertEquals(postValue, sut.get(elementSets[2].get(elementIndex)));
-            counters.replace(elementSets[2].get(elementIndex), postValue);
-        };
-        
-        //standard
-        sut.forEach(element -> sut.set(element, 1));
-        counters.keySet().forEach(element -> counters.replace(element, 1));
-        modifyInvoker.accept(new Object[] {0, 1, 1}, AtomicInteger::get);
-        modifyInvoker.accept(new Object[] {1, 1, 5}, (counter -> counter.getAndSet(5)));
-        modifyInvoker.accept(new Object[] {2, 1, 0}, (counter -> counter.getAndSet(0)));
-        modifyInvoker.accept(new Object[] {3, 1, 8}, (counter -> counter.getAndAdd(7)));
-        modifyInvoker.accept(new Object[] {4, 8, 8}, (counter -> counter.addAndGet(7)));
-        modifyInvoker.accept(new Object[] {5, 1, 2}, AtomicInteger::getAndIncrement);
-        modifyInvoker.accept(new Object[] {6, 2, 2}, AtomicInteger::incrementAndGet);
-        modifyInvoker.accept(new Object[] {7, 1, 0}, AtomicInteger::getAndDecrement);
-        modifyInvoker.accept(new Object[] {8, 0, 0}, AtomicInteger::decrementAndGet);
-        modifyInvoker.accept(new Object[] {9, 1, -1}, (counter -> counter.getAndUpdate(i -> -i)));
-        modifyInvoker.accept(new Object[] {10, -1, -1}, (counter -> counter.updateAndGet(i -> -i)));
-        modifyInvoker.accept(new Object[] {11, 1, -3}, (counter -> counter.getAndAccumulate(3, ((i, x) -> (-i * x)))));
-        modifyInvoker.accept(new Object[] {12, -3, -3}, (counter -> counter.accumulateAndGet(3, ((i, x) -> (-i * x)))));
-        
-        //invalid
-        Assert.assertNull(sut.modify(null, AtomicInteger::get));
-        TestUtils.assertException(IndexOutOfBoundsException.class, StringUtility.format("Index 50 out of bounds for length {}", sut.size()), () ->
-                sut.modify("B", (e -> ListUtility.toList(counters.values()).get(50))));
-        TestUtils.assertException(NullPointerException.class, () ->
-                sut.modify("B", null));
-        TestUtils.assertException(NullPointerException.class, () ->
-                sut.modify(null, null));
     }
     
     /**
