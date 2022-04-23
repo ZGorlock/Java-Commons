@@ -135,7 +135,7 @@ public class LazyCounterSetTest {
      */
     @Before
     public void setup() throws Exception {
-        counters = elementSets[2].stream().collect(MapCollectors.mapEachTo(() -> MathUtility.random(100)));
+        counters = elementSets[2].stream().collect(MapCollectors.mapEachTo(MathUtility::randomInt));
         sut = new LazyCounterSet<>(counters);
     }
     
@@ -179,7 +179,7 @@ public class LazyCounterSetTest {
         final List<String> testList2 = ListUtility.duplicateInOrder(testList1, 5);
         final Map<String, Integer> testMap = MapUtility.mapOf(
                 testList1,
-                IntStream.range(0, testList1.size()).mapToObj(i -> MathUtility.random(100)).collect(Collectors.toList()));
+                IntStream.range(0, testList1.size()).mapToObj(i -> MathUtility.randomInt()).collect(Collectors.toList()));
         LazyCounterSet<String> set1;
         LazyCounterSet<String> set2;
         LazyCounterSet<String> set3;

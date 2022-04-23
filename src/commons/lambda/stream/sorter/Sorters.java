@@ -52,7 +52,7 @@ public final class Sorters {
     public static <T> Comparator<T> preserve() {
         final Map<T, Integer> uniqueIds = new IdentityHashMap<>();
         return Comparator.comparingInt(o ->
-                uniqueIds.computeIfAbsent(o, k -> uniqueIds.size() * ((uniqueIds.size() < 2) ? -1 : 1)));
+                uniqueIds.computeIfAbsent(o, (k -> uniqueIds.size() * ((uniqueIds.size() < 2) ? -1 : 1))));
     }
     
     /**
@@ -65,7 +65,7 @@ public final class Sorters {
     public static <T> Comparator<T> reverse() {
         final Map<T, Integer> uniqueIds = new IdentityHashMap<>();
         return Comparator.comparingInt(o ->
-                uniqueIds.computeIfAbsent(o, k -> -uniqueIds.size() * ((uniqueIds.size() < 2) ? -1 : 1)));
+                uniqueIds.computeIfAbsent(o, (k -> -uniqueIds.size() * ((uniqueIds.size() < 2) ? -1 : 1))));
     }
     
     /**
@@ -77,7 +77,7 @@ public final class Sorters {
     public static <T> Comparator<T> shuffle() {
         final Map<T, Integer> uniqueIds = new IdentityHashMap<>();
         return Comparator.comparingInt(o ->
-                uniqueIds.computeIfAbsent(o, k -> MathUtility.random(Integer.MAX_VALUE)));
+                uniqueIds.computeIfAbsent(o, (k -> MathUtility.randomInt())));
     }
     
 }

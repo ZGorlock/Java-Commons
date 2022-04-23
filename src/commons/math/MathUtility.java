@@ -11,6 +11,9 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.IntStream;
+import java.util.stream.LongStream;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,9 +39,21 @@ public class MathUtility {
      * @param min The minimum possible value.
      * @param max The maximum possible value.
      * @return A random number between the minimum and maximum values.
+     * @see ThreadLocalRandom#nextLong(long, long)
      */
     public static long random(long min, long max) {
-        return (long) (Math.random() * (max - min + 1)) + min;
+        return ThreadLocalRandom.current().nextLong(max - min + 1) + min;
+    }
+    
+    /**
+     * Returns a random number between 0 and a value.
+     *
+     * @param max The maximum possible value.
+     * @return A random number between 0 and the maximum value.
+     * @see #random(long, long)
+     */
+    public static long random(long max) {
+        return random(0L, max);
     }
     
     /**
@@ -47,32 +62,71 @@ public class MathUtility {
      * @param min The minimum possible value.
      * @param max The maximum possible value.
      * @return A random number between the minimum and maximum values.
-     * @see #random(long, long)
+     * @see ThreadLocalRandom#nextInt(int, int)
      */
     public static int random(int min, int max) {
-        return (int) random(min, (long) max);
+        return ThreadLocalRandom.current().nextInt(max - min + 1) + min;
     }
     
     /**
      * Returns a random number between 0 and a value.
      *
      * @param max The maximum possible value.
-     * @return A random number between 0 and the maximum values.
-     * @see #random(long, long)
-     */
-    public static long random(long max) {
-        return random(0, max);
-    }
-    
-    /**
-     * Returns a random number between 0 and a value.
-     *
-     * @param max The maximum possible value.
-     * @return A random number between 0 and the maximum values.
+     * @return A random number between 0 and the maximum value.
      * @see #random(int, int)
      */
     public static int random(int max) {
         return random(0, max);
+    }
+    
+    /**
+     * Returns a random int.
+     *
+     * @return A random int.
+     * @see ThreadLocalRandom#nextInt()
+     */
+    public static int randomInt() {
+        return ThreadLocalRandom.current().nextInt();
+    }
+    
+    /**
+     * Returns a random long.
+     *
+     * @return A random long.
+     * @see ThreadLocalRandom#nextLong()
+     */
+    public static long randomLong() {
+        return ThreadLocalRandom.current().nextLong();
+    }
+    
+    /**
+     * Returns a random float.
+     *
+     * @return A random float.
+     * @see ThreadLocalRandom#nextFloat()
+     */
+    public static float randomFloat() {
+        return ThreadLocalRandom.current().nextFloat();
+    }
+    
+    /**
+     * Returns a random double.
+     *
+     * @return A random double.
+     * @see ThreadLocalRandom#nextDouble()
+     */
+    public static double randomDouble() {
+        return ThreadLocalRandom.current().nextDouble();
+    }
+    
+    /**
+     * Returns a random boolean.
+     *
+     * @return A random boolean.
+     * @see ThreadLocalRandom#nextBoolean()
+     */
+    public static boolean randomBoolean() {
+        return ThreadLocalRandom.current().nextBoolean();
     }
     
     /**
@@ -84,27 +138,7 @@ public class MathUtility {
      * @see #random(long, long)
      */
     public static long dice(long sides, long rolls) {
-        if ((sides <= 0) || (rolls <= 0)) {
-            return 0;
-        }
-        
-        long roll = 0;
-        for (int i = 0; i < rolls; i++) {
-            roll += random(1, sides);
-        }
-        return roll;
-    }
-    
-    /**
-     * Returns the result of a dice roll.
-     *
-     * @param sides The number of sides on the dice.
-     * @param rolls The number of rolls to perform.
-     * @return The result of the dice roll.
-     * @see #dice(long, long)
-     */
-    public static int dice(int sides, int rolls) {
-        return (int) dice(sides, (long) rolls);
+        return LongStream.range(0, rolls).map(l -> random(1L, sides)).sum();
     }
     
     /**
@@ -122,6 +156,18 @@ public class MathUtility {
      * Returns the result of a dice roll.
      *
      * @param sides The number of sides on the dice.
+     * @param rolls The number of rolls to perform.
+     * @return The result of the dice roll.
+     * @see #random(int, int)
+     */
+    public static int dice(int sides, int rolls) {
+        return IntStream.range(0, rolls).map(i -> random(1, sides)).sum();
+    }
+    
+    /**
+     * Returns the result of a dice roll.
+     *
+     * @param sides The number of sides on the dice.
      * @return The result of the dice roll.
      * @see #dice(int, int)
      */
@@ -133,9 +179,10 @@ public class MathUtility {
      * Returns the result of a coin flip.
      *
      * @return The result of the coin flip; 50% true / 50% false.
+     * @see #randomBoolean()
      */
     public static boolean coinFlip() {
-        return (Math.random() < 0.5);
+        return randomBoolean();
     }
     
     /**
@@ -214,10 +261,10 @@ public class MathUtility {
      * @param value         The number.
      * @param decimalPlaces The maximum number of decimal places of the result.
      * @return The rounded float.
+     * @see #roundWithPrecision(double, int)
      */
-    public static double roundWithPrecision(float value, int decimalPlaces) {
-        final double decimalInverse = Math.pow(10.0, decimalPlaces);
-        return (float) Math.round(value * decimalInverse) / decimalInverse;
+    public static float roundWithPrecision(float value, int decimalPlaces) {
+        return (float) roundWithPrecision((double) value, decimalPlaces);
     }
     
     /**

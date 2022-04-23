@@ -652,7 +652,7 @@ public class CmdLineTest {
         final AtomicReference<Process> process = new AtomicReference<>(null);
         final List<ProcessHandle> processHandles = Arrays.asList(null, null, null, null); //handle, sub handle A, sub handle B, sub handle A sub handle
         final List<AtomicBoolean> processAlive = IntStream.range(0, PROCESS_TREE_SIZE).boxed().map(i -> new AtomicBoolean(false)).collect(Collectors.toList());
-        final List<Long> processPid = IntStream.range(0, PROCESS_TREE_SIZE).boxed().map(i -> (MathUtility.random(1000001L, 1000100L) + (100L * i))).collect(Collectors.toList());
+        final List<Long> processPid = IntStream.range(0, PROCESS_TREE_SIZE).boxed().map(i -> MathUtility.randomLong()).collect(Collectors.toList());
         final AtomicReference<OperatingSystem.OS> operatingSystem = new AtomicReference<>(null);
         
         PowerMockito.spy(CmdLine.class);
@@ -663,7 +663,7 @@ public class CmdLineTest {
         final Consumer<boolean[][]> mockProcessInitializer = (boolean[][] properties) -> { //handle, sub handle A, sub handle B, sub handle A sub handle  |  isAlive, destroy, destroyForcibly, cmd
             process.set(Mockito.mock(Process.class, Mockito.CALLS_REAL_METHODS));
             processHandles.replaceAll(e -> Mockito.mock(ProcessHandle.class, Mockito.CALLS_REAL_METHODS));
-            processPid.replaceAll(e -> (e + 1000L));
+            processPid.replaceAll(e -> MathUtility.randomLong());
             IntStream.range(0, PROCESS_TREE_SIZE).forEach(i -> {
                 try {
                     processAlive.get(i).set(properties[0][i]);
