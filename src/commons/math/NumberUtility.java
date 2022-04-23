@@ -9,7 +9,6 @@ package commons.math;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -62,16 +61,6 @@ public class NumberUtility {
     }
     
     /**
-     * Determines if a character is a number related character or not.
-     *
-     * @param c The character in question.
-     * @return Whether the character is a number related character or not.
-     */
-    public static boolean isNumberChar(char c) {
-        return ((c >= '0') && (c <= '9')) || (c == '.') || (c == '-');
-    }
-    
-    /**
      * Returns the number of digits in a number.
      *
      * @param num The number.
@@ -79,6 +68,16 @@ public class NumberUtility {
      */
     public static int length(long num) {
         return String.valueOf(num).replace("-", "").length();
+    }
+    
+    /**
+     * Determines if a character is a number related character or not.
+     *
+     * @param c The character in question.
+     * @return Whether the character is a number related character or not.
+     */
+    public static boolean isNumberChar(char c) {
+        return ((c >= '0') && (c <= '9')) || (c == '.') || (c == '-');
     }
     
     /**
@@ -105,27 +104,27 @@ public class NumberUtility {
             return "";
         }
         
-        boolean negative = hex.startsWith("-");
+        final boolean negative = hex.startsWith("-");
         hex = hex.replaceAll("^-", "");
-        String integral = hex.contains(".") ? hex.substring(0, hex.indexOf(".")) : hex;
-        String fraction = hex.contains(".") ? hex.substring(hex.indexOf(".") + 1) : "";
+        final String integral = hex.contains(".") ? hex.substring(0, hex.indexOf(".")) : hex;
+        final String fraction = hex.contains(".") ? hex.substring(hex.indexOf(".") + 1) : "";
         if (integral.contains("-") || fraction.contains(".") || fraction.contains("-")) {
             return "";
         }
         
-        StringBuilder decimal = new StringBuilder();
-        decimal.append(negative ? "-" : "");
-        decimal.append(integral.isEmpty() ? "0" : new BigDecimal(new BigInteger(integral, 16)).toPlainString());
+        final StringBuilder decimal = new StringBuilder();
+        decimal.append(negative ? "-" : "")
+                .append(integral.isEmpty() ? "0" : new BigDecimal(new BigInteger(integral, 16)).toPlainString());
         if (fraction.isEmpty() || (accuracy == 0)) {
             return decimal.toString();
         }
         decimal.append(".");
         
         int numberDigits = accuracy;
-        int length = Math.min(fraction.length(), numberDigits);
-        int[] hexDigits = new int[numberDigits];
-        Arrays.fill(hexDigits, 0);
-        IntStream.range(0, length).boxed().parallel().forEach(i -> hexDigits[i] = Integer.parseInt(String.valueOf(fraction.charAt(i)), 16));
+        final int length = Math.min(fraction.length(), numberDigits);
+        final int[] hexDigits = new int[numberDigits];
+        IntStream.range(0, length).boxed().parallel().forEach(i ->
+                hexDigits[i] = Integer.parseInt(String.valueOf(fraction.charAt(i)), 16));
         
         while ((numberDigits != 0)) {
             int carry = 0;

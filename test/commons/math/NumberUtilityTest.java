@@ -165,41 +165,6 @@ public class NumberUtilityTest {
     }
     
     /**
-     * JUnit test of isNumberChar.
-     *
-     * @throws Exception When there is an exception.
-     * @see NumberUtility#isNumberChar(char)
-     */
-    @Test
-    public void testIsNumberChar() throws Exception {
-        //valid
-        Assert.assertTrue(NumberUtility.isNumberChar('0'));
-        Assert.assertTrue(NumberUtility.isNumberChar('1'));
-        Assert.assertTrue(NumberUtility.isNumberChar('2'));
-        Assert.assertTrue(NumberUtility.isNumberChar('3'));
-        Assert.assertTrue(NumberUtility.isNumberChar('4'));
-        Assert.assertTrue(NumberUtility.isNumberChar('5'));
-        Assert.assertTrue(NumberUtility.isNumberChar('6'));
-        Assert.assertTrue(NumberUtility.isNumberChar('7'));
-        Assert.assertTrue(NumberUtility.isNumberChar('8'));
-        Assert.assertTrue(NumberUtility.isNumberChar('9'));
-        Assert.assertTrue(NumberUtility.isNumberChar('.'));
-        Assert.assertTrue(NumberUtility.isNumberChar('-'));
-        
-        //invalid
-        Assert.assertFalse(NumberUtility.isNumberChar('a'));
-        Assert.assertFalse(NumberUtility.isNumberChar('t'));
-        Assert.assertFalse(NumberUtility.isNumberChar('z'));
-        Assert.assertFalse(NumberUtility.isNumberChar('A'));
-        Assert.assertFalse(NumberUtility.isNumberChar('T'));
-        Assert.assertFalse(NumberUtility.isNumberChar('Z'));
-        Assert.assertFalse(NumberUtility.isNumberChar('$'));
-        Assert.assertFalse(NumberUtility.isNumberChar('~'));
-        Assert.assertFalse(NumberUtility.isNumberChar('+'));
-        Assert.assertFalse(NumberUtility.isNumberChar('='));
-    }
-    
-    /**
      * JUnit test of length.
      *
      * @throws Exception When there is an exception.
@@ -236,6 +201,41 @@ public class NumberUtilityTest {
         Assert.assertEquals(16, NumberUtility.length(-8984567098465654L));
         Assert.assertEquals(16, NumberUtility.length(-8984567098465659L));
         Assert.assertEquals(19, NumberUtility.length(-4168018971564168061L));
+    }
+    
+    /**
+     * JUnit test of isNumberChar.
+     *
+     * @throws Exception When there is an exception.
+     * @see NumberUtility#isNumberChar(char)
+     */
+    @Test
+    public void testIsNumberChar() throws Exception {
+        //valid
+        Assert.assertTrue(NumberUtility.isNumberChar('0'));
+        Assert.assertTrue(NumberUtility.isNumberChar('1'));
+        Assert.assertTrue(NumberUtility.isNumberChar('2'));
+        Assert.assertTrue(NumberUtility.isNumberChar('3'));
+        Assert.assertTrue(NumberUtility.isNumberChar('4'));
+        Assert.assertTrue(NumberUtility.isNumberChar('5'));
+        Assert.assertTrue(NumberUtility.isNumberChar('6'));
+        Assert.assertTrue(NumberUtility.isNumberChar('7'));
+        Assert.assertTrue(NumberUtility.isNumberChar('8'));
+        Assert.assertTrue(NumberUtility.isNumberChar('9'));
+        Assert.assertTrue(NumberUtility.isNumberChar('.'));
+        Assert.assertTrue(NumberUtility.isNumberChar('-'));
+        
+        //invalid
+        Assert.assertFalse(NumberUtility.isNumberChar('a'));
+        Assert.assertFalse(NumberUtility.isNumberChar('t'));
+        Assert.assertFalse(NumberUtility.isNumberChar('z'));
+        Assert.assertFalse(NumberUtility.isNumberChar('A'));
+        Assert.assertFalse(NumberUtility.isNumberChar('T'));
+        Assert.assertFalse(NumberUtility.isNumberChar('Z'));
+        Assert.assertFalse(NumberUtility.isNumberChar('$'));
+        Assert.assertFalse(NumberUtility.isNumberChar('~'));
+        Assert.assertFalse(NumberUtility.isNumberChar('+'));
+        Assert.assertFalse(NumberUtility.isNumberChar('='));
     }
     
     /**
