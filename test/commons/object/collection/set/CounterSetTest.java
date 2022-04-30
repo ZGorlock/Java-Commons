@@ -167,6 +167,7 @@ public class CounterSetTest {
      * JUnit test of constructors.
      *
      * @throws Exception When there is an exception.
+     * @see CounterSet#CounterSet(Collection, boolean)
      * @see CounterSet#CounterSet(Collection)
      * @see CounterSet#CounterSet(Map)
      * @see CounterSet#CounterSet(CounterSet)
@@ -185,6 +186,8 @@ public class CounterSetTest {
         CounterSet<String> set3;
         CounterSet<String> set4;
         CounterSet<String> set5;
+        CounterSet<String> set6;
+        CounterSet<String> set7;
         
         //distinct collection
         set1 = new CounterSet<>(testList1);
@@ -192,36 +195,52 @@ public class CounterSetTest {
         TestUtils.assertListEquals(
                 ListUtility.toList(set1),
                 testList1, false);
-        Assert.assertTrue(set1.stream().allMatch(element -> (set1.get(element) == 1)));
+        Assert.assertTrue(set1.stream().allMatch(element -> (set1.get(element) == 0)));
         
-        //collection
-        set2 = new CounterSet<>(testList2);
+        //distinct collection, initialize
+        set2 = new CounterSet<>(testList1, true);
         Assert.assertNotNull(set2);
         TestUtils.assertListEquals(
                 ListUtility.toList(set2),
                 testList1, false);
-        Assert.assertTrue(set2.stream().allMatch(element -> (set2.get(element) == 5)));
+        Assert.assertTrue(set2.stream().allMatch(element -> (set2.get(element) == 1)));
         
-        //map
-        set3 = new CounterSet<>(testMap);
+        //collection
+        set3 = new CounterSet<>(testList2);
         Assert.assertNotNull(set3);
         TestUtils.assertListEquals(
                 ListUtility.toList(set3),
                 testList1, false);
-        Assert.assertTrue(set3.stream().allMatch(element -> (set3.get(element).intValue() == testMap.get(element).intValue())));
+        Assert.assertTrue(set3.stream().allMatch(element -> (set3.get(element) == 0)));
         
-        //iterable map
-        set4 = new CounterSet<>(set3);
+        //collection, initialize
+        set4 = new CounterSet<>(testList2, true);
         Assert.assertNotNull(set4);
         TestUtils.assertListEquals(
                 ListUtility.toList(set4),
-                ListUtility.toList(set3), false);
-        Assert.assertTrue(set4.stream().allMatch(element -> (set4.get(element).intValue() == set3.get(element).intValue())));
+                testList1, false);
+        Assert.assertTrue(set4.stream().allMatch(element -> (set4.get(element) == 5)));
+        
+        //map
+        set5 = new CounterSet<>(testMap);
+        Assert.assertNotNull(set5);
+        TestUtils.assertListEquals(
+                ListUtility.toList(set5),
+                testList1, false);
+        Assert.assertTrue(set5.stream().allMatch(element -> (set5.get(element).intValue() == testMap.get(element).intValue())));
+        
+        //counter set
+        set6 = new CounterSet<>(set5);
+        Assert.assertNotNull(set6);
+        TestUtils.assertListEquals(
+                ListUtility.toList(set6),
+                ListUtility.toList(set5), false);
+        Assert.assertTrue(set6.stream().allMatch(element -> (set6.get(element).intValue() == set5.get(element).intValue())));
         
         //empty
-        set5 = new CounterSet<>();
-        Assert.assertNotNull(set5);
-        Assert.assertTrue(set5.isEmpty());
+        set7 = new CounterSet<>();
+        Assert.assertNotNull(set7);
+        Assert.assertTrue(set7.isEmpty());
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->

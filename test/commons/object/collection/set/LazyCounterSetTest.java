@@ -167,6 +167,7 @@ public class LazyCounterSetTest {
      * JUnit test of constructors.
      *
      * @throws Exception When there is an exception.
+     * @see LazyCounterSet#LazyCounterSet(Collection, boolean)
      * @see LazyCounterSet#LazyCounterSet(Collection)
      * @see LazyCounterSet#LazyCounterSet(Map)
      * @see LazyCounterSet#LazyCounterSet(CounterSet)
@@ -185,6 +186,8 @@ public class LazyCounterSetTest {
         LazyCounterSet<String> set3;
         LazyCounterSet<String> set4;
         LazyCounterSet<String> set5;
+        LazyCounterSet<String> set6;
+        LazyCounterSet<String> set7;
         
         //distinct collection
         set1 = new LazyCounterSet<>(testList1);
@@ -192,36 +195,52 @@ public class LazyCounterSetTest {
         TestUtils.assertListEquals(
                 ListUtility.toList(set1),
                 testList1, false);
-        Assert.assertTrue(set1.stream().allMatch(element -> (set1.get(element) == 1)));
+        Assert.assertTrue(set1.stream().allMatch(element -> (set1.get(element) == 0)));
         
-        //collection
-        set2 = new LazyCounterSet<>(testList2);
+        //distinct collection, initialize
+        set2 = new LazyCounterSet<>(testList1, true);
         Assert.assertNotNull(set2);
         TestUtils.assertListEquals(
                 ListUtility.toList(set2),
                 testList1, false);
-        Assert.assertTrue(set2.stream().allMatch(element -> (set2.get(element) == 5)));
+        Assert.assertTrue(set2.stream().allMatch(element -> (set2.get(element) == 1)));
         
-        //map
-        set3 = new LazyCounterSet<>(testMap);
+        //collection
+        set3 = new LazyCounterSet<>(testList2);
         Assert.assertNotNull(set3);
         TestUtils.assertListEquals(
                 ListUtility.toList(set3),
                 testList1, false);
-        Assert.assertTrue(set3.stream().allMatch(element -> (set3.get(element).intValue() == testMap.get(element).intValue())));
+        Assert.assertTrue(set3.stream().allMatch(element -> (set3.get(element) == 0)));
         
-        //iterable map
-        set4 = new LazyCounterSet<>(set3);
+        //collection, initialize
+        set4 = new LazyCounterSet<>(testList2, true);
         Assert.assertNotNull(set4);
         TestUtils.assertListEquals(
                 ListUtility.toList(set4),
-                ListUtility.toList(set3), false);
-        Assert.assertTrue(set4.stream().allMatch(element -> (set4.get(element).intValue() == set3.get(element).intValue())));
+                testList1, false);
+        Assert.assertTrue(set4.stream().allMatch(element -> (set4.get(element) == 5)));
+        
+        //map
+        set5 = new LazyCounterSet<>(testMap);
+        Assert.assertNotNull(set5);
+        TestUtils.assertListEquals(
+                ListUtility.toList(set5),
+                testList1, false);
+        Assert.assertTrue(set5.stream().allMatch(element -> (set5.get(element).intValue() == testMap.get(element).intValue())));
+        
+        //counter set
+        set6 = new LazyCounterSet<>(set5);
+        Assert.assertNotNull(set6);
+        TestUtils.assertListEquals(
+                ListUtility.toList(set6),
+                ListUtility.toList(set5), false);
+        Assert.assertTrue(set6.stream().allMatch(element -> (set6.get(element).intValue() == set5.get(element).intValue())));
         
         //empty
-        set5 = new LazyCounterSet<>();
-        Assert.assertNotNull(set5);
-        Assert.assertTrue(set5.isEmpty());
+        set7 = new LazyCounterSet<>();
+        Assert.assertNotNull(set7);
+        Assert.assertTrue(set7.isEmpty());
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->

@@ -53,36 +53,47 @@ public class CounterSet<T> extends HashSet<T> {
      * The constructor for a Counter Set from a list of elements.
      *
      * @param elements The elements.
+     * @param count    Whether or not to initialize the counters with the number of occurrences of the elements in the list.
+     */
+    public CounterSet(Collection<? extends T> elements, boolean count) {
+        this.addAll(elements);
+        if (count) {
+            elements.forEach(this::increment);
+        }
+    }
+    
+    /**
+     * The constructor for a Counter Set from a list of elements.
+     *
+     * @param elements The elements.
+     * @see #CounterSet(Collection, boolean)
      */
     public CounterSet(Collection<? extends T> elements) {
-        elements.forEach(element -> {
-            add(element);
-            increment(element);
-        });
+        this(elements, false);
     }
     
     /**
      * The constructor for a Counter Set from a map of counters.
      *
      * @param counters The counters.
+     * @see #CounterSet(Collection)
      */
     public CounterSet(Map<? extends T, ? extends Number> counters) {
-        counters.forEach((element, counter) -> {
-            add(element);
-            set(element, counter.intValue());
-        });
+        this(counters.keySet());
+        counters.forEach((element, counter) ->
+                this.set(element, counter.intValue()));
     }
     
     /**
      * The constructor for a Counter Set from another Counter Set.
      *
      * @param set The Counter Set.
+     * @see #CounterSet(Collection)
      */
     public CounterSet(CounterSet<T> set) {
-        set.forEach(element -> {
-            add(element);
-            set(element, set.get(element));
-        });
+        this((Collection<T>) set);
+        set.forEach(element ->
+                this.set(element, set.get(element)));
     }
     
     /**

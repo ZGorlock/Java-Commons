@@ -36,6 +36,17 @@ public class LazyCounterSet<T> extends CounterSet<T> {
      * The constructor for a Counter Set from a list of elements.
      *
      * @param elements The elements.
+     * @param count    Whether or not to initialize the counters with the number of occurrences of the elements in the list.
+     * @see CounterSet#CounterSet(Collection, boolean)
+     */
+    public LazyCounterSet(Collection<? extends T> elements, boolean count) {
+        super(elements, count);
+    }
+    
+    /**
+     * The constructor for a Counter Set from a list of elements.
+     *
+     * @param elements The elements.
      * @see CounterSet#CounterSet(Collection)
      */
     public LazyCounterSet(Collection<? extends T> elements) {
