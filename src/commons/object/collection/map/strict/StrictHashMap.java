@@ -8,23 +8,21 @@
 package commons.object.collection.map.strict;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
  * Defines a Strict Hash Map.<br>
- * The views backed by the map are returned as unmodifiable views.
+ * The views backed by the map are returned as immutable views.
  *
  * @param <K> The type of the keys of the map.
  * @param <V> The type of the values of the map.
  */
-public class StrictHashMap<K, V> extends HashMap<K, V> {
+public class StrictHashMap<K, V> extends HashMap<K, V> implements StrictMapInterface<K, V> {
     
     //Logger
     
@@ -61,7 +59,8 @@ public class StrictHashMap<K, V> extends HashMap<K, V> {
      * @return A mutable entry set.
      * @see HashMap#entrySet()
      */
-    protected Set<Map.Entry<K, V>> exposedEntrySet() {
+    @Override
+    public Set<Map.Entry<K, V>> exposedEntrySet() {
         return super.entrySet();
     }
     
@@ -69,13 +68,11 @@ public class StrictHashMap<K, V> extends HashMap<K, V> {
      * Gets an immutable entry set of the map.
      *
      * @return An immutable entry set.
-     * @see #exposedEntrySet()
+     * @see #immutableEntrySet()
      */
     @Override
     public Set<Map.Entry<K, V>> entrySet() {
-        return Collections.unmodifiableSet(exposedEntrySet().stream()
-                .map(e -> Map.entry(e.getKey(), e.getValue()))
-                .collect(Collectors.toSet()));
+        return immutableEntrySet();
     }
     
     /**
@@ -84,7 +81,8 @@ public class StrictHashMap<K, V> extends HashMap<K, V> {
      * @return A mutable key set.
      * @see HashMap#keySet()
      */
-    protected Set<K> exposedKeySet() {
+    @Override
+    public Set<K> exposedKeySet() {
         return super.keySet();
     }
     
@@ -92,11 +90,11 @@ public class StrictHashMap<K, V> extends HashMap<K, V> {
      * Gets an immutable key set of the map.
      *
      * @return An immutable key set.
-     * @see #exposedKeySet()
+     * @see #immutableKeySet()
      */
     @Override
     public Set<K> keySet() {
-        return Collections.unmodifiableSet(exposedKeySet());
+        return immutableKeySet();
     }
     
     /**
@@ -105,7 +103,8 @@ public class StrictHashMap<K, V> extends HashMap<K, V> {
      * @return A mutable collection of values.
      * @see HashMap#values()
      */
-    protected Collection<V> exposedValues() {
+    @Override
+    public Collection<V> exposedValues() {
         return super.values();
     }
     
@@ -113,11 +112,11 @@ public class StrictHashMap<K, V> extends HashMap<K, V> {
      * Gets an immutable collection of values of the map.
      *
      * @return An immutable collection of values.
-     * @see #exposedValues()
+     * @see #immutableValues()
      */
     @Override
     public Collection<V> values() {
-        return Collections.unmodifiableCollection(exposedValues());
+        return immutableValues();
     }
     
 }
