@@ -1,55 +1,53 @@
 /*
- * File:    StrictHashMap.java
+ * File:    StrictLinkedHashMap.java
  * Package: commons.object.collection.map
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.object.collection.map;
+package commons.object.collection.map.strict;
 
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Defines a Strict Hash Map.<br>
- * The views backed by the map are returned as unmodifiable views.
+ * Defines a Strict Linked Hash Map.<br>
+ * The views backed by the map are returned as immutable views.
  *
  * @param <K> The type of the keys of the map.
  * @param <V> The type of the values of the map.
  */
-public class StrictHashMap<K, V> extends HashMap<K, V> {
+public class StrictLinkedHashMap<K, V> extends LinkedHashMap<K, V> implements StrictMapInterface<K, V> {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(StrictHashMap.class);
+    private static final Logger logger = LoggerFactory.getLogger(StrictLinkedHashMap.class);
     
     
     //Constructors
     
     /**
-     * The constructor for an Strict Hash Map from a map.
+     * The constructor for an Strict Linked Hash Map from a map.
      *
      * @param map The map.
      * @see #putAll(Map)
      */
-    public StrictHashMap(Map<? extends K, ? extends V> map) {
+    public StrictLinkedHashMap(Map<? extends K, ? extends V> map) {
         this.putAll(map);
     }
     
     /**
-     * The default no-argument constructor for a Strict Hash Map.
+     * The default no-argument constructor for a Strict Linked Hash Map.
      */
-    public StrictHashMap() {
+    public StrictLinkedHashMap() {
     }
     
     
@@ -59,9 +57,10 @@ public class StrictHashMap<K, V> extends HashMap<K, V> {
      * Gets a mutable entry set of the map.
      *
      * @return A mutable entry set.
-     * @see HashMap#entrySet()
+     * @see LinkedHashMap#entrySet()
      */
-    protected Set<Map.Entry<K, V>> exposedEntrySet() {
+    @Override
+    public Set<Map.Entry<K, V>> exposedEntrySet() {
         return super.entrySet();
     }
     
@@ -69,22 +68,21 @@ public class StrictHashMap<K, V> extends HashMap<K, V> {
      * Gets an immutable entry set of the map.
      *
      * @return An immutable entry set.
-     * @see #exposedEntrySet()
+     * @see #immutableEntrySet()
      */
     @Override
     public Set<Map.Entry<K, V>> entrySet() {
-        return Collections.unmodifiableSet(exposedEntrySet().stream()
-                .map(e -> Map.entry(e.getKey(), e.getValue()))
-                .collect(Collectors.toSet()));
+        return immutableEntrySet();
     }
     
     /**
      * Gets a mutable key set of the map.
      *
      * @return A mutable key set.
-     * @see HashMap#keySet()
+     * @see LinkedHashMap#keySet()
      */
-    protected Set<K> exposedKeySet() {
+    @Override
+    public Set<K> exposedKeySet() {
         return super.keySet();
     }
     
@@ -92,20 +90,21 @@ public class StrictHashMap<K, V> extends HashMap<K, V> {
      * Gets an immutable key set of the map.
      *
      * @return An immutable key set.
-     * @see #exposedKeySet()
+     * @see #immutableKeySet()
      */
     @Override
     public Set<K> keySet() {
-        return Collections.unmodifiableSet(exposedKeySet());
+        return immutableKeySet();
     }
     
     /**
      * Gets a mutable collection of values of the map.
      *
      * @return A mutable collection of values.
-     * @see HashMap#values()
+     * @see LinkedHashMap#values()
      */
-    protected Collection<V> exposedValues() {
+    @Override
+    public Collection<V> exposedValues() {
         return super.values();
     }
     
@@ -113,11 +112,11 @@ public class StrictHashMap<K, V> extends HashMap<K, V> {
      * Gets an immutable collection of values of the map.
      *
      * @return An immutable collection of values.
-     * @see #exposedValues()
+     * @see #immutableValues()
      */
     @Override
     public Collection<V> values() {
-        return Collections.unmodifiableCollection(exposedValues());
+        return immutableValues();
     }
     
 }
