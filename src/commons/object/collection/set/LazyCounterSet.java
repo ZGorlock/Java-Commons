@@ -54,6 +54,18 @@ public class LazyCounterSet<T> extends CounterSet<T> {
     }
     
     /**
+     * The constructor for a Counter Set from a set of elements.
+     *
+     * @param elements The set of elements.
+     * @param <U>      The type of the set of elements.
+     * @see CounterSet#CounterSet(Object[])
+     */
+    @SafeVarargs
+    public <U extends T> LazyCounterSet(U... elements) {
+        super(elements);
+    }
+    
+    /**
      * The constructor for a Counter Set from a map of counters.
      *
      * @param counters The counters.

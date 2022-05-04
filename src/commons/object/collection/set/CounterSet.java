@@ -19,6 +19,7 @@ import java.util.function.IntBinaryOperator;
 import java.util.function.IntUnaryOperator;
 
 import commons.lambda.stream.collector.MapCollectors;
+import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
 import commons.object.collection.iterator.CustomIterator;
 import org.slf4j.Logger;
@@ -70,6 +71,18 @@ public class CounterSet<T> extends HashSet<T> {
      */
     public CounterSet(Collection<? extends T> elements) {
         this(elements, false);
+    }
+    
+    /**
+     * The constructor for a Counter Set from a set of elements.
+     *
+     * @param elements The set of elements.
+     * @param <U>      The type of the set of elements.
+     * @see #CounterSet(Collection)
+     */
+    @SafeVarargs
+    public <U extends T> CounterSet(U... elements) {
+        this(ListUtility.listOf(elements));
     }
     
     /**
