@@ -46,6 +46,9 @@ public interface CheckedUnaryOperator<T> extends UnaryOperator<T> {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes a CheckedUnaryOperator.
      *

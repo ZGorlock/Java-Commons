@@ -48,6 +48,9 @@ public interface UncheckedBiConsumer<T, U> extends BiConsumer<T, U> {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes an UncheckedBiConsumer.
      *

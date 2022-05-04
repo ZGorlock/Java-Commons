@@ -8,7 +8,7 @@
 package commons.lambda.function;
 
 /**
- * Represents a lambda function that run a task and returns no value and may throw an error.
+ * Represents a lambda function that runs a task and returns no value and may throw an error.
  */
 @FunctionalInterface
 public interface Action {
@@ -21,6 +21,9 @@ public interface Action {
      * @throws Throwable When there is an error.
      */
     void perform() throws Throwable;
+    
+    
+    //Static Methods
     
     /**
      * Invokes an Action.

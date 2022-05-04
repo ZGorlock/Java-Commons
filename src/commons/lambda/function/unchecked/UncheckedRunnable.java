@@ -40,6 +40,9 @@ public interface UncheckedRunnable extends Runnable {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes an UncheckedRunnable.
      *

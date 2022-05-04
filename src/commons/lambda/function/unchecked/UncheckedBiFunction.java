@@ -51,6 +51,9 @@ public interface UncheckedBiFunction<T, U, R> extends BiFunction<T, U, R> {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes an UncheckedBiFunction.
      *

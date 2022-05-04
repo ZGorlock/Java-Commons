@@ -44,6 +44,9 @@ public interface CheckedSupplier<T> extends Supplier<T> {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes a CheckedSupplier.
      *

@@ -46,6 +46,9 @@ public interface CheckedPredicate<T> extends Predicate<T> {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes a CheckedPredicate.
      *

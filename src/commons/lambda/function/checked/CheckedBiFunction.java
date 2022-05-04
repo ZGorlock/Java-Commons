@@ -50,6 +50,9 @@ public interface CheckedBiFunction<T, U, R> extends BiFunction<T, U, R> {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes a CheckedBiFunction.
      *

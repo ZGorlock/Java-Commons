@@ -43,6 +43,9 @@ public interface CheckedConsumer<T> extends Consumer<T> {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes a CheckedConsumer.
      *

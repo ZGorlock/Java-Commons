@@ -10,7 +10,7 @@ package commons.lambda.function.checked;
 import java.util.concurrent.Callable;
 
 /**
- * Represents a lambda function that run a task and returns a result and ignores errors.
+ * Represents a lambda function that runs a task and returns a result and ignores errors.
  *
  * @param <T> The type of the result.
  * @see Callable
@@ -44,6 +44,9 @@ public interface CheckedCallable<T> extends Callable<T> {
             return null;
         }
     }
+    
+    
+    //Static Methods
     
     /**
      * Invokes a CheckedCallable.

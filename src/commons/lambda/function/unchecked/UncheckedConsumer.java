@@ -45,6 +45,9 @@ public interface UncheckedConsumer<T> extends Consumer<T> {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes an UncheckedConsumer.
      *

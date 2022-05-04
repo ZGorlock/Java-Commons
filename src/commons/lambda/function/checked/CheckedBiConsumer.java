@@ -46,6 +46,9 @@ public interface CheckedBiConsumer<T, U> extends BiConsumer<T, U> {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes a CheckedBiConsumer.
      *

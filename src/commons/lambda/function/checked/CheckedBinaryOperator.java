@@ -48,6 +48,9 @@ public interface CheckedBinaryOperator<T> extends BinaryOperator<T> {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes a CheckedBinaryOperator.
      *

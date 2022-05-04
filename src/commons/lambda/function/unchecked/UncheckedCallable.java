@@ -10,7 +10,7 @@ package commons.lambda.function.unchecked;
 import java.util.concurrent.Callable;
 
 /**
- * Represents a lambda function that run a task and returns a result and throws a runtime exception in the event of an error.
+ * Represents a lambda function that runs a task and returns a result and throws a runtime exception in the event of an error.
  *
  * @param <T> The type of the result.
  * @see Callable
@@ -44,6 +44,9 @@ public interface UncheckedCallable<T> extends Callable<T> {
             throw new RuntimeException(e);
         }
     }
+    
+    
+    //Static Methods
     
     /**
      * Invokes an UncheckedCallable.

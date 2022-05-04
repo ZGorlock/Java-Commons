@@ -38,6 +38,9 @@ public interface CheckedRunnable extends Runnable {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes a CheckedRunnable.
      *

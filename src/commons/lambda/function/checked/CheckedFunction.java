@@ -47,6 +47,9 @@ public interface CheckedFunction<T, R> extends Function<T, R> {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes a CheckedFunction.
      *

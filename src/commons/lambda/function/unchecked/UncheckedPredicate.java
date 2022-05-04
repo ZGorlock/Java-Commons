@@ -47,6 +47,9 @@ public interface UncheckedPredicate<T> extends Predicate<T> {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes an UncheckedPredicate.
      *

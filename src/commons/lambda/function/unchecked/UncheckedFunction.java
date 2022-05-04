@@ -48,6 +48,9 @@ public interface UncheckedFunction<T, R> extends Function<T, R> {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes an UncheckedFunction.
      *

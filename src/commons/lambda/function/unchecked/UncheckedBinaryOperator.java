@@ -49,6 +49,9 @@ public interface UncheckedBinaryOperator<T> extends BinaryOperator<T> {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes an UncheckedBinaryOperator.
      *

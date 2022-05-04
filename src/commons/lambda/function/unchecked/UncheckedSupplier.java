@@ -45,6 +45,9 @@ public interface UncheckedSupplier<T> extends Supplier<T> {
         }
     }
     
+    
+    //Static Methods
+    
     /**
      * Invokes an UncheckedSupplier.
      *
