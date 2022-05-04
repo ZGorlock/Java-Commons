@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import commons.lambda.function.Action;
+import commons.lambda.function.Conditional;
 import commons.object.collection.ArrayUtility;
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
@@ -138,6 +139,47 @@ public final class TestUtils {
                 AssertWrapper.fail(StringUtility.format("Expected code to produce no Exception but instead it produced {}", StringUtility.justifyAOrAn(EntityStringUtility.simpleClassString(e))));
         
         checkException(action, onException, null);
+    }
+    
+    /**
+     * Asserts that an action throws an exception if the result of the conditional is true, or that it does not throw an exception if the result of the conditional is false.
+     *
+     * @param conditional     The conditional.
+     * @param thrown          The expected exception.
+     * @param expectedMessage The expected message.
+     * @param action          The action.
+     * @see #assertException(Class, String, Action)
+     * @see #assertNoException(Action)
+     */
+    public static void assertExceptionIf(Conditional conditional, Class<? extends Throwable> thrown, String expectedMessage, Action action) {
+        if (conditional.testQuietly()) {
+            assertException(thrown, expectedMessage, action);
+        } else {
+            assertNoException(action);
+        }
+    }
+    
+    /**
+     * Asserts that an action throws an exception if the result of the conditional is true, or that it does not throw an exception if the result of the conditional is false.
+     *
+     * @param conditional The conditional.
+     * @param thrown      The expected exception.
+     * @param action      The action.
+     * @see #assertExceptionIf(Conditional, Class, String, Action)
+     */
+    public static void assertExceptionIf(Conditional conditional, Class<? extends Throwable> thrown, Action action) {
+        assertExceptionIf(conditional, thrown, null, action);
+    }
+    
+    /**
+     * Asserts that an action throws an exception if the result of the conditional is true, or that it does not throw an exception if the result of the conditional is false.
+     *
+     * @param conditional The conditional.
+     * @param action      The action.
+     * @see #assertExceptionIf(Conditional, Class, Action)
+     */
+    public static void assertExceptionIf(Conditional conditional, Action action) {
+        assertExceptionIf(conditional, null, action);
     }
     
     /**

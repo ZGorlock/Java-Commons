@@ -821,14 +821,11 @@ public class TestAccessTest {
                     new Object[] {true, "method9", new Object[] {-13}, 7.66f, ""},
                     new Object[] {true, "method10", new Object[] {}, true, ""},
                     new Object[] {true, "method11", new Object[] {true, "testing", 19.41f, new char[] {'t', 'e', 's', 't'}}, "last test", ""}
-            ).forEach(params -> {
-                if (!isClass || !(boolean) params[0]) {
-                    invokeMethodValidator.accept(new Object[] {entity, params[1], params[2], params[3], params[4]});
-                } else {
-                    TestUtils.assertException(RuntimeException.class, "java.lang.IllegalArgumentException: object is not an instance of declaring class", () ->
-                            methodInvoker.apply(new Object[] {entity, params[1], params[2], params[3], params[4]}));
-                }
-            });
+            ).forEach(params ->
+                    TestUtils.assertExceptionIf(() ->
+                                    (isClass && (boolean) params[0]),
+                            RuntimeException.class, "java.lang.IllegalArgumentException: object is not an instance of declaring class", () ->
+                                    invokeMethodValidator.accept(new Object[] {entity, params[1], params[2], params[3], params[4]})));
         });
         
         //return type

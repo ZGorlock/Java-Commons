@@ -11,14 +11,18 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import commons.lambda.function.Action;
+import commons.lambda.function.Conditional;
 import commons.lambda.function.unchecked.UncheckedBiConsumer;
 import commons.lambda.function.unchecked.UncheckedConsumer;
 import commons.lambda.stream.collector.SetCollectors;
@@ -26,6 +30,7 @@ import commons.object.collection.ArrayUtility;
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
 import commons.object.collection.set.CounterSet;
+import commons.object.collection.set.LazyCounterSet;
 import commons.object.string.EntityStringUtility;
 import commons.object.string.StringUtility;
 import org.apache.commons.lang3.tuple.ImmutablePair;
@@ -181,26 +186,34 @@ public class TestUtilsTest {
         List.of(mockAction, mockOnException, mockOnNoException).forEach(Mockito::verifyNoMoreInteractions);
         
         //invalid
-        TestUtils.assertNoException(() -> {
+        try {
             TestAccess.invokeMethod(TestUtils.class, "checkException", null, mockOnException, mockOnNoException);
             Mockito.verify(mockOnException, VerificationModeFactory.times(1))
                     .accept(ArgumentMatchers.any(NullPointerException.class));
-        });
-        TestUtils.assertNoException(() -> {
+        } catch (Throwable ignored) {
+            Assert.fail();
+        }
+        try {
             Mockito.doThrow(mockException).when(mockAction).perform();
             TestAccess.invokeMethod(TestUtils.class, "checkException", mockAction, null, mockOnNoException);
             Mockito.verify(mockAction, VerificationModeFactory.times(3))
                     .perform();
             Mockito.doNothing().when(mockAction).perform();
-        });
-        TestUtils.assertNoException(() -> {
+        } catch (Throwable ignored) {
+            Assert.fail();
+        }
+        try {
             TestAccess.invokeMethod(TestUtils.class, "checkException", mockAction, mockOnException, null);
             Mockito.verify(mockAction, VerificationModeFactory.times(4))
                     .perform();
-        });
-        TestUtils.assertNoException(() ->
-                TestAccess.invokeMethod(TestUtils.class, "checkException", null, null, null));
-        List.of(mockAction, mockOnException, mockOnNoException).forEach(Mockito::verifyNoMoreInteractions);
+        } catch (Throwable ignored) {
+            Assert.fail();
+        }
+        try {
+            TestAccess.invokeMethod(TestUtils.class, "checkException", null, null, null);
+        } catch (Throwable ignored) {
+            Assert.fail();
+        }
     }
     
     /**
@@ -211,104 +224,74 @@ public class TestUtilsTest {
      * @see TestUtils#assertException(Class, Action)
      * @see TestUtils#assertException(Action)
      */
+    @SuppressWarnings("ThrowableNotThrown")
     @Test
     public void testAssertException() throws Exception {
+        final Class<? extends Throwable> voidThrowable = Throwable.class;
+        final Class<? extends Throwable> correctThrowable = NumberFormatException.class;
+        final Class<? extends Throwable> wrongThrowable = NullPointerException.class;
+        final String voidMessage = "void";
+        final String correctMessage = "Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.";
+        final String wrongMessage = "Could not parse BigDecimal";
+        final CounterSet<Class<?>> throwableAssertions = new CounterSet<>(correctThrowable, wrongThrowable, null);
+        final CounterSet<String> messageAssertions = Stream.of(correctThrowable, wrongThrowable, null).flatMap(throwable ->
+                        Stream.of(voidMessage, correctMessage, wrongMessage, null).map(message ->
+                                String.join(":", String.valueOf(throwable), message)))
+                .collect(SetCollectors.toCounterSet());
+        final CounterSet<Class<?>> noExceptionAssertions = new CounterSet<>(correctThrowable, wrongThrowable, null);
+        
+        final UncheckedConsumer<Object[]> assertExceptionAsserter = (Object[] params) -> {
+            final Boolean exception = (Boolean) params[0];
+            final Class<? extends Throwable> throwable = (Class<? extends Throwable>) params[1];
+            final String message = (String) params[2];
+            final Action action = () -> new BigDecimal(exception ? "15a4" : "1564");
+            final boolean passThrowable = !Objects.equals(throwable, voidThrowable);
+            final boolean passMessage = passThrowable && !Objects.equals(message, voidMessage);
+            
+            if (passThrowable && passMessage) {
+                TestUtils.assertException(throwable, message, action);
+            } else if (passThrowable) {
+                TestUtils.assertException(throwable, action);
+            } else {
+                TestUtils.assertException(action);
+            }
+            
+            PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(throwableAssertions.stepAndGet((passThrowable ? throwable : null), ((exception && passThrowable && Objects.nonNull(throwable)) ? 1 : 0))))
+                    .invoke("assertEquals",
+                            ArgumentMatchers.eq(StringUtility.format("Expected code to produce {} but instead it produced {}",
+                                    StringUtility.justifyAOrAn(EntityStringUtility.simpleClassString(throwable)),
+                                    StringUtility.justifyAOrAn(EntityStringUtility.simpleClassString(correctThrowable)))),
+                            ArgumentMatchers.eq(throwable), ArgumentMatchers.eq(correctThrowable));
+            PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(messageAssertions.stepAndGet(String.join(":", String.valueOf(passThrowable ? throwable : null), message), ((exception && passMessage && Objects.nonNull(message)) ? 1 : 0))))
+                    .invoke("assertEquals",
+                            ArgumentMatchers.eq(StringUtility.format("Expected the error message of the {} to be: {} but the error message was: {}",
+                                    Optional.ofNullable(passThrowable ? throwable : null).map(EntityStringUtility::simpleClassString).orElse("exception"),
+                                    StringUtility.quote(message),
+                                    StringUtility.quote(correctMessage))),
+                            ArgumentMatchers.eq(message), ArgumentMatchers.eq(correctMessage));
+            PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(noExceptionAssertions.stepAndGet((passThrowable ? throwable : null), (!exception ? 1 : 0))))
+                    .invoke("fail",
+                            ArgumentMatchers.eq(StringUtility.format("Expected code to produce {} but no exception was produced",
+                                    Optional.ofNullable(passThrowable ? throwable : null).map(e -> StringUtility.justifyAOrAn(EntityStringUtility.simpleClassString(e))).orElse("an exception"))));
+            PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        };
+        
         PowerMockito.mockStatic(AssertWrapper);
         
-        //exception
-        TestUtils.assertException(() ->
-                new BigDecimal("15a4"));
-        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        //standard
+        Stream.of(true, false).forEach(exception ->
+                Stream.of(voidThrowable, correctThrowable, wrongThrowable, null).forEach(throwable ->
+                        Stream.of(voidMessage, correctMessage, wrongMessage, null).forEach(message ->
+                                assertExceptionAsserter.accept(new Object[] {exception, throwable, message}))));
         
-        //exception, correct throwable
-        TestUtils.assertException(NumberFormatException.class, () ->
-                new BigDecimal("15a4"));
-        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
-                .invoke("assertEquals",
-                        ArgumentMatchers.eq("Expected code to produce a NumberFormatException but instead it produced a NumberFormatException"),
-                        ArgumentMatchers.eq(NumberFormatException.class), ArgumentMatchers.eq(NumberFormatException.class));
-        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
-        
-        //exception, correct throwable, correct message
-        TestUtils.assertException(NumberFormatException.class, "Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.", () ->
-                new BigDecimal("15a4"));
-        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(2))
-                .invoke("assertEquals",
-                        ArgumentMatchers.eq("Expected code to produce a NumberFormatException but instead it produced a NumberFormatException"),
-                        ArgumentMatchers.eq(NumberFormatException.class), ArgumentMatchers.eq(NumberFormatException.class));
-        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
-                .invoke("assertEquals",
-                        ArgumentMatchers.eq("Expected the error message of the NumberFormatException to be: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\" but the error message was: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\""),
-                        ArgumentMatchers.eq("Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark."), ArgumentMatchers.eq("Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark."));
-        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
-        
-        //exception, correct throwable, wrong message
-        TestUtils.assertException(NumberFormatException.class, "Could not parse BigDecimal", () ->
-                new BigDecimal("15a4"));
-        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(3))
-                .invoke("assertEquals",
-                        ArgumentMatchers.eq("Expected code to produce a NumberFormatException but instead it produced a NumberFormatException"),
-                        ArgumentMatchers.eq(NumberFormatException.class), ArgumentMatchers.eq(NumberFormatException.class));
-        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
-                .invoke("assertEquals",
-                        ArgumentMatchers.eq("Expected the error message of the NumberFormatException to be: \"Could not parse BigDecimal\" but the error message was: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\""),
-                        ArgumentMatchers.eq("Could not parse BigDecimal"), ArgumentMatchers.eq("Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark."));
-        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
-        
-        //exception, wrong throwable
-        TestUtils.assertException(NullPointerException.class, () ->
-                new BigDecimal("15a4"));
-        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
-                .invoke("assertEquals",
-                        ArgumentMatchers.eq("Expected code to produce a NullPointerException but instead it produced a NumberFormatException"),
-                        ArgumentMatchers.eq(NullPointerException.class), ArgumentMatchers.eq(NumberFormatException.class));
-        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
-        
-        //exception, wrong throwable, wrong message
-        TestUtils.assertException(NullPointerException.class, "Could not parse BigDecimal", () ->
-                new BigDecimal("15a4"));
-        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(2))
-                .invoke("assertEquals",
-                        ArgumentMatchers.eq("Expected code to produce a NullPointerException but instead it produced a NumberFormatException"),
-                        ArgumentMatchers.eq(NullPointerException.class), ArgumentMatchers.eq(NumberFormatException.class));
-        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
-                .invoke("assertEquals",
-                        ArgumentMatchers.eq("Expected the error message of the NullPointerException to be: \"Could not parse BigDecimal\" but the error message was: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\""),
-                        ArgumentMatchers.eq("Could not parse BigDecimal"), ArgumentMatchers.eq("Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark."));
-        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
-        
-        //exception, null throwable, wrong message
-        TestUtils.assertException(null, "Could not parse BigDecimal", () ->
-                new BigDecimal("15a4"));
-        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
-                .invoke("assertEquals",
-                        ArgumentMatchers.eq("Expected the error message of the exception to be: \"Could not parse BigDecimal\" but the error message was: \"Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.\""),
-                        ArgumentMatchers.eq("Could not parse BigDecimal"), ArgumentMatchers.eq("Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark."));
-        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
-        
-        //no exception, wrong throwable
-        TestUtils.assertException(NullPointerException.class, () ->
-                new BigDecimal("1564"));
-        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
-                .invoke("fail",
-                        ArgumentMatchers.eq("Expected code to produce a NullPointerException but no exception was produced"));
-        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
-        
-        //no exception, null throwable
-        TestUtils.assertException(null, () ->
-                new BigDecimal("1564"));
-        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
-                .invoke("fail",
-                        ArgumentMatchers.eq("Expected code to produce an exception but no exception was produced"));
-        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
-        
-        //no exception
-        TestUtils.assertException(() ->
-                new BigDecimal("1564"));
-        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(2))
-                .invoke("fail",
-                        ArgumentMatchers.eq("Expected code to produce an exception but no exception was produced"));
-        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        //invalid
+        IntStream.of(1, 2, 3).forEach(i -> {
+            try {
+                TestAccess.invokeMethod(TestUtils.class, "assertException", Collections.nCopies(i, null).toArray());
+            } catch (Throwable ignored) {
+                Assert.fail();
+            }
+        });
     }
     
     /**
@@ -319,20 +302,121 @@ public class TestUtilsTest {
      */
     @Test
     public void testAssertNoException() throws Exception {
+        final CounterSet<Class<?>> exceptionAssertions = new CounterSet<>(NumberFormatException.class, null);
+        
+        final UncheckedConsumer<Object[]> assertNoExceptionAsserter = (Object[] params) -> {
+            final Boolean exception = (Boolean) params[0];
+            final Class<? extends Throwable> throwable = (Class<? extends Throwable>) params[1];
+            TestUtils.assertNoException(() ->
+                    new BigDecimal(exception ? "15a4" : "1564"));
+            PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(exceptionAssertions.stepAndGet(throwable, (exception ? 1 : 0))))
+                    .invoke("fail",
+                            ArgumentMatchers.eq(StringUtility.format("Expected code to produce no Exception but instead it produced {}",
+                                    Optional.ofNullable(throwable).map(e -> StringUtility.justifyAOrAn(EntityStringUtility.simpleClassString(e))).orElse("an exception"))));
+            PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        };
+        
         PowerMockito.mockStatic(AssertWrapper);
         
-        //exception
-        TestUtils.assertNoException(() ->
-                new BigDecimal("15a4"));
-        PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(1))
-                .invoke("fail",
-                        ArgumentMatchers.eq("Expected code to produce no Exception but instead it produced a NumberFormatException"));
-        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        //standard
+        Stream.of(true, false).forEach(exception ->
+                assertNoExceptionAsserter.accept(new Object[] {exception, (exception ? NumberFormatException.class : null)}));
         
-        //no exception
-        TestUtils.assertNoException(() ->
-                new BigDecimal("1564"));
-        PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        //invalid
+        IntStream.of(1).forEach(i -> {
+            try {
+                TestAccess.invokeMethod(TestUtils.class, "assertNoException", Collections.nCopies(i, null).toArray());
+            } catch (Throwable ignored) {
+                Assert.fail();
+            }
+        });
+    }
+    
+    /**
+     * JUnit test of assertException.
+     *
+     * @throws Exception When there is an exception.
+     * @see TestUtils#assertExceptionIf(Conditional, Class, String, Action)
+     * @see TestUtils#assertExceptionIf(Conditional, Class, Action)
+     * @see TestUtils#assertExceptionIf(Conditional, Action)
+     */
+    @Test
+    public void testAssertExceptionIf() throws Exception {
+        final Class<? extends Throwable> voidThrowable = Throwable.class;
+        final Class<? extends Throwable> correctThrowable = NumberFormatException.class;
+        final Class<? extends Throwable> wrongThrowable = NullPointerException.class;
+        final String voidMessage = "void";
+        final String correctMessage = "Character a is neither a decimal digit number, decimal point, nor \"e\" notation exponential mark.";
+        final String wrongMessage = "Could not parse BigDecimal";
+        final CounterSet<Class<?>> throwableAssertions = new CounterSet<>(correctThrowable, wrongThrowable, null);
+        final CounterSet<String> messageAssertions = Stream.of(correctThrowable, wrongThrowable, null).flatMap(throwable ->
+                        Stream.of(voidMessage, correctMessage, wrongMessage, null).map(message ->
+                                String.join(":", String.valueOf(throwable), message)))
+                .collect(SetCollectors.toCounterSet());
+        final CounterSet<Class<?>> noExceptionAssertions = new CounterSet<>(correctThrowable, wrongThrowable, null);
+        final CounterSet<Class<?>> exceptionAssertions = new CounterSet<>(NumberFormatException.class, null);
+        
+        final UncheckedConsumer<Object[]> assertExceptionIfAsserter = (Object[] params) -> {
+            final Boolean expected = (Boolean) params[0];
+            final Boolean exception = (Boolean) params[1];
+            final Class<? extends Throwable> throwable = (Class<? extends Throwable>) params[2];
+            final String message = (String) params[3];
+            final Conditional conditional = Conditional.of(expected);
+            final Action action = () -> new BigDecimal(exception ? "15a4" : "1564");
+            final boolean passThrowable = !Objects.equals(throwable, voidThrowable);
+            final boolean passMessage = passThrowable && !Objects.equals(message, voidMessage);
+            
+            if (passThrowable && passMessage) {
+                TestUtils.assertExceptionIf(conditional, throwable, message, action);
+            } else if (passThrowable) {
+                TestUtils.assertExceptionIf(conditional, throwable, action);
+            } else {
+                TestUtils.assertExceptionIf(conditional, action);
+            }
+            
+            PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(throwableAssertions.stepAndGet((passThrowable ? throwable : null), ((expected && exception && passThrowable && Objects.nonNull(throwable)) ? 1 : 0))))
+                    .invoke("assertEquals",
+                            ArgumentMatchers.eq(StringUtility.format("Expected code to produce {} but instead it produced {}",
+                                    StringUtility.justifyAOrAn(EntityStringUtility.simpleClassString(throwable)),
+                                    StringUtility.justifyAOrAn(EntityStringUtility.simpleClassString(correctThrowable)))),
+                            ArgumentMatchers.eq(throwable), ArgumentMatchers.eq(correctThrowable));
+            PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(messageAssertions.stepAndGet(String.join(":", String.valueOf(passThrowable ? throwable : null), message), ((expected && exception && passMessage && Objects.nonNull(message)) ? 1 : 0))))
+                    .invoke("assertEquals",
+                            ArgumentMatchers.eq(StringUtility.format("Expected the error message of the {} to be: {} but the error message was: {}",
+                                    Optional.ofNullable(passThrowable ? throwable : null).map(EntityStringUtility::simpleClassString).orElse("exception"),
+                                    StringUtility.quote(message),
+                                    StringUtility.quote(correctMessage))),
+                            ArgumentMatchers.eq(message), ArgumentMatchers.eq(correctMessage));
+            PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(noExceptionAssertions.stepAndGet((passThrowable ? throwable : null), ((expected && !exception) ? 1 : 0))))
+                    .invoke("fail",
+                            ArgumentMatchers.eq(StringUtility.format("Expected code to produce {} but no exception was produced",
+                                    Optional.ofNullable(passThrowable ? throwable : null).map(e -> StringUtility.justifyAOrAn(EntityStringUtility.simpleClassString(e))).orElse("an exception"))));
+            PowerMockito.verifyPrivate(AssertWrapper, VerificationModeFactory.times(exceptionAssertions.stepAndGet(correctThrowable, ((!expected && exception) ? 1 : 0))))
+                    .invoke("fail",
+                            ArgumentMatchers.eq(StringUtility.format("Expected code to produce no Exception but instead it produced {}",
+                                    StringUtility.justifyAOrAn(EntityStringUtility.simpleClassString(correctThrowable)))));
+            PowerMockito.verifyNoMoreInteractions(AssertWrapper);
+        };
+        
+        PowerMockito.mockStatic(AssertWrapper);
+        
+        //standard
+        Stream.of(true, false).forEach(expected ->
+                Stream.of(true, false).forEach(exception ->
+                        Stream.of(voidThrowable, correctThrowable, wrongThrowable, null).forEach(throwable ->
+                                Stream.of(voidMessage, correctMessage, wrongMessage, null).forEach(message ->
+                                        assertExceptionIfAsserter.accept(new Object[] {expected, exception, throwable, message})))));
+        
+        //invalid
+        IntStream.of(2, 3, 4).forEach(i -> {
+            try {
+                TestAccess.invokeMethod(TestUtils.class, "assertExceptionIf", Collections.nCopies(i, null).toArray());
+                Assert.fail();
+            } catch (Throwable e) {
+                Assert.assertEquals(RuntimeException.class, e.getClass());
+                Assert.assertEquals("java.lang.reflect.InvocationTargetException", e.getMessage());
+            }
+        });
     }
     
     /**
@@ -350,10 +434,8 @@ public class TestUtilsTest {
                                 Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
                                         (1 + System.identityHashCode(list) + System.identityHashCode(comparisonList)) * (checkOrder ? 1 : -1))))
                 .collect(SetCollectors.toCounterSet());
-        final CounterSet<Boolean> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(SetCollectors.toCounterSet());
-        final CounterSet<Boolean> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(SetCollectors.toCounterSet());
+        final CounterSet<Boolean> assertTrueCalls = new LazyCounterSet<>();
+        final CounterSet<Boolean> assertFalseCalls = new LazyCounterSet<>();
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final UncheckedConsumer<Object[]> compareListsAsserter = (Object[] params) -> {
@@ -423,15 +505,13 @@ public class TestUtilsTest {
                 new ImmutablePair<>(List.class, mockList2),
                 new ImmutablePair<>(Object[].class, mockArray),
                 new ImmutablePair<>(Collection.class, mockCollection));
-        final CounterSet<Object> toListCalls = Stream.of(mockList2, mockArray, mockCollection, Collection.class, Object[].class)
-                .collect(SetCollectors.toCounterSet());
+        final CounterSet<Object> toListCalls = new CounterSet<>(mockList2, mockArray, mockCollection, Collection.class, Object[].class);
         final CounterSet<Integer> equalsCalls = Stream.of(mockList, null).flatMap(list ->
                         Stream.of(mockList2, null).flatMap(comparisonList ->
                                 Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
                                         (1 + System.identityHashCode(list) + System.identityHashCode(comparisonList)) * (checkOrder ? 1 : -1))))
                 .collect(SetCollectors.toCounterSet());
-        final CounterSet<Boolean> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(SetCollectors.toCounterSet());
+        final CounterSet<Boolean> assertTrueCalls = new LazyCounterSet<>();
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final Consumer<Object[]> listEqualsCollectionInvoker = (Object[] params) -> {
@@ -528,15 +608,13 @@ public class TestUtilsTest {
                 new ImmutablePair<>(List.class, mockList2),
                 new ImmutablePair<>(Object[].class, mockArray),
                 new ImmutablePair<>(Collection.class, mockCollection));
-        final CounterSet<Object> toListCalls = Stream.of(mockList2, mockArray, mockCollection, Collection.class, Object[].class)
-                .collect(SetCollectors.toCounterSet());
+        final CounterSet<Object> toListCalls = new CounterSet<>(mockList2, mockArray, mockCollection, Collection.class, Object[].class);
         final CounterSet<Integer> equalsCalls = Stream.of(mockList, null).flatMap(list ->
                         Stream.of(mockList2, null).flatMap(comparisonList ->
                                 Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
                                         (1 + System.identityHashCode(list) + System.identityHashCode(comparisonList)) * (checkOrder ? 1 : -1))))
                 .collect(SetCollectors.toCounterSet());
-        final CounterSet<Boolean> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(SetCollectors.toCounterSet());
+        final CounterSet<Boolean> assertFalseCalls = new LazyCounterSet<>();
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final Consumer<Object[]> listNotEqualsCollectionInvoker = (Object[] params) -> {
@@ -629,10 +707,8 @@ public class TestUtilsTest {
                                 Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
                                         (1 + System.identityHashCode(array) + System.identityHashCode(comparisonArray)) * (checkOrder ? 1 : -1))))
                 .collect(SetCollectors.toCounterSet());
-        final CounterSet<Boolean> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(SetCollectors.toCounterSet());
-        final CounterSet<Boolean> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(SetCollectors.toCounterSet());
+        final CounterSet<Boolean> assertTrueCalls = new LazyCounterSet<>();
+        final CounterSet<Boolean> assertFalseCalls = new LazyCounterSet<>();
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final UncheckedConsumer<Object[]> compareArraysAsserter = (Object[] params) -> {
@@ -702,15 +778,13 @@ public class TestUtilsTest {
                 new ImmutablePair<>(Object[].class, mockArray2),
                 new ImmutablePair<>(List.class, mockList),
                 new ImmutablePair<>(Collection.class, mockCollection));
-        final CounterSet<Object> toArrayCalls = Stream.of(mockList, mockCollection, Collection.class)
-                .collect(SetCollectors.toCounterSet());
+        final CounterSet<Object> toArrayCalls = new CounterSet<>(mockList, mockCollection, Collection.class);
         final CounterSet<Integer> equalsCalls = Stream.of(mockArray, null).flatMap(array ->
                         Stream.of(mockArray2, null).flatMap(comparisonArray ->
                                 Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
                                         (1 + System.identityHashCode(array) + System.identityHashCode(comparisonArray)) * (checkOrder ? 1 : -1))))
                 .collect(SetCollectors.toCounterSet());
-        final CounterSet<Boolean> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(SetCollectors.toCounterSet());
+        final CounterSet<Boolean> assertTrueCalls = new LazyCounterSet<>();
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final Consumer<Object[]> arrayEqualsCollectionInvoker = (Object[] params) -> {
@@ -804,15 +878,13 @@ public class TestUtilsTest {
                 new ImmutablePair<>(Object[].class, mockArray2),
                 new ImmutablePair<>(List.class, mockList),
                 new ImmutablePair<>(Collection.class, mockCollection));
-        final CounterSet<Object> toArrayCalls = Stream.of(mockList, mockCollection, Collection.class)
-                .collect(SetCollectors.toCounterSet());
+        final CounterSet<Object> toArrayCalls = new CounterSet<>(mockList, mockCollection, Collection.class);
         final CounterSet<Integer> equalsCalls = Stream.of(mockArray, null).flatMap(array ->
                         Stream.of(mockArray2, null).flatMap(comparisonArray ->
                                 Stream.of(Boolean.TRUE, Boolean.FALSE).map(checkOrder ->
                                         (1 + System.identityHashCode(array) + System.identityHashCode(comparisonArray)) * (checkOrder ? 1 : -1))))
                 .collect(SetCollectors.toCounterSet());
-        final CounterSet<Boolean> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(SetCollectors.toCounterSet());
+        final CounterSet<Boolean> assertFalseCalls = new LazyCounterSet<>();
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final Consumer<Object[]> arrayNotEqualsCollectionInvoker = (Object[] params) -> {
@@ -901,10 +973,8 @@ public class TestUtilsTest {
                         Stream.of(mockMap2, null).map(comparisonMap ->
                                 (1 + System.identityHashCode(map) + System.identityHashCode(comparisonMap))))
                 .collect(SetCollectors.toCounterSet());
-        final CounterSet<Boolean> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(SetCollectors.toCounterSet());
-        final CounterSet<Boolean> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(SetCollectors.toCounterSet());
+        final CounterSet<Boolean> assertTrueCalls = new LazyCounterSet<>();
+        final CounterSet<Boolean> assertFalseCalls = new LazyCounterSet<>();
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final UncheckedConsumer<Object[]> compareMapsAsserter = (Object[] params) -> {
@@ -965,8 +1035,7 @@ public class TestUtilsTest {
                         Stream.of(mockMap2, null).map(comparisonMap ->
                                 (1 + System.identityHashCode(map) + System.identityHashCode(comparisonMap))))
                 .collect(SetCollectors.toCounterSet());
-        final CounterSet<Boolean> assertTrueCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(SetCollectors.toCounterSet());
+        final CounterSet<Boolean> assertTrueCalls = new LazyCounterSet<>();
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final UncheckedBiConsumer<Map<Object, Object>, Map<Object, Object>> mapEqualsAsserter = (Map<Object, Object> map, Map<Object, Object> comparisonMap) -> {
@@ -1016,8 +1085,7 @@ public class TestUtilsTest {
                         Stream.of(mockMap2, null).map(comparisonMap ->
                                 (1 + System.identityHashCode(map) + System.identityHashCode(comparisonMap))))
                 .collect(SetCollectors.toCounterSet());
-        final CounterSet<Boolean> assertFalseCalls = Stream.of(Boolean.TRUE, Boolean.FALSE)
-                .collect(SetCollectors.toCounterSet());
+        final CounterSet<Boolean> assertFalseCalls = new LazyCounterSet<>();
         final AtomicBoolean equals = new AtomicBoolean(false);
         
         final UncheckedBiConsumer<Map<Object, Object>, Map<Object, Object>> mapNotEqualsAsserter = (Map<Object, Object> map, Map<Object, Object> comparisonMap) -> {
