@@ -12,7 +12,6 @@ import java.util.concurrent.atomic.AtomicReference;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -107,17 +106,57 @@ public class ActionTest {
     public void testPerform() throws Exception {
         final AtomicReference<Object> result = new AtomicReference<>(null);
         final Action sut = () ->
-                result.set(result.get().toString());
+                result.get().toString();
         
         //standard
         result.set(new StringBuilder("tested"));
         TestUtils.assertNoException(sut);
-        Assert.assertEquals("tested", result.get());
         
         //exception
         result.set(null);
         TestUtils.assertException(sut);
-        Assert.assertNull(result.get());
+    }
+    
+    /**
+     * JUnit test of performQuietly.
+     *
+     * @throws Exception When there is an exception.
+     * @see Action#performQuietly()
+     */
+    @Test
+    public void testPerformQuietly() throws Exception {
+        final AtomicReference<Object> result = new AtomicReference<>(null);
+        final Action sut = () ->
+                result.get().toString();
+        
+        //standard
+        result.set(new StringBuilder("tested"));
+        TestUtils.assertNoException(sut::performQuietly);
+        
+        //exception
+        result.set(null);
+        TestUtils.assertNoException(sut::performQuietly);
+    }
+    
+    /**
+     * JUnit test of performOrFail.
+     *
+     * @throws Exception When there is an exception.
+     * @see Action#performOrFail()
+     */
+    @Test
+    public void testPerformOrFail() throws Exception {
+        final AtomicReference<Object> result = new AtomicReference<>(null);
+        final Action sut = () ->
+                result.get().toString();
+        
+        //standard
+        result.set(new StringBuilder("tested"));
+        TestUtils.assertNoException(sut::performOrFail);
+        
+        //exception
+        result.set(null);
+        TestUtils.assertException(RuntimeException.class, sut::performOrFail);
     }
     
     /**
@@ -165,6 +204,31 @@ public class ActionTest {
         Mockito.doThrow(new RuntimeException()).when(sut).perform();
         TestUtils.assertNoException(() ->
                 Action.invokeQuietly(sut));
+        Mockito.verify(sut, VerificationModeFactory.times(2))
+                .perform();
+        Mockito.doNothing().when(sut).perform();
+    }
+    
+    /**
+     * JUnit test of invokeOrFail.
+     *
+     * @throws Throwable When there is an error.
+     * @see Action#invokeOrFail(Action)
+     */
+    @Test
+    public void testInvokeOrFail() throws Throwable {
+        final Action sut = Mockito.mock(Action.class, Mockito.CALLS_REAL_METHODS);
+        
+        //standard
+        TestUtils.assertNoException(() ->
+                Action.invokeOrFail(sut));
+        Mockito.verify(sut, VerificationModeFactory.times(1))
+                .perform();
+        
+        //exception
+        Mockito.doThrow(new RuntimeException()).when(sut).perform();
+        TestUtils.assertException(RuntimeException.class, () ->
+                Action.invokeOrFail(sut));
         Mockito.verify(sut, VerificationModeFactory.times(2))
                 .perform();
         Mockito.doNothing().when(sut).perform();

@@ -22,6 +22,32 @@ public interface Action {
      */
     void perform() throws Throwable;
     
+    /**
+     * Performs the action and ignores errors.
+     *
+     * @see #perform()
+     */
+    default void performQuietly() {
+        try {
+            perform();
+        } catch (Throwable ignored) {
+        }
+    }
+    
+    /**
+     * Performs the action and throws a runtime exception in the event of an error.
+     *
+     * @throws RuntimeException When there is an error.
+     * @see #perform()
+     */
+    default void performOrFail() {
+        try {
+            perform();
+        } catch (Throwable e) {
+            throw new RuntimeException(e);
+        }
+    }
+    
     
     //Static Methods
     
@@ -40,13 +66,21 @@ public interface Action {
      * Invokes an Action and ignores errors.
      *
      * @param action The Action.
-     * @see #perform()
+     * @see #performQuietly()
      */
     static void invokeQuietly(Action action) {
-        try {
-            action.perform();
-        } catch (Throwable ignored) {
-        }
+        action.performQuietly();
+    }
+    
+    /**
+     * Invokes an Action and throws a runtime exception in the event of an error.
+     *
+     * @param action The Action.
+     * @throws RuntimeException When there is an error.
+     * @see #performOrFail()
+     */
+    static void invokeOrFail(Action action) {
+        action.performOrFail();
     }
     
 }
