@@ -108,7 +108,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains the specified value associated with a different key.
      * @see HashMap#put(Object, Object)
      */
-    public synchronized V put(K key, V value, boolean force) throws IllegalArgumentException {
+    public synchronized V put(K key, V value, boolean force) {
         if (containsKey(key) && Objects.equals(get(key), value)) {
             return value;
         }
@@ -136,7 +136,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @see #put(Object, Object, boolean)
      */
     @Override
-    public synchronized V put(K key, V value) throws IllegalArgumentException {
+    public synchronized V put(K key, V value) {
         return put(key, value, false);
     }
     
@@ -150,7 +150,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains the specified key corresponding to a different value.
      * @see HashMap#put(Object, Object)
      */
-    public synchronized K inversePut(V value, K key, boolean force) throws IllegalArgumentException {
+    public synchronized K inversePut(V value, K key, boolean force) {
         if (containsValue(value) && Objects.equals(inverseGet(value), key)) {
             return key;
         }
@@ -177,7 +177,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When the map already contains the specified key corresponding to a different value.
      * @see #inversePut(Object, Object, boolean)
      */
-    public synchronized K inversePut(V value, K key) throws IllegalArgumentException {
+    public synchronized K inversePut(V value, K key) {
         return inversePut(value, key, false);
     }
     
@@ -191,7 +191,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains the specified value associated with a different key.
      * @see #put(Object, Object, boolean)
      */
-    public synchronized V putIfAbsent(K key, V value, boolean force) throws IllegalArgumentException {
+    public synchronized V putIfAbsent(K key, V value, boolean force) {
         return containsKey(key) ? get(key) :
                put(key, value, force);
     }
@@ -220,7 +220,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains the specified key corresponding to a different value.
      * @see #inversePut(Object, Object, boolean)
      */
-    public synchronized K inversePutIfAbsent(V value, K key, boolean force) throws IllegalArgumentException {
+    public synchronized K inversePutIfAbsent(V value, K key, boolean force) {
         return containsValue(value) ? inverseGet(value) :
                inversePut(value, key, force);
     }
@@ -247,7 +247,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains a value associated with a different key.
      * @see #put(Object, Object, boolean)
      */
-    public synchronized void putAll(Map<? extends K, ? extends V> entries, boolean force) throws IllegalArgumentException {
+    public synchronized void putAll(Map<? extends K, ? extends V> entries, boolean force) {
         entries.forEach((key, value) ->
                 put(key, value, force));
     }
@@ -261,7 +261,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @see #putAll(Map, boolean)
      */
     @Override
-    public synchronized void putAll(Map<? extends K, ? extends V> entries) throws IllegalArgumentException {
+    public synchronized void putAll(Map<? extends K, ? extends V> entries) {
         putAll(entries, false);
     }
     
@@ -274,7 +274,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains a key corresponding to a different value.
      * @see #inversePut(Object, Object, boolean)
      */
-    public synchronized void inversePutAll(Map<? extends V, ? extends K> inverseEntries, boolean force) throws IllegalArgumentException {
+    public synchronized void inversePutAll(Map<? extends V, ? extends K> inverseEntries, boolean force) {
         inverseEntries.forEach((value, key) ->
                 inversePut(value, key, force));
     }
@@ -287,7 +287,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When the map already contains a key corresponding to a different value.
      * @see #inversePutAll(Map, boolean)
      */
-    public synchronized void inversePutAll(Map<? extends V, ? extends K> inverseEntries) throws IllegalArgumentException {
+    public synchronized void inversePutAll(Map<? extends V, ? extends K> inverseEntries) {
         inversePutAll(inverseEntries, false);
     }
     
@@ -301,7 +301,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains the specified value associated with a different key.
      * @see #put(Object, Object, boolean)
      */
-    public synchronized V replace(K key, V value, boolean force) throws IllegalArgumentException {
+    public synchronized V replace(K key, V value, boolean force) {
         return put(key, value, force);
     }
     
@@ -315,7 +315,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @see #replace(Object, Object, boolean)
      */
     @Override
-    public synchronized V replace(K key, V value) throws IllegalArgumentException {
+    public synchronized V replace(K key, V value) {
         return replace(key, value, false);
     }
     
@@ -330,7 +330,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains the specified new value associated with a different key.
      * @see #replace(Object, Object, boolean)
      */
-    public synchronized boolean replace(K key, V oldValue, V newValue, boolean force) throws IllegalArgumentException {
+    public synchronized boolean replace(K key, V oldValue, V newValue, boolean force) {
         return Objects.equals(get(key), oldValue) &&
                 Objects.equals(oldValue, replace(key, newValue, force));
     }
@@ -346,7 +346,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @see #replace(Object, Object, Object, boolean)
      */
     @Override
-    public synchronized boolean replace(K key, V oldValue, V newValue) throws IllegalArgumentException {
+    public synchronized boolean replace(K key, V oldValue, V newValue) {
         return replace(key, oldValue, newValue, false);
     }
     
@@ -360,7 +360,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains the specified key corresponding to a different value.
      * @see #inversePut(Object, Object, boolean)
      */
-    public synchronized K inverseReplace(V value, K key, boolean force) throws IllegalArgumentException {
+    public synchronized K inverseReplace(V value, K key, boolean force) {
         return inversePut(value, key, force);
     }
     
@@ -373,7 +373,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When the map already contains the specified key corresponding to a different value.
      * @see #inverseReplace(Object, Object, boolean)
      */
-    public synchronized K inverseReplace(V value, K key) throws IllegalArgumentException {
+    public synchronized K inverseReplace(V value, K key) {
         return inverseReplace(value, key, false);
     }
     
@@ -388,7 +388,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains the specified new key corresponding to a different value.
      * @see #inverseReplace(Object, Object, boolean)
      */
-    public synchronized boolean inverseReplace(V value, K oldKey, K newKey, boolean force) throws IllegalArgumentException {
+    public synchronized boolean inverseReplace(V value, K oldKey, K newKey, boolean force) {
         return Objects.equals(inverseGet(value), oldKey) &&
                 Objects.equals(oldKey, inverseReplace(value, newKey, force));
     }
@@ -403,7 +403,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When the map already contains the specified new key corresponding to a different value.
      * @see #inverseReplace(Object, Object, Object, boolean)
      */
-    public synchronized boolean inverseReplace(V value, K oldKey, K newKey) throws IllegalArgumentException {
+    public synchronized boolean inverseReplace(V value, K oldKey, K newKey) {
         return inverseReplace(value, oldKey, newKey, false);
     }
     
@@ -416,7 +416,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains a computed new value associated with a different key.
      * @see #replace(Object, Object, boolean)
      */
-    public synchronized void replaceAll(BiFunction<? super K, ? super V, ? extends V> function, boolean force) throws IllegalArgumentException {
+    public synchronized void replaceAll(BiFunction<? super K, ? super V, ? extends V> function, boolean force) {
         immutableEntrySet().forEach(entry ->
                 replace(entry.getKey(), function.apply(entry.getKey(), entry.getValue()), force));
     }
@@ -430,7 +430,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @see #replaceAll(BiFunction, boolean)
      */
     @Override
-    public synchronized void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) throws IllegalArgumentException {
+    public synchronized void replaceAll(BiFunction<? super K, ? super V, ? extends V> function) {
         replaceAll(function, false);
     }
     
@@ -443,7 +443,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains a computed new key corresponding to a different value.
      * @see #inverseReplace(Object, Object, boolean)
      */
-    public synchronized void inverseReplaceAll(BiFunction<? super V, ? super K, ? extends K> function, boolean force) throws IllegalArgumentException {
+    public synchronized void inverseReplaceAll(BiFunction<? super V, ? super K, ? extends K> function, boolean force) {
         immutableEntrySet().forEach(entry ->
                 inverseReplace(entry.getValue(), function.apply(entry.getValue(), entry.getKey()), force));
     }
@@ -456,7 +456,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When the map already contains a computed new key corresponding to a different value.
      * @see #inverseReplaceAll(BiFunction, boolean)
      */
-    public synchronized void inverseReplaceAll(BiFunction<? super V, ? super K, ? extends K> function) throws IllegalArgumentException {
+    public synchronized void inverseReplaceAll(BiFunction<? super V, ? super K, ? extends K> function) {
         inverseReplaceAll(function, false);
     }
     
@@ -547,7 +547,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @see #replace(Object, Object, boolean)
      * @see #remove(Object)
      */
-    public synchronized V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction, boolean force) throws IllegalArgumentException {
+    public synchronized V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction, boolean force) {
         final V value = remappingFunction.apply(key, get(key));
         return (value == null) ? remove(key) :
                containsKey(key) ? replace(key, value, force) :
@@ -564,7 +564,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @see #compute(Object, BiFunction, boolean)
      */
     @Override
-    public synchronized V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) throws IllegalArgumentException {
+    public synchronized V compute(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         return compute(key, remappingFunction, false);
     }
     
@@ -580,7 +580,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @see #inverseReplace(Object, Object, boolean)
      * @see #inverseRemove(Object)
      */
-    public synchronized K inverseCompute(V value, BiFunction<? super V, ? super K, ? extends K> remappingFunction, boolean force) throws IllegalArgumentException {
+    public synchronized K inverseCompute(V value, BiFunction<? super V, ? super K, ? extends K> remappingFunction, boolean force) {
         final K key = remappingFunction.apply(value, inverseGet(value));
         return (key == null) ? inverseRemove(value) :
                containsValue(value) ? inverseReplace(value, key, force) :
@@ -596,7 +596,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When the map already contains the computed key corresponding to a different value.
      * @see #inverseCompute(Object, BiFunction, boolean)
      */
-    public synchronized K inverseCompute(V value, BiFunction<? super V, ? super K, ? extends K> remappingFunction) throws IllegalArgumentException {
+    public synchronized K inverseCompute(V value, BiFunction<? super V, ? super K, ? extends K> remappingFunction) {
         return inverseCompute(value, remappingFunction, false);
     }
     
@@ -610,7 +610,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains the computed value associated with a different key.
      * @see #compute(Object, BiFunction, boolean)
      */
-    public synchronized V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction, boolean force) throws IllegalArgumentException {
+    public synchronized V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction, boolean force) {
         return containsKey(key) ? get(key) :
                compute(key, (k, v) -> mappingFunction.apply(k), force);
     }
@@ -624,7 +624,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When the map already contains the computed value associated with a different key.
      * @see #computeIfAbsent(Object, Function, boolean)
      */
-    public synchronized V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) throws IllegalArgumentException {
+    public synchronized V computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction) {
         return computeIfAbsent(key, mappingFunction, false);
     }
     
@@ -638,7 +638,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains the computed key corresponding to a different value.
      * @see #inverseCompute(Object, BiFunction, boolean)
      */
-    public synchronized K inverseComputeIfAbsent(V value, Function<? super V, ? extends K> mappingFunction, boolean force) throws IllegalArgumentException {
+    public synchronized K inverseComputeIfAbsent(V value, Function<? super V, ? extends K> mappingFunction, boolean force) {
         return containsValue(value) ? inverseGet(value) :
                inverseCompute(value, (v, k) -> mappingFunction.apply(v), force);
     }
@@ -652,7 +652,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When the map already contains the computed key corresponding to a different value.
      * @see #inverseComputeIfAbsent(Object, Function, boolean)
      */
-    public synchronized K inverseComputeIfAbsent(V value, Function<? super V, ? extends K> mappingFunction) throws IllegalArgumentException {
+    public synchronized K inverseComputeIfAbsent(V value, Function<? super V, ? extends K> mappingFunction) {
         return inverseComputeIfAbsent(value, mappingFunction, false);
     }
     
@@ -666,7 +666,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains the computed value associated with a different key.
      * @see #compute(Object, BiFunction)
      */
-    public synchronized V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction, boolean force) throws IllegalArgumentException {
+    public synchronized V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction, boolean force) {
         return !containsKey(key) ? null :
                compute(key, remappingFunction, force);
     }
@@ -681,7 +681,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @see #computeIfPresent(Object, BiFunction, boolean)
      */
     @Override
-    public synchronized V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) throws IllegalArgumentException {
+    public synchronized V computeIfPresent(K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         return computeIfPresent(key, remappingFunction, false);
     }
     
@@ -695,7 +695,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains the computed key corresponding to a different value.
      * @see #inverseCompute(Object, BiFunction, boolean)
      */
-    public synchronized K inverseComputeIfPresent(V value, BiFunction<? super V, ? super K, ? extends K> remappingFunction, boolean force) throws IllegalArgumentException {
+    public synchronized K inverseComputeIfPresent(V value, BiFunction<? super V, ? super K, ? extends K> remappingFunction, boolean force) {
         return !containsValue(value) ? null :
                inverseCompute(value, remappingFunction, force);
     }
@@ -709,7 +709,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When the map already contains the computed key corresponding to a different value.
      * @see #inverseComputeIfPresent(Object, BiFunction, boolean)
      */
-    public synchronized K inverseComputeIfPresent(V value, BiFunction<? super V, ? super K, ? extends K> remappingFunction) throws IllegalArgumentException {
+    public synchronized K inverseComputeIfPresent(V value, BiFunction<? super V, ? super K, ? extends K> remappingFunction) {
         return inverseComputeIfPresent(value, remappingFunction, false);
     }
     
@@ -724,7 +724,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains the merged value associated with a different key.
      * @see #compute(Object, BiFunction, boolean)
      */
-    public synchronized V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction, boolean force) throws IllegalArgumentException {
+    public synchronized V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction, boolean force) {
         return compute(key, (k, v) -> (containsKey(k) ? remappingFunction.apply(v, value) : value), force);
     }
     
@@ -739,7 +739,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @see #merge(Object, Object, BiFunction, boolean)
      */
     @Override
-    public synchronized V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) throws IllegalArgumentException {
+    public synchronized V merge(K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
         return merge(key, value, remappingFunction, false);
     }
     
@@ -754,7 +754,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When performing a non-force operation and the map already contains the merged key corresponding with a different value.
      * @see #inverseCompute(Object, BiFunction, boolean)
      */
-    public synchronized K inverseMerge(V value, K key, BiFunction<? super K, ? super K, ? extends K> remappingFunction, boolean force) throws IllegalArgumentException {
+    public synchronized K inverseMerge(V value, K key, BiFunction<? super K, ? super K, ? extends K> remappingFunction, boolean force) {
         return inverseCompute(value, (v, k) -> (containsValue(v) ? remappingFunction.apply(k, key) : key), force);
     }
     
@@ -768,7 +768,7 @@ public class BiMap<K, V> extends StrictHashMap<K, V> {
      * @throws IllegalArgumentException When the map already contains the merged key corresponding with a different value.
      * @see #inverseMerge(Object, Object, BiFunction, boolean)
      */
-    public synchronized K inverseMerge(V value, K key, BiFunction<? super K, ? super K, ? extends K> remappingFunction) throws IllegalArgumentException {
+    public synchronized K inverseMerge(V value, K key, BiFunction<? super K, ? super K, ? extends K> remappingFunction) {
         return inverseMerge(value, key, remappingFunction, false);
     }
     

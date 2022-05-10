@@ -94,7 +94,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @return The key at the specified index.
      * @throws IndexOutOfBoundsException When the map does not contain a key at the specified index.
      */
-    public synchronized K getKey(int index) throws IndexOutOfBoundsException {
+    public synchronized K getKey(int index) {
         if (!BoundUtility.inListBounds(index, keyList)) {
             throw new IndexOutOfBoundsException(StringUtility.format("Index {} out of bounds for length {}", index, size()));
         }
@@ -109,7 +109,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @throws IndexOutOfBoundsException When the map does not contain a value at the specified index.
      * @see HashMap#get(Object)
      */
-    public synchronized V get(int index) throws IndexOutOfBoundsException {
+    public synchronized V get(int index) {
         return super.get(getKey(index));
     }
     
@@ -122,7 +122,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @throws IndexOutOfBoundsException When the map does not contain an entry at the specified index.
      * @see #getEntry(Object)
      */
-    public synchronized Map.Entry<K, V> getEntry(int index) throws IndexOutOfBoundsException {
+    public synchronized Map.Entry<K, V> getEntry(int index) {
         return getEntry(getKey(index));
     }
     
@@ -190,7 +190,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @throws IndexOutOfBoundsException When attempting to insert a new entry and the entry can not be inserted at the specified index.
      * @see HashMap#put(Object, Object)
      */
-    public synchronized V put(int index, K key, V value) throws IndexOutOfBoundsException {
+    public synchronized V put(int index, K key, V value) {
         if (!containsKey(key)) {
             keyList.add(index, key);
         }
@@ -220,7 +220,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @throws IndexOutOfBoundsException When the entry can not be inserted at the specified index.
      * @see #put(int, Object, Object)
      */
-    public synchronized V putIfAbsent(int index, K key, V value) throws IndexOutOfBoundsException {
+    public synchronized V putIfAbsent(int index, K key, V value) {
         return containsKey(key) ? get(key) :
                put(index, key, value);
     }
@@ -247,7 +247,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @throws IndexOutOfBoundsException When the entries can not be inserted at the specified index.
      * @see #put(int, Object, Object)
      */
-    public synchronized void putAll(int index, Map<? extends K, ? extends V> entries) throws IndexOutOfBoundsException {
+    public synchronized void putAll(int index, Map<? extends K, ? extends V> entries) {
         final AtomicInteger indexCounter = new AtomicInteger(index);
         entries.forEach((key, value) ->
                 put((containsKey(key) ? indexCounter.get() : indexCounter.getAndIncrement()), key, value));
@@ -273,7 +273,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @throws IndexOutOfBoundsException When the map does not contain an entry at the specified index.
      * @see HashMap#replace(Object, Object)
      */
-    public synchronized V replace(int index, V value) throws IndexOutOfBoundsException {
+    public synchronized V replace(int index, V value) {
         return super.replace(getKey(index), value);
     }
     
@@ -287,7 +287,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @throws IndexOutOfBoundsException When the map does not contain an entry at the specified index.
      * @see #replace(int, Object)
      */
-    public synchronized boolean replace(int index, V oldValue, V newValue) throws IndexOutOfBoundsException {
+    public synchronized boolean replace(int index, V oldValue, V newValue) {
         return Objects.equals(get(index), oldValue) &&
                 Objects.equals(oldValue, replace(index, newValue));
     }
@@ -300,7 +300,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @throws IndexOutOfBoundsException When the map does not contain an entry at the specified index.
      * @see #remove(Object)
      */
-    public synchronized V remove(int index) throws IndexOutOfBoundsException {
+    public synchronized V remove(int index) {
         return remove(getKey(index));
     }
     
@@ -313,7 +313,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @throws IndexOutOfBoundsException When the map does not contain an entry at the specified index.
      * @see #remove(Object, Object)
      */
-    public synchronized boolean remove(int index, V value) throws IndexOutOfBoundsException {
+    public synchronized boolean remove(int index, V value) {
         return remove(getKey(index), value);
     }
     
@@ -398,7 +398,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @see #replace(int, Object)
      * @see #remove(Object)
      */
-    public synchronized V compute(int index, K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) throws IndexOutOfBoundsException {
+    public synchronized V compute(int index, K key, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         final V value = remappingFunction.apply(key, get(key));
         return (value == null) ? remove(key) :
                containsKey(key) ? replace(key, value) :
@@ -414,7 +414,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @throws IndexOutOfBoundsException When the map does not contain an entry at the specified index.
      * @see #compute(int, Object, BiFunction)
      */
-    public synchronized V compute(int index, BiFunction<? super K, ? super V, ? extends V> remappingFunction) throws IndexOutOfBoundsException {
+    public synchronized V compute(int index, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         return compute(index, getKey(index), remappingFunction);
     }
     
@@ -441,7 +441,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @throws IndexOutOfBoundsException When attempting to insert a new entry and the entry can not be inserted at the specified index.
      * @see #compute(int, Object, BiFunction)
      */
-    public synchronized V computeIfAbsent(int index, K key, Function<? super K, ? extends V> mappingFunction) throws IndexOutOfBoundsException {
+    public synchronized V computeIfAbsent(int index, K key, Function<? super K, ? extends V> mappingFunction) {
         return containsKey(key) ? get(key) :
                compute(index, key, (k, v) -> mappingFunction.apply(k));
     }
@@ -468,7 +468,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @throws IndexOutOfBoundsException When the map does not contain an entry at the specified index.
      * @see #computeIfPresent(Object, BiFunction)
      */
-    public synchronized V computeIfPresent(int index, BiFunction<? super K, ? super V, ? extends V> remappingFunction) throws IndexOutOfBoundsException {
+    public synchronized V computeIfPresent(int index, BiFunction<? super K, ? super V, ? extends V> remappingFunction) {
         return computeIfPresent(getKey(index), remappingFunction);
     }
     
@@ -497,7 +497,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @throws IndexOutOfBoundsException When attempting to insert a new entry and the entry can not be inserted at the specified index.
      * @see #compute(int, Object, BiFunction)
      */
-    public synchronized V merge(int index, K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) throws IndexOutOfBoundsException {
+    public synchronized V merge(int index, K key, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
         return compute(index, key, (k, v) -> (containsKey(k) ? remappingFunction.apply(v, value) : value));
     }
     
@@ -511,7 +511,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
      * @throws IndexOutOfBoundsException When the map does not contain an entry at the specified index.
      * @see #merge(int, Object, Object, BiFunction)
      */
-    public synchronized V merge(int index, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) throws IndexOutOfBoundsException {
+    public synchronized V merge(int index, V value, BiFunction<? super V, ? super V, ? extends V> remappingFunction) {
         return merge(index, getKey(index), value, remappingFunction);
     }
     
