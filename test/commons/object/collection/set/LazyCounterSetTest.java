@@ -16,10 +16,14 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Spliterator;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntBinaryOperator;
+import java.util.function.IntFunction;
 import java.util.function.IntUnaryOperator;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -91,6 +95,15 @@ public class LazyCounterSetTest {
     //Functions
     
     /**
+     * Initializes the content of system under test.
+     */
+    private final Runnable sutInitializer = () -> {
+        counters = ListUtility.shuffle(ListUtility.merge(elementSets[2], elementSets[0])).stream()
+                .collect(MapCollectors.mapEachTo(MathUtility::randomInt));
+        sut = new LazyCounterSet<>(counters);
+    };
+    
+    /**
      * Validates the content of the system under test.
      */
     private final Runnable sutValidator = () -> {
@@ -99,6 +112,22 @@ public class LazyCounterSetTest {
         Assert.assertTrue(sut.stream().map(sut::get).allMatch(Objects::nonNull));
         Assert.assertTrue(sut.stream().allMatch(e -> Objects.equals(counters.get(e), sut.get(e))));
     };
+    
+    /**
+     * Performs a test on the system under test.
+     */
+    private final Consumer<Runnable> sutTestRunner = (Runnable test) -> {
+        sutInitializer.run();
+        test.run();
+        sutValidator.run();
+    };
+    
+    /**
+     * Performs a test on the system under test for a list of test elements.
+     */
+    private final BiConsumer<List<String>, Consumer<String>> sutTester = (List<String> testElements, Consumer<String> test) ->
+            sutTestRunner.accept(() ->
+                    ListUtility.selectN(testElements, Math.min(testElements.size(), 10)).forEach(test));
     
     /**
      * Generates a comparable counter map from a LazyCounterSet.
@@ -133,11 +162,11 @@ public class LazyCounterSetTest {
      * The JUnit setup operations.
      *
      * @throws Exception When there is an exception.
+     * @see #sutInitializer
      */
     @Before
     public void setup() throws Exception {
-        counters = elementSets[2].stream().collect(MapCollectors.mapEachTo(MathUtility::randomInt));
-        sut = new LazyCounterSet<>(counters);
+        sutInitializer.run();
     }
     
     /**
@@ -262,6 +291,56 @@ public class LazyCounterSetTest {
     }
     
     /**
+     * JUnit test of contains.
+     *
+     * @throws Exception When there is an exception.
+     * @see LazyCounterSet#contains(Object)
+     */
+    @Test
+    public void testContains() throws Exception {
+        //standard
+        sutTester.accept(elementSets[2], element ->
+                Assert.assertTrue(
+                        sut.contains(element)));
+        
+        //absent
+        sutTester.accept(elementSets[3], element ->
+                Assert.assertFalse(
+                        sut.contains(element)));
+        
+        //invalid
+        Assert.assertFalse(sut.contains(null));
+    }
+    
+    /**
+     * JUnit test of containsAll.
+     *
+     * @throws Exception When there is an exception.
+     * @see LazyCounterSet#containsAll(Collection)
+     */
+    @Test
+    public void testContainsAll() throws Exception {
+        //standard
+        sutTestRunner.accept(() ->
+                Assert.assertTrue(
+                        sut.containsAll(elementSets[2])));
+        
+        //absent
+        sutTestRunner.accept(() ->
+                Assert.assertFalse(
+                        sut.containsAll(elementSets[3])));
+        
+        //mixed
+        sutTestRunner.accept(() ->
+                Assert.assertFalse(
+                        sut.containsAll(ListUtility.merge(elementSets[2], elementSets[1]))));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.containsAll(null));
+    }
+    
+    /**
      * JUnit test of add.
      *
      * @throws Exception When there is an exception.
@@ -270,25 +349,16 @@ public class LazyCounterSetTest {
     @Test
     public void testAdd() throws Exception {
         //standard
-        elementSets[0].forEach(element -> {
+        sutTester.accept(elementSets[1], element -> {
             Assert.assertTrue(
                     sut.add(element));
-            Assert.assertTrue(sut.contains(element));
-            Assert.assertEquals(0, sut.get(element).intValue());
             counters.put(element, 0);
         });
-        sutValidator.run();
         
         //present
-        elementSets[2].forEach(element -> {
-            sut.set(element, 1);
-            counters.replace(element, 1);
-            Assert.assertFalse(
-                    sut.add(element));
-            Assert.assertTrue(sut.contains(element));
-            Assert.assertEquals(1, sut.get(element).intValue());
-        });
-        sutValidator.run();
+        sutTester.accept(elementSets[2], element ->
+                Assert.assertFalse(
+                        sut.add(element)));
         
         //invalid
         Assert.assertTrue(sut.add(null));
@@ -304,45 +374,25 @@ public class LazyCounterSetTest {
     @Test
     public void testAddAll() throws Exception {
         //standard
-        Assert.assertTrue(
-                sut.addAll(elementSets[0]));
-        elementSets[0].forEach(element -> {
-            Assert.assertTrue(sut.contains(element));
-            Assert.assertEquals(0, sut.get(element).intValue());
-            counters.put(element, 0);
+        sutTestRunner.accept(() -> {
+            Assert.assertTrue(
+                    sut.addAll(elementSets[1]));
+            elementSets[1].forEach(element ->
+                    counters.put(element, 0));
         });
-        sutValidator.run();
-        
-        //partial
-        elementSets[2].forEach(element -> {
-            sut.set(element, 1);
-            counters.replace(element, 1);
-        });
-        Assert.assertTrue(
-                sut.addAll(ListUtility.merge(elementSets[2], elementSets[1])));
-        elementSets[2].forEach(element -> {
-            Assert.assertTrue(sut.contains(element));
-            Assert.assertEquals(1, sut.get(element).intValue());
-        });
-        elementSets[1].forEach(element -> {
-            Assert.assertTrue(sut.contains(element));
-            Assert.assertEquals(0, sut.get(element).intValue());
-            counters.putIfAbsent(element, 0);
-        });
-        sutValidator.run();
         
         //present
-        elementSets[2].forEach(element -> {
-            sut.set(element, 1);
-            counters.replace(element, 1);
+        sutTestRunner.accept(() ->
+                Assert.assertFalse(
+                        sut.addAll(elementSets[2])));
+        
+        //partial
+        sutTestRunner.accept(() -> {
+            Assert.assertTrue(
+                    sut.addAll(ListUtility.merge(elementSets[2], elementSets[1])));
+            elementSets[1].forEach(element ->
+                    counters.putIfAbsent(element, 0));
         });
-        Assert.assertFalse(
-                sut.addAll(elementSets[2]));
-        elementSets[2].forEach(element -> {
-            Assert.assertTrue(sut.contains(element));
-            Assert.assertEquals(1, sut.get(element).intValue());
-        });
-        sutValidator.run();
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -358,23 +408,16 @@ public class LazyCounterSetTest {
     @Test
     public void testRemove() throws Exception {
         //standard
-        ListUtility.selectN(elementSets[2], 3).forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertTrue(
                     sut.remove(element));
-            Assert.assertFalse(sut.contains(element));
-            Assert.assertNull(sut.get(element));
             counters.remove(element);
         });
-        sutValidator.run();
         
         //absent
-        ListUtility.selectN(elementSets[0], 3).forEach(element -> {
-            Assert.assertFalse(
-                    sut.remove(element));
-            Assert.assertFalse(sut.contains(element));
-            Assert.assertNull(sut.get(element));
-        });
-        sutValidator.run();
+        sutTester.accept(elementSets[3], element ->
+                Assert.assertFalse(
+                        sut.remove(element)));
         
         //invalid
         Assert.assertTrue(sut.add(null));
@@ -390,47 +433,33 @@ public class LazyCounterSetTest {
     @SuppressWarnings("SlowAbstractSetRemoveAll")
     @Test
     public void testRemoveAll() throws Exception {
-        List<String> remove;
-        
         //standard
-        remove = ListUtility.selectN(ListUtility.toList(counters.keySet()), 3);
-        Assert.assertTrue(
-                sut.removeAll(remove));
-        remove.forEach(element -> {
-            Assert.assertFalse(sut.contains(element));
-            Assert.assertNull(sut.get(element));
-            counters.remove(element);
+        sutTestRunner.accept(() -> {
+            Assert.assertTrue(
+                    sut.removeAll(elementSets[0]));
+            elementSets[0].forEach(element ->
+                    counters.remove(element));
         });
-        sutValidator.run();
-        
-        //partial
-        remove = ListUtility.selectN(ListUtility.toList(counters.keySet()), 3);
-        Assert.assertTrue(
-                sut.removeAll(ListUtility.merge(elementSets[1], remove)));
-        remove.forEach(element -> {
-            Assert.assertFalse(sut.contains(element));
-            Assert.assertNull(sut.get(element));
-            counters.remove(element);
-        });
-        sutValidator.run();
         
         //absent
-        remove = elementSets[0];
-        Assert.assertFalse(
-                sut.removeAll(remove));
-        remove.forEach(element -> {
-            Assert.assertFalse(sut.contains(element));
-            Assert.assertNull(sut.get(element));
+        sutTestRunner.accept(() ->
+                Assert.assertFalse(
+                        sut.removeAll(elementSets[3])));
+        
+        //partial
+        sutTestRunner.accept(() -> {
+            Assert.assertTrue(
+                    sut.removeAll(ListUtility.merge(elementSets[3], elementSets[0])));
+            elementSets[0].forEach(element ->
+                    counters.remove(element));
         });
-        sutValidator.run();
         
         //all
-        remove = ListUtility.toList(counters.keySet());
-        Assert.assertTrue(
-                sut.removeAll(remove));
-        Assert.assertTrue(sut.isEmpty());
-        counters.clear();
-        sutValidator.run();
+        sutTestRunner.accept(() -> {
+            Assert.assertTrue(
+                    sut.removeAll(counters.keySet()));
+            counters.clear();
+        });
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -446,26 +475,24 @@ public class LazyCounterSetTest {
     @Test
     public void testRemoveIf() throws Exception {
         //standard
-        Assert.assertTrue(
-                sut.removeIf(e -> (e.charAt(0) > 'N')));
-        elementSets[2].stream().filter(e -> (e.charAt(0) > 'N')).forEach(element -> {
-            Assert.assertFalse(sut.contains(element));
-            Assert.assertNull(sut.get(element));
-            counters.remove(element);
+        sutTestRunner.accept(() -> {
+            Assert.assertTrue(
+                    sut.removeIf(e -> (elementSets[2].contains(e) && (e.charAt(0) > 'N'))));
+            elementSets[2].stream().filter(e -> (e.charAt(0) > 'N')).forEach(element ->
+                    counters.remove(element));
         });
-        sutValidator.run();
         
         //none
-        Assert.assertFalse(
-                sut.removeIf(e -> false));
-        sutValidator.run();
+        sutTestRunner.accept(() ->
+                Assert.assertFalse(
+                        sut.removeIf(e -> false)));
         
         //all
-        Assert.assertTrue(
-                sut.removeIf(e -> true));
-        Assert.assertTrue(sut.isEmpty());
-        counters.clear();
-        sutValidator.run();
+        sutTestRunner.accept(() -> {
+            Assert.assertTrue(
+                    sut.removeIf(e -> true));
+            counters.clear();
+        });
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -480,43 +507,33 @@ public class LazyCounterSetTest {
      */
     @Test
     public void testRetainAll() throws Exception {
-        List<String> retain;
-        
         //standard
-        retain = ListUtility.selectN(ListUtility.toList(counters.keySet()), 18);
-        Assert.assertTrue(
-                sut.retainAll(retain));
-        ListUtility.removeAllAndGet(ListUtility.toList(counters.keySet()), retain).forEach(element -> {
-            Assert.assertFalse(sut.contains(element));
-            Assert.assertNull(sut.get(element));
-            counters.remove(element);
+        sutTestRunner.accept(() -> {
+            Assert.assertTrue(
+                    sut.retainAll(elementSets[2]));
+            elementSets[0].forEach(element ->
+                    counters.remove(element));
         });
-        sutValidator.run();
-        
-        //all
-        retain = ListUtility.toList(counters.keySet());
-        Assert.assertFalse(
-                sut.retainAll(retain));
-        sutValidator.run();
-        
-        //partial
-        retain = ListUtility.selectN(ListUtility.toList(counters.keySet()), 15);
-        Assert.assertTrue(
-                sut.retainAll(ListUtility.merge(elementSets[1], retain)));
-        ListUtility.removeAllAndGet(ListUtility.toList(counters.keySet()), retain).forEach(element -> {
-            Assert.assertFalse(sut.contains(element));
-            Assert.assertNull(sut.get(element));
-            counters.remove(element);
-        });
-        sutValidator.run();
         
         //absent
-        retain = elementSets[0];
-        Assert.assertTrue(
-                sut.retainAll(retain));
-        Assert.assertTrue(sut.isEmpty());
-        counters.clear();
-        sutValidator.run();
+        sutTestRunner.accept(() -> {
+            Assert.assertTrue(
+                    sut.retainAll(elementSets[1]));
+            counters.clear();
+        });
+        
+        //partial
+        sutTestRunner.accept(() -> {
+            Assert.assertTrue(
+                    sut.retainAll(ListUtility.merge(elementSets[3], elementSets[0])));
+            elementSets[2].forEach(element ->
+                    counters.remove(element));
+        });
+        
+        //all
+        sutTestRunner.accept(() ->
+                Assert.assertFalse(
+                        sut.retainAll(counters.keySet())));
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
@@ -532,10 +549,10 @@ public class LazyCounterSetTest {
     @Test
     public void testClear() throws Exception {
         //standard
-        sut.clear();
-        Assert.assertTrue(sut.isEmpty());
-        counters.clear();
-        sutValidator.run();
+        sutTestRunner.accept(() -> {
+            sut.clear();
+            counters.clear();
+        });
     }
     
     /**
@@ -547,10 +564,11 @@ public class LazyCounterSetTest {
     @Test
     public void testResetAll() throws Exception {
         //standard
-        sut.resetAll();
-        Assert.assertFalse(sut.isEmpty());
-        counters.keySet().forEach(element -> counters.replace(element, 0));
-        sutValidator.run();
+        sutTestRunner.accept(() -> {
+            sut.resetAll();
+            counters.keySet().forEach(element ->
+                    counters.replace(element, 0));
+        });
     }
     
     /**
@@ -562,14 +580,12 @@ public class LazyCounterSetTest {
     @Test
     public void testGet() throws Exception {
         //standard
-        elementSets[2].forEach(element ->
+        sutTester.accept(elementSets[2], element ->
                 Assert.assertEquals(counters.get(element), sut.get(element)));
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element ->
+        sutTester.accept(elementSets[3], element ->
                 Assert.assertNull(sut.get(element)));
-        sutValidator.run();
         
         //invalid
         Assert.assertNull(sut.get(null));
@@ -584,22 +600,20 @@ public class LazyCounterSetTest {
     @Test
     public void testGetAndSet() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             Assert.assertEquals(counters.get(element), sut.getAndSet(element, -1));
             Assert.assertEquals(-1, sut.get(element).intValue());
             counters.replace(element, -1);
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             Assert.assertNull(sut.getAndSet(element, -1));
             Assert.assertEquals(-1, sut.get(element).intValue());
             counters.put(element, -1);
         });
-        sutValidator.run();
         
         //invalid
         Assert.assertNull(sut.getAndSet(null, 0));
@@ -615,22 +629,20 @@ public class LazyCounterSetTest {
     @Test
     public void testSet() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             sut.set(element, -1);
             Assert.assertEquals(-1, sut.get(element).intValue());
             counters.replace(element, -1);
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             sut.set(element, -1);
             Assert.assertEquals(-1, sut.get(element).intValue());
             counters.put(element, -1);
         });
-        sutValidator.run();
         
         //invalid
         sut.set(null, 0);
@@ -646,22 +658,20 @@ public class LazyCounterSetTest {
     @Test
     public void testGetAndReset() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             Assert.assertEquals(counters.get(element), sut.getAndReset(element));
             Assert.assertEquals(0, sut.get(element).intValue());
             counters.replace(element, 0);
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             Assert.assertNull(sut.getAndReset(element));
             Assert.assertEquals(0, sut.get(element).intValue());
             counters.put(element, 0);
         });
-        sutValidator.run();
         
         //invalid
         Assert.assertNull(sut.getAndReset(null));
@@ -677,22 +687,20 @@ public class LazyCounterSetTest {
     @Test
     public void testReset() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             sut.reset(element);
             Assert.assertEquals(0, sut.get(element).intValue());
             counters.replace(element, 0);
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             sut.reset(element);
             Assert.assertEquals(0, sut.get(element).intValue());
             counters.put(element, 0);
         });
-        sutValidator.run();
         
         //invalid
         sut.reset(null);
@@ -708,22 +716,20 @@ public class LazyCounterSetTest {
     @Test
     public void testGetAndStep() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             Assert.assertEquals(counters.get(element), sut.getAndStep(element, 10));
             Assert.assertEquals((counters.get(element) + 10), sut.get(element).intValue());
             counters.replace(element, (counters.get(element) + 10));
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             Assert.assertNull(sut.getAndStep(element, -6));
             Assert.assertEquals(-6, sut.get(element).intValue());
             counters.put(element, -6);
         });
-        sutValidator.run();
         
         //invalid
         Assert.assertNull(sut.getAndStep(null, 0));
@@ -739,22 +745,20 @@ public class LazyCounterSetTest {
     @Test
     public void testStepAndGet() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             Assert.assertEquals((counters.get(element) + 10), sut.stepAndGet(element, 10).intValue());
             Assert.assertEquals((counters.get(element) + 10), sut.get(element).intValue());
             counters.replace(element, (counters.get(element) + 10));
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             Assert.assertEquals(-6, sut.stepAndGet(element, -6).intValue());
             Assert.assertEquals(-6, sut.get(element).intValue());
             counters.put(element, -6);
         });
-        sutValidator.run();
         
         //invalid
         Assert.assertEquals(0, sut.stepAndGet(null, 0).intValue());
@@ -770,22 +774,20 @@ public class LazyCounterSetTest {
     @Test
     public void testStep() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             sut.step(element, 10);
             Assert.assertEquals((counters.get(element) + 10), sut.get(element).intValue());
             counters.replace(element, (counters.get(element) + 10));
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             sut.step(element, -6);
             Assert.assertEquals(-6, sut.get(element).intValue());
             counters.put(element, -6);
         });
-        sutValidator.run();
         
         //invalid
         sut.step(null, 0);
@@ -801,22 +803,20 @@ public class LazyCounterSetTest {
     @Test
     public void testGetAndIncrement() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             Assert.assertEquals(counters.get(element), sut.getAndIncrement(element));
             Assert.assertEquals((counters.get(element) + 1), sut.get(element).intValue());
             counters.replace(element, (counters.get(element) + 1));
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             Assert.assertNull(sut.getAndIncrement(element));
             Assert.assertEquals(1, sut.get(element).intValue());
             counters.put(element, 1);
         });
-        sutValidator.run();
         
         //invalid
         Assert.assertNull(sut.getAndIncrement(null));
@@ -832,22 +832,20 @@ public class LazyCounterSetTest {
     @Test
     public void testIncrementAndGet() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             Assert.assertEquals((counters.get(element) + 1), sut.incrementAndGet(element).intValue());
             Assert.assertEquals((counters.get(element) + 1), sut.get(element).intValue());
             counters.replace(element, (counters.get(element) + 1));
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             Assert.assertEquals(1, sut.incrementAndGet(element).intValue());
             Assert.assertEquals(1, sut.get(element).intValue());
             counters.put(element, 1);
         });
-        sutValidator.run();
         
         //invalid
         Assert.assertEquals(1, sut.incrementAndGet(null).intValue());
@@ -863,22 +861,20 @@ public class LazyCounterSetTest {
     @Test
     public void testIncrement() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             sut.increment(element);
             Assert.assertEquals((counters.get(element) + 1), sut.get(element).intValue());
             counters.replace(element, (counters.get(element) + 1));
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             sut.increment(element);
             Assert.assertEquals(1, sut.get(element).intValue());
             counters.put(element, 1);
         });
-        sutValidator.run();
         
         //invalid
         sut.increment(null);
@@ -894,22 +890,20 @@ public class LazyCounterSetTest {
     @Test
     public void testGetAndDecrement() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             Assert.assertEquals(counters.get(element), sut.getAndDecrement(element));
             Assert.assertEquals((counters.get(element) - 1), sut.get(element).intValue());
             counters.replace(element, (counters.get(element) - 1));
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             Assert.assertNull(sut.getAndDecrement(element));
             Assert.assertEquals(-1, sut.get(element).intValue());
             counters.put(element, -1);
         });
-        sutValidator.run();
         
         //invalid
         Assert.assertNull(sut.getAndDecrement(null));
@@ -925,22 +919,20 @@ public class LazyCounterSetTest {
     @Test
     public void testDecrementAndGet() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             Assert.assertEquals((counters.get(element) - 1), sut.decrementAndGet(element).intValue());
             Assert.assertEquals((counters.get(element) - 1), sut.get(element).intValue());
             counters.replace(element, (counters.get(element) - 1));
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             Assert.assertEquals(-1, sut.decrementAndGet(element).intValue());
             Assert.assertEquals(-1, sut.get(element).intValue());
             counters.put(element, -1);
         });
-        sutValidator.run();
         
         //invalid
         Assert.assertEquals(-1, sut.decrementAndGet(null).intValue());
@@ -956,22 +948,20 @@ public class LazyCounterSetTest {
     @Test
     public void testDecrement() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             sut.decrement(element);
             Assert.assertEquals((counters.get(element) - 1), sut.get(element).intValue());
             counters.replace(element, (counters.get(element) - 1));
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             sut.decrement(element);
             Assert.assertEquals(-1, sut.get(element).intValue());
             counters.put(element, -1);
         });
-        sutValidator.run();
         
         //invalid
         sut.decrement(null);
@@ -987,22 +977,20 @@ public class LazyCounterSetTest {
     @Test
     public void testGetAndUpdate() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             Assert.assertEquals(counters.get(element), sut.getAndUpdate(element, (i -> -i)));
             Assert.assertEquals(-counters.get(element), sut.get(element).intValue());
             counters.replace(element, -counters.get(element));
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             Assert.assertNull(sut.getAndUpdate(element, (i -> ((i + 2) * 2))));
             Assert.assertEquals(4, sut.get(element).intValue());
             counters.put(element, 4);
         });
-        sutValidator.run();
         
         //invalid
         Assert.assertNull(sut.getAndUpdate(null, (i -> 0)));
@@ -1022,22 +1010,20 @@ public class LazyCounterSetTest {
     @Test
     public void testUpdateAndGet() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             Assert.assertEquals(-counters.get(element), sut.updateAndGet(element, (i -> -i)).intValue());
             Assert.assertEquals(-counters.get(element), sut.get(element).intValue());
             counters.replace(element, -counters.get(element));
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             Assert.assertEquals(4, sut.updateAndGet(element, (i -> ((i + 2) * 2))).intValue());
             Assert.assertEquals(4, sut.get(element).intValue());
             counters.put(element, 4);
         });
-        sutValidator.run();
         
         //invalid
         Assert.assertEquals(0, sut.updateAndGet(null, (i -> 0)).intValue());
@@ -1057,22 +1043,20 @@ public class LazyCounterSetTest {
     @Test
     public void testUpdate() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             sut.update(element, (i -> -i));
             Assert.assertEquals(-counters.get(element), sut.get(element).intValue());
             counters.replace(element, -counters.get(element));
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             sut.update(element, (i -> ((i + 2) * 2)));
             Assert.assertEquals(4, sut.get(element).intValue());
             counters.put(element, 4);
         });
-        sutValidator.run();
         
         //invalid
         sut.update(null, (i -> 0));
@@ -1092,22 +1076,20 @@ public class LazyCounterSetTest {
     @Test
     public void testGetAndAccumulate() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             Assert.assertEquals(counters.get(element), sut.getAndAccumulate(element, elementSets[2].indexOf(element), ((i, x) -> (-i + x))));
             Assert.assertEquals((-counters.get(element) + elementSets[2].indexOf(element)), sut.get(element).intValue());
             counters.replace(element, (-counters.get(element) + elementSets[2].indexOf(element)));
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             Assert.assertNull(sut.getAndAccumulate(element, elementSets[3].indexOf(element), ((i, x) -> ((i + 2) * x))));
             Assert.assertEquals((elementSets[3].indexOf(element) * 2), sut.get(element).intValue());
             counters.put(element, (elementSets[3].indexOf(element) * 2));
         });
-        sutValidator.run();
         
         //invalid
         Assert.assertNull(sut.getAndAccumulate(null, 0, ((i, x) -> 0)));
@@ -1127,22 +1109,20 @@ public class LazyCounterSetTest {
     @Test
     public void testAccumulateAndGet() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             Assert.assertEquals((-counters.get(element) + elementSets[2].indexOf(element)), sut.accumulateAndGet(element, elementSets[2].indexOf(element), ((i, x) -> (-i + x))).intValue());
             Assert.assertEquals((-counters.get(element) + elementSets[2].indexOf(element)), sut.get(element).intValue());
             counters.replace(element, (-counters.get(element) + elementSets[2].indexOf(element)));
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             Assert.assertEquals((elementSets[3].indexOf(element) * 2), sut.accumulateAndGet(element, elementSets[3].indexOf(element), ((i, x) -> ((i + 2) * x))).intValue());
             Assert.assertEquals((elementSets[3].indexOf(element) * 2), sut.get(element).intValue());
             counters.put(element, (elementSets[3].indexOf(element) * 2));
         });
-        sutValidator.run();
         
         //invalid
         Assert.assertEquals(0, sut.accumulateAndGet(null, 0, ((i, x) -> 0)).intValue());
@@ -1162,22 +1142,20 @@ public class LazyCounterSetTest {
     @Test
     public void testAccumulate() throws Exception {
         //standard
-        elementSets[2].forEach(element -> {
+        sutTester.accept(elementSets[2], element -> {
             Assert.assertEquals(counters.get(element), sut.get(element));
             sut.accumulate(element, elementSets[2].indexOf(element), ((i, x) -> (-i + x)));
             Assert.assertEquals((-counters.get(element) + elementSets[2].indexOf(element)), sut.get(element).intValue());
             counters.replace(element, (-counters.get(element) + elementSets[2].indexOf(element)));
         });
-        sutValidator.run();
         
         //absent
-        elementSets[3].forEach(element -> {
+        sutTester.accept(elementSets[3], element -> {
             Assert.assertNull(sut.get(element));
             sut.accumulate(element, elementSets[3].indexOf(element), ((i, x) -> ((i + 2) * x)));
             Assert.assertEquals((elementSets[3].indexOf(element) * 2), sut.get(element).intValue());
             counters.put(element, (elementSets[3].indexOf(element) * 2));
         });
-        sutValidator.run();
         
         //invalid
         sut.accumulate(null, 0, ((i, x) -> 0));
@@ -1206,22 +1184,25 @@ public class LazyCounterSetTest {
         };
         
         //standard
-        sut.forEach(element -> sut.set(element, 1));
-        counters.keySet().forEach(element -> counters.replace(element, 1));
-        getAndModifyInvoker.accept(new Object[] {0, 1, 1}, AtomicInteger::get);
-        getAndModifyInvoker.accept(new Object[] {1, 1, 5}, (counter -> counter.getAndSet(5)));
-        getAndModifyInvoker.accept(new Object[] {2, 1, 0}, (counter -> counter.getAndSet(0)));
-        getAndModifyInvoker.accept(new Object[] {3, 1, 8}, (counter -> counter.getAndAdd(7)));
-        getAndModifyInvoker.accept(new Object[] {4, 1, 8}, (counter -> counter.addAndGet(7)));
-        getAndModifyInvoker.accept(new Object[] {5, 1, 2}, AtomicInteger::getAndIncrement);
-        getAndModifyInvoker.accept(new Object[] {6, 1, 2}, AtomicInteger::incrementAndGet);
-        getAndModifyInvoker.accept(new Object[] {7, 1, 0}, AtomicInteger::getAndDecrement);
-        getAndModifyInvoker.accept(new Object[] {8, 1, 0}, AtomicInteger::decrementAndGet);
-        getAndModifyInvoker.accept(new Object[] {9, 1, -1}, (counter -> counter.getAndUpdate(i -> -i)));
-        getAndModifyInvoker.accept(new Object[] {10, 1, -1}, (counter -> counter.updateAndGet(i -> -i)));
-        getAndModifyInvoker.accept(new Object[] {11, 1, -3}, (counter -> counter.getAndAccumulate(3, ((i, x) -> (-i * x)))));
-        getAndModifyInvoker.accept(new Object[] {12, 1, -3}, (counter -> counter.accumulateAndGet(3, ((i, x) -> (-i * x)))));
-        sutValidator.run();
+        sutTestRunner.accept(() -> {
+            counters.keySet().forEach(element -> {
+                sut.set(element, 1);
+                counters.replace(element, 1);
+            });
+            getAndModifyInvoker.accept(new Object[] {0, 1, 1}, AtomicInteger::get);
+            getAndModifyInvoker.accept(new Object[] {1, 1, 5}, (counter -> counter.getAndSet(5)));
+            getAndModifyInvoker.accept(new Object[] {2, 1, 0}, (counter -> counter.getAndSet(0)));
+            getAndModifyInvoker.accept(new Object[] {3, 1, 8}, (counter -> counter.getAndAdd(7)));
+            getAndModifyInvoker.accept(new Object[] {4, 1, 8}, (counter -> counter.addAndGet(7)));
+            getAndModifyInvoker.accept(new Object[] {5, 1, 2}, AtomicInteger::getAndIncrement);
+            getAndModifyInvoker.accept(new Object[] {6, 1, 2}, AtomicInteger::incrementAndGet);
+            getAndModifyInvoker.accept(new Object[] {7, 1, 0}, AtomicInteger::getAndDecrement);
+            getAndModifyInvoker.accept(new Object[] {8, 1, 0}, AtomicInteger::decrementAndGet);
+            getAndModifyInvoker.accept(new Object[] {9, 1, -1}, (counter -> counter.getAndUpdate(i -> -i)));
+            getAndModifyInvoker.accept(new Object[] {10, 1, -1}, (counter -> counter.updateAndGet(i -> -i)));
+            getAndModifyInvoker.accept(new Object[] {11, 1, -3}, (counter -> counter.getAndAccumulate(3, ((i, x) -> (-i * x)))));
+            getAndModifyInvoker.accept(new Object[] {12, 1, -3}, (counter -> counter.accumulateAndGet(3, ((i, x) -> (-i * x)))));
+        });
         
         //invalid
         Assert.assertNull(sut.getAndModify(null, AtomicInteger::get));
@@ -1252,22 +1233,25 @@ public class LazyCounterSetTest {
         };
         
         //standard
-        sut.forEach(element -> sut.set(element, 1));
-        counters.keySet().forEach(element -> counters.replace(element, 1));
-        modifyAndGetInvoker.accept(new Object[] {0, 1, 1}, AtomicInteger::get);
-        modifyAndGetInvoker.accept(new Object[] {1, 1, 5}, (counter -> counter.getAndSet(5)));
-        modifyAndGetInvoker.accept(new Object[] {2, 1, 0}, (counter -> counter.getAndSet(0)));
-        modifyAndGetInvoker.accept(new Object[] {3, 1, 8}, (counter -> counter.getAndAdd(7)));
-        modifyAndGetInvoker.accept(new Object[] {4, 8, 8}, (counter -> counter.addAndGet(7)));
-        modifyAndGetInvoker.accept(new Object[] {5, 1, 2}, AtomicInteger::getAndIncrement);
-        modifyAndGetInvoker.accept(new Object[] {6, 2, 2}, AtomicInteger::incrementAndGet);
-        modifyAndGetInvoker.accept(new Object[] {7, 1, 0}, AtomicInteger::getAndDecrement);
-        modifyAndGetInvoker.accept(new Object[] {8, 0, 0}, AtomicInteger::decrementAndGet);
-        modifyAndGetInvoker.accept(new Object[] {9, 1, -1}, (counter -> counter.getAndUpdate(i -> -i)));
-        modifyAndGetInvoker.accept(new Object[] {10, -1, -1}, (counter -> counter.updateAndGet(i -> -i)));
-        modifyAndGetInvoker.accept(new Object[] {11, 1, -3}, (counter -> counter.getAndAccumulate(3, ((i, x) -> (-i * x)))));
-        modifyAndGetInvoker.accept(new Object[] {12, -3, -3}, (counter -> counter.accumulateAndGet(3, ((i, x) -> (-i * x)))));
-        sutValidator.run();
+        sutTestRunner.accept(() -> {
+            counters.keySet().forEach(element -> {
+                sut.set(element, 1);
+                counters.replace(element, 1);
+            });
+            modifyAndGetInvoker.accept(new Object[] {0, 1, 1}, AtomicInteger::get);
+            modifyAndGetInvoker.accept(new Object[] {1, 1, 5}, (counter -> counter.getAndSet(5)));
+            modifyAndGetInvoker.accept(new Object[] {2, 1, 0}, (counter -> counter.getAndSet(0)));
+            modifyAndGetInvoker.accept(new Object[] {3, 1, 8}, (counter -> counter.getAndAdd(7)));
+            modifyAndGetInvoker.accept(new Object[] {4, 8, 8}, (counter -> counter.addAndGet(7)));
+            modifyAndGetInvoker.accept(new Object[] {5, 1, 2}, AtomicInteger::getAndIncrement);
+            modifyAndGetInvoker.accept(new Object[] {6, 2, 2}, AtomicInteger::incrementAndGet);
+            modifyAndGetInvoker.accept(new Object[] {7, 1, 0}, AtomicInteger::getAndDecrement);
+            modifyAndGetInvoker.accept(new Object[] {8, 0, 0}, AtomicInteger::decrementAndGet);
+            modifyAndGetInvoker.accept(new Object[] {9, 1, -1}, (counter -> counter.getAndUpdate(i -> -i)));
+            modifyAndGetInvoker.accept(new Object[] {10, -1, -1}, (counter -> counter.updateAndGet(i -> -i)));
+            modifyAndGetInvoker.accept(new Object[] {11, 1, -3}, (counter -> counter.getAndAccumulate(3, ((i, x) -> (-i * x)))));
+            modifyAndGetInvoker.accept(new Object[] {12, -3, -3}, (counter -> counter.accumulateAndGet(3, ((i, x) -> (-i * x)))));
+        });
         
         //invalid
         Assert.assertEquals(0, sut.modifyAndGet(null, AtomicInteger::get).intValue());
@@ -1297,22 +1281,25 @@ public class LazyCounterSetTest {
         };
         
         //standard
-        sut.forEach(element -> sut.set(element, 1));
-        counters.keySet().forEach(element -> counters.replace(element, 1));
-        modifyInvoker.accept(new Object[] {0, 1}, AtomicInteger::get);
-        modifyInvoker.accept(new Object[] {1, 5}, (counter -> counter.getAndSet(5)));
-        modifyInvoker.accept(new Object[] {2, 0}, (counter -> counter.getAndSet(0)));
-        modifyInvoker.accept(new Object[] {3, 8}, (counter -> counter.getAndAdd(7)));
-        modifyInvoker.accept(new Object[] {4, 8}, (counter -> counter.addAndGet(7)));
-        modifyInvoker.accept(new Object[] {5, 2}, AtomicInteger::getAndIncrement);
-        modifyInvoker.accept(new Object[] {6, 2}, AtomicInteger::incrementAndGet);
-        modifyInvoker.accept(new Object[] {7, 0}, AtomicInteger::getAndDecrement);
-        modifyInvoker.accept(new Object[] {8, 0}, AtomicInteger::decrementAndGet);
-        modifyInvoker.accept(new Object[] {9, -1}, (counter -> counter.getAndUpdate(i -> -i)));
-        modifyInvoker.accept(new Object[] {10, -1}, (counter -> counter.updateAndGet(i -> -i)));
-        modifyInvoker.accept(new Object[] {11, -3}, (counter -> counter.getAndAccumulate(3, ((i, x) -> (-i * x)))));
-        modifyInvoker.accept(new Object[] {12, -3}, (counter -> counter.accumulateAndGet(3, ((i, x) -> (-i * x)))));
-        sutValidator.run();
+        sutTestRunner.accept(() -> {
+            counters.keySet().forEach(element -> {
+                sut.set(element, 1);
+                counters.replace(element, 1);
+            });
+            modifyInvoker.accept(new Object[] {0, 1}, AtomicInteger::get);
+            modifyInvoker.accept(new Object[] {1, 5}, (counter -> counter.getAndSet(5)));
+            modifyInvoker.accept(new Object[] {2, 0}, (counter -> counter.getAndSet(0)));
+            modifyInvoker.accept(new Object[] {3, 8}, (counter -> counter.getAndAdd(7)));
+            modifyInvoker.accept(new Object[] {4, 8}, (counter -> counter.addAndGet(7)));
+            modifyInvoker.accept(new Object[] {5, 2}, AtomicInteger::getAndIncrement);
+            modifyInvoker.accept(new Object[] {6, 2}, AtomicInteger::incrementAndGet);
+            modifyInvoker.accept(new Object[] {7, 0}, AtomicInteger::getAndDecrement);
+            modifyInvoker.accept(new Object[] {8, 0}, AtomicInteger::decrementAndGet);
+            modifyInvoker.accept(new Object[] {9, -1}, (counter -> counter.getAndUpdate(i -> -i)));
+            modifyInvoker.accept(new Object[] {10, -1}, (counter -> counter.updateAndGet(i -> -i)));
+            modifyInvoker.accept(new Object[] {11, -3}, (counter -> counter.getAndAccumulate(3, ((i, x) -> (-i * x)))));
+            modifyInvoker.accept(new Object[] {12, -3}, (counter -> counter.accumulateAndGet(3, ((i, x) -> (-i * x)))));
+        });
         
         //invalid
         sut.modify(null, AtomicInteger::get);
@@ -1323,6 +1310,39 @@ public class LazyCounterSetTest {
         TestUtils.assertException(NullPointerException.class, () ->
                 sut.modify(null, null));
         counters.put(null, 0);
+    }
+    
+    /**
+     * JUnit test of size.
+     *
+     * @throws Exception When there is an exception.
+     * @see LazyCounterSet#size()
+     */
+    @Test
+    public void testSize() throws Exception {
+        //standard
+        Assert.assertEquals(counters.size(), sut.size());
+        
+        //empty
+        sut.clear();
+        Assert.assertEquals(0, sut.size());
+        counters.clear();
+    }
+    
+    /**
+     * JUnit test of isEmpty.
+     *
+     * @throws Exception When there is an exception.
+     * @see LazyCounterSet#isEmpty()
+     */
+    @Test
+    public void testIsEmpty() throws Exception {
+        Assert.assertFalse(sut.isEmpty());
+        
+        //empty
+        sut.clear();
+        Assert.assertTrue(sut.isEmpty());
+        counters.clear();
     }
     
     /**
@@ -1393,6 +1413,69 @@ public class LazyCounterSetTest {
     }
     
     /**
+     * JUnit test of toArray.
+     *
+     * @throws Exception When there is an exception.
+     * @see LazyCounterSet#toArray(IntFunction)
+     * @see LazyCounterSet#toArray(Object[])
+     * @see LazyCounterSet#toArray()
+     */
+    @Test
+    public void testToArray() throws Exception {
+        Object[] array;
+        
+        //standard
+        array = sut.toArray();
+        Assert.assertNotNull(array);
+        TestUtils.assertArrayEquals(array, counters.keySet(), false);
+        
+        //array
+        array = sut.toArray(ArrayUtility.create(String.class));
+        Assert.assertNotNull(array);
+        TestUtils.assertArrayEquals(array, counters.keySet(), false);
+        
+        //generator
+        array = sut.toArray(String[]::new);
+        Assert.assertNotNull(array);
+        TestUtils.assertArrayEquals(array, counters.keySet(), false);
+        
+        //empty
+        array = new LazyCounterSet<String>().toArray();
+        Assert.assertNotNull(array);
+        Assert.assertEquals(0, array.length);
+    }
+    
+    /**
+     * JUnit test of forEach.
+     *
+     * @throws Exception When there is an exception.
+     * @see LazyCounterSet#forEach(Consumer)
+     */
+    @Test
+    public void testForEach() throws Exception {
+        //standard
+        sutTestRunner.accept(() -> {
+            sut.forEach(element ->
+                    sut.update(element, (i -> -i)));
+            counters.forEach((element, counter) ->
+                    counters.replace(element, -counter));
+        });
+        
+        //modification
+        sutTestRunner.accept(() ->
+                TestUtils.assertNoException(() ->
+                        sut.forEach(element -> {
+                            sut.remove(element);
+                            sut.add(element);
+                            sut.set(element, counters.get(element));
+                        })));
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                sut.forEach(null));
+    }
+    
+    /**
      * JUnit test of iterator.
      *
      * @throws Exception When there is an exception.
@@ -1400,26 +1483,118 @@ public class LazyCounterSetTest {
      */
     @Test
     public void testIterator() throws Exception {
-        Iterator<String> iterator;
+        final AtomicReference<Iterator<String>> iterator = new AtomicReference<>(null);
+        
+        final Runnable iteratorInitializer = () -> {
+            iterator.set(sut.iterator());
+            Assert.assertNotNull(iterator.get());
+        };
         
         //standard
-        iterator = sut.iterator();
-        TestUtils.assertException(IllegalStateException.class, iterator::remove);
-        while (iterator.hasNext()) {
-            final String element = iterator.next();
-            Assert.assertTrue(sut.contains(element));
-            iterator.remove();
-            counters.remove(element);
-            sutValidator.run();
-        }
-        Assert.assertFalse(iterator.hasNext());
-        TestUtils.assertException(NoSuchElementException.class, iterator::next);
-        TestUtils.assertException(IllegalStateException.class, iterator::remove);
-        Assert.assertTrue(sut.isEmpty());
-        sutValidator.run();
+        sutTestRunner.accept(() -> {
+            iteratorInitializer.run();
+            IntStream.range(0, sut.size()).forEach(i -> {
+                Assert.assertTrue(iterator.get().hasNext());
+                Assert.assertTrue(counters.containsKey(iterator.get().next()));
+            });
+            Assert.assertFalse(iterator.get().hasNext());
+            TestUtils.assertException(NoSuchElementException.class, () ->
+                    iterator.get().next());
+        });
+        
+        //for each
+        sutTestRunner.accept(() -> {
+            iteratorInitializer.run();
+            iterator.get().forEachRemaining(element ->
+                    Assert.assertTrue(counters.containsKey(element)));
+            Assert.assertFalse(iterator.get().hasNext());
+            TestUtils.assertException(NoSuchElementException.class, () ->
+                    iterator.get().next());
+        });
+        
+        //remove
+        sutTestRunner.accept(() -> {
+            iteratorInitializer.run();
+            TestUtils.assertException(IllegalStateException.class, () ->
+                    iterator.get().remove());
+            IntStream.range(0, sut.size()).forEach(i -> {
+                final String element = iterator.get().next();
+                iterator.get().remove();
+                counters.remove(element);
+            });
+            TestUtils.assertException(IllegalStateException.class, () ->
+                    iterator.get().remove());
+            Assert.assertTrue(sut.isEmpty());
+        });
         
         //equality
         Assert.assertNotSame(sut.iterator(), sut.iterator());
+    }
+    
+    /**
+     * JUnit test of spliterator.
+     *
+     * @throws Exception When there is an exception.
+     * @see LazyCounterSet#spliterator()
+     */
+    @Test
+    public void testSpliterator() throws Exception {
+        final AtomicReference<Spliterator<String>> spliterator1 = new AtomicReference<>(null);
+        final AtomicReference<Spliterator<String>> spliterator2 = new AtomicReference<>(null);
+        
+        final Runnable spliteratorInitializer = () -> {
+            spliterator1.set(sut.spliterator());
+            Assert.assertNotNull(spliterator1.get());
+            spliterator2.set(spliterator1.get().trySplit());
+            Assert.assertNotNull(spliterator2.get());
+        };
+        
+        //standard
+        sutTestRunner.accept(() -> {
+            spliteratorInitializer.run();
+            IntStream.range(0, sut.size()).forEach(i ->
+                    Assert.assertTrue(
+                            Stream.of(spliterator1, spliterator2).map(AtomicReference::get).anyMatch(spliterator ->
+                                    spliterator.tryAdvance(element ->
+                                            Assert.assertTrue(counters.containsKey(element))))));
+            Assert.assertFalse(spliterator1.get().tryAdvance(Objects::nonNull));
+            Assert.assertFalse(spliterator2.get().tryAdvance(Objects::nonNull));
+        });
+        
+        //for each
+        sutTestRunner.accept(() -> {
+            spliteratorInitializer.run();
+            Stream.of(spliterator1, spliterator2).map(AtomicReference::get).forEach(spliterator -> {
+                spliterator.forEachRemaining(element ->
+                        Assert.assertTrue(counters.containsKey(element)));
+                Assert.assertFalse(spliterator.tryAdvance(Objects::nonNull));
+            });
+        });
+        
+        //equality
+        Assert.assertNotSame(sut.spliterator(), sut.spliterator());
+    }
+    
+    /**
+     * JUnit test of stream.
+     *
+     * @throws Exception When there is an exception.
+     * @see LazyCounterSet#stream()
+     */
+    @Test
+    public void testStream() throws Exception {
+        final AtomicReference<Stream<String>> stream = new AtomicReference<>(null);
+        
+        //standard
+        sutTestRunner.accept(() -> {
+            stream.set(sut.stream());
+            TestUtils.assertListEquals(
+                    stream.get().collect(Collectors.toList()),
+                    counters.keySet(), false);
+        });
+        
+        //equality
+        Assert.assertNotSame(sut.stream(), sut.stream());
     }
     
 }
