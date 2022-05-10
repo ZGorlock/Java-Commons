@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.NoSuchElementException;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 
 import commons.math.BoundUtility;
 import commons.object.collection.ListUtility;
@@ -38,22 +38,22 @@ public class CustomIterator<T> implements Iterator<T> {
     /**
      * The elements of the iteration.
      */
-    private final List<T> iteration;
+    protected final List<T> iteration;
     
     /**
      * The current index of the iteration.
      */
-    private int current = -1;
+    protected int index = -1;
     
     /**
-     * A flag indicating whether or not the current element of the iteration can be removed.
+     * A flag indicating whether or not the current element of the iteration can be modified.
      */
-    private boolean canRemove = false;
+    protected boolean canModify = false;
     
     /**
      * The function that performs removals, or null if removals are not permitted.
      */
-    private final Consumer<T> remover;
+    protected final BiConsumer<Integer, T> remover;
     
     
     //Constructors
@@ -64,7 +64,7 @@ public class CustomIterator<T> implements Iterator<T> {
      * @param iteration The elements of the iteration.
      * @param remover   The function that performs removals, or null if removals are not permitted.
      */
-    public CustomIterator(Collection<T> iteration, Consumer<T> remover) {
+    public CustomIterator(Collection<T> iteration, BiConsumer<Integer, T> remover) {
         this.iteration = ListUtility.toList(iteration);
         this.remover = remover;
     }
@@ -73,7 +73,7 @@ public class CustomIterator<T> implements Iterator<T> {
      * The constructor for a Custom Iterator.
      *
      * @param iteration The elements of the iteration.
-     * @see #CustomIterator(Collection, Consumer)
+     * @see #CustomIterator(Collection, BiConsumer)
      */
     public CustomIterator(Collection<T> iteration) {
         this(iteration, null);
@@ -90,7 +90,7 @@ public class CustomIterator<T> implements Iterator<T> {
      */
     @Override
     public boolean hasNext() {
-        return BoundUtility.inListBounds((current + 1), iteration);
+        return BoundUtility.inListBounds((index + 1), iteration);
     }
     
     /**
@@ -104,22 +104,27 @@ public class CustomIterator<T> implements Iterator<T> {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
-        canRemove = true;
-        return iteration.get(++current);
+        canModify = true;
+        return iteration.get(++index);
     }
     
     /**
      * Removes the current element of the iteration.
      *
-     * @throws IllegalStateException When attempting to remove an element that has already been removed, or when the the current element has not yet been retrieved, or if a function to perform removals is not defined.
+     * @throws IllegalStateException         When the current element that has already been modified, or when a current element has not yet been retrieved.
+     * @throws UnsupportedOperationException If a function to perform removals was not defined.
      */
     @Override
     public void remove() {
-        if (!canRemove || (remover == null)) {
+        if (remover == null) {
+            throw new UnsupportedOperationException();
+        }
+        if (!canModify) {
             throw new IllegalStateException();
         }
-        remover.accept(iteration.get(current));
-        canRemove = false;
+        remover.accept(index, iteration.get(index));
+        iteration.remove(index--);
+        canModify = false;
     }
     
 }

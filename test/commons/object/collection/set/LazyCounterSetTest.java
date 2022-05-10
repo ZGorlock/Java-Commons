@@ -1485,36 +1485,30 @@ public class LazyCounterSetTest {
     public void testIterator() throws Exception {
         final AtomicReference<Iterator<String>> iterator = new AtomicReference<>(null);
         
-        final Runnable iteratorInitializer = () -> {
-            iterator.set(sut.iterator());
-            Assert.assertNotNull(iterator.get());
-        };
+        final Consumer<Runnable> iteratorTestRunner = (Runnable test) ->
+                sutTestRunner.accept(() -> {
+                    iterator.set(sut.iterator());
+                    Assert.assertNotNull(iterator.get());
+                    test.run();
+                    Assert.assertFalse(iterator.get().hasNext());
+                    TestUtils.assertException(NoSuchElementException.class, () ->
+                            iterator.get().next());
+                });
         
         //standard
-        sutTestRunner.accept(() -> {
-            iteratorInitializer.run();
-            IntStream.range(0, sut.size()).forEach(i -> {
-                Assert.assertTrue(iterator.get().hasNext());
-                Assert.assertTrue(counters.containsKey(iterator.get().next()));
-            });
-            Assert.assertFalse(iterator.get().hasNext());
-            TestUtils.assertException(NoSuchElementException.class, () ->
-                    iterator.get().next());
-        });
+        iteratorTestRunner.accept(() ->
+                IntStream.range(0, sut.size()).forEach(i -> {
+                    Assert.assertTrue(iterator.get().hasNext());
+                    Assert.assertTrue(counters.containsKey(iterator.get().next()));
+                }));
         
         //for each
-        sutTestRunner.accept(() -> {
-            iteratorInitializer.run();
-            iterator.get().forEachRemaining(element ->
-                    Assert.assertTrue(counters.containsKey(element)));
-            Assert.assertFalse(iterator.get().hasNext());
-            TestUtils.assertException(NoSuchElementException.class, () ->
-                    iterator.get().next());
-        });
+        iteratorTestRunner.accept(() ->
+                iterator.get().forEachRemaining(element ->
+                        Assert.assertTrue(counters.containsKey(element))));
         
         //remove
-        sutTestRunner.accept(() -> {
-            iteratorInitializer.run();
+        iteratorTestRunner.accept(() -> {
             TestUtils.assertException(IllegalStateException.class, () ->
                     iterator.get().remove());
             IntStream.range(0, sut.size()).forEach(i -> {
@@ -1524,7 +1518,6 @@ public class LazyCounterSetTest {
             });
             TestUtils.assertException(IllegalStateException.class, () ->
                     iterator.get().remove());
-            Assert.assertTrue(sut.isEmpty());
         });
         
         //equality

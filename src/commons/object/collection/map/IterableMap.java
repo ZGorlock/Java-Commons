@@ -577,7 +577,7 @@ public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<M
                 exposedEntrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> indexOf(entry.getKey())))
                         .collect(ListCollectors.toArrayList()),
-                entry -> remove(entry.getKey()));
+                (index, entry) -> remove(entry.getKey()));
     }
     
 }

@@ -1594,60 +1594,50 @@ public class IterableMapTest {
     public void testIterator() throws Exception {
         final AtomicReference<Iterator<Map.Entry<String, Integer>>> iterator = new AtomicReference<>(null);
         
-        final Runnable iteratorInitializer = () -> {
-            iterator.set(sut.iterator());
-            Assert.assertNotNull(iterator.get());
-        };
-        final Consumer<Map.Entry<String, Integer>> iteratorEntryValidator = (Map.Entry<String, Integer> entry) -> {
-            Assert.assertTrue(keys.contains(entry.getKey()));
-            Assert.assertTrue(values.contains(entry.getValue()));
-            Assert.assertEquals(values.get(keys.indexOf(entry.getKey())), entry.getValue());
-        };
+        final Consumer<Runnable> iteratorTestRunner = (Runnable test) ->
+                sutTestRunner.accept(() -> {
+                    iterator.set(sut.iterator());
+                    Assert.assertNotNull(iterator.get());
+                    test.run();
+                    Assert.assertFalse(iterator.get().hasNext());
+                    TestUtils.assertException(NoSuchElementException.class, () ->
+                            iterator.get().next());
+                });
         
         //standard
-        sutTestRunner.accept(() -> {
-            iteratorInitializer.run();
-            IntStream.range(0, sut.size()).forEach(i -> {
-                Assert.assertTrue(iterator.get().hasNext());
-                Assert.assertEquals(Map.entry(keys.get(i), values.get(i)), iterator.get().next());
-            });
-            Assert.assertFalse(iterator.get().hasNext());
-            TestUtils.assertException(NoSuchElementException.class, () ->
-                    iterator.get().next());
-        });
+        iteratorTestRunner.accept(() ->
+                IntStream.range(0, sut.size()).forEach(i -> {
+                    Assert.assertTrue(iterator.get().hasNext());
+                    Assert.assertEquals(Map.entry(keys.get(i), values.get(i)), iterator.get().next());
+                }));
         
         //for each
-        sutTestRunner.accept(() -> {
-            iteratorInitializer.run();
-            iterator.get().forEachRemaining(iteratorEntryValidator);
-            Assert.assertFalse(iterator.get().hasNext());
-            TestUtils.assertException(NoSuchElementException.class, () ->
-                    iterator.get().next());
-        });
+        iteratorTestRunner.accept(() ->
+                iterator.get().forEachRemaining(entry -> {
+                    Assert.assertTrue(keys.contains(entry.getKey()));
+                    Assert.assertTrue(values.contains(entry.getValue()));
+                    Assert.assertEquals(values.get(keys.indexOf(entry.getKey())), entry.getValue());
+                }));
         
         //edit
-        sutTestRunner.accept(() -> {
-            iteratorInitializer.run();
-            IntStream.range(0, sut.size()).forEach(i -> {
-                Assert.assertEquals(values.get(i), iterator.get().next().setValue(-1));
-                values.set(i, -1);
-            });
-        });
+        iteratorTestRunner.accept(() ->
+                IntStream.range(0, sut.size()).forEach(i -> {
+                    Assert.assertEquals(values.get(i), iterator.get().next().setValue(-1));
+                    values.set(i, -1);
+                }));
         
         //remove
-        sutTestRunner.accept(() -> {
-            iteratorInitializer.run();
+        iteratorTestRunner.accept(() -> {
             TestUtils.assertException(IllegalStateException.class, () ->
                     iterator.get().remove());
             IntStream.range(0, sut.size()).forEach(i -> {
-                iterator.get().next();
+                final Map.Entry<String, Integer> entry = iterator.get().next();
                 iterator.get().remove();
-                keys.remove(0);
-                values.remove(0);
+                keys.remove(entry.getKey());
+                values.remove(entry.getValue());
             });
             TestUtils.assertException(IllegalStateException.class, () ->
                     iterator.get().remove());
-            Assert.assertTrue(sut.isEmpty());
         });
         
         //equality

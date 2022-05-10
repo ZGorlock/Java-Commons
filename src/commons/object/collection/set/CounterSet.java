@@ -470,7 +470,8 @@ public class CounterSet<T> extends HashSet<T> {
      */
     @Override
     public Iterator<T> iterator() {
-        return new CustomIterator<>(counters.keySet(), this::remove);
+        return new CustomIterator<>(counters.keySet(),
+                (index, element) -> remove(element));
     }
     
 }

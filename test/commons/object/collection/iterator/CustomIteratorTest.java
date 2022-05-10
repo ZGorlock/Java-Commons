@@ -10,9 +10,13 @@ package commons.object.collection.iterator;
 import java.util.Collection;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import commons.object.collection.ListUtility;
 import commons.test.TestAccess;
@@ -61,6 +65,27 @@ public class CustomIteratorTest {
      * The system under test.
      */
     private CustomIterator<Integer> sut;
+    
+    
+    //Functions
+    
+    /**
+     * Verifies that the index of the system under test is equal to the expected value.
+     */
+    private final Consumer<Integer> sutIndexAsserter = (Integer expected) ->
+            Assert.assertEquals(expected, TestAccess.getFieldValue(sut, int.class, "index"));
+    
+    /**
+     * Verifies that the canModify flag of the system under test is equal to the expected value.
+     */
+    private final Consumer<Boolean> sutCanModifyAsserter = (Boolean expected) ->
+            Assert.assertEquals(expected, TestAccess.getFieldValue(sut, boolean.class, "canModify"));
+    
+    /**
+     * Sets the value of the canModify flag of the system under test.
+     */
+    private final Consumer<Boolean> sutCanModifySetter = (Boolean value) ->
+            Assert.assertTrue(TestAccess.setFieldValue(sut, "canModify", value));
     
     
     //Initialization
@@ -122,43 +147,40 @@ public class CustomIteratorTest {
      * JUnit test of constructors.
      *
      * @throws Exception When there is an exception.
-     * @see CustomIterator#CustomIterator(Collection, Consumer)
+     * @see CustomIterator#CustomIterator(Collection, BiConsumer)
      * @see CustomIterator#CustomIterator(Collection)
      */
     @SuppressWarnings("rawtypes")
     @Test
     public void testConstructors() throws Exception {
-        //standard
-        sut = new CustomIterator<>(testElements, testElements::remove);
-        Assert.assertNotNull(sut);
-        TestUtils.assertListEquals(
-                TestAccess.getFieldValue(sut, List.class, "iteration"),
-                testElements);
-        Assert.assertEquals(-1, TestAccess.getFieldValue(sut, int.class, "current").intValue());
-        Assert.assertFalse(TestAccess.getFieldValue(sut, boolean.class, "canRemove"));
-        Assert.assertNotNull(TestAccess.getFieldValue(sut, "remover"));
+        final BiConsumer<List<Integer>, Boolean> sutInstanceValidator = (List<Integer> elements, Boolean modifiable) -> {
+            Assert.assertNotNull(sut);
+            Assert.assertTrue(sut instanceof CustomIterator);
+            TestUtils.assertListEquals(
+                    TestAccess.getFieldValue(sut, List.class, "iteration"),
+                    elements);
+            sutIndexAsserter.accept(-1);
+            sutCanModifyAsserter.accept(false);
+            Assert.assertEquals(modifiable, (TestAccess.getFieldValue(sut, "remover") != null));
+        };
         
-        //unremovable
+        //standard
+        sut = new CustomIterator<>(testElements,
+                (index, element) -> testElements.remove(element));
+        sutInstanceValidator.accept(testElements, true);
+        
+        //unmodifiable
         sut = new CustomIterator<>(testElements);
-        Assert.assertNotNull(sut);
-        TestUtils.assertListEquals(
-                TestAccess.getFieldValue(sut, List.class, "iteration"),
-                testElements);
-        Assert.assertEquals(-1, TestAccess.getFieldValue(sut, int.class, "current").intValue());
-        Assert.assertFalse(TestAccess.getFieldValue(sut, boolean.class, "canRemove"));
-        Assert.assertNull(TestAccess.getFieldValue(sut, "remover"));
+        sutInstanceValidator.accept(testElements, false);
         
         //empty
         sut = new CustomIterator<>(ListUtility.emptyList());
-        Assert.assertNotNull(sut);
-        Assert.assertTrue(TestAccess.getFieldValue(sut, List.class, "iteration").isEmpty());
-        Assert.assertEquals(-1, TestAccess.getFieldValue(sut, int.class, "current").intValue());
-        Assert.assertFalse(TestAccess.getFieldValue(sut, boolean.class, "canRemove"));
-        Assert.assertNull(TestAccess.getFieldValue(sut, "remover"));
+        sutInstanceValidator.accept(ListUtility.emptyList(), false);
         
         //invalid
         TestUtils.assertException(NullPointerException.class, () ->
-                new CustomIterator<>(null, testElements::remove));
+                new CustomIterator<>(null,
+                        (index, element) -> testElements.remove(element)));
         TestUtils.assertNoException(() ->
                 new CustomIterator<>(ListUtility.emptyList(), null));
         TestUtils.assertException(NullPointerException.class, () ->
@@ -196,9 +218,18 @@ public class CustomIteratorTest {
     public void testNext() throws Exception {
         //standard
         sut = new CustomIterator<>(testElements);
-        IntStream.range(0, testElements.size()).forEach(i ->
-                Assert.assertEquals(testElements.get(i), sut.next()));
+        sutIndexAsserter.accept(-1);
+        sutCanModifyAsserter.accept(false);
+        IntStream.range(0, testElements.size()).forEach(i -> {
+            Assert.assertEquals(testElements.get(i), sut.next());
+            sutIndexAsserter.accept(i);
+            sutCanModifyAsserter.accept(true);
+        });
+        sutIndexAsserter.accept(testElements.size() - 1);
+        sutCanModifySetter.accept(false);
         TestUtils.assertException(NoSuchElementException.class, sut::next);
+        sutIndexAsserter.accept(testElements.size() - 1);
+        sutCanModifyAsserter.accept(false);
         
         //empty
         sut = new CustomIterator<>(ListUtility.emptyList());
@@ -213,49 +244,111 @@ public class CustomIteratorTest {
      */
     @Test
     public void testRemove() throws Exception {
-        List<Integer> elements;
+        final AtomicReference<List<Integer>> elements = new AtomicReference<>(null);
         
-        final Consumer<Boolean> canRemoveAsserter = (Boolean expected) ->
-                Assert.assertEquals(expected, TestAccess.getFieldValue(sut, boolean.class, "canRemove"));
+        final BiConsumer<Integer, Integer> removeByValue = (Integer index, Integer element) ->
+                elements.get().remove(element);
+        final BiConsumer<Integer, Integer> removeByIndex = (Integer index, Integer element) ->
+                elements.get().remove((int) index);
         
         //standard
-        elements = ListUtility.clone(testElements);
-        sut = new CustomIterator<>(testElements, elements::remove);
-        canRemoveAsserter.accept(false);
-        TestUtils.assertException(IllegalStateException.class, sut::remove);
-        IntStream.range(0, testElements.size()).forEach(i -> {
-            final int element = sut.next();
-            canRemoveAsserter.accept(true);
-            sut.remove();
-            canRemoveAsserter.accept(false);
-        });
-        TestUtils.assertException(IllegalStateException.class, sut::remove);
-        Assert.assertTrue(elements.isEmpty());
-        Assert.assertEquals(10, testElements.size());
-        
-        //unremovable
-        elements = ListUtility.clone(testElements);
-        sut = new CustomIterator<>(testElements);
-        canRemoveAsserter.accept(false);
-        TestUtils.assertException(IllegalStateException.class, sut::remove);
-        IntStream.range(0, testElements.size()).forEach(i -> {
-            final int element = sut.next();
-            canRemoveAsserter.accept(true);
+        Stream.of(removeByValue, removeByIndex).forEach(remover -> {
+            elements.set(ListUtility.clone(testElements));
+            sut = new CustomIterator<>(testElements, remover);
+            sutIndexAsserter.accept(-1);
+            sutCanModifyAsserter.accept(false);
             TestUtils.assertException(IllegalStateException.class, sut::remove);
-            canRemoveAsserter.accept(true);
+            sutIndexAsserter.accept(-1);
+            sutCanModifyAsserter.accept(false);
+            IntStream.range(0, testElements.size()).forEach(i -> {
+                sut.next();
+                sutIndexAsserter.accept(0);
+                sutCanModifyAsserter.accept(true);
+                sut.remove();
+                Assert.assertFalse(elements.get().contains(i));
+                sutIndexAsserter.accept(-1);
+                sutCanModifyAsserter.accept(false);
+            });
+            TestUtils.assertException(IllegalStateException.class, sut::remove);
+            sutIndexAsserter.accept(-1);
+            sutCanModifyAsserter.accept(false);
+            Assert.assertTrue(elements.get().isEmpty());
+            Assert.assertEquals(10, testElements.size());
         });
-        TestUtils.assertException(IllegalStateException.class, sut::remove);
-        Assert.assertEquals(10, elements.size());
+        
+        //unmodifable
+        elements.set(ListUtility.clone(testElements));
+        sut = new CustomIterator<>(testElements);
+        sutIndexAsserter.accept(-1);
+        sutCanModifyAsserter.accept(false);
+        TestUtils.assertException(UnsupportedOperationException.class, sut::remove);
+        sutIndexAsserter.accept(-1);
+        sutCanModifyAsserter.accept(false);
+        IntStream.range(0, testElements.size()).forEach(i -> {
+            sut.next();
+            sutIndexAsserter.accept(i);
+            sutCanModifyAsserter.accept(true);
+            TestUtils.assertException(UnsupportedOperationException.class, sut::remove);
+            sutIndexAsserter.accept(i);
+            sutCanModifyAsserter.accept(true);
+        });
+        TestUtils.assertException(UnsupportedOperationException.class, sut::remove);
+        sutIndexAsserter.accept(testElements.size() - 1);
+        sutCanModifyAsserter.accept(true);
+        TestUtils.assertListEquals(elements.get(), testElements);
         Assert.assertEquals(10, testElements.size());
         
         //empty
-        sut = new CustomIterator<>(ListUtility.emptyList());
+        elements.set(ListUtility.emptyList());
+        sut = new CustomIterator<>(ListUtility.emptyList(), removeByValue);
         TestUtils.assertException(IllegalStateException.class, sut::remove);
         
-        //invalid
-        sut = new CustomIterator<>(testElements, (e -> ListUtility.unmodifiableList().add(e)));
+        //exception
+        elements.set(ListUtility.unmodifiableList(testElements));
+        sut = new CustomIterator<>(testElements, removeByValue);
         sut.next();
         TestUtils.assertException(UnsupportedOperationException.class, sut::remove);
+    }
+    
+    /**
+     * JUnit test of forEachRemaining.
+     *
+     * @throws Exception When there is an exception.
+     * @see CustomIterator#forEachRemaining(Consumer)
+     */
+    @Test
+    public void testForEachRemaining() throws Exception {
+        final AtomicInteger sum = new AtomicInteger(0);
+        
+        //standard
+        sut = new CustomIterator<>(testElements);
+        sutIndexAsserter.accept(-1);
+        sutCanModifyAsserter.accept(false);
+        sut.forEachRemaining(element -> {
+            sum.addAndGet(element);
+            sutCanModifyAsserter.accept(true);
+        });
+        sutIndexAsserter.accept(testElements.size() - 1);
+        sutCanModifyAsserter.accept(true);
+        Assert.assertEquals(45, sum.getAndSet(0));
+        Assert.assertFalse(sut.hasNext());
+        
+        //empty
+        sut = new CustomIterator<>(ListUtility.emptyList());
+        sutIndexAsserter.accept(-1);
+        sutCanModifyAsserter.accept(false);
+        sut.forEachRemaining(element -> {
+            sum.addAndGet(element);
+            sutCanModifyAsserter.accept(true);
+        });
+        sutIndexAsserter.accept(-1);
+        sutCanModifyAsserter.accept(false);
+        Assert.assertEquals(0, sum.getAndSet(0));
+        Assert.assertFalse(sut.hasNext());
+        
+        //invalid
+        TestUtils.assertException(NullPointerException.class, () ->
+                new CustomIterator<>(testElements).forEachRemaining(null));
     }
     
 }
