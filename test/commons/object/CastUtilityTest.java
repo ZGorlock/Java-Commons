@@ -29,6 +29,7 @@ import java.util.Vector;
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
 import commons.test.TestUtils;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;
@@ -108,10 +109,22 @@ public class CastUtilityTest {
      * JUnit test of constants.
      *
      * @throws Exception When there is an exception.
+     * @see CastUtility#PRIMITIVE_CLASS_MAP
      */
-    @SuppressWarnings("EmptyMethod")
     @Test
     public void testConstants() throws Exception {
+        //constants
+        TestUtils.assertMapEquals(
+                CastUtility.PRIMITIVE_CLASS_MAP,
+                MapUtility.mapOf(
+                        new ImmutablePair<>(Boolean.class, boolean.class),
+                        new ImmutablePair<>(Byte.class, byte.class),
+                        new ImmutablePair<>(Short.class, short.class),
+                        new ImmutablePair<>(Integer.class, int.class),
+                        new ImmutablePair<>(Long.class, long.class),
+                        new ImmutablePair<>(Float.class, float.class),
+                        new ImmutablePair<>(Double.class, double.class),
+                        new ImmutablePair<>(Character.class, char.class)));
     }
     
     /**

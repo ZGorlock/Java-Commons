@@ -12,7 +12,9 @@ import java.math.BigInteger;
 import java.util.Collection;
 import java.util.Map;
 
-import commons.object.string.EntityStringUtility;
+import commons.object.collection.MapUtility;
+import commons.object.collection.map.BiMap;
+import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,6 +29,23 @@ public final class CastUtility {
      * The logger.
      */
     private static final Logger logger = LoggerFactory.getLogger(CastUtility.class);
+    
+    
+    //Constants
+    
+    /**
+     * A bidirectional map between boxed classes and the primitive equivalents.
+     */
+    @SuppressWarnings("unchecked")
+    public static final BiMap<Class<?>, Class<?>> PRIMITIVE_CLASS_MAP = new BiMap<>(MapUtility.mapOf(
+            new ImmutablePair<>(Boolean.class, boolean.class),
+            new ImmutablePair<>(Byte.class, byte.class),
+            new ImmutablePair<>(Short.class, short.class),
+            new ImmutablePair<>(Integer.class, int.class),
+            new ImmutablePair<>(Long.class, long.class),
+            new ImmutablePair<>(Float.class, float.class),
+            new ImmutablePair<>(Double.class, double.class),
+            new ImmutablePair<>(Character.class, char.class)));
     
     
     //Static Methods
@@ -207,26 +226,7 @@ public final class CastUtility {
      */
     public static Class<?> toPrimitiveClass(Class<?> clazz) {
         try {
-            switch (EntityStringUtility.simpleClassString(clazz)) {
-                case "Boolean":
-                    return boolean.class;
-                case "Byte":
-                    return byte.class;
-                case "Short":
-                    return short.class;
-                case "Integer":
-                    return int.class;
-                case "Long":
-                    return long.class;
-                case "Float":
-                    return float.class;
-                case "Double":
-                    return double.class;
-                case "Character":
-                    return char.class;
-                default:
-                    return clazz;
-            }
+            return PRIMITIVE_CLASS_MAP.getOrDefault(clazz, clazz);
         } catch (Exception ignored) {
             return null;
         }
@@ -240,26 +240,7 @@ public final class CastUtility {
      */
     public static Class<?> toNonPrimitiveClass(Class<?> clazz) {
         try {
-            switch (EntityStringUtility.simpleClassString(clazz)) {
-                case "boolean":
-                    return Boolean.class;
-                case "byte":
-                    return Byte.class;
-                case "short":
-                    return Short.class;
-                case "int":
-                    return Integer.class;
-                case "long":
-                    return Long.class;
-                case "float":
-                    return Float.class;
-                case "double":
-                    return Double.class;
-                case "char":
-                    return Character.class;
-                default:
-                    return clazz;
-            }
+            return PRIMITIVE_CLASS_MAP.inverseGetOrDefault(clazz, clazz);
         } catch (Exception ignored) {
             return null;
         }
