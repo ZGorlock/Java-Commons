@@ -19,12 +19,13 @@ import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
+import commons.lambda.stream.collector.ListCollectors;
 import commons.math.BoundUtility;
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
 import commons.object.collection.iterator.CustomIterator;
+import commons.object.collection.map.strict.StrictHashMap;
 import commons.object.string.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +36,7 @@ import org.slf4j.LoggerFactory;
  * @param <K> The type of the keys of the map.
  * @param <V> The type of the values of the map.
  */
-public class IterableMap<K, V> extends HashMap<K, V> implements Iterable<Map.Entry<K, V>> {
+public class IterableMap<K, V> extends StrictHashMap<K, V> implements Iterable<Map.Entry<K, V>> {
     
     //Logger
     
@@ -101,16 +102,6 @@ public class IterableMap<K, V> extends HashMap<K, V> implements Iterable<Map.Ent
     }
     
     /**
-     * Gets the index of a key from the map.
-     *
-     * @param key The key.
-     * @return The index of the specified key, or -1 if the map does not contain the specified key.
-     */
-    public synchronized int indexOf(K key) {
-        return keyList.indexOf(key);
-    }
-    
-    /**
      * Gets a value from the map.
      *
      * @param index The index.
@@ -124,7 +115,7 @@ public class IterableMap<K, V> extends HashMap<K, V> implements Iterable<Map.Ent
     
     /**
      * Gets an entry from the map.<br>
-     * This should not be called repeatedly, for that see indexedEntrySet().
+     * The entry returned is not backed by the map.
      *
      * @param index The index.
      * @return The entry at the specified index.
@@ -137,44 +128,56 @@ public class IterableMap<K, V> extends HashMap<K, V> implements Iterable<Map.Ent
     
     /**
      * Gets an entry from the map.<br>
-     * This should not be called repeatedly, for that see entrySet().
+     * The entry returned is not backed by the map.
      *
      * @param key The key.
-     * @return The entry at the specified index.
+     * @return The entry.
      */
     public synchronized Map.Entry<K, V> getEntry(K key) {
-        return entrySet().stream()
-                .filter(entry -> Objects.equals(entry.getKey(), key))
-                .findFirst().orElse(null);
+        return Map.entry(key, get(key));
     }
     
     /**
-     * Gets an ordered entry set of the map.
+     * Gets the index of a key from the map.
      *
-     * @return The ordered entry set.
+     * @param key The key.
+     * @return The index of the specified key, or -1 if the map does not contain the specified key.
      */
-    public synchronized List<Map.Entry<K, V>> entrySetOrdered() {
+    public synchronized int indexOf(K key) {
+        return keyList.indexOf(key);
+    }
+    
+    /**
+     * Gets an ordered entry set of the map.<br>
+     * The entry set returned is not backed by the map.
+     *
+     * @return An ordered entry set.
+     */
+    public synchronized List<Map.Entry<K, V>> orderedEntrySet() {
         return entrySet().stream()
                 .sorted(Comparator.comparingInt(entry -> indexOf(entry.getKey())))
-                .collect(Collectors.toList());
+                .collect(ListCollectors.toUnmodifiableArrayList());
     }
     
     /**
-     * Gets an ordered key set of the map.
+     * Gets an ordered key set of the map.<br>
+     * The key set returned is not backed by the map.
      *
-     * @return The ordered key set.
+     * @return An ordered key set.
      */
-    public synchronized List<K> keySetOrdered() {
-        return ListUtility.clone(keyList);
+    public synchronized List<K> orderedKeySet() {
+        return ListUtility.unmodifiableList(keyList);
     }
     
     /**
-     * Gets an ordered key set of the map.
+     * Gets an ordered collection of values of the map.<br>
+     * The collection of values returned is not backed by the map.
      *
-     * @return The ordered key set.
+     * @return An ordered collection of values.
      */
-    public synchronized List<V> valuesOrdered() {
-        return keyList.stream().map(this::get).collect(Collectors.toList());
+    public synchronized List<V> orderedValues() {
+        return keyList.stream().map(this::get)
+                .collect(ListCollectors.toUnmodifiableArrayList());
     }
     
     /**
@@ -262,7 +265,7 @@ public class IterableMap<K, V> extends HashMap<K, V> implements Iterable<Map.Ent
     }
     
     /**
-     * Replace a value in the map.
+     * Replaces a value in the map.
      *
      * @param index The index to replace the value for.
      * @param value The new value.
@@ -275,7 +278,7 @@ public class IterableMap<K, V> extends HashMap<K, V> implements Iterable<Map.Ent
     }
     
     /**
-     * Replace a value in the map.
+     * Replaces a value in the map.
      *
      * @param index    The index to replace the value for.
      * @param oldValue The expected previous value.
@@ -530,33 +533,35 @@ public class IterableMap<K, V> extends HashMap<K, V> implements Iterable<Map.Ent
      * Performs an action on each key value pair of the map.
      *
      * @param action The action to perform.
-     * @see #entrySetOrdered()
+     * @see #orderedEntrySet()
      */
     @Override
     public synchronized void forEach(BiConsumer<? super K, ? super V> action) {
-        entrySetOrdered().forEach(entry -> action.accept(entry.getKey(), entry.getValue()));
+        orderedEntrySet().forEach(entry ->
+                action.accept(entry.getKey(), entry.getValue()));
     }
     
     /**
      * Performs an action on each entry of the map.
      *
      * @param action The action to perform.
-     * @see #entrySetOrdered()
+     * @see #orderedEntrySet()
      */
     @Override
     public synchronized void forEach(Consumer<? super Map.Entry<K, V>> action) {
-        entrySetOrdered().forEach(action);
+        orderedEntrySet().forEach(action);
     }
     
     /**
      * Performs an action on each indexed entry of the map.
      *
      * @param action The action to perform.
-     * @see #entrySetOrdered()
+     * @see #orderedEntrySet()
      */
     public synchronized void indexedForEach(BiConsumer<? super Map.Entry<K, V>, Integer> action) {
         final AtomicInteger index = new AtomicInteger(0);
-        entrySetOrdered().forEach(entry -> action.accept(entry, index.getAndIncrement()));
+        orderedEntrySet().forEach(entry ->
+                action.accept(entry, index.getAndIncrement()));
     }
     
     /**
@@ -564,10 +569,15 @@ public class IterableMap<K, V> extends HashMap<K, V> implements Iterable<Map.Ent
      *
      * @return The iterator.
      * @see CustomIterator
+     * @see #exposedEntrySet()
      */
     @Override
     public Iterator<Map.Entry<K, V>> iterator() {
-        return new CustomIterator<>(entrySetOrdered(), (entry -> remove(entry.getKey())));
+        return new CustomIterator<>(
+                exposedEntrySet().stream()
+                        .sorted(Comparator.comparingInt(entry -> indexOf(entry.getKey())))
+                        .collect(ListCollectors.toArrayList()),
+                entry -> remove(entry.getKey()));
     }
     
 }
