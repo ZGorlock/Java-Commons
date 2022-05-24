@@ -93,6 +93,7 @@ public class ProgressBarTest {
         TestAccess.setFieldValue(progressBar, "title", "Test Bar");
         TestAccess.setFieldValue(progressBar, "total", 10000L);
         TestAccess.setFieldValue(progressBar, "width", 20);
+        TestAccess.setFieldValue(progressBar, "indent", 0);
         TestAccess.setFieldValue(progressBar, "units", "B");
         TestAccess.setFieldValue(progressBar, "autoPrint", false);
         TestAccess.setFieldValue(progressBar, "firstPrint", new AtomicBoolean(true));
@@ -228,6 +229,18 @@ public class ProgressBarTest {
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(expected, progressBar.get());
         
+        //indent
+        
+        TestAccess.setFieldValue(progressBar, "indent", 4);
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        expected = "     51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
+        Assert.assertEquals(expected, progressBar.get());
+        
+        TestAccess.setFieldValue(progressBar, "indent", 0);
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
+        Assert.assertEquals(expected, progressBar.get());
+        
         //no update
         
         Mockito.when(progressBar.getPercentageString()).thenReturn(" 52%");
@@ -333,6 +346,18 @@ public class ProgressBarTest {
         TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
         expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
         Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
+        
+        //indent
+        
+        TestAccess.setFieldValue(progressBar, "indent", 4);
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        expected = "     51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(0) + ProgressBar.ENDCAP), progressBar.getPrintable());
+        
+        TestAccess.setFieldValue(progressBar, "indent", 0);
+        TestAccess.setFieldValue(progressBar, "update", new AtomicBoolean(true));
+        expected = " 51% [==========>         ]  5100B/10000B at 5.2B/s - ETA: 00:15:43";
+        Assert.assertEquals(('\r' + expected + ' ' + StringUtility.spaces(3) + ProgressBar.ENDCAP), progressBar.getPrintable());
         
         //no update
         
@@ -2482,6 +2507,19 @@ public class ProgressBarTest {
     }
     
     /**
+     * JUnit test of getIndent.
+     *
+     * @throws Exception When there is an exception.
+     * @see ProgressBar#getIndent()
+     */
+    @Test
+    public void testGetIndent() throws Exception {
+        ProgressBar sut = new ProgressBar("", 0);
+        TestAccess.setFieldValue(sut, "indent", 40);
+        Assert.assertEquals(40, sut.getIndent());
+    }
+    
+    /**
      * JUnit test of getUnits.
      *
      * @throws Exception When there is an exception.
@@ -2726,6 +2764,21 @@ public class ProgressBarTest {
         Assert.assertFalse(TestAccess.getFieldValue(sut, boolean.class, "autoPrint"));
         sut.setAutoPrint(true);
         Assert.assertTrue(TestAccess.getFieldValue(sut, boolean.class, "autoPrint"));
+    }
+    
+    /**
+     * JUnit test of setIndent.
+     *
+     * @throws Exception When there is an exception.
+     * @see ProgressBar#setIndent(int)
+     */
+    @Test
+    public void testSetIndent() throws Exception {
+        ProgressBar sut = new ProgressBar("", 0);
+        sut.setIndent(40);
+        Assert.assertEquals(40, TestAccess.getFieldValue(sut, int.class, "indent").intValue());
+        sut.setIndent(0);
+        Assert.assertEquals(0, TestAccess.getFieldValue(sut, int.class, "indent").intValue());
     }
     
     /**
