@@ -21,7 +21,6 @@ import commons.access.CmdLine;
 import commons.access.Filesystem;
 import commons.access.OperatingSystem;
 import commons.access.Project;
-import commons.io.WaveRecorder;
 import commons.io.console.Console;
 import commons.io.console.SystemIn;
 import commons.io.hotkey.HotKey;

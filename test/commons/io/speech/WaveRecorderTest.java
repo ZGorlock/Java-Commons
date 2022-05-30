@@ -1,11 +1,11 @@
 /*
  * File:    WaveRecorderTest.java
- * Package: commons.io
+ * Package: commons.io.speech
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.io;
+package commons.io.speech;
 
 import java.io.File;
 import java.io.IOException;
@@ -524,8 +524,8 @@ public class WaveRecorderTest {
     public void testOwns() throws Exception {
         //standard
         WaveRecorder.owns(getClass());
-        Mockito.verify(sut, VerificationModeFactory.times(1))
-                .isOwner(ArgumentMatchers.eq(getClass()));
+        PowerMockito.verifyPrivate(sut, VerificationModeFactory.times(1))
+                .invoke("isOwner", ArgumentMatchers.eq(getClass()));
     }
     
     /**
@@ -538,8 +538,8 @@ public class WaveRecorderTest {
     public void testOwn() throws Exception {
         //standard
         WaveRecorder.own(getClass());
-        Mockito.verify(sut, VerificationModeFactory.times(1))
-                .acquireOwnership(ArgumentMatchers.eq(getClass()));
+        PowerMockito.verifyPrivate(sut, VerificationModeFactory.times(1))
+                .invoke("acquireOwnership", ArgumentMatchers.eq(getClass()));
     }
     
     /**
@@ -552,8 +552,8 @@ public class WaveRecorderTest {
     public void testRelinquish() throws Exception {
         //standard
         WaveRecorder.relinquish(getClass());
-        Mockito.verify(sut, VerificationModeFactory.times(1))
-                .releaseOwnership(ArgumentMatchers.eq(getClass()));
+        PowerMockito.verifyPrivate(sut, VerificationModeFactory.times(1))
+                .invoke("releaseOwnership", ArgumentMatchers.eq(getClass()));
     }
     
     /**
@@ -566,8 +566,8 @@ public class WaveRecorderTest {
     public void testManage() throws Exception {
         //standard
         WaveRecorder.manage(getClass());
-        Mockito.verify(sut, VerificationModeFactory.times(1))
-                .acquireManagement(ArgumentMatchers.eq(getClass()));
+        PowerMockito.verifyPrivate(sut, VerificationModeFactory.times(1))
+                .invoke("acquireManagement", ArgumentMatchers.eq(getClass()));
     }
     
     /**
@@ -580,8 +580,8 @@ public class WaveRecorderTest {
     public void testRelinquishManagement() throws Exception {
         //standard
         WaveRecorder.relinquishManagement(getClass());
-        Mockito.verify(sut, VerificationModeFactory.times(1))
-                .releaseManagement(ArgumentMatchers.eq(getClass()));
+        PowerMockito.verifyPrivate(sut, VerificationModeFactory.times(1))
+                .invoke("releaseManagement", ArgumentMatchers.eq(getClass()));
     }
     
 }

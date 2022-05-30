@@ -1,11 +1,11 @@
 /*
  * File:    WaveRecorder.java
- * Package: commons.io
+ * Package: commons.io.speech
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.io;
+package commons.io.speech;
 
 import java.io.File;
 import java.util.concurrent.ExecutorService;
@@ -22,6 +22,7 @@ import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import commons.io.SingletonInputHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -106,7 +107,7 @@ public class WaveRecorder extends SingletonInputHandler {
     /**
      * The singleton instance of the Input Handler.
      */
-    private static SingletonInputHandler instance = new WaveRecorder();
+    private static WaveRecorder instance = new WaveRecorder();
     
     /**
      * A flag indicating whether the Input Handler is currently in use.
