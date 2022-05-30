@@ -27,8 +27,8 @@ import java.util.stream.IntStream;
 
 import commons.access.CmdLine;
 import commons.access.Filesystem;
-import commons.console.Console;
-import commons.console.ProgressBar;
+import commons.io.console.Console;
+import commons.io.console.ProgressBar;
 import commons.lambda.stream.collector.MapCollectors;
 import commons.log.CommonsLogging;
 import commons.math.BoundUtility;

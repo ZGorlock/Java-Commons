@@ -10,7 +10,7 @@ package commons.io.stream;
 import java.io.IOException;
 import java.io.InputStream;
 
-import commons.console.ProgressBar;
+import commons.io.console.ProgressBar;
 import org.apache.commons.io.input.CountingInputStream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

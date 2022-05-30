@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import commons.access.Project;
-import commons.console.Console;
+import commons.io.console.Console;
 import commons.object.collection.ListUtility;
 import commons.test.TestUtils;
 import org.junit.After;

@@ -18,7 +18,7 @@ import javax.ws.rs.core.MultivaluedMap;
 import javax.ws.rs.ext.ReaderInterceptorContext;
 import javax.ws.rs.ext.WriterInterceptorContext;
 
-import commons.console.ProgressBar;
+import commons.io.console.ProgressBar;
 import commons.object.string.StringUtility;
 import commons.test.TestAccess;
 import org.glassfish.jersey.media.multipart.BodyPart;

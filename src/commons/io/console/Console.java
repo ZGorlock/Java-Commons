@@ -1,11 +1,11 @@
 /*
  * File:    Console.java
- * Package: commons.console
+ * Package: commons.io.console
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.console;
+package commons.io.console;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -143,7 +143,7 @@ public final class Console {
          *
          * @param string The string to apply the effect to.
          * @return The string with the Console Effect applied.
-         * @see #stringEffect(String, commons.console.Console.ConsoleEffect)
+         * @see #stringEffect(String, Console.ConsoleEffect)
          */
         public String apply(String string) {
             return stringEffect(string, this);

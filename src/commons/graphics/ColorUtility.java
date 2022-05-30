@@ -9,7 +9,7 @@ package commons.graphics;
 
 import java.awt.Color;
 
-import commons.console.Console;
+import commons.io.console.Console;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

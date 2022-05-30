@@ -1,11 +1,11 @@
 /*
  * File:    ConsoleTest.java
- * Package: commons.console
+ * Package: commons.io.console
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.console;
+package commons.io.console;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -260,7 +260,7 @@ public class ConsoleTest {
      * JUnit test of stringEffect.
      *
      * @throws Exception When there is an exception.
-     * @see Console#stringEffect(String, commons.console.Console.ConsoleEffect)
+     * @see Console#stringEffect(String, Console.ConsoleEffect)
      */
     @Test
     public void testStringEffect() throws Exception {

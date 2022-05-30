@@ -13,7 +13,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import commons.console.Console;
+import commons.io.console.Console;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Assert;

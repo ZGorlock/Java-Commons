@@ -11,7 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
-import commons.console.ProgressBar;
+import commons.io.console.ProgressBar;
 import commons.object.string.StringUtility;
 import commons.test.TestAccess;
 import commons.test.TestUtils;

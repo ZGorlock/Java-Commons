@@ -30,7 +30,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import commons.console.ProgressBar;
+import commons.io.console.ProgressBar;
 import commons.math.MathUtility;
 import commons.object.collection.ListUtility;
 import commons.object.string.StringUtility;
