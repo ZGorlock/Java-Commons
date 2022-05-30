@@ -9,7 +9,7 @@ package commons.math.string;
 
 import java.math.BigDecimal;
 
-import commons.math.BigMathUtility;
+import commons.math.big.BigMathUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

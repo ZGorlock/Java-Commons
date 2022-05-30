@@ -23,8 +23,8 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
-import commons.math.BigMathUtility;
 import commons.math.MathUtility;
+import commons.math.big.BigMathUtility;
 import commons.math.number.BoundUtility;
 import commons.math.number.NumberUtility;
 import commons.object.collection.ArrayUtility;

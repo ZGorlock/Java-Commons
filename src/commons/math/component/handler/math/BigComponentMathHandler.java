@@ -12,8 +12,8 @@ import java.math.MathContext;
 import java.math.RoundingMode;
 import java.util.function.IntFunction;
 
-import commons.math.BigMathUtility;
 import commons.math.MathUtility;
+import commons.math.big.BigMathUtility;
 import commons.test.TestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

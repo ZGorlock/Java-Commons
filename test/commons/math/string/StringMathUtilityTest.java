@@ -7,7 +7,7 @@
 
 package commons.math.string;
 
-import commons.math.BigMathUtility;
+import commons.math.big.BigMathUtility;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;

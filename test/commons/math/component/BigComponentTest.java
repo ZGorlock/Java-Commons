@@ -11,8 +11,8 @@ import java.math.BigDecimal;
 import java.math.MathContext;
 import java.math.RoundingMode;
 
-import commons.math.BigMathUtility;
 import commons.math.MathUtility;
+import commons.math.big.BigMathUtility;
 import commons.math.component.handler.math.BigComponentMathHandler;
 import commons.math.component.matrix.BigMatrix;
 import commons.math.component.vector.BigVector;
