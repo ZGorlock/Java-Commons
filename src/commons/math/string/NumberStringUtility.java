@@ -1,11 +1,11 @@
 /*
  * File:    NumberStringUtility.java
- * Package: commons.math
+ * Package: commons.math.string
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.math;
+package commons.math.string;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
@@ -23,6 +23,11 @@ import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
+import commons.math.BigMathUtility;
+import commons.math.BoundUtility;
+import commons.math.MathUtility;
+import commons.math.NumberUtility;
+import commons.math.StringMathUtility;
 import commons.object.collection.ArrayUtility;
 import commons.object.collection.ListUtility;
 import commons.object.string.StringUtility;

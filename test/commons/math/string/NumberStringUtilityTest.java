@@ -1,11 +1,11 @@
 /*
  * File:    NumberStringUtilityTest.java
- * Package: commons.math
+ * Package: commons.math.string
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.math;
+package commons.math.string;
 
 import java.io.File;
 import java.math.BigDecimal;
@@ -14,6 +14,7 @@ import java.util.List;
 
 import commons.access.Filesystem;
 import commons.access.Project;
+import commons.math.MathUtility;
 import commons.test.TestAccess;
 import commons.test.TestUtils;
 import org.junit.After;

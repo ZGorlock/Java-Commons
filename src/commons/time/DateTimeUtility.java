@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import commons.math.NumberStringUtility;
+import commons.math.string.NumberStringUtility;
 import commons.object.string.StringUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
