@@ -1,17 +1,16 @@
 /*
  * File:    EquationUtilityTest.java
- * Package: commons.math
+ * Package: commons.math.string
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.math;
+package commons.math.string;
 
 import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 
-import commons.math.string.NumberStringUtility;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
