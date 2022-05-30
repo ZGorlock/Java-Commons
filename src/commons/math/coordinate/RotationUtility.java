@@ -1,11 +1,11 @@
 /*
  * File:    RotationUtility.java
- * Package: commons.math
+ * Package: commons.math.coordinate
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.math;
+package commons.math.coordinate;
 
 import commons.math.component.matrix.Matrix;
 import commons.math.component.matrix.Matrix3;
