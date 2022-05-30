@@ -32,7 +32,7 @@ import commons.io.console.ProgressBar;
 import commons.lambda.stream.collector.MapCollectors;
 import commons.log.CommonsLogging;
 import commons.math.BoundUtility;
-import commons.math.NumberUtility;
+import commons.math.number.NumberUtility;
 import commons.math.string.EquationUtility;
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;

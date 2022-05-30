@@ -31,7 +31,7 @@ import java.util.stream.Stream;
 
 import commons.lambda.stream.collector.ArrayCollectors;
 import commons.lambda.stream.collector.MapCollectors;
-import commons.math.NumberUtility;
+import commons.math.number.NumberUtility;
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
 import commons.object.collection.map.strict.StrictHashMap;

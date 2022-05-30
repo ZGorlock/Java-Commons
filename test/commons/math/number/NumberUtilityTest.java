@@ -1,11 +1,11 @@
 /*
  * File:    NumberUtilityTest.java
- * Package: math
+ * Package: commons.math.number
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.math;
+package commons.math.number;
 
 import org.junit.After;
 import org.junit.AfterClass;
