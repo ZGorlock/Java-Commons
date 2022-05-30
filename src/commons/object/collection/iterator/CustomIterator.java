@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.BiConsumer;
 
-import commons.math.BoundUtility;
+import commons.math.number.BoundUtility;
 import commons.object.collection.ListUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

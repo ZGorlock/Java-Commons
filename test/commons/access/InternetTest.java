@@ -12,7 +12,7 @@ import java.net.URI;
 import java.util.regex.Pattern;
 
 import commons.log.CommonsLogging;
-import commons.math.BoundUtility;
+import commons.math.number.BoundUtility;
 import commons.object.string.StringUtility;
 import commons.test.TestAccess;
 import commons.test.TestUtils;

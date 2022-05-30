@@ -20,8 +20,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import javax.sound.sampled.LineEvent;
 
-import commons.math.BoundUtility;
 import commons.math.MathUtility;
+import commons.math.number.BoundUtility;
 import commons.object.collection.MapUtility;
 import commons.object.string.StringUtility;
 import marytts.LocalMaryInterface;

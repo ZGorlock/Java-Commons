@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.IntStream;
 
-import commons.math.BoundUtility;
+import commons.math.number.BoundUtility;
 import commons.object.string.StringUtility;
 import commons.time.DateTimeUtility;
 import org.slf4j.Logger;

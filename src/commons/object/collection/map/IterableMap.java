@@ -21,7 +21,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 import commons.lambda.stream.collector.ListCollectors;
-import commons.math.BoundUtility;
+import commons.math.number.BoundUtility;
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
 import commons.object.collection.iterator.CustomIterator;

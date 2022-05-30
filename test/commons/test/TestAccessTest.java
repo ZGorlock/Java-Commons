@@ -23,7 +23,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import commons.math.BoundUtility;
+import commons.math.number.BoundUtility;
 import commons.object.CastUtility;
 import commons.object.collection.ArrayUtility;
 import commons.object.collection.ListUtility;

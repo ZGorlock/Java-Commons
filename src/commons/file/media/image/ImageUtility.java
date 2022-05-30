@@ -46,9 +46,9 @@ import javax.imageio.stream.ImageOutputStream;
 
 import commons.access.Filesystem;
 import commons.io.graphics.DrawUtility;
-import commons.math.BoundUtility;
 import commons.math.component.vector.IntVector;
 import commons.math.component.vector.Vector;
+import commons.math.number.BoundUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

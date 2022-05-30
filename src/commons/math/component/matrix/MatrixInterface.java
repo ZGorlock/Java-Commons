@@ -13,10 +13,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import commons.math.BoundUtility;
 import commons.math.component.ComponentInterface;
 import commons.math.component.handler.error.ComponentErrorHandlerProvider;
 import commons.math.component.vector.VectorInterface;
+import commons.math.number.BoundUtility;
 import commons.object.collection.ListUtility;
 import commons.object.string.StringUtility;
 
@@ -602,7 +602,8 @@ public interface MatrixInterface<T extends Number, I extends MatrixInterface<?, 
     static <I extends MatrixInterface<?, ?>> I createInstance(int dim, Class<? extends I> clazz) {
         try {
             return clazz.getConstructor(int.class).newInstance(dim);
-        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException | InstantiationException e) {
+        } catch (NoSuchMethodException | InvocationTargetException | IllegalAccessException |
+                 InstantiationException e) {
             return null;
         }
     }

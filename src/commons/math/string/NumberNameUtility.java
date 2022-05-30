@@ -24,8 +24,8 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 import commons.math.BigMathUtility;
-import commons.math.BoundUtility;
 import commons.math.MathUtility;
+import commons.math.number.BoundUtility;
 import commons.math.number.NumberUtility;
 import commons.object.collection.ArrayUtility;
 import commons.object.collection.ListUtility;

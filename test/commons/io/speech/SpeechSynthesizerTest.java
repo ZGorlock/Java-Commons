@@ -12,7 +12,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import commons.math.BoundUtility;
+import commons.math.number.BoundUtility;
 import commons.test.TestAccess;
 import commons.test.TestUtils;
 import marytts.MaryInterface;

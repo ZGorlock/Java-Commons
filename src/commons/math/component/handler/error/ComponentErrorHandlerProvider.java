@@ -7,9 +7,9 @@
 
 package commons.math.component.handler.error;
 
-import commons.math.BoundUtility;
 import commons.math.component.ComponentInterface;
 import commons.math.component.matrix.MatrixInterface;
+import commons.math.number.BoundUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

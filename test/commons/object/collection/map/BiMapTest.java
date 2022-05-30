@@ -29,7 +29,7 @@ import java.util.stream.Stream;
 
 import commons.lambda.stream.collector.ArrayCollectors;
 import commons.lambda.stream.collector.MapCollectors;
-import commons.math.BoundUtility;
+import commons.math.number.BoundUtility;
 import commons.object.collection.ListUtility;
 import commons.object.collection.MapUtility;
 import commons.object.collection.map.strict.StrictHashMap;
@@ -2500,7 +2500,7 @@ public class BiMapTest {
     public void testForEach() throws Exception {
         //standard
         sutTestRunner.accept(() -> {
-            sut.forEach((key, value) -> 
+            sut.forEach((key, value) ->
                     sut.replace(key, -value));
             values.replaceAll(value -> -value);
         });

@@ -25,8 +25,8 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import commons.lambda.stream.mapper.Mappers;
-import commons.math.BoundUtility;
 import commons.math.MathUtility;
+import commons.math.number.BoundUtility;
 import commons.object.string.EntityStringUtility;
 import commons.object.string.StringUtility;
 import org.slf4j.Logger;

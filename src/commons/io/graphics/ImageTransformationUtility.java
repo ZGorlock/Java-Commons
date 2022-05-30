@@ -19,11 +19,11 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
-import commons.math.BoundUtility;
 import commons.math.component.matrix.Matrix;
 import commons.math.component.matrix.Matrix3;
 import commons.math.component.vector.IntVector;
 import commons.math.component.vector.Vector;
+import commons.math.number.BoundUtility;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

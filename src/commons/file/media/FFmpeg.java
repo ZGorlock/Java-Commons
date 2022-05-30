@@ -31,7 +31,7 @@ import commons.io.console.Console;
 import commons.io.console.ProgressBar;
 import commons.lambda.stream.collector.MapCollectors;
 import commons.log.CommonsLogging;
-import commons.math.BoundUtility;
+import commons.math.number.BoundUtility;
 import commons.math.number.NumberUtility;
 import commons.math.string.EquationUtility;
 import commons.object.collection.ListUtility;

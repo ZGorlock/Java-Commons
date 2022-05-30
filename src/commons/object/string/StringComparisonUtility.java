@@ -15,8 +15,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Matcher;
 
-import commons.math.BoundUtility;
 import commons.math.MathUtility;
+import commons.math.number.BoundUtility;
 import org.apache.commons.codec.language.Metaphone;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

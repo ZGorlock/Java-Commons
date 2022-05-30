@@ -32,7 +32,7 @@ import commons.access.Project;
 import commons.io.console.SystemIn;
 import commons.io.hotkey.HotKey;
 import commons.io.hotkey.HotKeyManager;
-import commons.math.BoundUtility;
+import commons.math.number.BoundUtility;
 import commons.object.string.StringUtility;
 import commons.test.TestAccess;
 import commons.test.TestUtils;
