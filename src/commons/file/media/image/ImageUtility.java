@@ -45,7 +45,7 @@ import javax.imageio.stream.ImageInputStream;
 import javax.imageio.stream.ImageOutputStream;
 
 import commons.access.Filesystem;
-import commons.graphics.DrawUtility;
+import commons.io.graphics.DrawUtility;
 import commons.math.BoundUtility;
 import commons.math.component.vector.IntVector;
 import commons.math.component.vector.Vector;

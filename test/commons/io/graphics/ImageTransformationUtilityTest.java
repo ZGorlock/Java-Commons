@@ -1,11 +1,11 @@
 /*
  * File:    ImageTransformationUtilityTest.java
- * Package: commons.graphics
+ * Package: commons.io.graphics
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.graphics;
+package commons.io.graphics;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;

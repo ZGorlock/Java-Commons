@@ -25,7 +25,7 @@ import commons.access.Filesystem;
 import commons.access.Project;
 import commons.file.media.FFmpeg;
 import commons.file.media.image.ImageUtility;
-import commons.graphics.DrawUtility;
+import commons.io.graphics.DrawUtility;
 import commons.log.CommonsLogging;
 import commons.math.MathUtility;
 import commons.math.component.vector.IntVector;

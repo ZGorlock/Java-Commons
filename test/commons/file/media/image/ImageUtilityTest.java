@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import commons.access.Filesystem;
 import commons.access.Project;
-import commons.graphics.ColorUtility;
+import commons.io.graphics.ColorUtility;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;

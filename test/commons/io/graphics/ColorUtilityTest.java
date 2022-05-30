@@ -1,11 +1,11 @@
 /*
  * File:    ColorUtilityTest.java
- * Package: commons.graphics
+ * Package: commons.io.graphics
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.graphics;
+package commons.io.graphics;
 
 import java.awt.Color;
 import java.util.ArrayList;
