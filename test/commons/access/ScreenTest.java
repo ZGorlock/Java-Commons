@@ -1,11 +1,11 @@
 /*
  * File:    ScreenTest.java
- * Package: commons.graphics
+ * Package: commons.access
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.graphics;
+package commons.access;
 
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
