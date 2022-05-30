@@ -17,11 +17,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import commons.math.CoordinateUtility;
 import commons.math.component.vector.BigVector;
 import commons.math.component.vector.IntVector;
 import commons.math.component.vector.Vector;
 import commons.math.component.vector.VectorInterface;
+import commons.math.coordinate.CoordinateUtility;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
