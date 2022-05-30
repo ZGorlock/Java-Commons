@@ -34,16 +34,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * A resource class that provides additional number string functionality.
+ * A resource class that provides additional number name functionality.
  */
-public final class NumberStringUtility {
+public final class NumberNameUtility {
     
     //Logger
     
     /**
      * The logger.
      */
-    private static final Logger logger = LoggerFactory.getLogger(NumberStringUtility.class);
+    private static final Logger logger = LoggerFactory.getLogger(NumberNameUtility.class);
     
     
     //Constants

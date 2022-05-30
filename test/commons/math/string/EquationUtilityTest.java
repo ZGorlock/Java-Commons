@@ -533,7 +533,7 @@ public class EquationUtilityTest {
         Assert.assertEquals("10", operation.operand1.op.operand2.op.operand1.n);
         Assert.assertEquals("3007", operation.operand1.op.operand2.op.operand2.n);
         Assert.assertEquals("157", operation.operand2.n);
-        Assert.assertEquals("one milliaduotillion five hundred seventy milliauntillion", NumberStringUtility.numberToNumberPhrase(operation.evaluate()));
+        Assert.assertEquals("one milliaduotillion five hundred seventy milliauntillion", NumberNameUtility.numberToNumberPhrase(operation.evaluate()));
         
         operation = EquationUtility.parseMath(
                 "fourteen milliaquintillion seven hundred eighty six milliaquattuortillion eight thousand nine hundred seventy four and sixteen thousandths six hundred millionths" +
@@ -561,7 +561,7 @@ public class EquationUtilityTest {
         Assert.assertEquals("10", operation.operand1.op.operand2.op.operand1.n);
         Assert.assertEquals("3019", operation.operand1.op.operand2.op.operand2.n);
         Assert.assertEquals("67", operation.operand2.n);
-        Assert.assertEquals("nine hundred ninety milliaquintillion six hundred sixty two milliaquattuortillion", NumberStringUtility.numberToNumberPhrase(operation.evaluate()));
+        Assert.assertEquals("nine hundred ninety milliaquintillion six hundred sixty two milliaquattuortillion", NumberNameUtility.numberToNumberPhrase(operation.evaluate()));
         
         operation = EquationUtility.parseMath(
                 "one hundred and fifty trillion forty eight million and one" +
@@ -579,7 +579,7 @@ public class EquationUtilityTest {
         Assert.assertNotNull(operation.operand2);
         Assert.assertEquals("150000048000001", operation.operand1.n);
         Assert.assertEquals("2", operation.operand2.n);
-        Assert.assertEquals("three hundred trillion ninety six million two", NumberStringUtility.numberToNumberPhrase(operation.evaluate()));
+        Assert.assertEquals("three hundred trillion ninety six million two", NumberNameUtility.numberToNumberPhrase(operation.evaluate()));
         
         //malformed equation
         

@@ -361,7 +361,7 @@ public final class EquationUtility {
             } else if ((element.length() != 1) || !OPERATORS.contains(element.charAt(0))) {
                 MathOperand operand = new MathOperand();
                 try {
-                    Number isNumber = NumberStringUtility.numberValueOf(element);
+                    Number isNumber = NumberNameUtility.numberValueOf(element);
                     operand.n = element;
                 } catch (Exception ignored) {
                     if (VARIABLE_PATTERN.matcher(element).matches()) {
@@ -487,7 +487,7 @@ public final class EquationUtility {
             }
             
             try {
-                String number = NumberStringUtility.numberPhraseToNumberString(equationPart);
+                String number = NumberNameUtility.numberPhraseToNumberString(equationPart);
                 finalEquationParts.add(number);
             } catch (NumberFormatException e) {
                 finalEquationParts.add(equationPart);
@@ -646,25 +646,25 @@ public final class EquationUtility {
             Number result;
             switch (operation) {
                 case POWER:
-                    result = NumberStringUtility.numberValueOf(StringMathUtility.power(n1, n2));
+                    result = NumberNameUtility.numberValueOf(StringMathUtility.power(n1, n2));
                     break;
                 case ROOT:
-                    result = NumberStringUtility.numberValueOf(StringMathUtility.root(n1, n2));
+                    result = NumberNameUtility.numberValueOf(StringMathUtility.root(n1, n2));
                     break;
                 case MULTIPLY:
-                    result = NumberStringUtility.numberValueOf(StringMathUtility.multiply(n1, n2));
+                    result = NumberNameUtility.numberValueOf(StringMathUtility.multiply(n1, n2));
                     break;
                 case DIVIDE:
-                    result = NumberStringUtility.numberValueOf(StringMathUtility.divide(n1, n2));
+                    result = NumberNameUtility.numberValueOf(StringMathUtility.divide(n1, n2));
                     break;
                 case MODULUS:
-                    result = NumberStringUtility.numberValueOf(StringMathUtility.mod(n1, n2));
+                    result = NumberNameUtility.numberValueOf(StringMathUtility.mod(n1, n2));
                     break;
                 case ADD:
-                    result = NumberStringUtility.numberValueOf(StringMathUtility.add(n1, n2));
+                    result = NumberNameUtility.numberValueOf(StringMathUtility.add(n1, n2));
                     break;
                 case SUBTRACT:
-                    result = NumberStringUtility.numberValueOf(StringMathUtility.subtract(n1, n2));
+                    result = NumberNameUtility.numberValueOf(StringMathUtility.subtract(n1, n2));
                     break;
                 default:
                     result = null;
