@@ -118,9 +118,11 @@ public class WaveRecorder extends SingletonInputHandler {
     
     /**
      * The private constructor for the Wave Recorder.
+     *
+     * @see SingletonInputHandler#SingletonInputHandler(Runnable)
      */
     private WaveRecorder() {
-        interrupt = WaveRecorder::stop;
+        super(WaveRecorder::stop);
     }
     
     

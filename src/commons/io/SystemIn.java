@@ -83,9 +83,11 @@ public final class SystemIn extends SingletonInputHandler {
     
     /**
      * The private constructor for SystemIn.
+     *
+     * @see SingletonInputHandler#SingletonInputHandler(Runnable)
      */
     private SystemIn() {
-        interrupt = SystemIn::interruptScanner;
+        super(SystemIn::interruptScanner);
     }
     
     

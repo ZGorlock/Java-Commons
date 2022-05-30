@@ -41,8 +41,22 @@ public abstract class SingletonInputHandler {
     /**
      * The action to perform to interrupt the Input Handler.
      */
-    protected Runnable interrupt = () -> {
-    };
+    private Thread interrupt;
+    
+    
+    //Constructors
+    
+    /**
+     * The protected constructor for a Singleton Input Handler.
+     *
+     * @param interrupt The action to perform to interrupt the Input Handler.
+     */
+    protected SingletonInputHandler(Runnable interrupt) {
+        if (interrupt != null) {
+            this.interrupt = new Thread(interrupt);
+            Runtime.getRuntime().addShutdownHook(this.interrupt);
+        }
+    }
     
     
     //Methods
@@ -75,7 +89,7 @@ public abstract class SingletonInputHandler {
      */
     protected boolean acquireOwnership(Object caller) {
         if ((caller != null) && !isOwner(caller) && ((owner.get() == null) || isManager(caller))) {
-            interrupt.run();
+            interrupt();
             owner.set(caller);
             return true;
         }
@@ -90,7 +104,7 @@ public abstract class SingletonInputHandler {
      */
     protected boolean releaseOwnership(Object caller) {
         if ((caller != null) && (owner.get() != null) && (isOwner(caller) || isManager(caller))) {
-            interrupt.run();
+            interrupt();
             owner.set(null);
             return true;
         }
@@ -123,6 +137,16 @@ public abstract class SingletonInputHandler {
             return true;
         }
         return false;
+    }
+    
+    /**
+     * Interrupts the Input Handler.
+     */
+    @SuppressWarnings("CallToThreadRun")
+    private void interrupt() {
+        if (interrupt != null) {
+            interrupt.run();
+        }
     }
     
 }

@@ -52,6 +52,11 @@ public class SingletonInputHandlerTest {
      */
     private static final Object[] callers = new Object[] {SingletonInputHandlerTest.class, new SingletonInputHandlerTest()};
     
+    /**
+     * A flag indicating whether the interrupt was activated or not.
+     */
+    private static final AtomicBoolean interrupted = new AtomicBoolean(false);
+    
     
     //Fields
     
@@ -59,11 +64,6 @@ public class SingletonInputHandlerTest {
      * The system under test.
      */
     private SingletonInputHandler sut;
-    
-    /**
-     * A flag indicating whether the interrupt was activated or not.
-     */
-    private final AtomicBoolean interrupt = new AtomicBoolean(false);
     
     
     //Functions
@@ -74,7 +74,7 @@ public class SingletonInputHandlerTest {
     private final Consumer<Object[]> stateValidator = (Object[] params) -> {
         final Object owner = params[0];
         final Object manager = params[1];
-        final boolean interrupted = (boolean) params[2];
+        final boolean expectInterruptted = (boolean) params[2];
         Stream.of(callers, new Object[] {new SingletonInputHandlerTest()}).flatMap(Arrays::stream).forEach(e -> {
             Assert.assertEquals(((owner == e) || (!(e instanceof Class<?>) && (owner == e.getClass()))), sut.isOwner(e));
             Assert.assertEquals((manager == e), sut.isManager(e));
@@ -84,7 +84,7 @@ public class SingletonInputHandlerTest {
                 TestAccess.getFieldValue(sut, "owner")).map(AtomicReference::get).orElse(null));
         Assert.assertEquals(manager, Optional.ofNullable((AtomicReference<Object>)
                 TestAccess.getFieldValue(sut, "manager")).map(AtomicReference::get).orElse(null));
-        Assert.assertEquals(interrupted, interrupt.getAndSet(false));
+        Assert.assertEquals(expectInterruptted, interrupted.getAndSet(false));
     };
     
     
@@ -118,7 +118,7 @@ public class SingletonInputHandlerTest {
     @Before
     public void setup() throws Exception {
         sut = new TestInputHandler();
-        TestAccess.setFieldValue(sut, "interrupt", (Runnable) () -> interrupt.set(true));
+        interrupted.set(false);
     }
     
     /**
@@ -142,6 +142,26 @@ public class SingletonInputHandlerTest {
     @SuppressWarnings("EmptyMethod")
     @Test
     public void testConstants() throws Exception {
+    }
+    
+    /**
+     * JUnit test of constructors.
+     *
+     * @throws Exception When there is an exception.
+     * @see SingletonInputHandler#SingletonInputHandler(Runnable)
+     */
+    @Test
+    public void testConstructors() throws Exception {
+        SingletonInputHandler sut;
+        
+        //standard
+        sut = new TestInputHandler();
+        Assert.assertNotNull(sut);
+        Assert.assertTrue(sut instanceof SingletonInputHandler);
+        Assert.assertNull(sut.owner.get());
+        Assert.assertNull(sut.manager.get());
+        Assert.assertNotNull(TestAccess.getFieldValue(sut, "interrupt"));
+        Assert.assertTrue(Runtime.getRuntime().removeShutdownHook(TestAccess.getFieldValue(sut, Thread.class, "interrupt")));
     }
     
     /**
@@ -648,6 +668,24 @@ public class SingletonInputHandlerTest {
         Assert.assertFalse(sut.releaseManagement(null));
     }
     
+    /**
+     * JUnit test of interrupt.
+     *
+     * @throws Exception When there is an exception.
+     * @see SingletonInputHandler#interrupt()
+     */
+    @Test
+    public void testInterrupt() throws Exception {
+        //standard
+        TestAccess.invokeMethod(sut, "interrupt");
+        Assert.assertTrue(interrupted.getAndSet(false));
+        
+        //no interrupt
+        TestAccess.setFieldValue(sut, "interrupt", null);
+        TestAccess.invokeMethod(sut, "interrupt");
+        Assert.assertFalse(interrupted.get());
+    }
+    
     
     //Inner Classes
     
@@ -655,6 +693,17 @@ public class SingletonInputHandlerTest {
      * An implementation of the system under test.
      */
     private static class TestInputHandler extends SingletonInputHandler {
+        
+        //Constructors
+        
+        /**
+         * The private constructor for SystemIn.
+         *
+         * @see SingletonInputHandler#SingletonInputHandler(Runnable)
+         */
+        private TestInputHandler() {
+            super(() -> interrupted.set(true));
+        }
         
     }
     

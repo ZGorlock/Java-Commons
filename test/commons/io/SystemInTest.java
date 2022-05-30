@@ -182,6 +182,7 @@ public class SystemInTest {
         Assert.assertNotNull(sut);
         Assert.assertTrue(sut instanceof SystemIn);
         Assert.assertNotNull(TestAccess.getFieldValue(sut, "interrupt"));
+        Assert.assertTrue(Runtime.getRuntime().removeShutdownHook(TestAccess.getFieldValue(sut, Thread.class, "interrupt")));
     }
     
     /**

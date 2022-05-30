@@ -166,6 +166,7 @@ public class WaveRecorderTest {
         Assert.assertNotNull(sut);
         Assert.assertTrue(sut instanceof WaveRecorder);
         Assert.assertNotNull(TestAccess.getFieldValue(sut, "interrupt"));
+        Assert.assertTrue(Runtime.getRuntime().removeShutdownHook(TestAccess.getFieldValue(sut, Thread.class, "interrupt")));
     }
     
     /**
