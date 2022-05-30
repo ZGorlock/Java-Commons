@@ -1,12 +1,13 @@
 /*
  * File:    StringMathUtilityTest.java
- * Package: commons.math
+ * Package: commons.math.string
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.math;
+package commons.math.string;
 
+import commons.math.BigMathUtility;
 import commons.test.TestUtils;
 import org.junit.After;
 import org.junit.AfterClass;
