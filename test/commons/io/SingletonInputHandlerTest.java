@@ -14,6 +14,7 @@ import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import commons.io.console.SystemInTest;
 import commons.test.TestAccess;
 import org.junit.After;
 import org.junit.AfterClass;

@@ -1,11 +1,11 @@
 /*
  * File:    SystemInTest.java
- * Package: commons.io
+ * Package: commons.io.console
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.io;
+package commons.io.console;
 
 import java.io.Console;
 import java.io.IOException;
@@ -542,8 +542,8 @@ public class SystemInTest {
     public void testOwns() throws Exception {
         //standard
         SystemIn.owns(getClass());
-        Mockito.verify(sut, VerificationModeFactory.times(1))
-                .isOwner(ArgumentMatchers.eq(getClass()));
+        PowerMockito.verifyPrivate(sut, VerificationModeFactory.times(1))
+                .invoke("isOwner", ArgumentMatchers.eq(getClass()));
     }
     
     /**
@@ -556,8 +556,8 @@ public class SystemInTest {
     public void testOwn() throws Exception {
         //standard
         SystemIn.own(getClass());
-        Mockito.verify(sut, VerificationModeFactory.times(1))
-                .acquireOwnership(ArgumentMatchers.eq(getClass()));
+        PowerMockito.verifyPrivate(sut, VerificationModeFactory.times(1))
+                .invoke("acquireOwnership", ArgumentMatchers.eq(getClass()));
     }
     
     /**
@@ -570,8 +570,8 @@ public class SystemInTest {
     public void testRelinquish() throws Exception {
         //standard
         SystemIn.relinquish(getClass());
-        Mockito.verify(sut, VerificationModeFactory.times(1))
-                .releaseOwnership(ArgumentMatchers.eq(getClass()));
+        PowerMockito.verifyPrivate(sut, VerificationModeFactory.times(1))
+                .invoke("releaseOwnership", ArgumentMatchers.eq(getClass()));
     }
     
     /**
@@ -584,8 +584,8 @@ public class SystemInTest {
     public void testManage() throws Exception {
         //standard
         SystemIn.manage(getClass());
-        Mockito.verify(sut, VerificationModeFactory.times(1))
-                .acquireManagement(ArgumentMatchers.eq(getClass()));
+        PowerMockito.verifyPrivate(sut, VerificationModeFactory.times(1))
+                .invoke("acquireManagement", ArgumentMatchers.eq(getClass()));
     }
     
     /**
@@ -598,8 +598,8 @@ public class SystemInTest {
     public void testRelinquishManagement() throws Exception {
         //standard
         SystemIn.relinquishManagement(getClass());
-        Mockito.verify(sut, VerificationModeFactory.times(1))
-                .releaseManagement(ArgumentMatchers.eq(getClass()));
+        PowerMockito.verifyPrivate(sut, VerificationModeFactory.times(1))
+                .invoke("releaseManagement", ArgumentMatchers.eq(getClass()));
     }
     
 }

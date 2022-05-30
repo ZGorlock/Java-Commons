@@ -1,11 +1,11 @@
 /*
  * File:    SystemIn.java
- * Package: commons.io
+ * Package: commons.io.console
  * Author:  Zachary Gill
  * Repo:    https://github.com/ZGorlock/Java-Commons
  */
 
-package commons.io;
+package commons.io.console;
 
 import java.io.Console;
 import java.io.InputStream;
@@ -19,6 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import commons.io.SingletonInputHandler;
 import commons.io.stream.BufferedLineReader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -71,7 +72,7 @@ public final class SystemIn extends SingletonInputHandler {
     /**
      * The singleton instance of the Input Handler.
      */
-    private static SingletonInputHandler instance = new SystemIn();
+    private static SystemIn instance = new SystemIn();
     
     /**
      * A flag indicating whether the Input Handler is currently in use.
