@@ -1,8 +1,40 @@
-/.idea/libraries
-/.idea/shelf
+### IntelliJ ###
+/.idea/libraries/
+/.idea/shelf/
 /.idea/workspace.xml
-**/*.iws
 
+### IntelliJ Plugins ###
+/.idea/db*
+/.idea/note*
+/.idea/aws*
+/.idea/azure*
+
+### Global Directories ###
+**/.git/
 **/bin/
+**/javadoc/
+**/javadocs/
+**/lib/
+**/target/
+**/temp/
+**/tmp/
 
-**.jar
+### Root Directories ###
+/data/
+/etc/
+/log/
+
+
+### File Types ###
+
+*.iws
+
+*.rar
+
+*.jar
+!**/resources/**/*.jar
+!**/test-resources/**/*.jar
+
+*.zip
+!**/resources/**/*.zip
+!**/test-resources/**/*.zip
