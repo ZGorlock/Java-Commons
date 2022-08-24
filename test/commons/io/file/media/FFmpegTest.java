@@ -4310,7 +4310,7 @@ public class FFmpegTest {
         Assert.assertEquals(0L, progressBar.getProgress());
         Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_WIDTH, progressBar.getWidth());
         Assert.assertEquals("s", progressBar.getUnits());
-        Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
+        Assert.assertEquals(ProgressBar.DEFAULT_AUTO_PRINT, progressBar.getAutoPrint());
         progressBar = new FFmpeg.FFmpegProgressBar(Arrays.asList(testVideo, testVideo, testOutput), testOutput, 30L);
         Assert.assertNotNull(progressBar);
         Assert.assertEquals(Arrays.asList(testVideo, testVideo, testOutput), TestAccess.getFieldValue(progressBar, "sourceFiles"));
@@ -4323,7 +4323,7 @@ public class FFmpegTest {
         Assert.assertEquals(0L, progressBar.getProgress());
         Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_WIDTH, progressBar.getWidth());
         Assert.assertEquals("s", progressBar.getUnits());
-        Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
+        Assert.assertEquals(ProgressBar.DEFAULT_AUTO_PRINT, progressBar.getAutoPrint());
         progressBar = new FFmpeg.FFmpegProgressBar("Test FFmpeg Progress Bar", testVideo, testOutput, 30L);
         Assert.assertNotNull(progressBar);
         Assert.assertEquals(Collections.singletonList(testVideo), TestAccess.getFieldValue(progressBar, "sourceFiles"));
@@ -4336,7 +4336,7 @@ public class FFmpegTest {
         Assert.assertEquals(0L, progressBar.getProgress());
         Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_WIDTH, progressBar.getWidth());
         Assert.assertEquals("s", progressBar.getUnits());
-        Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
+        Assert.assertEquals(ProgressBar.DEFAULT_AUTO_PRINT, progressBar.getAutoPrint());
         progressBar = new FFmpeg.FFmpegProgressBar(testVideo, testOutput, 30L);
         Assert.assertNotNull(progressBar);
         Assert.assertEquals(Collections.singletonList(testVideo), TestAccess.getFieldValue(progressBar, "sourceFiles"));
@@ -4349,7 +4349,7 @@ public class FFmpegTest {
         Assert.assertEquals(0L, progressBar.getProgress());
         Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_WIDTH, progressBar.getWidth());
         Assert.assertEquals("s", progressBar.getUnits());
-        Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
+        Assert.assertEquals(ProgressBar.DEFAULT_AUTO_PRINT, progressBar.getAutoPrint());
         progressBar = new FFmpeg.FFmpegProgressBar("Test FFmpeg Progress Bar", Arrays.asList(testVideo, testVideo, testOutput), testOutput);
         Assert.assertNotNull(progressBar);
         Assert.assertEquals(Arrays.asList(testVideo, testVideo, testOutput), TestAccess.getFieldValue(progressBar, "sourceFiles"));
@@ -4362,7 +4362,7 @@ public class FFmpegTest {
         Assert.assertEquals(0L, progressBar.getProgress());
         Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_WIDTH, progressBar.getWidth());
         Assert.assertEquals("s", progressBar.getUnits());
-        Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
+        Assert.assertEquals(ProgressBar.DEFAULT_AUTO_PRINT, progressBar.getAutoPrint());
         progressBar = new FFmpeg.FFmpegProgressBar(Arrays.asList(testVideo, testVideo, testOutput), testOutput);
         Assert.assertNotNull(progressBar);
         Assert.assertEquals(Arrays.asList(testVideo, testVideo, testOutput), TestAccess.getFieldValue(progressBar, "sourceFiles"));
@@ -4375,7 +4375,7 @@ public class FFmpegTest {
         Assert.assertEquals(0L, progressBar.getProgress());
         Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_WIDTH, progressBar.getWidth());
         Assert.assertEquals("s", progressBar.getUnits());
-        Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
+        Assert.assertEquals(ProgressBar.DEFAULT_AUTO_PRINT, progressBar.getAutoPrint());
         progressBar = new FFmpeg.FFmpegProgressBar("Test FFmpeg Progress Bar", testVideo, testOutput);
         Assert.assertNotNull(progressBar);
         Assert.assertEquals(Collections.singletonList(testVideo), TestAccess.getFieldValue(progressBar, "sourceFiles"));
@@ -4388,7 +4388,7 @@ public class FFmpegTest {
         Assert.assertEquals(0L, progressBar.getProgress());
         Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_WIDTH, progressBar.getWidth());
         Assert.assertEquals("s", progressBar.getUnits());
-        Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
+        Assert.assertEquals(ProgressBar.DEFAULT_AUTO_PRINT, progressBar.getAutoPrint());
         progressBar = new FFmpeg.FFmpegProgressBar(testVideo, testOutput);
         Assert.assertNotNull(progressBar);
         Assert.assertEquals(Collections.singletonList(testVideo), TestAccess.getFieldValue(progressBar, "sourceFiles"));
@@ -4401,7 +4401,7 @@ public class FFmpegTest {
         Assert.assertEquals(0L, progressBar.getProgress());
         Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_WIDTH, progressBar.getWidth());
         Assert.assertEquals("s", progressBar.getUnits());
-        Assert.assertEquals(ProgressBar.DEFAULT_PROGRESS_BAR_AUTO_PRINT, progressBar.getAutoPrint());
+        Assert.assertEquals(ProgressBar.DEFAULT_AUTO_PRINT, progressBar.getAutoPrint());
         
         //processLog
         progressBar = new FFmpeg.FFmpegProgressBar("Test FFmpeg Progress Bar", testVideo, testOutput, 30L);
@@ -4411,11 +4411,11 @@ public class FFmpegTest {
         Assert.assertFalse(progressBar.processLog("progress=continue"));
         Assert.assertEquals(5L, progressBar.getProgress());
         Assert.assertTrue(TestAccess.getFieldValue(progressBar, List.class, "errors").isEmpty());
-        Thread.sleep(ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 2);
+        Thread.sleep(ProgressBar.MINIMUM_UPDATE_DELAY * 2);
         Assert.assertTrue(progressBar.processLog("out_time_us=10000000", false));
         Assert.assertEquals(10L, progressBar.getProgress());
         Assert.assertTrue(TestAccess.getFieldValue(progressBar, List.class, "errors").isEmpty());
-        Thread.sleep(ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 2);
+        Thread.sleep(ProgressBar.MINIMUM_UPDATE_DELAY * 2);
         Assert.assertFalse(progressBar.processLog("This is a warning", true));
         Assert.assertFalse(TestAccess.getFieldValue(progressBar, List.class, "errors").isEmpty());
         Assert.assertEquals("This is a warning", TestAccess.getFieldValue(progressBar, List.class, "errors").get(0));
@@ -4441,7 +4441,7 @@ public class FFmpegTest {
         Assert.assertTrue(TestAccess.getFieldValue(progressBar, boolean.class, "completedNaturally"));
         System.out.println();
         
-        //complete, complete naturally
+        //complete
         progressBar = PowerMockito.spy(new FFmpeg.FFmpegProgressBar(testVideo, testOutput));
         Mockito.doNothing().when(progressBar).complete(ArgumentMatchers.anyBoolean());
         Mockito.doNothing().when(progressBar).fail(ArgumentMatchers.anyBoolean());
@@ -4452,7 +4452,7 @@ public class FFmpegTest {
         Mockito.verify(progressBar).complete(ArgumentMatchers.eq(true));
         Mockito.verifyNoMoreInteractions(progressBar);
         
-        //complete, fail
+        //fail
         progressBar = PowerMockito.spy(new FFmpeg.FFmpegProgressBar(testVideo, testOutput));
         Mockito.doNothing().when(progressBar).complete(ArgumentMatchers.anyBoolean());
         Mockito.doNothing().when(progressBar).fail(ArgumentMatchers.anyBoolean());
@@ -4465,7 +4465,7 @@ public class FFmpegTest {
                 "See method response for more information")));
         Mockito.verifyNoMoreInteractions(progressBar);
         
-        //complete, fail with logs
+        //fail with logs
         progressBar = PowerMockito.spy(new FFmpeg.FFmpegProgressBar(testVideo, testOutput));
         Mockito.doNothing().when(progressBar).complete(ArgumentMatchers.anyBoolean());
         Mockito.doNothing().when(progressBar).fail(ArgumentMatchers.anyBoolean());
@@ -4483,23 +4483,23 @@ public class FFmpegTest {
         for (int i = 5; i <= 30; i += 5) {
             Assert.assertTrue(progressBar.processLog("out_time_us=" + (i * 1000000)));
             Assert.assertFalse(progressBar.processLog("progress=continue"));
-            Thread.sleep(ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 2);
+            Thread.sleep(ProgressBar.MINIMUM_UPDATE_DELAY * 2);
         }
         Assert.assertTrue(progressBar.processLog("progress=end", false));
         progressBar.complete();
-        Assert.assertTrue(progressBar.isComplete());
+        Assert.assertTrue(progressBar.isCompleted());
         Assert.assertFalse(progressBar.isFailed());
         
-        //full example, complete
+        //full example, fail
         progressBar = new FFmpeg.FFmpegProgressBar("Test FFmpeg Progress Bar", testVideo, testOutput, 30L);
         for (int i = 5; i <= 20; i += 5) {
             Assert.assertTrue(progressBar.processLog("out_time_us=" + (i * 1000000)));
             Assert.assertFalse(progressBar.processLog("progress=continue"));
-            Thread.sleep(ProgressBar.PROGRESS_BAR_MINIMUM_UPDATE_DELAY * 2);
+            Thread.sleep(ProgressBar.MINIMUM_UPDATE_DELAY * 2);
         }
         Assert.assertFalse(progressBar.processLog("Conversion failed", true));
         progressBar.complete();
-        Assert.assertFalse(progressBar.isComplete());
+        Assert.assertTrue(progressBar.isCompleted());
         Assert.assertTrue(progressBar.isFailed());
     }
     
