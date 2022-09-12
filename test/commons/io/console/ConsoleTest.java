@@ -123,7 +123,7 @@ public class ConsoleTest {
         Assert.assertEquals(Console.ConsoleEffect.ORANGE, Console.ConsoleEffect.values()[17]);
         Assert.assertEquals(Console.ConsoleEffect.DARK_BLUE, Console.ConsoleEffect.values()[18]);
         Assert.assertEquals(Console.ConsoleEffect.PURPLE, Console.ConsoleEffect.values()[19]);
-        Assert.assertEquals(Console.ConsoleEffect.LIGHT_BLUE, Console.ConsoleEffect.values()[20]);
+        Assert.assertEquals(Console.ConsoleEffect.TEAL, Console.ConsoleEffect.values()[20]);
         Assert.assertEquals(Console.ConsoleEffect.GREY, Console.ConsoleEffect.values()[21]);
         Assert.assertEquals(Console.ConsoleEffect.DARK_GREY, Console.ConsoleEffect.values()[22]);
         Assert.assertEquals(Console.ConsoleEffect.RED, Console.ConsoleEffect.values()[23]);
@@ -139,7 +139,7 @@ public class ConsoleTest {
         Assert.assertEquals(Console.ConsoleEffect.ORANGE_BG, Console.ConsoleEffect.values()[33]);
         Assert.assertEquals(Console.ConsoleEffect.DARK_BLUE_BG, Console.ConsoleEffect.values()[34]);
         Assert.assertEquals(Console.ConsoleEffect.PURPLE_BG, Console.ConsoleEffect.values()[35]);
-        Assert.assertEquals(Console.ConsoleEffect.LIGHT_BG, Console.ConsoleEffect.values()[36]);
+        Assert.assertEquals(Console.ConsoleEffect.TEAL_BG, Console.ConsoleEffect.values()[36]);
         Assert.assertEquals(Console.ConsoleEffect.GREY_BG, Console.ConsoleEffect.values()[37]);
         Assert.assertEquals(Console.ConsoleEffect.DARK_GREY_BG, Console.ConsoleEffect.values()[38]);
         Assert.assertEquals(Console.ConsoleEffect.RED_BG, Console.ConsoleEffect.values()[39]);
@@ -171,7 +171,7 @@ public class ConsoleTest {
         Assert.assertEquals(33, Console.ConsoleEffect.ORANGE.getCode());
         Assert.assertEquals(34, Console.ConsoleEffect.DARK_BLUE.getCode());
         Assert.assertEquals(35, Console.ConsoleEffect.PURPLE.getCode());
-        Assert.assertEquals(36, Console.ConsoleEffect.LIGHT_BLUE.getCode());
+        Assert.assertEquals(36, Console.ConsoleEffect.TEAL.getCode());
         Assert.assertEquals(37, Console.ConsoleEffect.GREY.getCode());
         Assert.assertEquals(90, Console.ConsoleEffect.DARK_GREY.getCode());
         Assert.assertEquals(91, Console.ConsoleEffect.RED.getCode());
@@ -187,7 +187,7 @@ public class ConsoleTest {
         Assert.assertEquals(43, Console.ConsoleEffect.ORANGE_BG.getCode());
         Assert.assertEquals(44, Console.ConsoleEffect.DARK_BLUE_BG.getCode());
         Assert.assertEquals(45, Console.ConsoleEffect.PURPLE_BG.getCode());
-        Assert.assertEquals(46, Console.ConsoleEffect.LIGHT_BG.getCode());
+        Assert.assertEquals(46, Console.ConsoleEffect.TEAL_BG.getCode());
         Assert.assertEquals(47, Console.ConsoleEffect.GREY_BG.getCode());
         Assert.assertEquals(100, Console.ConsoleEffect.DARK_GREY_BG.getCode());
         Assert.assertEquals(101, Console.ConsoleEffect.RED_BG.getCode());
@@ -219,7 +219,7 @@ public class ConsoleTest {
         Assert.assertEquals("\u001B[33m", Console.ConsoleEffect.ORANGE.getKey());
         Assert.assertEquals("\u001B[34m", Console.ConsoleEffect.DARK_BLUE.getKey());
         Assert.assertEquals("\u001B[35m", Console.ConsoleEffect.PURPLE.getKey());
-        Assert.assertEquals("\u001B[36m", Console.ConsoleEffect.LIGHT_BLUE.getKey());
+        Assert.assertEquals("\u001B[36m", Console.ConsoleEffect.TEAL.getKey());
         Assert.assertEquals("\u001B[37m", Console.ConsoleEffect.GREY.getKey());
         Assert.assertEquals("\u001B[90m", Console.ConsoleEffect.DARK_GREY.getKey());
         Assert.assertEquals("\u001B[91m", Console.ConsoleEffect.RED.getKey());
@@ -235,7 +235,7 @@ public class ConsoleTest {
         Assert.assertEquals("\u001B[43m", Console.ConsoleEffect.ORANGE_BG.getKey());
         Assert.assertEquals("\u001B[44m", Console.ConsoleEffect.DARK_BLUE_BG.getKey());
         Assert.assertEquals("\u001B[45m", Console.ConsoleEffect.PURPLE_BG.getKey());
-        Assert.assertEquals("\u001B[46m", Console.ConsoleEffect.LIGHT_BG.getKey());
+        Assert.assertEquals("\u001B[46m", Console.ConsoleEffect.TEAL_BG.getKey());
         Assert.assertEquals("\u001B[47m", Console.ConsoleEffect.GREY_BG.getKey());
         Assert.assertEquals("\u001B[100m", Console.ConsoleEffect.DARK_GREY_BG.getKey());
         Assert.assertEquals("\u001B[101m", Console.ConsoleEffect.RED_BG.getKey());
