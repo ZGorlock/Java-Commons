@@ -14,7 +14,6 @@ import java.util.function.IntFunction;
 
 import commons.math.MathUtility;
 import commons.math.big.BigMathUtility;
-import commons.test.TestUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,7 +35,7 @@ public class BigComponentMathHandler implements ComponentMathHandlerInterface<Bi
     /**
      * The precision to use in comparisons.
      */
-    public static final BigDecimal PRECISION = TestUtils.DELTA_BIG;
+    public static final BigDecimal PRECISION = BigDecimal.valueOf(1E-36);
     
     /**
      * The number of significant figures of the precision used for comparisons.
