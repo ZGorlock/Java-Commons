@@ -55,7 +55,7 @@
         <jnativehook.version>2.1.0</jnativehook.version>
         
         <!-- MEDIA -->
-        <metadata-extractor.version>2.15.0</metadata-extractor.version>
+        <metadata-extractor.version>2.18.0</metadata-extractor.version>
         <vlcj.version>4.1.0</vlcj.version>
         
         <!-- SPEECH OUTPUT -->
