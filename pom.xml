@@ -32,7 +32,7 @@
         
         <!-- LOGGING -->
         <slf4j.version>1.7.32</slf4j.version>
-        <logback.version>1.2.9</logback.version>
+        <logback.version>1.2.13</logback.version>
         
         <!-- UNIT TESTS -->
         <powermock.version>2.0.5</powermock.version>
